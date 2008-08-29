@@ -47,13 +47,13 @@ function DisplayObject.prototype:Measure()
 	self.measuredWidth = 0;
 end;
 
-function DisplayObject.prototype:UpdateLayout(width, height)
+function DisplayObject.prototype:UpdateLayout()
 	local frame = self.frame;
 
 	frame:SetParent(self:GetParentFrame());
-	
-	frame:SetHeight(height);
-	frame:SetWidth(width);
+
+    frame:SetHeight(self:GetHeight());
+    frame:SetWidth(self:GetWidth());
 	if self:GetAlpha() == nil or type(self:GetAlpha()) ~= "number" then
 		error("DisplayObject: Alpha is not a number: " .. tostring(self));
 	end;
