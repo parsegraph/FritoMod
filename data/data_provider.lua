@@ -20,7 +20,7 @@ function DataProvider.prototype:Register()
 	DataRegistry:RegisterDataProvider(self);
 end;
 
-function DataProvider.prototype:Unegister()
+function DataProvider.prototype:Unregister()
 	DataRegistry:UnregisterDataProvider(self);
 end;
 
