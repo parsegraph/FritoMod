@@ -48,6 +48,18 @@ StyleClient.AddComputedValue(TextField.prototype, "Font", StyleClient.CHANGE_SIZ
 StyleClient.AddComputedValue(TextField.prototype, "FontColor", StyleClient.CHANGE_LAYOUT);
 
 ------------------------------------------
+--  Data
+------------------------------------------
+
+function TextField.prototype:GetData()
+	return self:GetText()
+end;
+
+function TextField.prototype:SetData(data)
+    return self:SetText(self.text)
+end;
+
+------------------------------------------
 --  Text
 ------------------------------------------
 
@@ -56,6 +68,9 @@ function TextField.prototype:GetText()
 end;
 
 function TextField.prototype:SetText(text)
+    if self.text == text then
+        return
+    end;
 	self.text = text;
 	self:InvalidateSize();
 	self:InvalidateLayout();
@@ -72,7 +87,7 @@ function TextField.prototype:ConstructChildren()
 end;
 
 function TextField.prototype:UpdateLayout()
-	TextField.super.prototype.UpdateLayout(self);
+	TextField.super.prototype.UpdateLayout(self)
 	self:SetupFont();
 end;
 
