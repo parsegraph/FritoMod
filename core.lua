@@ -33,6 +33,7 @@ end;
 function FritoLib:OnEnable()
 	self:OnProfileEnable();
 	IterationManager.GetInstance():Attach(self);
+    IterationManager.GetInstance():AddPreprocessor(TimerManager.OnUpdate, TimerManager)
 end
 
 function FritoLib:OnDisable()
