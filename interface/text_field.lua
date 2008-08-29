@@ -71,8 +71,8 @@ function TextField.prototype:ConstructChildren()
 	self.frame = TextField.CreateFontFrame();
 end;
 
-function TextField.prototype:UpdateLayout(width, height)
-	TextField.super.prototype.UpdateLayout(self, width, height);
+function TextField.prototype:UpdateLayout()
+	TextField.super.prototype.UpdateLayout(self);
 	self:SetupFont();
 end;
 
