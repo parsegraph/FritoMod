@@ -1,0 +1,39 @@
+## Interface: 20400
+
+## Title: Fritofski
+## Notes: Frito's UI Library.
+## Author: Frito
+## Version: Unreleased
+## Dependencies: Ace2
+## SavedVariables: FritoBarsDB 
+
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+libs\UTF8\utf8.lua
+
+locales\FritoBars.enUS.lua
+
+core.lua
+
+util\core.lua
+util\list.lua
+util\event_dispatcher.lua
+util\misc.lua
+
+data\data_listener.lua
+data\data_provider.lua
+data\range_data_provider.lua
+
+interface\style_client.lua
+interface\invalidating.lua
+interface\invalidating_forwarder.lua
+interface\display_object.lua
+interface\display_object_container.lua
+interface\text_field.lua
+interface\stage.lua
+interface\texture.lua
+
+managers\media_library.lua
+managers\timer_manager.lua
+managers\data_registry.lua
+managers\iteration_manager.lua
