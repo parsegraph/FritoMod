@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 --
---  Utility Methods
+--    Utility Methods
 --
 -------------------------------------------------------------------------------
 
@@ -21,42 +21,45 @@ function say(...)
 end	
 
 function ObjFunc(func, funcSelf, ...)
-  local numArgs = select("#", ...);
-  local args;
-  if numArgs and numArgs > 0 then
-    args = {};
-    for i = 1, select("#", ...) do
-      table.insert(args, select(i, ...));
+    local numArgs = select("#", ...);
+    if numArgs == 1 then
+        return func
     end;
-  end;
-  return function(...)
-    if funcSelf then
-      -- Self is defined.
-      if type(func) == "string" then
-        -- It's a self["funcName"], so call accordingly.
-        if args then
-          return funcSelf[func](funcSelf, unpack(args), ...);
+    local args;
+    if numArgs and numArgs > 0 then
+        args = {};
+        for i = 1, select("#", ...) do
+            table.insert(args, select(i, ...));
         end;
-        return funcSelf[func](funcSelf, ...);
-      end;
-      -- It's a real function, so call it.
-      if args then
-        return func(funcSelf, unpack(args), ...);
-      end;
-      return func(funcSelf, ...);
-    else
-      -- Self isn't defined.
-      if args then
-        return func(unpack(args), ...);
-      end;
-      return func(...);
     end;
-  end;
+    return function(...)
+        if funcSelf then
+            -- Self is defined.
+            if type(func) == "string" then
+                -- It's a self["funcName"], so call accordingly.
+                if args then
+                    return funcSelf[func](funcSelf, unpack(args), ...);
+                end;
+                return funcSelf[func](funcSelf, ...);
+            end;
+            -- It's a real function, so call it.
+            if args then
+                return func(funcSelf, unpack(args), ...);
+            end;
+            return func(funcSelf, ...);
+        else
+            -- Self isn't defined.
+            if args then
+                return func(unpack(args), ...);
+            end;
+            return func(...);
+        end;
+    end;
 end;
 
 -------------------------------------------------------------------------------
 --
---  Debugging Methods
+--    Debugging Methods
 --
 -------------------------------------------------------------------------------
 
@@ -68,8 +71,8 @@ function dump_item(item)
 	FritoModTooltip:SetOwner(FritoModFrame, "ANCHOR_NONE");
 	FritoModTooltip:SetHyperlink(item);
 	for i=1, FritoModTooltip:NumLines() do
-	   local line = getglobal("FritoModTooltipTextLeft" .. i)
-	   say(line:GetText());
+	     local line = getglobal("FritoModTooltipTextLeft" .. i)
+	     say(line:GetText());
 	end
 	FritoModTooltip:Hide();
 end
@@ -92,7 +95,7 @@ end;
 
 -------------------------------------------------------------------------------
 --
---  Bag Methods
+--    Bag Methods
 --
 -------------------------------------------------------------------------------
 
@@ -141,7 +144,7 @@ end;
 
 -------------------------------------------------------------------------------
 --
---  First Aid Methods
+--    First Aid Methods
 --
 -------------------------------------------------------------------------------
 
