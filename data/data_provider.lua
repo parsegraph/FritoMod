@@ -10,18 +10,36 @@ DataProvider.events = { UPDATE = "DataProvider_Update", END = "DataProvider_End"
 -------------------------------------------------------------------------------
 
 function DataProvider.prototype:init(tags, initialValue)
-	DataProvider.super.prototype.init(self);
-	self.tags = tags;
-	self:SetValue(initialValue);
-	self:Register();
+    DataProvider.super.prototype.init(self);
+    self.tags = tags;
+    self:SetValue(initialValue);
+    self:Register();
 end;
 
 function DataProvider.prototype:Register()
-	DataRegistry:RegisterDataProvider(self);
+    if self.registered then
+        return
+    end
+    DataRegistry:RegisterDataProvider(self);
+    self.registered = true
 end;
 
 function DataProvider.prototype:Unregister()
-	DataRegistry:UnregisterDataProvider(self);
+    if not self.registered then
+        return
+    end
+    DataRegistry:UnregisterDataProvider(self);
+    self.registered = false
+end;
+
+-------------------------------------------------------------------------------
+--
+--  Connectors
+--
+-------------------------------------------------------------------------------
+
+function DataProvider.prototype:Attach(...)
+    return self:AddListener(DataProvider.events, ...)
 end;
 
 -------------------------------------------------------------------------------
@@ -31,11 +49,11 @@ end;
 -------------------------------------------------------------------------------
 
 function DataProvider.prototype:TriggerUpdate()
-	self:TriggerEvent(DataProvider.events.UPDATE, self);
+    self:TriggerEvent(DataProvider.events.UPDATE, self);
 end;
 
 function DataProvider.prototype:TriggerEnd()
-	self:TriggerEvent(DataProvider.events.END, self);
+    self:TriggerEvent(DataProvider.events.END, self);
 end;
 
 -------------------------------------------------------------------------------
@@ -49,11 +67,11 @@ end;
 ------------------------------------------
 
 function DataProvider.prototype:GetTag(tag)
-	return self.tags[tag];
+    return self.tags[tag];
 end;
 
 function DataProvider.prototype:IterTags()
-	return next, self.tags, nil;
+    return next, self.tags, nil;
 end;
 
 ------------------------------------------
@@ -61,13 +79,13 @@ end;
 ------------------------------------------
 
 function DataProvider.prototype:GetValue()
-	return self.value;
+    return self.value;
 end;
 
 function DataProvider.prototype:SetValue(value)
-	if self:GetValue() == value then
-		return;
-	end;
-	self.value = value;
-	self:TriggerUpdate();
+    if self:GetValue() == value then
+        return;
+    end;
+    self.value = value;
+    self:TriggerUpdate();
 end;

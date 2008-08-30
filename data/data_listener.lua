@@ -7,10 +7,10 @@ local DataListener = DataListener;
 --
 -------------------------------------------------------------------------------
 
-function DataListener.prototype:init(tags, listenerFunc, listenerSelf)
+function DataListener.prototype:init(tags, ...)
 	DataProvider.super.prototype.init(self);
 	self.tags = tags;
-	self.listener = ObjFunc(listenerFunc, listenerSelf);
+	self.listener = ObjFunc(...);
 	self.attached = {};
 end;
 
@@ -24,21 +24,16 @@ function DataListener.prototype:Attach(dataProvider)
 	if self.attached[dataProvider] then
 		return;
 	end;
-	self.attached[dataProvider] = {
-		dataProvider:AddListener(DataProvider.events.UPDATE, self.listener);
-		dataProvider:AddListener(DataProvider.events.END, self.listener);
-	};
+	self.attached[dataProvider] = dataProvider:Attach(self.listener, self)
 	self:TriggerUpdateWith(dataProvider);
 end;
 
 function DataListener.prototype:Detach(dataProvider)
-	local detachers = self.attached[dataProvider];
-	if not detachers then
+	local detacher = self.attached[dataProvider];
+	if not detacher then
 		return;
 	end;
-	for _, func in ipairs(detachers) do
-		func();
-	end;
+    detacher()
 	self.attached[dataProvider] = nil;
 end;
 
@@ -48,6 +43,7 @@ function DataListener.prototype:DetachAll()
 	end;
 end;
 
+-- Force an asynchronous update for this DataListener. Used on initial connection.
 function DataListener.prototype:TriggerUpdateWith(dataProvider)
 	self.listener(DataProvider.events.UPDATE, dataProvider);
 end;

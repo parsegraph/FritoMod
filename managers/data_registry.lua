@@ -18,7 +18,7 @@ local function AttemptDataProviderConnection(dataProvider, listener)
     for tagName, tagValue in listener:IterTags() do
         if dataProvider:GetTag(tagName) ~= tagValue then
             return;
-    end;
+        end;
     end;
     listener:Attach(dataProvider);
 end
@@ -45,11 +45,11 @@ function DataRegistry:RegisterDataProvider(dataProvider)
             self.dataProviders[tagName] = providers;
         end;
         if providers:Add(dataProvider) then
-      -- It was successfully added, so connect it to all registered listeners who will
-      -- accept it. Also add a listener so that when its END event is fired, it is automatically
-      -- unregistered.
+            -- It was successfully added, so connect it to all registered listeners who will
+            -- accept it. Also add a listener so that when its END event is fired, it is automatically
+            -- unregistered.
             ConnectDataProvider(self, dataProvider);
-      dataProvider:AddListener(DataProvider.events.END, "UnregisterDataProvider", self);
+            dataProvider:AddListener(DataProvider.events.END, "UnregisterDataProvider", self);
         end;
     end;
 end;
@@ -78,7 +78,6 @@ end;
 --
 -- This function is NOT idempotent, so be sure to call it only when you want to add
 -- a function and are positive it does not already exist.
-
 function DataRegistry:AddListener(tags, listenerFunc, listenerSelf)
     listener = DataListener:new(tags, listenerFunc, listenerSelf)
     self.listeners:Add(listener);
