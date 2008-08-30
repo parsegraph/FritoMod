@@ -19,6 +19,7 @@ util\core.lua
 util\list.lua
 util\event_dispatcher.lua
 util\misc.lua
+util\layout.lua
 
 data\data_listener.lua
 data\data_provider.lua
@@ -32,6 +33,7 @@ interface\display_object_container.lua
 interface\text_field.lua
 interface\stage.lua
 interface\texture.lua
+interface\box.lua
 
 managers\media_library.lua
 managers\timer_manager.lua
