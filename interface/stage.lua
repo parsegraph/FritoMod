@@ -1,7 +1,7 @@
 Stage = AceLibrary("AceOO-2.0").Class(DisplayObjectContainer);
 local Stage = Stage;
 
-function Stage.GetStage()
+function Stage:GetStage()
 	if not Stage.stage then
 		Stage.stage = Stage:new();
 	end;

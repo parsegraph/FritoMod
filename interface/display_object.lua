@@ -152,7 +152,6 @@ function DisplayObject.prototype:ComputeValue(valueName)
 	if valueName == "Height" then
 		return self.measuredHeight;
 	end;
-	return DisplayObject.super.prototype.ComputeValue(self, valueName);
 end;
 
 function DisplayObject.prototype:FetchDefaultFromTable(valueName)

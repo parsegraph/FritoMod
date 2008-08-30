@@ -6,8 +6,9 @@ Box.opposingAlignment = LayoutUtil.opposingAlignment
 Box.flow = LayoutUtil.flow
 
 Box.defaultValues = {
-	Direction = Box.direction.HORIZONTAL,
+    Direction = Box.direction.HORIZONTAL,
     FlowDirection = Box.flow.FORWARD,
+    OpposingAlignment = Box.opposingAlignment.TOP,
     Gap = 3,
 }
 
@@ -18,11 +19,11 @@ Box.defaultValues = {
 -------------------------------------------------------------------------------
 
 function Box.prototype:init()
-	Box.super.prototype.init(self);
+    Box.super.prototype.init(self);
 end;
 
 function Box:ToString()
-	return "Box";
+    return "Box";
 end;
 
 -------------------------------------------------------------------------------
@@ -43,8 +44,8 @@ StyleClient.AddComputedValue(Box.prototype, "OpposingAlignment", StyleClient.CHA
 -------------------------------------------------------------------------------
 
 function Box.prototype:FetchDefaultFromTable(valueName)
-	return Box.defaultValues[valueName] or
-		Box.super.prototype.FetchDefaultFromTable(self, valueName);
+    return Box.defaultValues[valueName] or
+        Box.super.prototype.FetchDefaultFromTable(self, valueName);
 end;
 
 -------------------------------------------------------------------------------
@@ -54,32 +55,34 @@ end;
 -------------------------------------------------------------------------------
 
 function Box.prototype:Measure()
-	Box.super.prototype.Measure(self);
-	local direction = self:GetDirection();
-	for child in self:Iter() do
-		if direction == Box.HORIZONTAL then
-			self.measuredWidth = self.measuredWidth + child:GetWidth();
-			self.measuredHeight = max(self.measuredHeight, child:GetWidth());
-		else
-			self.measuredWidth = max(self.measuredWidth, child:GetWidth());
-			self.measuredHeight = self.measuredHeight + child:GetHeight();
-		end;
-	end;
-	local totalGap = self:GetGap() * (self:GetNumChildren() - 1);
-	if direction == Box.HORIZOTNAL then
-		self.measuredWidth = self.measuredWidth + totalGap;
-	else
-		self.measuredHeight = self.measuredHeight + totalGap;
-	end;
+    Box.super.prototype.Measure(self);
+    local direction = self:GetDirection();
+    for child in self:Iter() do
+        if direction == Box.HORIZONTAL then
+            self.measuredWidth = self.measuredWidth + child:GetWidth();
+            self.measuredHeight = max(self.measuredHeight, child:GetWidth());
+        else
+            self.measuredWidth = max(self.measuredWidth, child:GetWidth());
+            self.measuredHeight = self.measuredHeight + child:GetHeight();
+        end;
+    end;
+    local totalGap = self:GetGap() * (self:GetNumChildren() - 1);
+    if direction == Box.HORIZOTNAL then
+        self.measuredWidth = self.measuredWidth + totalGap;
+    else
+        self.measuredHeight = self.measuredHeight + totalGap;
+    end;
 end;
 
 function Box.prototype:UpdateLayout()
+    debug("Box.prototype:UpdateLayout")
     LayoutUtil:Chain(
-        self:GetFrame(), 
-        self.children, 
-        self:GetAlignment(), 
+        self,
+        self.children,
+        self:GetDirection(), 
         self:GetOpposingAlignment(), 
         self:GetFlowDirection(), 
         self:GetGap()
     );
+    Box.super.prototype.UpdateLayout(self)
 end;

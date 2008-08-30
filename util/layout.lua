@@ -65,7 +65,19 @@ LayoutUtil.alignmentMap = {
 }
 local LayoutUtil = LayoutUtil
 
+function LayoutUtil:GetFrame(frame)
+    if FritoLib.OOP.inherits(frame, DisplayObject) then
+        return frame:GetFrame()
+    end;
+    if type(frame) == "string" then
+        return getglobal(frame)
+    end;
+    return frame
+end;
+
 function LayoutUtil:Chain(parentFrame, frames, alignment, opposingAlignment, flow, gap, initialX, initialY)
+    debug("LayoutUtil:Chain with " .. #frames .. " frame(s)");
+    parentFrame = LayoutUtil:GetFrame(parentFrame)
     local previousChild = nil
     local offsetX, offsetY = 0, 0
     if alignment == LayoutUtil.alignment.HORIZONTAL then
@@ -80,6 +92,8 @@ function LayoutUtil:Chain(parentFrame, frames, alignment, opposingAlignment, flo
         initialY = 0
     end;
     for i, child in ipairs(frames) do
+        debug("LayoutUtil:Chain on frame: " .. i)
+        child = LayoutUtil:GetFrame(child)
         if previousChild then
             if flow == LayoutUtil.flow.FORWARD then
                 LayoutUtil:Align(alignment, child, previousChild, opposingAlignment, offsetX, offsetY)
@@ -88,7 +102,7 @@ function LayoutUtil:Chain(parentFrame, frames, alignment, opposingAlignment, flo
             end;
         else
             -- This is the first child, so it's aligned relative to the frame.
-            local attachments = LayoutUtil:GetAttactmentPoints(alignment, opposingAlignment)
+            local attachments = LayoutUtil:GetAttachmentPoints(alignment, opposingAlignment)
             -- Intentionally stack the anchor points.
             child:SetPoint(attachments.attachPoint, parentFrame, attachments.attachPoint, initialX, initialY)
         end;
@@ -99,7 +113,7 @@ end;
 function LayoutUtil:GetAttachmentPoints(alignment, opposingAlignment)
     local attachments = LayoutUtil.alignmentMap[alignment][opposingAlignment]
     if not attachments then
-        error("LayoutUtil:GetAttactmentPoints given bad alignment/opposingAlignment - " ..
+        error("LayoutUtil:GetAttachmentPoints given bad alignment/opposingAlignment - " ..
             "alignment:'" .. alignment .. "', '" .. opposingAlignment .. "'"
         );
     end
@@ -124,7 +138,10 @@ function LayoutUtil:Align(alignment, frame, relativeFrame, opposingAlignment, of
         offsetY = 0
     end;
 
-    local attachments = LayoutUtil:GetAttactmentPoints(alignment, opposingAlignment)
+    local attachments = LayoutUtil:GetAttachmentPoints(alignment, opposingAlignment)
+
+    frame = LayoutUtil:GetFrame(frame)
+    relativeFrame = LayoutUtil:GetFrame(relativeFrame)
 
     frame:SetPoint(attachments.attachPoint, relativeFrame, attachments.attachTo, offsetX, offsetY)
 end;

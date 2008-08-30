@@ -33,8 +33,8 @@ function TextField.prototype:init(text)
 	self:SetText(text);
 end;
 
-function TextField:ToString()
-	return "TextField";
+function TextField.prototype:ToString()
+	return "TextField (text:'" .. self:GetText() .. "')";
 end;
 
 -------------------------------------------------------------------------------
