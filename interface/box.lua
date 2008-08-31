@@ -58,16 +58,16 @@ function Box.prototype:Measure()
     Box.super.prototype.Measure(self);
     local direction = self:GetDirection();
     for child in self:Iter() do
-        if direction == Box.HORIZONTAL then
+        if direction == Box.direction.HORIZONTAL then
             self.measuredWidth = self.measuredWidth + child:GetWidth();
-            self.measuredHeight = max(self.measuredHeight, child:GetWidth());
+            self.measuredHeight = max(self.measuredHeight, child:GetHeight());
         else
             self.measuredWidth = max(self.measuredWidth, child:GetWidth());
             self.measuredHeight = self.measuredHeight + child:GetHeight();
         end;
     end;
     local totalGap = self:GetGap() * (self:GetNumChildren() - 1);
-    if direction == Box.HORIZOTNAL then
+    if direction == Box.direction.HORIZONTAL then
         self.measuredWidth = self.measuredWidth + totalGap;
     else
         self.measuredHeight = self.measuredHeight + totalGap;
