@@ -1,14 +1,14 @@
 Box = FritoLib.OOP.Class(DisplayObjectContainer);
 local Box = Box;
 
-Box.direction = LayoutUtil.alignment
-Box.opposingAlignment = LayoutUtil.opposingAlignment
+Box.direction = LayoutUtil.direction
+Box.alignment = LayoutUtil.alignment
 Box.flow = LayoutUtil.flow
 
 Box.defaultValues = {
     Direction = Box.direction.HORIZONTAL,
     FlowDirection = Box.flow.FORWARD,
-    OpposingAlignment = Box.opposingAlignment.TOP,
+    Alignment = Box.alignment.TOP,
     Gap = 3,
 }
 
@@ -35,7 +35,7 @@ end;
 StyleClient.AddComputedValue(Box.prototype, "FlowDirection", StyleClient.CHANGE_LAYOUT);
 StyleClient.AddComputedValue(Box.prototype, "Direction", StyleClient.CHANGE_SIZE);
 StyleClient.AddComputedValue(Box.prototype, "Gap", StyleClient.CHANGE_SIZE);
-StyleClient.AddComputedValue(Box.prototype, "OpposingAlignment", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(Box.prototype, "Alignment", StyleClient.CHANGE_LAYOUT);
 
 -------------------------------------------------------------------------------
 --
@@ -80,7 +80,7 @@ function Box.prototype:UpdateLayout()
         self,
         self.children,
         self:GetDirection(), 
-        self:GetOpposingAlignment(), 
+        self:GetAlignment(), 
         self:GetFlowDirection(), 
         self:GetGap()
     );

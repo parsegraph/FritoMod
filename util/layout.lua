@@ -1,10 +1,10 @@
 LayoutUtil = {
-    alignment = {
+    direction = {
         HORIZONTAL = "horizontal", 
         VERTICAL = "vertical",
     },
 
-    opposingAlignment = {
+    alignment = {
         LEFT = "first",
         CENTER = "center",
         RIGHT = "last",
@@ -33,31 +33,31 @@ LayoutUtil = {
 }
 
 LayoutUtil.alignmentMap = {
-    [LayoutUtil.alignment.HORIZONTAL] = {
-        [LayoutUtil.opposingAlignment.TOP] = {
+    [LayoutUtil.direction.HORIZONTAL] = {
+        [LayoutUtil.alignment.TOP] = {
             attachPoint = LayoutUtil.points.TOPLEFT,
             attachTo = LayoutUtil.points.TOPRIGHT
         },
-        [LayoutUtil.opposingAlignment.MIDDLE] = {
+        [LayoutUtil.alignment.MIDDLE] = {
             attachPoint = LayoutUtil.points.LEFT,
             attachTo = LayoutUtil.points.RIGHT
         },
-        [LayoutUtil.opposingAlignment.BOTTOM] = {
+        [LayoutUtil.alignment.BOTTOM] = {
             attachPoint = LayoutUtil.points.BOTTOMLEFT,
             attachTo = LayoutUtil.points.BOTTOMRIGHT
         }
     }, 
 
-    [LayoutUtil.alignment.VERTICAL] = {
-        [LayoutUtil.opposingAlignment.LEFT] = {
+    [LayoutUtil.direction.VERTICAL] = {
+        [LayoutUtil.alignment.LEFT] = {
             attachPoint = LayoutUtil.points.TOPLEFT,
             attachTo = LayoutUtil.points.BOTTOMLEFT
         },
-        [LayoutUtil.opposingAlignment.CENTER] = {
+        [LayoutUtil.alignment.CENTER] = {
             attachPoint = LayoutUtil.points.TOP,
             attachTo = LayoutUtil.points.BOTTOM,
         },
-        [LayoutUtil.opposingAlignment.RIGHT] = {
+        [LayoutUtil.alignment.RIGHT] = {
             attachPoint = LayoutUtil.points.TOPRIGHT,
             attachTo = LayoutUtil.points.BOTTOMRIGHT
         },
@@ -75,11 +75,11 @@ function LayoutUtil:GetFrame(frame)
     return frame
 end;
 
-function LayoutUtil:Chain(parentFrame, frames, alignment, opposingAlignment, flow, gap, initialX, initialY)
+function LayoutUtil:Chain(parentFrame, frames, direction, alignment, flow, gap, initialX, initialY)
     parentFrame = LayoutUtil:GetFrame(parentFrame)
     local previousChild = nil
     local offsetX, offsetY = 0, 0
-    if alignment == LayoutUtil.alignment.HORIZONTAL then
+    if direction == LayoutUtil.direction.HORIZONTAL then
         offsetX = gap
     else
         offsetY = -gap
@@ -92,15 +92,16 @@ function LayoutUtil:Chain(parentFrame, frames, alignment, opposingAlignment, flo
     end;
     for i, child in ipairs(frames) do
         child = LayoutUtil:GetFrame(child)
+        child:ClearAllPoints()
         if previousChild then
             if flow == LayoutUtil.flow.FORWARD then
-                LayoutUtil:Align(alignment, child, previousChild, opposingAlignment, offsetX, offsetY)
+                LayoutUtil:Align(direction, child, previousChild, alignment, offsetX, offsetY)
             else
                 error("Backward flow NYI");
             end;
         else
             -- This is the first child, so it's aligned relative to the frame.
-            local attachments = LayoutUtil:GetAttachmentPoints(alignment, opposingAlignment)
+            local attachments = LayoutUtil:GetAttachmentPoints(direction, alignment)
             -- Intentionally stack the anchor points.
             child:SetPoint(attachments.attachPoint, parentFrame, attachments.attachPoint, initialX, initialY)
         end;
@@ -108,25 +109,25 @@ function LayoutUtil:Chain(parentFrame, frames, alignment, opposingAlignment, flo
     end;
 end;
 
-function LayoutUtil:GetAttachmentPoints(alignment, opposingAlignment)
-    local attachments = LayoutUtil.alignmentMap[alignment][opposingAlignment]
+function LayoutUtil:GetAttachmentPoints(direction, alignment)
+    local attachments = LayoutUtil.alignmentMap[direction][alignment]
     if not attachments then
-        error("LayoutUtil:GetAttachmentPoints given bad alignment/opposingAlignment - " ..
-            "alignment:'" .. alignment .. "', '" .. opposingAlignment .. "'"
+        error("LayoutUtil:GetAttachmentPoints given bad direction/alignment - " ..
+            "direction:'" .. direction .. "', '" .. alignment .. "'"
         );
     end
     return attachments
 end;
 
-function LayoutUtil:Align(alignment, frame, relativeFrame, opposingAlignment, offsetX, offsetY)
-    if not alignment then
-        alignment = LayoutUtil.alignment.VERTICAL
+function LayoutUtil:Align(direction, frame, relativeFrame, alignment, offsetX, offsetY)
+    if not direction then
+        direction = LayoutUtil.direction.VERTICAL
     end
-    if not opposingAlignment then
-        if alignment == LayoutUtil.alignment.HORIZONTAL then
-            opposingAlignment = LayoutUtil.opposingAlignment.TOP
+    if not alignment then
+        if direction == LayoutUtil.direction.HORIZONTAL then
+            alignment = LayoutUtil.alignment.TOP
         else
-            opposingAlignment = LayoutUtil.opposingAlignment.LEFT
+            alignment = LayoutUtil.alignment.LEFT
         end
     end;
     if not offsetX then
@@ -136,7 +137,7 @@ function LayoutUtil:Align(alignment, frame, relativeFrame, opposingAlignment, of
         offsetY = 0
     end;
 
-    local attachments = LayoutUtil:GetAttachmentPoints(alignment, opposingAlignment)
+    local attachments = LayoutUtil:GetAttachmentPoints(direction, alignment)
 
     frame = LayoutUtil:GetFrame(frame)
     relativeFrame = LayoutUtil:GetFrame(relativeFrame)
@@ -144,38 +145,38 @@ function LayoutUtil:Align(alignment, frame, relativeFrame, opposingAlignment, of
     frame:SetPoint(attachments.attachPoint, relativeFrame, attachments.attachTo, offsetX, offsetY)
 end;
 
-local function DoAlign(alignment, opposingAlignment, frame, relativeFrame, offsetX, offsetY)
-    return LayoutUtil:Align(alignment, frame, relativeFrame, opposingAlignment, offsetX, offsetY)
+local function DoAlign(direction, alignment, frame, relativeFrame, offsetX, offsetY)
+    return LayoutUtil:Align(direction, frame, relativeFrame, alignment, offsetX, offsetY)
 end;
 
 function LayoutUtil:AlignHorizontal(...)
-    return DoAlign(LayoutUtil.alignment.HORIZONTAL, ...)
+    return DoAlign(LayoutUtil.direction.HORIZONTAL, ...)
 end;
 
 function LayoutUtil:AlignHorizontalTop(...)
-    return DoAlign(LayoutUtil.alignment.HORIZONTAL, LayoutUtil.opposingAlignment.TOP, ...)
+    return DoAlign(LayoutUtil.direction.HORIZONTAL, LayoutUtil.alignment.TOP, ...)
 end;
 
 function LayoutUtil:AlignHorizontalMiddle(...)
-    return DoAlign(LayoutUtil.alignment.HORIZONTAL, LayoutUtil.opposingAlignment.MIDDLE, ...)
+    return DoAlign(LayoutUtil.direction.HORIZONTAL, LayoutUtil.alignment.MIDDLE, ...)
 end;
 
 function LayoutUtil:AlignHorizontalBottom(...)
-    return DoAlign(LayoutUtil.alignment.HORIZONTAL, LayoutUtil.opposingAlignment.BOTTOM, ...)
+    return DoAlign(LayoutUtil.direction.HORIZONTAL, LayoutUtil.alignment.BOTTOM, ...)
 end;
 
 function LayoutUtil:AlignVertical(...)
-    return DoAlign(LayoutUtil.alignment.VERTICAL, ...)
+    return DoAlign(LayoutUtil.direction.VERTICAL, ...)
 end;
 
 function LayoutUtil:AlignVerticalLeft(...)
-    return DoAlign(LayoutUtil.alignment.VERTICAL, LayoutUtil.opposingAlignment.LEFT, ...)
+    return DoAlign(LayoutUtil.direction.VERTICAL, LayoutUtil.alignment.LEFT, ...)
 end;
 
 function LayoutUtil:AlignVerticalCenter(...)
-    return DoAlign(LayoutUtil.alignment.VERTICAL, LayoutUtil.opposingAlignment.CENTER, ...)
+    return DoAlign(LayoutUtil.direction.VERTICAL, LayoutUtil.alignment.CENTER, ...)
 end;
 
 function LayoutUtil:AlignVerticalRight(...)
-    return DoAlign(LayoutUtil.alignment.VERTICAL, LayoutUtil.opposingAlignment.RIGHT, ...)
+    return DoAlign(LayoutUtil.direction.VERTICAL, LayoutUtil.alignment.RIGHT, ...)
 end;
