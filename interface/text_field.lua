@@ -86,6 +86,20 @@ function TextField.prototype:ConstructChildren()
 	self.frame = TextField.CreateFontFrame();
 end;
 
+function TextField.prototype:Measure()
+	TextField.super.prototype.Measure(self)
+	local scratch = TextField.GetScratchFont();
+	self:SetupFont(scratch);
+	if self:GetExplicitHeight() then
+		scratch:SetHeight(self:GetExplicitHeight());
+	end;
+	if self:GetExplicitWidth() then
+		scratch:SetWidth(self:GetExplicitWidth());
+	end;
+    self.measuredHeight = scratch:GetStringHeight()
+    self.measuredWidth = scratch:GetStringWidth()
+end;
+
 function TextField.prototype:UpdateLayout()
 	TextField.super.prototype.UpdateLayout(self)
 	self:SetupFont();
@@ -96,21 +110,6 @@ end;
 --  Overridden Methods: StyleClient
 --
 -------------------------------------------------------------------------------
-
-function TextField.prototype:ComputeValue(valueName)
-	if valueName ~= "Height" and valueName ~= "Width" then
-		return TextField.super.prototype.ComputeValue(self, valueName);
-	end;
-	local scratch = TextField.GetScratchFont();
-	self:SetupFont(scratch);
-	if self:GetExplicitHeight() then
-		scratch:SetHeight(self:GetExplicitHeight());
-	end;
-	if self:GetExplicitWidth() then
-		scratch:SetWidth(self:GetExplicitWidth());
-	end;
-	return scratch["GetString" .. valueName](scratch);
-end;
 
 function TextField.prototype:FetchDefaultFromTable(valueName)
 	return TextField.defaultValues[valueName] or
