@@ -5,13 +5,13 @@ LayoutUtil = {
     },
 
     opposingAlignment = {
-        LEFT = "left",
+        LEFT = "first",
         CENTER = "center",
-        RIGHT = "right",
+        RIGHT = "last",
 
-        TOP = "top",
-        MIDDLE = "middle",
-        BOTTOM = "bottom",
+        TOP = "first",
+        MIDDLE = "center",
+        BOTTOM = "last",
     },
 
     points = {
@@ -76,14 +76,13 @@ function LayoutUtil:GetFrame(frame)
 end;
 
 function LayoutUtil:Chain(parentFrame, frames, alignment, opposingAlignment, flow, gap, initialX, initialY)
-    debug("LayoutUtil:Chain with " .. #frames .. " frame(s)");
     parentFrame = LayoutUtil:GetFrame(parentFrame)
     local previousChild = nil
     local offsetX, offsetY = 0, 0
     if alignment == LayoutUtil.alignment.HORIZONTAL then
         offsetX = gap
     else
-        offsetY = gap
+        offsetY = -gap
     end
     if not initialX then
         initialX = 0
@@ -92,7 +91,6 @@ function LayoutUtil:Chain(parentFrame, frames, alignment, opposingAlignment, flo
         initialY = 0
     end;
     for i, child in ipairs(frames) do
-        debug("LayoutUtil:Chain on frame: " .. i)
         child = LayoutUtil:GetFrame(child)
         if previousChild then
             if flow == LayoutUtil.flow.FORWARD then
