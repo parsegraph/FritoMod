@@ -1,6 +1,32 @@
 List = AceLibrary("AceOO-2.0").Class();
 local List = List;
 
+ListUtil = {}
+local ListUtil = ListUtil
+
+function ListUtil:filter(list, filterFunc, ...)
+    local filtered = ListUtil:filterIndex(list, filterFunc, ...)
+    for i, key in ipairs(filtered) do
+        filtered[i] = list[key]
+    end;
+    return filtered
+end;
+
+function ListUtil:filterIndex(list, filterFunc, ...)
+    filterFunc = ObjFunc(filterFunc, ...)
+    local filtered = {};
+    for i, item in ipairs(list) do
+        if filterFunc(item) then
+            table.insert(filtered, i)
+        end
+    end;
+    return filtered
+end;
+
+function ListUtil:removeItem(list, item)
+    return ListUtil:filter(list, Operator.notEquals, item)
+end;
+
 -------------------------------------------------------------------------------
 --
 --  Constructor
