@@ -1,10 +1,9 @@
-MediaLibrary = {};
-ML = MediaLibrary;
+MediaLibrary = {
+    DEFAULT = "default",
+    mediaTable = {},
+    proxyLibraries = {},
+};
 local MediaLibrary = MediaLibrary;
-local SharedMedia = LibStub("LibSharedMedia-3.0")
-
-MediaLibrary.mediaTable = {};
-MediaLibrary.DEFAULT = "Default";
 
 --[[
 	MediaLibrary allows media of any form to be registered to a given name, so that it may be
@@ -98,6 +97,12 @@ function MediaLibrary:RegisterDefaults()
         MediaLibrary:Add("Sound", sound_name, SOUNDS_DIR .. sound_name .. ".wav")
     end
 
+    MediaLibrary:RegisterProxyLibrary(
+        function(sharedMedia, mediaType, mediaName)
+            return sharedMedia:Fetch(string.lower(mediaType), mediaName);
+        end,
+        LibStub("LibSharedMedia-3.0")
+    );
 end;
 
 -------------------------------------------------------------------------------
@@ -171,6 +176,12 @@ function MediaLibrary:RegisterType(mediaType)
 	return true;
 end;
 
+function MediaLibrary:RegisterProxyLibrary(libraryFunc, librarySelf, ...)
+    libraryFunc = ObjFunc(libraryFunc, librarySelf, ...)
+    table.insert(self.proxyLibraries, libraryFunc)
+    return ObjFunc(ListUtil.removeItem, self.proxyLibraries, libraryFunc)
+end;
+
 -------------------------------------------------------------------------------
 --
 --  MediaLibrary: Utility Interface
@@ -193,18 +204,19 @@ function MediaLibrary:GetExplicit(mediaType, mediaName)
 	--debug("MediaLibrary: Retrieving Explicit. (Type:", mediaType, ", Name:", mediaName, ")");
 	local media = self:RetrieveTable(mediaType)[mediaName];
 	if media == nil then
-		media = SharedMedia:Fetch(string.lower(mediaType), mediaName, true);
+        for _, proxyLibraryGetter in ipairs(self.proxyLibraries) do
+            media = proxyLibraryGetter(mediaType, mediaName);
+            if media ~= nil then
+                break
+            end;
+        end;
 	end;
 	return media;
 end;
 
 function MediaLibrary:GetDefault(mediaType)
 	--debug("MediaLibrary: Retrieving Default. (Type:", mediaType, ")");
-	local media = self:GetExplicit(mediaType, MediaLibrary.DEFAULT);
-	if media == nil then
-		media = SharedMedia:Fetch(string.lower(mediaType), MediaLibrary.DEFAULT);
-	end;
-	return media;
+    return MediaLibrary:GetExplicit(mediaType, MediaLibrary.DEFAULT);
 end;
 
 function MediaLibrary:BulkAdd(mediaType, mediaTable)
