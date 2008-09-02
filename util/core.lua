@@ -59,7 +59,7 @@ end;
 
 Operator = {
     equals = function(a, b) return a == b end,
-    notEquals = function(a, b) return a != b end,
+    notEquals = function(a, b) return a ~= b end,
     lessThan = function(a, b) return a < b end,
     greaterThan = function(a, b) return a > b end,
     lessThanOrEqual = function(a, b) return a <= b end,
