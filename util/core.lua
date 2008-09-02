@@ -57,6 +57,17 @@ function ObjFunc(func, funcSelf, ...)
     end;
 end;
 
+Operator = {
+    equals = function(a, b) return a == b end,
+    notEquals = function(a, b) return a != b end,
+    lessThan = function(a, b) return a < b end,
+    greaterThan = function(a, b) return a > b end,
+    lessThanOrEqual = function(a, b) return a <= b end,
+    greaterThanOrEqual = function(a, b) return a >= b end,
+    inclusiveRange = function(min, max, num) return min <= num and num <= max end;
+    exclusiveRange = function(min, max, num) return min < num and num < max end;
+}
+
 -------------------------------------------------------------------------------
 --
 --    Debugging Methods
