@@ -33,7 +33,7 @@ end;
 function FritoLib:OnEnable()
 	self:OnProfileEnable();
 	IterationManager.GetInstance():Attach(self);
-    IterationManager.GetInstance():AddPreprocessor(TimerManager.OnUpdate, TimerManager)
+    IterationManager.GetInstance():AddPreprocessor(TimerManager, "OnUpdate");
 end
 
 function FritoLib:OnDisable()
@@ -49,6 +49,11 @@ function FritoLib:OnProfileDisable()
 	-- Pass for now.
 end
 
+function FritoLib:RunTests()
+    TestManager:Run();
+    TestManager:Cat();
+end;
+
 ------------------------------------------
 --  FuBar Stuff
 ------------------------------------------
@@ -63,6 +68,12 @@ FritoLib.Options = {
 	type = 'group',
 	handler = FritoLib,
 	args = {
+        test = {
+            type = 'execute',
+            name = "Run Regression Tests",
+            desc = "Run Tests for FritoMod",
+            func = "RunTests",
+        },
 		class = {
 			type = 'text',
 			name = "Class", 
@@ -79,4 +90,4 @@ FritoLib.Options = {
 };
 FritoLib.OnMenuRequest = FritoLib.Options;
 
-FritoLib:RegisterChatCommand({"/fritolib", "/fl"}, FritoLib.Options);
+FritoLib:RegisterChatCommand({"/fritomod", "/fm", "/frito"}, FritoLib.Options);
