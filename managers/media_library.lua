@@ -97,12 +97,25 @@ function MediaLibrary:RegisterDefaults()
         MediaLibrary:Add("Sound", sound_name, SOUNDS_DIR .. sound_name .. ".wav")
     end
 
+	----------------------------------------
+	--  Proxy Libraries
+	----------------------------------------
+
     MediaLibrary:RegisterProxyLibrary(
         function(sharedMedia, mediaType, mediaName)
             return sharedMedia:Fetch(string.lower(mediaType), mediaName);
         end,
         LibStub("LibSharedMedia-3.0")
     );
+
+    MediaLibrary:RegisterType("Icon");
+    MediaLibrary:RegisterProxyLibrary(
+        function(mediaType, mediaName)
+            if mediaType == "Icon" then
+                return "Interface\\Icons\\" .. mediaName;
+            end
+        end
+    )
 end;
 
 -------------------------------------------------------------------------------
@@ -176,8 +189,8 @@ function MediaLibrary:RegisterType(mediaType)
 	return true;
 end;
 
-function MediaLibrary:RegisterProxyLibrary(libraryFunc, librarySelf, ...)
-    libraryFunc = ObjFunc(libraryFunc, librarySelf, ...)
+function MediaLibrary:RegisterProxyLibrary(libraryFunc, ...)
+    libraryFunc = ObjFunc(libraryFunc, ...)
     table.insert(self.proxyLibraries, libraryFunc)
     return ObjFunc(ListUtil.removeItem, self.proxyLibraries, libraryFunc)
 end;
