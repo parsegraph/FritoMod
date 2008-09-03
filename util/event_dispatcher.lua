@@ -20,11 +20,11 @@ function EventDispatcher:TriggerEvent(eventName, ...)
     end;
 end;
 
-function EventDispatcher:AddListener(eventName, listenerFunc, listenerSelf, ...)
+function EventDispatcher:AddListener(eventName, listenerFunc, ...)
 	if not self.events then
 		self.events = {};
 	end;
-    local listener = ObjFunc(listenerFunc, listenerSelf, ...);
+    local listener = ObjFunc(listenerFunc, ...);
     if type(eventName) == "table" then
         -- We're using the same listener for multiple events, so recurse and collect.
         removers = {}

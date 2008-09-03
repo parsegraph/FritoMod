@@ -78,8 +78,8 @@ end;
 --
 -- This function is NOT idempotent, so be sure to call it only when you want to add
 -- a function and are positive it does not already exist.
-function DataRegistry:AddListener(tags, listenerFunc, listenerSelf)
-    listener = DataListener:new(tags, listenerFunc, listenerSelf)
+function DataRegistry:AddListener(tags, listenerFunc, ...)
+    listener = DataListener:new(tags, listenerFunc, ...)
     self.listeners:Add(listener);
     local index = self.listeners:Length();
     -- A listener was added, so send it all the DataProviders it would like to listen to.
