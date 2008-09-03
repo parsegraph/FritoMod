@@ -20,39 +20,34 @@ function say(...)
 	SendChatMessage(tostring(concat(...)))
 end	
 
-function ObjFunc(func, funcSelf, ...)
+EMPTY_ARGS = {}
+
+function ObjFunc(objOrFunc, funcOrName, ...)
     local numArgs = select("#", ...);
     if numArgs == 1 then
-        return func
+        return objOrFunc
     end;
-    local args;
+    local args = EMPTY_ARGS
     if numArgs and numArgs > 0 then
         args = {};
         for i = 1, select("#", ...) do
             table.insert(args, select(i, ...));
         end;
     end;
-    return function(...)
-        if funcSelf then
-            -- Self is defined.
-            if type(func) == "string" then
-                -- It's a self["funcName"], so call accordingly.
-                if args then
-                    return funcSelf[func](funcSelf, unpack(args), ...);
-                end;
-                return funcSelf[func](funcSelf, ...);
-            end;
-            -- It's a real function, so call it.
-            if args then
-                return func(funcSelf, unpack(args), ...);
-            end;
-            return func(funcSelf, ...);
-        else
-            -- Self isn't defined.
-            if args then
-                return func(unpack(args), ...);
-            end;
-            return func(...);
+    if type(objOrFunc) == "function" then
+        -- debug("ObjFunc: Returning direct function partial.");
+        return function(...) 
+            return objOrFunc(unpack(args), ...);
+        end;
+    elseif type(funcOrName) == "string" then
+        -- debug("ObjFunc: Returning string-based method partial.");
+        return function(...)
+            return objOrFunc[funcOrName](objOrFunc, unpack(args), ...);
+        end;
+    else
+        -- debug("ObjFunc: Returning direct method partial.");
+        return function(...)
+            return funcOrName(objOrFunc, unpack(args), ...);
         end;
     end;
 end;
@@ -70,12 +65,11 @@ Operator = {
 
 -------------------------------------------------------------------------------
 --
---    Debugging Methods
+--  Debugging Methods
 --
 -------------------------------------------------------------------------------
 
 function debug(...)
-	ChatFrame1:AddMessage(tostring(concat(...)), 0.0, 0.6, 0.0);
 end	
 
 function dump_item(item)
