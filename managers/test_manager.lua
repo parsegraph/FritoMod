@@ -35,6 +35,7 @@ function TestManager:Run(testGroup)
     for _, test in pairs(tests) do
         local result = test:Execute();
         if not result then
+            test:Print();
             failed = failed + 1;
         end;
     end;
