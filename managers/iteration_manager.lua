@@ -24,9 +24,6 @@ end;
 
 function IterationManager.prototype:init()
 	IterationManager.super.prototype.init(self);
-	
-	-- Explicitly add our TimerManager to this loop.
-	self:AddPreprocessor(TimerManager.OnUpdate, TimerManager);
 end;
 
 -------------------------------------------------------------------------------
