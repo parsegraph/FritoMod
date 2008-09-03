@@ -14,8 +14,11 @@ libs\UTF8\utf8.lua
 locales\FritoBars.enUS.lua
 
 core.lua
+icons.lua
 
 util\core.lua
+util\log.lua
+util\test_case.lua
 util\list.lua
 util\event_dispatcher.lua
 util\misc.lua
@@ -35,6 +38,8 @@ interface\stage.lua
 interface\texture.lua
 interface\box.lua
 
+managers\logging_manager.lua
+managers\test_manager.lua
 managers\media_library.lua
 managers\timer_manager.lua
 managers\data_registry.lua
