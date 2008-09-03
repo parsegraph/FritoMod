@@ -34,8 +34,8 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Texture.prototype:ApplyTo(displayObject)
-	local frame = displayObject:GetFrame();
+function Texture.prototype:ApplyTo(frame)
+	frame = LayoutUtil:GetFrame(frame);
 	local inset = self:GetInset();
 	if not frame.SetBackdrop then
 		error("Texture: The frame provided does not support textures: " .. tostring(displayObject));
@@ -62,8 +62,8 @@ end;
 
 StyleClient.AddComputedValue(Texture.prototype, "Background", StyleClient.CHANGE_LAYOUT);
 StyleClient.AddComputedValue(Texture.prototype, "Border", StyleClient.CHANGE_LAYOUT);
-StyleClient.AddComputedValue(Texture.prototype, "BorderSize", StyleClient.CHANGE_LAYOUT);
-StyleClient.AddComputedValue(Texture.prototype, "Inset", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(Texture.prototype, "BorderSize", StyleClient.CHANGE_SIZE);
+StyleClient.AddComputedValue(Texture.prototype, "Inset", StyleClient.CHANGE_SIZE);
 StyleClient.AddComputedValue(Texture.prototype, "BackgroundColor", StyleClient.CHANGE_LAYOUT);
 
 -------------------------------------------------------------------------------
