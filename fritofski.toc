@@ -15,9 +15,11 @@ locales\FritoBars.enUS.lua
 
 core.lua
 icons.lua
+mapscales.lua
 
 util\core.lua
 util\log.lua
+util\math.lua
 util\test_case.lua
 util\list.lua
 util\event_dispatcher.lua
@@ -38,7 +40,7 @@ interface\stage.lua
 interface\texture.lua
 interface\box.lua
 
-managers\logging_manager.lua
+managers\log_manager.lua
 managers\test_manager.lua
 managers\media_library.lua
 managers\timer_manager.lua

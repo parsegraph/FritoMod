@@ -34,8 +34,8 @@ end;
 
 function Log.prototype:Log(...)
     table.insert(self, {...});
-    if LoggingManager and self.owner ~= LoggingManager then
-        LoggingManager:Log(...);
+    if LogManager and self.owner ~= LogManager then
+        LogManager:Log(...);
     end;
 end;
 
