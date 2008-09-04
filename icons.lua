@@ -1,3 +1,66 @@
+function CategorizeIcons(icons)
+    local categorized = {};
+    for _, iconName in ipairs(icons) do
+        local parts = {string.split("_", iconName)};
+        table.remove(parts);
+        category = categorized;
+        for _, part in ipairs(parts) do
+            if not category[part] then
+                category[part] = {};
+            end;
+            category = category[part];
+        end;
+        category[iconName] = iconName;
+    end;
+    local sum = TotalSum(categorized);
+    categorized = Collapse(categorized);
+    if sum ~= TotalSum(categorized) then
+        error("FAIL!");
+    else
+        print("Success", sum);
+    end;
+    return categorized;
+end;
+
+function Collapse(tree)
+    function count(tree)
+        local sum = 0;
+        for _, _ in pairs(tree) do
+            sum = sum + 1;
+        end;
+        return sum;
+    end;
+    for categoryName, category in pairs(tree) do
+        if type(category) == "table" then
+            local collapsed = Collapse(category);
+            if type(collapsed) == "string" then
+                print("Collapsing", collapsed, categoryName);
+                tree[collapsed] = collapsed;
+                tree[categoryName] = nil;
+            end
+        end;
+    end;
+    if count(tree) == 1 then
+        local _, first = next(tree);
+        if type(first) == "string" then
+            print("Collapsable category:", first);
+            return first
+        end
+    end;
+    return tree;
+end;
+
+function TotalSum(tree)
+    if type(tree) ~= "table" then
+        return 1
+    end;
+    local sum = 0;
+    for _, child in pairs(tree) do
+        sum = sum + TotalSum(child)
+    end;
+    return sum;
+end;
+
 ICONS = {
     "Ability_Ambush",
     "Ability_BackStab",
