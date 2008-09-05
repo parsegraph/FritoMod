@@ -4,7 +4,7 @@ local List = List;
 ListUtil = {}
 local ListUtil = ListUtil
 
-function ListUtil:filter(list, filterFunc, ...)
+function ListUtil:Filter(list, filterFunc, ...)
     local filtered = ListUtil:filterIndex(list, filterFunc, ...)
     for i, key in ipairs(filtered) do
         filtered[i] = list[key]
@@ -12,7 +12,16 @@ function ListUtil:filter(list, filterFunc, ...)
     return filtered
 end;
 
-function ListUtil:filterIndex(list, filterFunc, ...)
+function ListUtil:Reduce(list, initial, reduceFunc, ...)
+    reduceFunc = ObjFunc(reduceFunc, ...);
+    local aggregate = initial;
+    for i, item in ipairs(reduceFunc) do
+        aggregate = reduceFunc(aggregate, item);
+    end;
+    return aggregate;
+end;
+
+function ListUtil:FilterIndex(list, filterFunc, ...)
     filterFunc = ObjFunc(filterFunc, ...)
     local filtered = {};
     for i, item in ipairs(list) do
@@ -23,8 +32,76 @@ function ListUtil:filterIndex(list, filterFunc, ...)
     return filtered
 end;
 
-function ListUtil:removeItem(list, item)
-    return ListUtil:filter(list, Operator.notEquals, item)
+function ListUtil:RemoveItem(list, item)
+    return ListUtil:Filter(list, Operator.notEquals, item)
+end;
+
+function ListUtil:Map(sourceList, destList, mapFunc, ...)
+    mapFunc = ObjFunc(mapFunc, ...);
+    for i, item in ipairs(list) do
+        destList[i] = mapFunc(item);
+    end;
+    return destList;
+end;
+
+function ListUtil:Reverse(sourceList, destList)
+    if not destList then
+        destList = {};
+    end;
+    if sourceList == destList then
+        sourceList = ListUtil:Clone(sourceList);
+    end;
+    local len = #sourceList;
+    for i, item in ipairs(sourceList) do
+        destList[len - i + 1] = item;
+    end;
+    return destList;
+end;
+
+function ListUtil:Clone(sourceList, destList)
+    if not destList then
+        destList = {};
+    end;
+    for i, item in ipairs(sourceList) do
+        destList[i] = item;
+    end;
+    return destList;
+end;
+
+function ListUtil:GetIndex(list, item, comparator, ...)
+    if not comparator then
+        comparator = ObjFunc(Operator.equals, item);
+    end;
+    for i, item in ipairs(list) do
+        if comparator(item) then
+            return i
+        end;
+    end;
+end;
+
+function ListUtil:Contains(list, item, comparator, ...)
+    return tobool(ListUtil:GetIndex(list, item, comparator, ...));
+end;
+
+function ListUtil:DiffSets(list, otherList, comparator, ...)
+    comparator = ObjFunc(comparator, ...);
+    if #list < #otherList then
+        -- Guarantee the biggest list is used, so we don't get a false positive from a subset.
+        local swp = list;
+        list = otherList;
+        otherList = swp;
+    end;
+    local misses = 0;
+    for i, item in ipairs(list) do
+        if not ListUtil:Contains(otherList, item, comparator) then
+            misses = misses + 1;
+        end;
+    end;
+    return misses;
+end;
+
+function ListUtil:CompareSets(list, otherList, comparator, ...)
+    return ListUtil:DiffSets(list, otherList, comparator, ...) == 0;
 end;
 
 -------------------------------------------------------------------------------
