@@ -19,6 +19,7 @@ mapscales.lua
 
 util\core.lua
 util\log.lua
+util\operator.lua
 util\math.lua
 util\test_case.lua
 util\list.lua
