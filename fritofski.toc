@@ -27,6 +27,10 @@ util\event_dispatcher.lua
 util\misc.lua
 util\layout.lua
 
+api\core.lua
+api\chat.lua
+api\player.lua
+
 data\data_listener.lua
 data\data_provider.lua
 data\range_data_provider.lua
