@@ -38,7 +38,7 @@ Chat.languages = {
 };
 
 function Chat:Print(message)
-    ChatFrame1:AddMessage(message);
+    DEFAULT_CHAT_FRAME:AddMessage(message);
 end;
 
 function Chat:Say(medium, message, language)
