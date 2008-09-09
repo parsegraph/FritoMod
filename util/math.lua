@@ -12,5 +12,6 @@ function MathUtil:Distance(...)
 end;
 
 function MathUtil:Mean(values)
-    local sum = ListUtil:Reduce(values, 0, Operator.add
+    local sum = ListUtil:Reduce(values, 0, Operator.Add);
+    return sum / #values;
 end;
