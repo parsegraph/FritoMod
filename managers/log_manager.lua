@@ -30,14 +30,9 @@ function LogManager:Release()
     table.remove(self.outputs);
 end;
 
-function LogManager:Pipe(chatType)
-    if chatType == "DEBUG" then
-        return self:Capture(function(...)
-            ChatFrame1:AddMessage(tostring(concat(...)));
-        end);
-    end;
+function LogManager:Pipe(medium)
     return self:Capture(function(...)
-        SendChatMessage(tostring(concat(...)), chatType);
+        API.Chat:Say(medium, tostring(concat(...)));
     end);
 end;
 
