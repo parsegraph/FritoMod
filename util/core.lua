@@ -52,6 +52,23 @@ function ObjFunc(objOrFunc, funcOrName, ...)
     end;
 end;
 
+function Unapplied(funcOrName, ...)
+    local numArgs = select("#", ...);
+    if numArgs == 1 then
+        return objOrFunc
+    end;
+    local args = EMPTY_ARGS
+    if numArgs and numArgs > 0 then
+        args = {};
+        for i = 1, select("#", ...) do
+            table.insert(args, select(i, ...));
+        end;
+    end;
+    return function(self)
+        return ObjFunc(self, funcOrName, unpack(args));
+    end;
+end;
+
 -------------------------------------------------------------------------------
 --
 --  Debugging Methods
