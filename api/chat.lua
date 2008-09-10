@@ -65,7 +65,7 @@ function Chat:Whisper(playerName, message, language)
     if not language then
         language = API.Unit:GetDefaultLanguage();
     end;
-    SendChatMessage(message, Chat.fauxMediums.WHISPER, 
+    SendChatMessage(message, Chat.fauxMediums.WHISPER, language, playerName); 
 end;
 
 function Chat:GetChannelIndex(channelName)

@@ -1,4 +1,4 @@
-API.Unit = {}:
+API.Unit = {};
 local Unit = API.Unit;
 
 Unit.factions = {
