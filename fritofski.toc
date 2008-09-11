@@ -51,3 +51,8 @@ managers\media_library.lua
 managers\timer_manager.lua
 managers\data_registry.lua
 managers\iteration_manager.lua
+managers\unit_manager.lua
+
+test\util\test_case.lua
+test\managers\test_manager.lua
+test\managers\unit_manager.lua
