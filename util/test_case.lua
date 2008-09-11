@@ -54,7 +54,7 @@ function TestCase.prototype:Execute()
             return false;
         end;
     else
-        self:Log("Test Failed (Reason: ReturnType is unknown", self.returnType);
+        error(format("Test Failed (Reason: ReturnType is unknown '%s'", self.returnType));
         return false;
     end;
     self.log:Log("Test Successful.");
