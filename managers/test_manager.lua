@@ -6,11 +6,11 @@ MixinLog(TestManager);
 local TestManager = TestManager;
 
 function TestManager:AddTest(testGroupName, testName, returnType, returnValue, testFunc, ...)
-    self:InsertTest(testGroupName, TestCase:new(testName, returnType, returnValue, testFunc, ...));
+    self:InsertTestCase(testGroupName, TestCase:new(testName, returnType, returnValue, testFunc, ...));
 end;
 
-function TestManager:InsertTestCase(testGroup, testCase)
-    table.insert(self.groups[testGroup], testCase);
+function TestManager:InsertTestCase(testGroupName, testCase)
+    table.insert(self:GetTestGroup(testGroupName), testCase);
 end;
 
 function TestManager:GetTestGroup(testGroupName)
@@ -22,12 +22,12 @@ function TestManager:GetTestGroup(testGroupName)
     return testGroup;
 end;
 
-function TestManager:Run(testGroup)
-    if not testGroup then
+function TestManager:Run(testGroupName)
+    if not testGroupName then
         self.log:Log("Running all tests.");
         local totalFailed = 0;
-        for _, testGroup in pairs(self.groups) do
-            totalFailed = totalFailed + self:Run(testGroup);
+        for testGroupName, testGroup in pairs(self.groups) do
+            totalFailed = totalFailed + self:Run(testGroupName);
         end;
         if totalFailed > 0 then
             self.log:Log(totalFailed, "test(s) FAILED during all-testGroup run.");
@@ -36,11 +36,11 @@ function TestManager:Run(testGroup)
         end;
         return totalFailed;
     end;
-    local tests = self.groups[testGroup];
+    local tests = self.groups[testGroupName];
     if not tests then
-        error("Tests not found for testGroup: '" .. testGroup .. "'");
+        error("Tests not found for testGroup: '" .. tostring(testGroupName) .. "'");
     end;
-    self.log:Log("Running testGroup", testGroup);
+    self.log:Log("Running testGroup", testGroupName);
     local failed = 0;
     for _, test in pairs(tests) do
         local result = test:Execute();
@@ -50,9 +50,9 @@ function TestManager:Run(testGroup)
         end;
     end;
     if failed > 0 then
-        self.log:Log(failed, "test(s) FAILED in testGroup:", testGroup);
+        self.log:Log(failed, "test(s) FAILED in testGroup:", testGroupName);
     else
-        self.log:Log("All tests successful for testGroup:", testGroup);
+        self.log:Log("All tests successful for testGroup:", testGroupName);
     end;
     return failed;
 end;
