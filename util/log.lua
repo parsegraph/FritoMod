@@ -19,6 +19,7 @@ function Log.prototype:init(owner, prefix)
     Log.super.prototype.init(self);
     self.owner = owner;
     self.prefix = prefix;
+    self.listeners = {};
     if self.owner and not self.prefix then
         self.prefix = tostring(self.owner);
     end;
@@ -33,19 +34,49 @@ function Log.prototype:GetPrefix()
 end;
 
 function Log.prototype:Log(...)
-    table.insert(self, {...});
+    self:LogQuietly(...);
+    for _, listenerFunc in ipairs(self.listeners) do
+        listenerFunc(...);
+    end;
     if LogManager and self.owner ~= LogManager then
         LogManager:Log(...);
     end;
 end;
 
-function Log.prototype:Print(...)
-    local message = tostring(concat(...));
-    if self:GetPrefix() then
-        message = self:GetPrefix() .. " - " .. message;
-    end;
-    print(message);
+function Log.prototype:LogQuietly(...)
+    table.insert(self, {...});
 end;
+
+-------------------------------------------------------------------------------
+--
+--  Listeners and Pipers
+--
+-------------------------------------------------------------------------------
+
+function LogManager:Listen(listenerFunc, ...)
+    listenerFunc = ObjFunc(listenerFunc, ...);
+    table.insert(self.listeners, listenerFunc);
+    local listeners = self.listeners;
+    return function()
+        listeners = ListUtil.Filter(listeners, Operator.Equals, listenerFunc);
+    end;
+end;
+
+function LogManager:Pipe(medium)
+    return self:Listen(function(...)
+        API.Chat:Say(medium, tostring(concat(...)));
+    end);
+end;
+
+function LogManager:Mirror(log)
+    return self:Listener(log, "Log");
+end;
+
+-------------------------------------------------------------------------------
+--
+--  Some Querying Stuff
+--
+-------------------------------------------------------------------------------
 
 function Log.prototype:Cat()
     for _, message in ipairs(self) do
@@ -74,3 +105,16 @@ function Log.prototype:Tail(numShown)
     end;
 end;
 
+-------------------------------------------------------------------------------
+--
+--  Utility
+--
+-------------------------------------------------------------------------------
+
+function Log.prototype:Print(...)
+    local message = tostring(concat(...));
+    if self:GetPrefix() then
+        message = self:GetPrefix() .. " - " .. message;
+    end;
+    print(message);
+end;
