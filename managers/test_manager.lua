@@ -5,11 +5,21 @@ TestManager.log = Log:new(TestManager, "TestManager");
 MixinLog(TestManager);
 local TestManager = TestManager;
 
-function TestManager:AddTest(testGroup, testName, returnType, returnValue, testFunc, ...)
-    if not self.groups[testGroup] then
-        self.groups[testGroup] = {};
+function TestManager:AddTest(testGroupName, testName, returnType, returnValue, testFunc, ...)
+    self:InsertTest(testGroupName, TestCase:new(testName, returnType, returnValue, testFunc, ...));
+end;
+
+function TestManager:InsertTestCase(testGroup, testCase)
+    table.insert(self.groups[testGroup], testCase);
+end;
+
+function TestManager:GetTestGroup(testGroupName)
+    local testGroup = self.groups[testGroupName];
+    if not testGroup then
+        testGroup = {};
+        self.groups[testGroupName] = testGroup;
     end;
-    table.insert(self.groups[testGroup], TestCase:new(testName, returnType, returnValue, testFunc, ...));
+    return testGroup;
 end;
 
 function TestManager:Run(testGroup)
