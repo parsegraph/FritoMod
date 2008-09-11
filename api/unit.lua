@@ -114,3 +114,11 @@ end;
 function Unit:GetExistence(unitID)
     return tobool(UnitExists(unitID));
 end;
+
+function Unit:GetGUID(unitID)
+    if not self:GetExistence(unitID) then
+        error("API.Unit:GetGUID - Unit does not exist: " .. unitID);
+    end;
+    local guid = UnitGUID(unitID);
+    return guid;
+end;
