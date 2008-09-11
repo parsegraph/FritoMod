@@ -22,9 +22,9 @@ end;
 function TestCase.prototype:Execute()
     self:Log("Starting Test - " .. self.testName);
     self:Log("Expected Results", self.returnType, self.returnValue);
-    self:Capture();
+    local releaser = LogManager:Mirror(self);
     local result = {pcall(testFunc)};
-    self:Release();
+    releaser();
     self:Log("Test Results", result);
     if self.returnType == TestCase.returnType.EXCEPTION then
         if result[1] ~= false then
