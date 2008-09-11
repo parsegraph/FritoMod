@@ -1,8 +1,11 @@
 Log = FritoLib.OOP.Class();
 
 function print(...)
-    local message = tostring(concat(...));
-    ChatFrame1:AddMessage(message, 0.0, 0.6, 0.0);
+    API.Chat:Print(tostring(concat(...)));
+end;
+
+function debug(...)
+    return MasterLog:Log(...);
 end;
 
 function MixinLog(obj, logAttrName)
@@ -15,15 +18,23 @@ function MixinLog(obj, logAttrName)
     obj.Tail = ObjFunc(objLog, "Tail");
 end;
 
-function Log.prototype:init(owner, prefix)
+-------------------------------------------------------------------------------
+--
+--  Constructor
+--
+-------------------------------------------------------------------------------
+
+function Log.prototype:init(prefix)
     Log.super.prototype.init(self);
-    self.owner = owner;
     self.prefix = prefix;
     self.listeners = {};
-    if self.owner and not self.prefix then
-        self.prefix = tostring(self.owner);
-    end;
 end;
+
+-------------------------------------------------------------------------------
+--
+--  Prefix stuff
+--
+-------------------------------------------------------------------------------
 
 function Log.prototype:SetPrefix(prefix)
     self.prefix = prefix;
@@ -33,13 +44,19 @@ function Log.prototype:GetPrefix()
     return self.prefix;
 end;
 
+-------------------------------------------------------------------------------
+--
+--  Logging
+--
+-------------------------------------------------------------------------------
+
 function Log.prototype:Log(...)
     self:LogQuietly(...);
     for _, listenerFunc in ipairs(self.listeners) do
         listenerFunc(...);
     end;
-    if LogManager and self.owner ~= LogManager then
-        LogManager:Log(...);
+    if MasterLog and self ~= MasterLog then
+        MasterLog:Log(...);
     end;
 end;
 
@@ -53,23 +70,26 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function LogManager:Listen(listenerFunc, ...)
+function Log.prototype:Listen(listenerFunc, ...)
     listenerFunc = ObjFunc(listenerFunc, ...);
     table.insert(self.listeners, listenerFunc);
     local listeners = self.listeners;
     return function()
-        listeners = ListUtil.Filter(listeners, Operator.Equals, listenerFunc);
+        listeners = ListUtil:RemoveItem(listeners, listenerFunc);
     end;
 end;
 
-function LogManager:Pipe(medium)
+function Log.prototype:Pipe(medium)
+    if not medium or type(medium) ~= "string" then
+        error("Invalid medium");
+    end;
     return self:Listen(function(...)
         API.Chat:Say(medium, tostring(concat(...)));
     end);
 end;
 
-function LogManager:Mirror(log)
-    return self:Listener(log, "Log");
+function Log.prototype:Mirror(log)
+    return self:Listen(log, "LogQuietly");
 end;
 
 -------------------------------------------------------------------------------
@@ -118,3 +138,7 @@ function Log.prototype:Print(...)
     end;
     print(message);
 end;
+
+MasterLog = Log:new("FritoMod");
+--MasterLog:Pipe(API.Chat.mediums.DEBUG);
+
