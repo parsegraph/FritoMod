@@ -22,11 +22,11 @@ end;
 function TestCase.prototype:Execute()
     self:Log("Starting Test - " .. self.testName);
     self:Log("Expected Results", self.returnType, self.returnValue);
-    local releaser = LogManager:Mirror(self);
+    local releaser = MasterLog:Syndicate(self);
     local result = {pcall(testFunc)};
     releaser();
     self:Log("Test Results", result);
-    if self.returnType == TestCase.returnType.EXCEPTION then
+    if self.returnType == TestCase.returnTypes.EXCEPTION then
         if result[1] ~= false then
             self:Log("Test Failed (Reason: Expected exception, but test didn't throw.)");
             return false;
@@ -35,16 +35,16 @@ function TestCase.prototype:Execute()
             self:Log("Test Failed (Reason: Expected and got exception, but values mismatch.)");
             return false;
         end;
-    elseif self.returnType == TestCase.returnType.CONSTANT then
+    elseif self.returnType == TestCase.returnTypes.CONSTANT then
         if result[1] ~= true then
-            self:Log("Test Failed (Reason: Expected constant, but test threw.");
+            self:Log("Test Failed (Reason: Expected constant, but test threw.)");
             return false;
         end;
         if result[2] ~= self.returnValue then
             self:Log("Test Failed (Reason: Expected and got constant, but values mismatch.)");
             return false;
         end;
-    elseif self.returnType == TestCase.returnType.COMPLEX then
+    elseif self.returnType == TestCase.returnTypes.COMPLEX then
         if result[1] ~= true then
             self:Log("Test Failed (Reason: Expected constant, but test threw.)");
             return false;
@@ -54,10 +54,9 @@ function TestCase.prototype:Execute()
             return false;
         end;
     else
-        error(format("Test Failed (Reason: ReturnType is unknown '%s'", self.returnType));
+        error(format("Test Failed (Reason: ReturnType is unknown '%s')", self.returnType));
         return false;
     end;
     self.log:Log("Test Successful.");
     return true;
 end;
-
