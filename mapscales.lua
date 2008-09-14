@@ -14,13 +14,13 @@ function GetScale(controlDistance, otherUnit)
     end;
     zone.distance = distance(zone.point, zone.otherPoint);
     zone.scale = zone.controlDistance / zone.distance;
-    LogManager:Pipe("PARTY");
+    local releaser = MasterLog:Pipe("PARTY");
     debug("Scale for Zone:", zoneName, "Control Distance:", zone.controlDistance);
     debug("Point:", unpack(zone.point));
     debug("Other:", unpack(zone.otherPoint));
     debug("Distance:", zone.distance);
     debug("Calculated Scale:", zone.scale);
-    LogManager:Release();
+    releaser();
     MAP_SCALES[zoneName] = zone;
 end;
 
