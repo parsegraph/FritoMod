@@ -5,7 +5,7 @@ ListUtil = {}
 local ListUtil = ListUtil
 
 function ListUtil:Filter(list, filterFunc, ...)
-    local filtered = ListUtil:filterIndex(list, filterFunc, ...)
+    local filtered = ListUtil:FilterIndex(list, filterFunc, ...)
     for i, key in ipairs(filtered) do
         filtered[i] = list[key]
     end;
@@ -33,7 +33,7 @@ function ListUtil:FilterIndex(list, filterFunc, ...)
 end;
 
 function ListUtil:RemoveItem(list, item)
-    return ListUtil:Filter(list, Operator.notEquals, item)
+    return ListUtil:Filter(list, Operator.NotEquals, item)
 end;
 
 function ListUtil:Map(sourceList, destList, mapFunc, ...)
