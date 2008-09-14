@@ -55,6 +55,30 @@ Unit.genders = {
     UNKNOWN = "unknown"
 };
 
+Unit.languages = {
+    COMMON = "common",
+    DARNASSIAN = "darnassian",
+    DWARVEN = "dwarven",
+    DRAENEI = "draenei",
+    TAURAHE = "taurahe",
+    ORCISH = "orcish",
+    GUTTERSPEAK = "gutterspeak",
+    DEMONIC = "demonic",
+    DRACONIC = "draconic",
+    KALIMAG = "kalimag",
+    TITAN = "titan",
+    GNOMISH = "gnomish",
+    TROLL = "troll"
+};
+
+function Unit:GetDefaultLanguage(unitID)
+    if not self:GetExistence(unitID) then
+        error("API.Unit:GetDefaultLanguage - Unit does not exist: " .. unitID);
+    end;
+    local language = GetDefaultLanguage(unitID);
+    return Unit.languages[string.upper(language)];
+end;
+
 function Unit:GetName(unitID)
     if not self:GetExistence(unitID) then
         error("API.Unit:GetName - Unit does not exist: " .. unitID);

@@ -21,32 +21,19 @@ Chat.fauxMediums = {
     DND = "dnd"
 };
 
-Chat.languages = {
-    COMMON = "common",
-    DARNASSIAN = "darnassian",
-    DWARVEN = "dwarven",
-    DRAENEI = "draenei",
-    TAURAHE = "taurahe",
-    ORCISH = "orcish",
-    GUTTERSPEAK = "gutterspeak",
-    DEMONIC = "demonic",
-    DRACONIC = "draconic",
-    KALIMAG = "kalimag",
-    TITAN = "titan",
-    GNOMISH = "gnomish",
-    TROLL = "troll"
-};
-
 function Chat:Print(message)
     DEFAULT_CHAT_FRAME:AddMessage(message);
 end;
 
 function Chat:Say(medium, message, language)
     if not language then
-        language = API.Unit:DefaultLanguage();
+        language = API.Unit:GetDefaultLanguage("player");
+    end;
+    if not medium or type(medium) ~= "string" then
+        error("Invalid medium");
     end;
     medium = string.upper(medium);
-    if medium == Chat.mediums.DEBUG then
+    if string.lower(medium) == Chat.mediums.DEBUG then
         return API.Chat:Print(message);
     end;
     if Chat.mediums[medium] then
@@ -63,7 +50,7 @@ end;
 
 function Chat:Whisper(playerName, message, language)
     if not language then
-        language = API.Unit:GetDefaultLanguage();
+        language = API.Unit:GetDefaultLanguage("player");
     end;
     SendChatMessage(message, Chat.fauxMediums.WHISPER, language, playerName); 
 end;
@@ -71,4 +58,9 @@ end;
 function Chat:GetChannelIndex(channelName)
     local index = GetChannelName(channelName);
     return index;
+end;
+
+function Chat:GetChannels()
+    local channels = { GetChannelList() };
+
 end;
