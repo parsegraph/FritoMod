@@ -1,12 +1,5 @@
 Log = FritoLib.OOP.Class();
-
-function print(...)
-    API.Chat:Print(tostring(concat(...)));
-end;
-
-function debug(...)
-    return MasterLog:Log(...);
-end;
+local Log = Log;
 
 function MixinLog(obj, logAttrName)
     if not logAttrName then
@@ -26,7 +19,7 @@ end;
 
 function Log.prototype:init(prefix)
     Log.super.prototype.init(self);
-    self.prefix = prefix;
+    self.prefix = tostring(prefix);
     self.listeners = {};
 end;
 
@@ -50,18 +43,33 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Log.prototype:Log(...)
-    self:LogQuietly(...);
-    for _, listenerFunc in ipairs(self.listeners) do
-        listenerFunc(...);
-    end;
-    if MasterLog and self ~= MasterLog then
-        MasterLog:Log(...);
+local function MixinLogEntryCreator(entryType)
+    Log.prototype["Log" .. entryType] = function(self, ...)
+        return self:InsertLogEntry(LogEntry:new(entryType, ...));
     end;
 end;
 
-function Log.prototype:LogQuietly(...)
-    table.insert(self, {...});
+local entryTypes = {"Message", "Error", "Debug", "Data", "Warning"};
+for _, entryType in ipairs(entryTypes) do
+    MixinLogEntryCreator(entryType);
+end;
+
+function Log.prototype:Log(...)
+    return self:InsertLogEntry(LogEntry:new("Message", ...));
+end;
+
+function Log.prototype:InsertLogEntry(logEntry, doQuietly)
+    table.insert(self, logEntry);
+    if doQuietly then
+        return logEntry;
+    end;
+    for _, listenerFunc in ipairs(self.listeners) do
+        listenerFunc(logEntry);
+    end;
+    if MasterLog and self ~= MasterLog then
+        MasterLog:InsertLogEntry(logEntry);
+    end;
+    return logEntry;
 end;
 
 -------------------------------------------------------------------------------
@@ -88,7 +96,7 @@ function Log.prototype:Pipe(medium)
     end);
 end;
 
-function Log.prototype:Mirror(log)
+function Log.prototype:Syndicate(log)
     return self:Listen(log, "LogQuietly");
 end;
 
@@ -136,9 +144,8 @@ function Log.prototype:Print(...)
     if self:GetPrefix() then
         message = self:GetPrefix() .. " - " .. message;
     end;
-    print(message);
+    API.Chat:Print(message);
 end;
 
 MasterLog = Log:new("FritoMod");
 --MasterLog:Pipe(API.Chat.mediums.DEBUG);
-
