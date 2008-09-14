@@ -18,13 +18,13 @@ icons.lua
 mapscales.lua
 
 util\core.lua
+util\log_entry.lua
 util\log.lua
 util\operator.lua
 util\math.lua
 util\test_case.lua
 util\list.lua
 util\event_dispatcher.lua
-util\misc.lua
 util\layout.lua
 
 api\core.lua
@@ -56,3 +56,5 @@ managers\unit_manager.lua
 test\util\test_case.lua
 test\managers\test_manager.lua
 test\managers\unit_manager.lua
+
+shortcuts.lua
