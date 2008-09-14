@@ -8,18 +8,6 @@ function tobool(msg)
 	return not not msg;
 end	
 
-function testInclusiveRange(num, min, max)
-	return num >= min and num <= max;
-end
-
-function testExclusiveRange(num, min, max)
-	return num > min and num < max;
-end
-
-function say(...)
-	SendChatMessage(tostring(concat(...)))
-end	
-
 EMPTY_ARGS = {}
 
 function ObjFunc(objOrFunc, funcOrName, ...)
@@ -42,13 +30,22 @@ function ObjFunc(objOrFunc, funcOrName, ...)
     elseif type(funcOrName) == "string" then
         -- debug("ObjFunc: Returning string-based method partial.");
         return function(...)
-            return objOrFunc[funcOrName](objOrFunc, unpack(args), ...);
+            local func = objOrFunc[funcOrName];
+            if not func or type(func) ~= "function" then
+                error("Function not found with name: '" .. funcOrName .. "'");
+            end;
+            return func(objOrFunc, unpack(args), ...);
         end;
-    else
+    elseif type(funcOrName) == "function" then
         -- debug("ObjFunc: Returning direct method partial.");
+        if not objOrFunc then
+            error("Object passed is falsy");
+        end;
         return function(...)
             return funcOrName(objOrFunc, unpack(args), ...);
         end;
+    else
+        error(format("Invalid parameters given objOrFunc: '%s', funcOrName: '%s'", objOrFunc, funcOrName));
     end;
 end;
 
@@ -74,9 +71,6 @@ end;
 --  Debugging Methods
 --
 -------------------------------------------------------------------------------
-
-function debug(...)
-end	
 
 function dump_item(item)
 	FritoModTooltip:SetOwner(FritoModFrame, "ANCHOR_NONE");
@@ -195,20 +189,6 @@ function getFirstAidSpellID()
 		spellIDCandidate = spellIDCandidate + 1;
 	end
 	debug("No valid First Aid SpellID found!")
-end
-
--------------------------------------------------------------------------------
---
---  Sound Methods
---
--------------------------------------------------------------------------------
-
-function disableSound()
-	SetCVar("Sound_EnableSFX", "0")
-end
-
-function enableSound()
-	SetCVar("Sound_EnableSFX", "1")
 end
 
 -------------------------------------------------------------------------------
