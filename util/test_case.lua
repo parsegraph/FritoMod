@@ -8,7 +8,7 @@ TestCase.returnTypes = {
 }
 
 function TestCase.prototype:init(testName, returnType, returnValue, testFunc, ...)
-    TestCase.super.prototype.init(self, "TestCase(" .. testName .. ")");
+    TestCase.super.prototype.init(self, format("Test Case - %s", testName));
     self.testName = testName;
     self.returnType = returnType;
     self.returnValue = returnValue;
@@ -19,44 +19,52 @@ function TestCase:ToString()
     return "TestCase";
 end;
 
-function TestCase.prototype:Execute()
-    self:Log("Starting Test - " .. self.testName);
-    self:Log("Expected Results", self.returnType, self.returnValue);
-    local releaser = MasterLog:Syndicate(self);
-    local result = {pcall(testFunc)};
+function TestCase.prototype:NakedExecute(catchExceptions)
+    if catchExceptions then
+        return { pcall(self.testFunc) };
+    end;
+    return testFunc();
+end;
+
+function TestCase.prototype:Execute(dontCatchExceptions)
+    self:Log(format("Test started, expecting '%s'", self.returnType));
+    self:LogData("Expected Results", self.returnType, self.returnValue);
+    local releaser = MasterLog:SyndicateTo(self);
+    local result = self:NakedExecute(true);
     releaser();
-    self:Log("Test Results", result);
+    self:LogData("Test Results", result);
     if self.returnType == TestCase.returnTypes.EXCEPTION then
         if result[1] ~= false then
-            self:Log("Test Failed (Reason: Expected exception, but test didn't throw.)");
+            self:LogError("Test Failed - Wrong type");
             return false;
         end;
         if result[2] ~= self.returnValue then
-            self:Log("Test Failed (Reason: Expected and got exception, but values mismatch.)");
+            self:LogError("Test Failed - Incorrect value");
             return false;
         end;
     elseif self.returnType == TestCase.returnTypes.CONSTANT then
         if result[1] ~= true then
-            self:Log("Test Failed (Reason: Expected constant, but test threw.)");
+            self:LogError("Test Failed - Wrong type");
             return false;
         end;
         if result[2] ~= self.returnValue then
-            self:Log("Test Failed (Reason: Expected and got constant, but values mismatch.)");
+            self:LogError("Test Failed - Incorrect value");
             return false;
         end;
     elseif self.returnType == TestCase.returnTypes.COMPLEX then
         if result[1] ~= true then
-            self:Log("Test Failed (Reason: Expected constant, but test threw.)");
+            self:LogError("Test Failed - Wrong type");
             return false;
         end;
         if not self.returnValue(unpack(result)) then
-            self:Log("Test Failed (Reason: Validator returned falsy.)");
+            self:LogError("Test Failed - Incorrect complex result");
             return false;
         end;
     else
-        error(format("Test Failed (Reason: ReturnType is unknown '%s')", self.returnType));
+        self:LogError(format("Test Failed - Invalid returnType '%s'", self.returnType));
+        error(format("Test Failed - Invalid returnType '%s'", self.returnType));
         return false;
     end;
-    self.log:Log("Test Successful.");
+    self:Log("Test Successful");
     return true;
 end;
