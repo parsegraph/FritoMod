@@ -38,7 +38,7 @@ end;
 
 function ListUtil:Map(sourceList, destList, mapFunc, ...)
     mapFunc = ObjFunc(mapFunc, ...);
-    for i, item in ipairs(list) do
+    for i, item in ipairs(sourceList) do
         destList[i] = mapFunc(item);
     end;
     return destList;
