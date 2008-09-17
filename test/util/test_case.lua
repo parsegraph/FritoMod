@@ -1,4 +1,4 @@
-TestManager:AddTest("util.TestCase", "Successful Test Result: Constant",
+TestManager:AddTest("util.TestCase", "Assertion",
     TestCase.returnTypes.CONSTANT, true,
     function()
         local testCase = TestCase:new("Test", TestCase.returnTypes.CONSTANT, true, function()
@@ -8,7 +8,7 @@ TestManager:AddTest("util.TestCase", "Successful Test Result: Constant",
     end
 );
 
-TestManager:AddTest("util.TestCase", "False Test Result: Constant expected, but different type returned",
+TestManager:AddTest("util.TestCase", "Crash test - Wrong type",
     TestCase.returnTypes.CONSTANT, true,
     function()
         local testCase = TestCase:new("Test", TestCase.returnTypes.CONSTANT, true, function()
@@ -18,7 +18,7 @@ TestManager:AddTest("util.TestCase", "False Test Result: Constant expected, but 
     end
 );
 
-TestManager:AddTest("util.TestCase", "False Test Result: Constant returned, but wrong value",
+TestManager:AddTest("util.TestCase", "Crash test - Wrong value",
     TestCase.returnTypes.CONSTANT, true,
     function()
         local testCase = TestCase:new("Test", TestCase.returnTypes.CONSTANT, true, function()
@@ -28,7 +28,7 @@ TestManager:AddTest("util.TestCase", "False Test Result: Constant returned, but 
     end
 );
 
-TestManager:AddTest("util.TestCase", "Successful Test Result: Exception",
+TestManager:AddTest("util.TestCase", "Assertion",
     TestCase.returnTypes.CONSTANT, true,
     function()
         local testCase = TestCase:new("Test", TestCase.returnTypes.EXCEPTION, "Exception", function()
@@ -38,7 +38,7 @@ TestManager:AddTest("util.TestCase", "Successful Test Result: Exception",
     end
 );
 
-TestManager:AddTest("util.TestCase", "False Test Result: Exception expected, but value returned",
+TestManager:AddTest("util.TestCase", "Crash test - Wrong type",
     TestCase.returnTypes.CONSTANT, false,
     function()
         local testCase = TestCase:new("Test", TestCase.returnTypes.EXCEPTION, "Exception", function()
@@ -48,7 +48,7 @@ TestManager:AddTest("util.TestCase", "False Test Result: Exception expected, but
     end
 );
 
-TestManager:AddTest("util.TestCase", "False Test Result: Exception returned, but wrong value",
+TestManager:AddTest("util.TestCase", "Crash test - Wrong value",
     TestCase.returnTypes.CONSTANT, false,
     function()
         local testCase = TestCase:new("Test", TestCase.returnTypes.EXCEPTION, "Exception", function()
@@ -58,7 +58,7 @@ TestManager:AddTest("util.TestCase", "False Test Result: Exception returned, but
     end
 );
 
-TestManager:AddTest("util.TestCase", "Successful Test Result: Complex test",
+TestManager:AddTest("util.TestCase", "Assertion",
     TestCase.returnTypes.CONSTANT, true,
     function()
         local testCase = TestCase:new("Test", TestCase.returnTypes.COMPLEX, 
@@ -73,7 +73,7 @@ TestManager:AddTest("util.TestCase", "Successful Test Result: Complex test",
     end
 );
 
-TestManager:AddTest("util.TestCase", "Failed Test Result: Complex test result gets exception",
+TestManager:AddTest("util.TestCase", "Crash test - Wrong type",
     TestCase.returnTypes.CONSTANT, false,
     function()
         local testCase = TestCase:new("Test", TestCase.returnTypes.COMPLEX, 
