@@ -4,6 +4,31 @@
 --
 -------------------------------------------------------------------------------
 
+DIGITS = "0123456789"
+ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+ALPHANUMERICS = DIGITS .. ALPHABET;
+
+function ProperNounize(name)
+    name = tostring(name);
+    return strupper(strsub(name, 1, 1)) .. strlower(strsub(name, 2));
+end;
+
+function ConvertToBase(base, number, digits)
+    if not digits then
+        digits = ALPHANUMERICS;
+    end;
+    if base > #digits or base < 2 then
+        error("Invalid base: " .. base);
+    end;
+    local converted = "";
+    while number > 0 do
+        local place = (number % base) + 1;
+        number = math.floor(number / base);
+        converted = string.sub(digits, place, place) .. converted;
+    end
+    return converted;
+end
+
 function tobool(msg)
 	return not not msg;
 end	
@@ -12,37 +37,47 @@ EMPTY_ARGS = {}
 
 function ObjFunc(objOrFunc, funcOrName, ...)
     local numArgs = select("#", ...);
-    if numArgs == 1 then
+    if objOrFunc and funcOrName == nil and numArgs == 0 then
+        --rawdebug("ObjFunc: Returning naked function directly.");
         return objOrFunc
     end;
     local args = EMPTY_ARGS
     if numArgs and numArgs > 0 then
         args = {};
-        for i = 1, select("#", ...) do
+        for i = 1, numArgs do 
             table.insert(args, select(i, ...));
         end;
     end;
     if type(objOrFunc) == "function" then
-        -- debug("ObjFunc: Returning direct function partial.");
+        --rawdebug("ObjFunc: Returning direct function partial.");
+        if funcOrName ~= nil or #args > 0 then
+            if args == EMPTY_ARGS then
+                args = {};
+            end;
+            table.insert(args, 1, funcOrName);
+        end;
         return function(...) 
-            return objOrFunc(unpack(args), ...);
+            --rawdebug("ObjFunc: Calling direct function partial.");
+            return objOrFunc(unpackall(args, {...}));
         end;
     elseif type(funcOrName) == "string" then
-        -- debug("ObjFunc: Returning string-based method partial.");
+        --rawdebug("ObjFunc: Returning string-based method partial.");
         return function(...)
+            --rawdebug("ObjFunc: Calling string-based method partial.");
             local func = objOrFunc[funcOrName];
             if not func or type(func) ~= "function" then
                 error("Function not found with name: '" .. funcOrName .. "'");
             end;
-            return func(objOrFunc, unpack(args), ...);
+            return func(objOrFunc, unpackall(args, {...}));
         end;
     elseif type(funcOrName) == "function" then
-        -- debug("ObjFunc: Returning direct method partial.");
+        --rawdebug("ObjFunc: Returning direct method partial.");
         if not objOrFunc then
             error("Object passed is falsy");
         end;
         return function(...)
-            return funcOrName(objOrFunc, unpack(args), ...);
+            --rawdebug("ObjFunc: Calling direct method partial.");
+            return funcOrName(objOrFunc, unpackall(args, {...}));
         end;
     else
         error(format("Invalid parameters given objOrFunc: '%s', funcOrName: '%s'", objOrFunc, funcOrName));
@@ -189,6 +224,20 @@ function getFirstAidSpellID()
 		spellIDCandidate = spellIDCandidate + 1;
 	end
 	debug("No valid First Aid SpellID found!")
+end
+
+-- Returns all elements from all table arguments
+function unpackall( ... )
+    local values = {}
+
+    -- Collect values from all tables
+    for i = 1, select( '#', ... ) do
+        for _, value in ipairs( select( i, ... ) ) do
+            values[#values + 1] = value
+        end
+    end
+
+    return unpack( values )
 end
 
 -------------------------------------------------------------------------------
