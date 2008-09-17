@@ -31,6 +31,9 @@ end;
 -------------------------------------------------------------------------------
 
 function FritoLib:OnEnable()
+    MasterLog = Log:new("FritoMod");
+    MasterLog:Pipe(API.Chat.mediums.DEBUG);
+
 	self:OnProfileEnable();
 	IterationManager.GetInstance():Attach(self);
     IterationManager.GetInstance():AddPreprocessor(TimerManager, "OnUpdate");
@@ -50,8 +53,9 @@ function FritoLib:OnProfileDisable()
 end
 
 function FritoLib:RunTests()
+    local releaser = TestManager.log:SyndicateTo(MasterLog);
     TestManager:Run();
-    TestManager:Cat();
+    releaser();
 end;
 
 ------------------------------------------
