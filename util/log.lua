@@ -1,14 +1,19 @@
-Log = FritoLib.OOP.Class();
+Log = FritoLib.OOP.Class(LogEntry);
 local Log = Log;
 
 function MixinLog(obj, logAttrName)
     if not logAttrName then
         logAttrName = "log";
     end;
-    local objLog = obj[logAttrName];
-    obj.Cat = ObjFunc(objLog, "Cat");
-    obj.Head = ObjFunc(objLog, "Head");
-    obj.Tail = ObjFunc(objLog, "Tail");
+    obj.Print = function(self, ...)
+        return obj[logAttrName]:Print(...);
+    end;
+    obj.Head = function(self, ...)
+        return obj[logAttrName]:Head(...);
+    end;
+    obj.Tail = function(self, ...)
+        return obj[logAttrName]:Tail(...);
+    end;
 end;
 
 -------------------------------------------------------------------------------
@@ -18,23 +23,9 @@ end;
 -------------------------------------------------------------------------------
 
 function Log.prototype:init(prefix)
-    Log.super.prototype.init(self);
+    Log.super.prototype.init(self, LogEntry.entryTypes.LIST);
     self.prefix = tostring(prefix);
     self.listeners = {};
-end;
-
--------------------------------------------------------------------------------
---
---  Prefix stuff
---
--------------------------------------------------------------------------------
-
-function Log.prototype:SetPrefix(prefix)
-    self.prefix = prefix;
-end;
-
-function Log.prototype:GetPrefix()
-    return self.prefix;
 end;
 
 -------------------------------------------------------------------------------
@@ -45,17 +36,18 @@ end;
 
 local function MixinLogEntryCreator(entryType)
     Log.prototype["Log" .. entryType] = function(self, ...)
-        return self:InsertLogEntry(LogEntry:new(entryType, ...));
+        return self:InsertLogEntry(LogEntry:new(entryType, self:GetPrefix(), ...));
     end;
 end;
 
-local entryTypes = {"Message", "Error", "Debug", "Data", "Warning"};
-for _, entryType in ipairs(entryTypes) do
-    MixinLogEntryCreator(entryType);
-end;
+MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.DATA));
+MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.DEBUG));
+MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.MESSAGE));
+MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.WARNING));
+MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.ERROR));
 
 function Log.prototype:Log(...)
-    return self:InsertLogEntry(LogEntry:new("Message", ...));
+    return self:InsertLogEntry(LogEntry:new(LogEntry.entryTypes.MESSAGE, self:GetPrefix(), ...));
 end;
 
 function Log.prototype:InsertLogEntry(logEntry, doQuietly)
@@ -72,6 +64,10 @@ function Log.prototype:InsertLogEntry(logEntry, doQuietly)
     return logEntry;
 end;
 
+function Log.prototype:InsertLogEntryQuietly(logEntry, doQuietly)
+    return self:InsertLogEntry(logEntry, true);
+end;
+
 -------------------------------------------------------------------------------
 --
 --  Listeners and Pipers
@@ -81,9 +77,9 @@ end;
 function Log.prototype:Listen(listenerFunc, ...)
     listenerFunc = ObjFunc(listenerFunc, ...);
     table.insert(self.listeners, listenerFunc);
-    local listeners = self.listeners;
+    local this = self;
     return function()
-        listeners = ListUtil:RemoveItem(listeners, listenerFunc);
+        this.listeners = ListUtil:RemoveItem(this.listeners, listenerFunc);
     end;
 end;
 
@@ -91,13 +87,14 @@ function Log.prototype:Pipe(medium)
     if not medium or type(medium) ~= "string" then
         error("Invalid medium");
     end;
-    return self:Listen(function(...)
-        API.Chat:Say(medium, tostring(concat(...)));
+    local prefixOwner = self;
+    return self:Listen(function(logEntry)
+        logEntry:Print(prefixOwner:GetPrefix(), medium);
     end);
 end;
 
-function Log.prototype:Syndicate(log)
-    return self:Listen(log, "LogQuietly");
+function Log.prototype:SyndicateTo(log)
+    return self:Listen(log, "InsertLogEntryQuietly");
 end;
 
 -------------------------------------------------------------------------------
@@ -105,12 +102,6 @@ end;
 --  Some Querying Stuff
 --
 -------------------------------------------------------------------------------
-
-function Log.prototype:Cat()
-    for _, message in ipairs(self) do
-        self:Print(unpack(message));
-    end;
-end;
 
 function Log.prototype:Head(numShown)
     if not numShown then
@@ -139,13 +130,3 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Log.prototype:Print(...)
-    local message = tostring(concat(...));
-    if self:GetPrefix() then
-        message = self:GetPrefix() .. " - " .. message;
-    end;
-    API.Chat:Print(message);
-end;
-
-MasterLog = Log:new("FritoMod");
---MasterLog:Pipe(API.Chat.mediums.DEBUG);
