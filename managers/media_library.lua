@@ -45,29 +45,28 @@ function MediaLibrary:RegisterDefaults()
 	MediaLibrary:BulkAdd("Color", MATERIAL_TEXT_COLOR_TABLE);
 
 	local function BreakColorTable(table)
-		return {table.r, table.g, table.b, table.a or 1.0};
-	end;
-
-	local function ProperNounize(name)
-		name = tostring(name);
-		return strupper(strsub(name, 1, 1)) .. strlower(strsub(name, 2));
+		return {table.a or 1.0, table.r, table.g, table.b};
 	end;
 
 	----------------------------------------
 	--  Colors
 	----------------------------------------
 
-	MediaLibrary:RegisterType("Color");
+	MediaLibrary:RegisterType("Color"); -- { A, R, G, B };
 
 	MediaLibrary:Add("Color", "White", {1.0, 1.0, 1.0, 1.0});
-	MediaLibrary:Add("Color", "Black", {0.0, 0.0, 0.0, 1.0});
-	MediaLibrary:Add("Color", "Blue", {0.0, 0.0, 1.0, 1.0});
-	MediaLibrary:Add("Color", "Yellow", {1.0, 1.0, 0.0, 1.0});
+	MediaLibrary:Add("Color", "Black", {1.0, 0.0, 0.0, 0.0});
+	MediaLibrary:Add("Color", "Blue", {1.0, 0.0, 0.0, 1.0});
+	MediaLibrary:Add("Color", "Yellow", {1.0, 1.0, 1.0, 0.0});
 
 	-- Some Blizzard colors
 	MediaLibrary:Add("Color", "Red", BreakColorTable(RED_FONT_COLOR));
 	MediaLibrary:Add("Color", "Green", BreakColorTable(GREEN_FONT_COLOR));
 	MediaLibrary:Add("Color", "Gray", BreakColorTable(GRAY_FONT_COLOR));
+
+	MediaLibrary:Add("Color", "Warning", {1.0, .27, 0.0, 1.0});
+	MediaLibrary:Add("Color", "Error", BreakColorTable(RED_FONT_COLOR));
+	MediaLibrary:Add("Color", "Debug", {192 / 255, 192 / 255, 192 / 255, 1.0});
 
 	-- Class Colors
 	for className, classColor in pairs(RAID_CLASS_COLORS) do 
@@ -101,12 +100,12 @@ function MediaLibrary:RegisterDefaults()
 	--  Proxy Libraries
 	----------------------------------------
 
-    MediaLibrary:RegisterProxyLibrary(
-        function(sharedMedia, mediaType, mediaName)
+    local sharedMedia = LibStub("LibSharedMedia-3.0");
+    if sharedMedia then
+        MediaLibrary:RegisterProxyLibrary(function(mediaType, mediaName, ...)
             return sharedMedia:Fetch(string.lower(mediaType), mediaName);
-        end,
-        LibStub("LibSharedMedia-3.0")
-    );
+        end);
+    end;
 
     MediaLibrary:RegisterType("Icon");
     MediaLibrary:RegisterProxyLibrary(
@@ -190,9 +189,12 @@ function MediaLibrary:RegisterType(mediaType)
 end;
 
 function MediaLibrary:RegisterProxyLibrary(libraryFunc, ...)
+    -- rawdebug("MediaLibrary - Registered Proxy Library!");
     libraryFunc = ObjFunc(libraryFunc, ...)
     table.insert(self.proxyLibraries, libraryFunc)
-    return ObjFunc(ListUtil.removeItem, self.proxyLibraries, libraryFunc)
+    return function()
+        MediaLibrary.proxyLibraries = ListUtil:RemoveItem(MediaLibrary.proxyLibraries, libraryFunc);
+    end;
 end;
 
 -------------------------------------------------------------------------------
@@ -214,7 +216,7 @@ function MediaLibrary:IterType(mediaType)
 end;
 
 function MediaLibrary:GetExplicit(mediaType, mediaName)
-	--debug("MediaLibrary: Retrieving Explicit. (Type:", mediaType, ", Name:", mediaName, ")");
+	--rawdebug("MediaLibrary: Retrieving Explicit. (Type:", mediaType, ", Name:", mediaName, ")");
 	local media = self:RetrieveTable(mediaType)[mediaName];
 	if media == nil then
         for _, proxyLibraryGetter in ipairs(self.proxyLibraries) do
