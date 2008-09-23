@@ -75,7 +75,7 @@ function Chat:Say(medium, message, language, color, ...)
             message = API.Chat:Color(color, message);
         end;
         if loweredMedium == Chat.mediums.DEBUG then
-            DEFAULT_CHAT_FRAME:AddMessage(message);
+            SELECTED_CHAT_FRAME:AddMessage(message);
         end;
         return message;
     end;
