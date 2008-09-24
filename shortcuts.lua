@@ -1,9 +1,17 @@
 function print(...)
-    return MasterLog:Print(...);
+    return API.Chat:Say("debug", tostring(concat(...)));
 end;
 
 function debug(...)
-    return MasterLog:Log(...);
+    return MasterLog:LogDebug(...);
+end;
+
+function log(...)
+    return MasterLog:LogMessage(...);
+end;
+
+function warning(...)
+    return MasterLog:LogWarning(...);
 end;
 
 function rawdebug(...)
