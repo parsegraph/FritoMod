@@ -13,7 +13,10 @@ libs\UTF8\utf8.lua
 
 locales\FritoBars.enUS.lua
 
+shortcuts.lua
+
 core.lua
+oop.lua
 icons.lua
 mapscales.lua
 
@@ -31,9 +34,7 @@ api\core.lua
 api\chat.lua
 api\unit.lua
 
-data\data_listener.lua
-data\data_provider.lua
-data\range_data_provider.lua
+data\core.lua
 
 interface\style_client.lua
 interface\invalidating.lua
@@ -56,5 +57,3 @@ managers\unit_manager.lua
 test\util\test_case.lua
 test\managers\test_manager.lua
 test\managers\unit_manager.lua
-
-shortcuts.lua
