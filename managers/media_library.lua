@@ -48,6 +48,21 @@ function MediaLibrary:RegisterDefaults()
 		return {table.a or 1.0, table.r, table.g, table.b};
 	end;
 
+	local function ConvertToTable(alpha, ...)
+        if select("#", ...) == 0 then
+            return { ConvertColorToParts(alpha) };
+        end;
+        local red, green, blue = 0, 0, 0;
+        if select("#", ...) == 2 then
+            red = alpha;
+            green, blue = ...;
+            alpha = 1.0;
+        else
+            red, green, blue = ...;
+        end;
+        return { alpha, red, green, blue };
+	end;
+
 	----------------------------------------
 	--  Colors
 	----------------------------------------
@@ -64,10 +79,11 @@ function MediaLibrary:RegisterDefaults()
 	MediaLibrary:Add("Color", "Green", BreakColorTable(GREEN_FONT_COLOR));
 	MediaLibrary:Add("Color", "Gray", BreakColorTable(GRAY_FONT_COLOR));
 
-	MediaLibrary:Add("Color", "Warning", {1.0, .27, 0.0, 1.0});
-	MediaLibrary:Add("Color", "Error", BreakColorTable(RED_FONT_COLOR));
-	MediaLibrary:Add("Color", "Debug", {192 / 255, 192 / 255, 192 / 255, 1.0});
-
+	MediaLibrary:Add("Color", "Warning", ConvertToTable(0xFFFF6347));
+	MediaLibrary:Add("Color", "Error", ConvertToTable(0xFFB22222))
+	MediaLibrary:Add("Color", "Debug", ConvertToTable(0xFFCD5C5C));
+	MediaLibrary:Add("Color", "Message", ConvertToTable(0xFF6495ED));
+    
 	-- Class Colors
 	for className, classColor in pairs(RAID_CLASS_COLORS) do 
 		MediaLibrary:Add("Color", ProperNounize(className), BreakColorTable(classColor));
