@@ -8,6 +8,11 @@ DIGITS = "0123456789"
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 ALPHANUMERICS = DIGITS .. ALPHABET;
 
+function IsCallable(value)
+    local valueType = type(value);
+    return valueType == "function" or (valueType == "table" and IsCallable(getmetatable(value).__call));
+end;
+
 function ProperNounize(name)
     name = tostring(name);
     return strupper(strsub(name, 1, 1)) .. strlower(strsub(name, 2));
@@ -28,6 +33,15 @@ function ConvertToBase(base, number, digits)
     end
     return converted;
 end
+
+function ConvertColorToParts(colorValue)
+    local alpha, red, green, blue = 0, 0, 0, 0;
+    alpha = bit.rshift(bit.band(colorValue, 0xFF000000), 24) / 255;
+    red   = bit.rshift(bit.band(colorValue, 0x00FF0000), 16) / 255;
+    green = bit.rshift(bit.band(colorValue, 0x0000FF00),  8) / 255;
+    blue  = bit.rshift(bit.band(colorValue, 0x000000FF),  0) / 255;
+    return alpha, red, green, blue;
+end;
 
 function tobool(msg)
 	return not not msg;
