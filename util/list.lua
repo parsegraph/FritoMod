@@ -110,12 +110,12 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function List.prototype:init(allowDuplicates)
-    List.super.prototype.init(self);
+function List:init(allowDuplicates)
+    List.super.init(self);
     self.allowDuplicates = allowDuplicates;
 end;
 
-function List.prototype:ToString()
+function List:ToString()
     return "List (size:" .. #self .. ")";
 end;
 
@@ -125,7 +125,7 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function List.prototype:Add(value)
+function List:Add(value)
     if not self.allowDuplicates and self:Contains(value) then
         return false;
     end;
@@ -134,7 +134,7 @@ function List.prototype:Add(value)
     return true;
 end;
 
-function List.prototype:AddAll(values)
+function List:AddAll(values)
     local addedAll = true;
     for _, value in ipairs(values) do
         local success = self:Add(value);
@@ -145,7 +145,7 @@ function List.prototype:AddAll(values)
     return addedAll;
 end;
 
-function List.prototype:Remove(value)
+function List:Remove(value)
     for index, candidate in ipairs(self:GetValues()) do
         if candidate == value then
             self:RemoveAt(index);
@@ -158,12 +158,12 @@ function List.prototype:Remove(value)
     return false;
 end;
 
-function List.prototype:RemoveAt(index)
+function List:RemoveAt(index)
     table.remove(self, index);
     self:DoRemove(value);
 end;
 
-function List.prototype:Clear()
+function List:Clear()
     local values = self:GetValues();
     for index, value in ipairs(values) do
         self:DoRemove(value);
@@ -173,15 +173,15 @@ function List.prototype:Clear()
     end;
 end;
 
-function List.prototype:DoAdd(value)
+function List:DoAdd(value)
     -- Pass for now.
 end;
 
-function List.prototype:DoRemove(value)
+function List:DoRemove(value)
     -- Pass for now.
 end;
 
-function List.prototype:Filter(filterFunc)
+function List:Filter(filterFunc)
     local removingIndices;
     local removedList;
     for index, item in ipairs(self:GetValues()) do
@@ -210,26 +210,26 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function List.prototype:Get(index)
+function List:Get(index)
     return self:GetValues()[index];
 end;
 
-function List.prototype:IsEmpty()
+function List:IsEmpty()
     for value in self:Iter() do 
         return true;
     end;
     return false;
 end;
 
-function List.prototype:Length()
+function List:Length()
   return #self;
 end;
 
-function List.prototype:GetValues()
+function List:GetValues()
     return self;
 end;
 
-function List.prototype:Iter()
+function List:Iter()
     local index = 0;
     local entries = #(self);
     return function()
@@ -240,7 +240,7 @@ function List.prototype:Iter()
     end;
 end;
 
-function List.prototype:GetIndex(value)
+function List:GetIndex(value)
     for index, candidate in ipairs(self:GetValues()) do
         if candidate == value then
             return index;
@@ -248,10 +248,10 @@ function List.prototype:GetIndex(value)
     end;
 end;
 
-function List.prototype:Contains(value)
+function List:Contains(value)
     return tobool(self:GetIndex(value));
 end;
 
-function List.prototype:GetLength()
+function List:GetLength()
     return #self:GetValues();
 end;

@@ -1,4 +1,4 @@
-DisplayObjectContainer = FritoLib.OOP.Class(DisplayObject);
+DisplayObjectContainer = OOP.Class(DisplayObject);
 local DisplayObjectContainer = DisplayObjectContainer;
 
 -------------------------------------------------------------------------------
@@ -7,9 +7,9 @@ local DisplayObjectContainer = DisplayObjectContainer;
 --
 -------------------------------------------------------------------------------
 
-function DisplayObjectContainer.prototype:init()
-    DisplayObjectContainer.super.prototype.init(self);
-    self.children = List:new();
+function DisplayObjectContainer:__init()
+    DisplayObjectContainer.__super.__init(self);
+    self.children = List();
     local this = self;
     self.children.DoAdd = function(list, child)
         this:DoAdd(child);
@@ -29,8 +29,8 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function DisplayObjectContainer.prototype:UpdateLayout()
-    DisplayObjectContainer.super.prototype.UpdateLayout(self);
+function DisplayObjectContainer:UpdateLayout()
+    DisplayObjectContainer.super.UpdateLayout(self);
 end;
 
 -------------------------------------------------------------------------------
@@ -39,12 +39,12 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function DisplayObjectContainer.prototype:DoAdd(child)
+function DisplayObjectContainer:DoAdd(child)
     child:SetParent(self);
     child:GetFrame():SetParent(self:GetParentFrame());
 end;
 
-function DisplayObjectContainer.prototype:DoRemove(child)
+function DisplayObjectContainer:DoRemove(child)
     child:SetParent(nil);
     child:GetFrame():SetParent(nil);
 end;
@@ -55,7 +55,7 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function DisplayObjectContainer.prototype:AddChild(child)
+function DisplayObjectContainer:AddChild(child)
     local success = self.children:Add(child);
     if success then
         self:InvalidateSize()
@@ -63,29 +63,29 @@ function DisplayObjectContainer.prototype:AddChild(child)
     return success
 end;
 
-function DisplayObjectContainer.prototype:RemoveChild(child)
+function DisplayObjectContainer:RemoveChild(child)
     success = self.children:Remove(child);
     if success then 
         self:InvalidateSize()
     end;
 end;
 
-function DisplayObjectContainer.prototype:GetChildIndex(child)
+function DisplayObjectContainer:GetChildIndex(child)
     return self.children:GetIndex(child);
 end;
 
-function DisplayObjectContainer.prototype:Contains(child)
+function DisplayObjectContainer:Contains(child)
     return self.children:Contains(child);
 end;
 
-function DisplayObjectContainer.prototype:Iter()
+function DisplayObjectContainer:Iter()
     return self.children:Iter();
 end;
 
-function DisplayObjectContainer.prototype:GetChildren()
+function DisplayObjectContainer:GetChildren()
     return self.children;
 end;
 
-function DisplayObjectContainer.prototype:GetNumChildren()
+function DisplayObjectContainer:GetNumChildren()
     return self:GetChildren():GetLength();
 end;

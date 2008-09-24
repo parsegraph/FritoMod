@@ -1,4 +1,4 @@
-Texture = FritoLib.OOP.Class(StyleClient, InvalidatingForwarder);
+Texture = OOP.Class(StyleClient, InvalidatingForwarder);
 local Texture = Texture;
 
 Texture.defaultValues = {
@@ -20,8 +20,8 @@ Texture.mediaKeyNames = {
 --
 -------------------------------------------------------------------------------
 
-function Texture.prototype:init()
-	Texture.super.prototype.init(self);
+function Texture:init()
+	Texture.super.init(self);
 end;
 
 function Texture:ToString()
@@ -34,7 +34,7 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Texture.prototype:ApplyTo(frame)
+function Texture:ApplyTo(frame)
 	frame = LayoutUtil:GetFrame(frame);
 	local inset = self:GetInset();
 	if not frame.SetBackdrop then
@@ -60,11 +60,11 @@ end;
 --
 -------------------------------------------------------------------------------
 
-StyleClient.AddComputedValue(Texture.prototype, "Background", StyleClient.CHANGE_LAYOUT);
-StyleClient.AddComputedValue(Texture.prototype, "Border", StyleClient.CHANGE_LAYOUT);
-StyleClient.AddComputedValue(Texture.prototype, "BorderSize", StyleClient.CHANGE_SIZE);
-StyleClient.AddComputedValue(Texture.prototype, "Inset", StyleClient.CHANGE_SIZE);
-StyleClient.AddComputedValue(Texture.prototype, "BackgroundColor", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(Texture, "Background", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(Texture, "Border", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(Texture, "BorderSize", StyleClient.CHANGE_SIZE);
+StyleClient.AddComputedValue(Texture, "Inset", StyleClient.CHANGE_SIZE);
+StyleClient.AddComputedValue(Texture, "BackgroundColor", StyleClient.CHANGE_LAYOUT);
 
 -------------------------------------------------------------------------------
 --
@@ -72,11 +72,11 @@ StyleClient.AddComputedValue(Texture.prototype, "BackgroundColor", StyleClient.C
 --
 -------------------------------------------------------------------------------
 
-function Texture.prototype:FetchDefaultFromTable(valueName)
+function Texture:FetchDefaultFromTable(valueName)
 	return Texture.defaultValues[valueName];
 end;
 
-function Texture.prototype:GetMediaKeyName(valueName)
+function Texture:GetMediaKeyName(valueName)
 	return Texture.mediaKeyNames[valueName];
 end;
 

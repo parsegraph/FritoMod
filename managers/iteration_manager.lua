@@ -1,4 +1,4 @@
-IterationManager = FritoLib.OOP.Class(EventDispatcher);
+IterationManager = OOP.Class(EventDispatcher, OOP.Singleton);
 local IterationManager = IterationManager;
 
 IterationManager.EVENT_UPDATE = "UpdateEvent";
@@ -7,23 +7,14 @@ IterationManager.EVENT_POSTPROCESS = "PostprocessEvent";
 
 IterationManager.FRAMERATE = .05;
 
-function IterationManager:GetInstance()
-	local instance = IterationManager._instance;
-	if not instance then
-		instance = IterationManager:new();
-		IterationManager._instance = instance;
-	end;
-	return instance;
-end;
-
 -------------------------------------------------------------------------------
 --
 --  Constructor
 --
 -------------------------------------------------------------------------------
 
-function IterationManager.prototype:init()
-	IterationManager.super.prototype.init(self);
+function IterationManager:init()
+	IterationManager.super.init(self);
 end;
 
 -------------------------------------------------------------------------------
@@ -32,12 +23,12 @@ end;
 -- 
 -------------------------------------------------------------------------------
 
-function IterationManager.prototype:Attach(aceEvent, framerate)
+function IterationManager:Attach(aceEvent, framerate)
 	framerate = framerate or IterationManager.FRAMERATE;
 	aceEvent:ScheduleRepeatingEvent(IterationManager.EVENT_UPDATE, self.OnUpdate, framerate, self);
 end;
 
-function IterationManager.prototype:Detach(aceEvent)
+function IterationManager:Detach(aceEvent)
 	aceEvent:UnscheduleRepeatingEvent(IterationManager.EVENT_UPDATE, self.OnUpdate, framerate, self);
 end;
 
@@ -47,11 +38,11 @@ end;
 -- 
 -------------------------------------------------------------------------------
 
-function IterationManager.prototype:AddPreprocessor(...)
+function IterationManager:AddPreprocessor(...)
 	return self:AddListener(IterationManager.EVENT_PREPROCESS, ...);
 end;
 
-function IterationManager.prototype:AddPostprocessor(...)
+function IterationManager:AddPostprocessor(...)
 	return self:AddListener(IterationManager.EVENT_POSTPROCESS, ...);
 end;
 
@@ -61,7 +52,7 @@ end;
 -- 
 -------------------------------------------------------------------------------
 
-function IterationManager.prototype:OnUpdate()
+function IterationManager:OnUpdate()
 	self:TriggerEvent(IterationManager.EVENT_PREPROCESS);
 	Stage.GetStage():ValidateNow();
 	self:TriggerEvent(IterationManager.EVENT_POSTPROCESS);

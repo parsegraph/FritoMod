@@ -1,4 +1,4 @@
-DisplayObject = FritoLib.OOP.Class(EventDispatcher, StyleClient, Invalidating);
+DisplayObject = OOP.Class(EventDispatcher, StyleClient, Invalidating);
 local DisplayObject = DisplayObject;
 
 DisplayObject.defaultValues = {
@@ -17,13 +17,9 @@ DisplayObject.mediaKeyNames = {};
 --
 -------------------------------------------------------------------------------
 
-function DisplayObject.prototype:init()
-	DisplayObject.super.prototype.init(self);
+function DisplayObject:init()
+	DisplayObject.__super.__init(self);
 	self:ConstructChildren();
-end;
-
-function DisplayObject:ToString()
-	return "DisplayObject";
 end;
 
 -------------------------------------------------------------------------------
@@ -32,7 +28,7 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function DisplayObject.prototype:ConstructChildren()
+function DisplayObject:ConstructChildren()
 	self.frame = CreateFrame("Frame");
 end;
 
@@ -42,12 +38,12 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function DisplayObject.prototype:Measure()
+function DisplayObject:Measure()
 	self.measuredHeight = 0;
 	self.measuredWidth = 0;
 end;
 
-function DisplayObject.prototype:UpdateLayout()
+function DisplayObject:UpdateLayout()
 	local frame = self.frame;
 
 	frame:SetParent(self:GetParentFrame());
@@ -77,21 +73,21 @@ end;
 --
 -------------------------------------------------------------------------------
 
-StyleClient.AddComputedValue(DisplayObject.prototype, "Height", StyleClient.CHANGE_SIZE);
-StyleClient.AddComputedValue(DisplayObject.prototype, "Width", StyleClient.CHANGE_SIZE);
-StyleClient.AddComputedValue(DisplayObject.prototype, "Alpha", StyleClient.CHANGE_LAYOUT);
-StyleClient.AddComputedValue(DisplayObject.prototype, "Visibility", StyleClient.CHANGE_LAYOUT);
-StyleClient.AddComputedValue(DisplayObject.prototype, "Texture", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(DisplayObject, "Height", StyleClient.CHANGE_SIZE);
+StyleClient.AddComputedValue(DisplayObject, "Width", StyleClient.CHANGE_SIZE);
+StyleClient.AddComputedValue(DisplayObject, "Alpha", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(DisplayObject, "Visibility", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(DisplayObject, "Texture", StyleClient.CHANGE_LAYOUT);
 
 ------------------------------------------
 --  Parent
 ------------------------------------------
 
-function DisplayObject.prototype:GetParent()
+function DisplayObject:GetParent()
 	return self.parent;
 end;
 
-function DisplayObject.prototype:SetParent(parent)
+function DisplayObject:SetParent(parent)
 	if parent == self.parent then
 		return;
 	end;
@@ -111,7 +107,7 @@ end;
 --  Parent Frame
 ------------------------------------------
 
-function DisplayObject.prototype:GetParentFrame()
+function DisplayObject:GetParentFrame()
 	if self:GetParent() then
 		return self:GetParent():GetFrame();
 	end;
@@ -121,7 +117,7 @@ end;
 --  Frame
 ------------------------------------------
 
-function DisplayObject.prototype:GetFrame()
+function DisplayObject:GetFrame()
 	return self.frame;
 end;
 
@@ -131,11 +127,11 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function DisplayObject.prototype:Hide()
+function DisplayObject:Hide()
 	self:SetExplicitVisibility(false);
 end;
 
-function DisplayObject.prototype:Show()
+function DisplayObject:Show()
 	self:SetExplicitVisibility(true);
 end;
 
@@ -145,7 +141,7 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function DisplayObject.prototype:ComputeValue(valueName)
+function DisplayObject:ComputeValue(valueName)
 	if valueName == "Width" then
 		return self.measuredWidth;
 	end;
@@ -154,10 +150,10 @@ function DisplayObject.prototype:ComputeValue(valueName)
 	end;
 end;
 
-function DisplayObject.prototype:FetchDefaultFromTable(valueName)
+function DisplayObject:FetchDefaultFromTable(valueName)
 	return DisplayObject.defaultValues[valueName];
 end;
 
-function DisplayObject.prototype:GetMediaKeyName(valueName)
+function DisplayObject:GetMediaKeyName(valueName)
 	return DisplayObject.mediaKeyNames[valueName];
 end;

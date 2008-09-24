@@ -66,7 +66,7 @@ LayoutUtil.alignmentMap = {
 local LayoutUtil = LayoutUtil
 
 function LayoutUtil:GetFrame(frame)
-    if FritoLib.OOP.inherits(frame, DisplayObject) then
+    if type(frame) == "table" and IsCallable(frame.GetFrame) then
         return frame:GetFrame()
     end;
     if type(frame) == "string" then

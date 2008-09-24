@@ -1,4 +1,4 @@
-TextField = FritoLib.OOP.Class(DisplayObject);
+TextField = OOP.Class(DisplayObject);
 local TextField = TextField;
 
 TextField.defaultValues = {
@@ -28,12 +28,12 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function TextField.prototype:init(text)
-	TextField.super.prototype.init(self);
+function TextField:init(text)
+	TextField.super.init(self);
 	self:SetText(text);
 end;
 
-function TextField.prototype:ToString()
+function TextField:ToString()
 	return "TextField (text:'" .. self:GetText() .. "')";
 end;
 
@@ -43,19 +43,19 @@ end;
 --
 -------------------------------------------------------------------------------
 
-StyleClient.AddComputedValue(TextField.prototype, "FontSize", StyleClient.CHANGE_SIZE);
-StyleClient.AddComputedValue(TextField.prototype, "Font", StyleClient.CHANGE_SIZE);
-StyleClient.AddComputedValue(TextField.prototype, "FontColor", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(TextField, "FontSize", StyleClient.CHANGE_SIZE);
+StyleClient.AddComputedValue(TextField, "Font", StyleClient.CHANGE_SIZE);
+StyleClient.AddComputedValue(TextField, "FontColor", StyleClient.CHANGE_LAYOUT);
 
 ------------------------------------------
 --  Data
 ------------------------------------------
 
-function TextField.prototype:GetData()
+function TextField:GetData()
 	return self:GetText()
 end;
 
-function TextField.prototype:SetData(data)
+function TextField:SetData(data)
     return self:SetText(self.text)
 end;
 
@@ -63,11 +63,11 @@ end;
 --  Text
 ------------------------------------------
 
-function TextField.prototype:GetText()
+function TextField:GetText()
 	return self.text;
 end;
 
-function TextField.prototype:SetText(text)
+function TextField:SetText(text)
     if self.text == text then
         return
     end;
@@ -82,12 +82,12 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function TextField.prototype:ConstructChildren()
+function TextField:ConstructChildren()
 	self.frame = TextField.CreateFontFrame();
 end;
 
-function TextField.prototype:Measure()
-	TextField.super.prototype.Measure(self)
+function TextField:Measure()
+	TextField.super.Measure(self)
 	local scratch = TextField.GetScratchFont();
 	self:SetupFont(scratch);
 	if self:GetExplicitHeight() then
@@ -100,8 +100,8 @@ function TextField.prototype:Measure()
     self.measuredWidth = scratch:GetStringWidth()
 end;
 
-function TextField.prototype:UpdateLayout()
-	TextField.super.prototype.UpdateLayout(self)
+function TextField:UpdateLayout()
+	TextField.super.UpdateLayout(self)
 	self:SetupFont();
 end;
 
@@ -111,14 +111,14 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function TextField.prototype:FetchDefaultFromTable(valueName)
+function TextField:FetchDefaultFromTable(valueName)
 	return TextField.defaultValues[valueName] or
-		TextField.super.prototype.FetchDefaultFromTable(self, valueName);
+		TextField.super.FetchDefaultFromTable(self, valueName);
 end;
 
-function TextField.prototype:GetMediaKeyName(valueName)
+function TextField:GetMediaKeyName(valueName)
 	return TextField.mediaKeyNames[valueName] or 
-		TextField.super.prototype.GetMediaKeyName(self, valueName);
+		TextField.super.GetMediaKeyName(self, valueName);
 end;
 
 -------------------------------------------------------------------------------
@@ -127,7 +127,7 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function TextField.prototype:SetupFont(frame)
+function TextField:SetupFont(frame)
 	frame = frame or self:GetFrame();
 	frame:SetFontObject(GameFontNormal);
 	frame:SetFont(self:GetFont(), self:GetFontSize());

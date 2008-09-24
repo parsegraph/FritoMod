@@ -1,11 +1,4 @@
-StyleClient = FritoLib.OOP.Mixin{
-    "GetComputed", 
-    "ComputeValue", "FetchDefaultFromTable", "GetMediaKeyName", -- overridables
-    "IsInvalidating", "FollowMediaLibraryKey", 
-    "GetTemplate", "SetTemplate", "GetExplicit", "SetExplicit", "GetDefault",
-    "DoStyleChange"
-};
-
+StyleClient = OOP.MixinLibrary();
 local StyleClient = StyleClient;
 
 -- Enumeration used in our AddComputedValue calls
@@ -46,7 +39,7 @@ end;
 --     a guideline.
 -- 3. Templates, other StyleClients that are given to use as a template for this object. The
 --  template's GetComputed will be called, so these may chain.
--- 4. Defaults, those that are likely set on the object's prototype, and should be arbitrary.
+-- 4. Defaults, those that are likely set on the object's class, and should be arbitrary.
 --
 -- If no value is found, and failSilently is not set, then an error will be thrown.
 function StyleClient:GetComputed(valueName, useExplicit, failSilently)
@@ -188,29 +181,29 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function StyleClient.AddComputedValue(prototype, valueName, visualProperty)
-    if not prototype["Get" .. valueName] then
-        prototype["Get" .. valueName] = function(self)
+function StyleClient.AddComputedValue(class, valueName, visualProperty)
+    if not class["Get" .. valueName] then
+        class["Get" .. valueName] = function(self)
             return self:GetComputed(valueName, true);
         end;
     end;
-    if not prototype["GetExplicit" .. valueName] then
-        prototype["GetExplicit" .. valueName] = function(self)
+    if not class["GetExplicit" .. valueName] then
+        class["GetExplicit" .. valueName] = function(self)
             return self:GetExplicit(valueName);
         end;
     end;
-    if not prototype["Set" .. valueName] then
-        prototype["Set" .. valueName] = function(self, value)
+    if not class["Set" .. valueName] then
+        class["Set" .. valueName] = function(self, value)
             return self:SetExplicit(valueName, value, visualProperty);
         end;
     end;
-    if not prototype["GetComputed" .. valueName] then
-        prototype["GetComputed" .. valueName] = function(self)
+    if not class["GetComputed" .. valueName] then
+        class["GetComputed" .. valueName] = function(self)
             return self:GetComputed(valueName, false);
         end;
     end;
-    if not prototype["Clear" .. valueName] then
-        prototype["Clear" .. valueName] = function(self)
+    if not class["Clear" .. valueName] then
+        class["Clear" .. valueName] = function(self)
             return self:SetExplicit(valueName, nil, visualProperty);
         end;
     end;

@@ -1,7 +1,5 @@
-Unit = FritoLib.OOP.Class(EventDispatcher)
+Unit = OOP.Class(EventDispatcher)
 local Unit = Unit;
-
-MixinStaticEventConnectors(Unit);
 
 Data:MixinScalar("Name");
 Data:MixinScalar("Faction");
@@ -11,11 +9,7 @@ Data:MixinScalar("Race");
 Data:MixinScalar("Gender");
 Data:MixinRange("Health");
 
-function Unit.prototype:init()
-    self:InitEventConnectors();
-end;
-
-function Unit.prototype:LoadBase(name, realm, faction, class, race, gender)
+function Unit:LoadBase(name, realm, faction, class, race, gender)
     self:SetName(name);
     self:SetRealm(realm);
     self:SetFaction(faction);

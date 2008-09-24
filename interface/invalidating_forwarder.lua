@@ -1,12 +1,9 @@
-InvalidatingForwarder = FritoLib.OOP.Mixin{
-	"AddInvalidating", "RemoveInvalidating",
-	"InvalidateSize", "InvalidateLayout"
-};
+InvalidatingForwarder = OOP.MixinLibrary();
 local InvalidatingForwarder = InvalidatingForwarder;
 
 function InvalidatingForwarder:AddInvalidating(invalidating)
 	if not self.forwarding then
-		self.forwarding = List:new();
+		self.forwarding = List();
 	end;
 	return self.forwarding:Add(invalidating);
 end;

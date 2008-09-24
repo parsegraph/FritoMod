@@ -1,7 +1,8 @@
-Channel = FritoLib.OOP.Class(Log);
+Channel = OOP.Class(Log);
+local Channel = Channel;
 
-function Channel.prototype:init(channelName)
-    Channel.super.prototype.init(self);
+function Channel:__init(channelName)
+    Channel.__super.__init(self);
     self.channelName = channelName;
     self:Pipe(channelName);
     self.memberNames = {};
@@ -13,11 +14,11 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Channel.prototype:GetMembers()
+function Channel:GetMembers()
     return self.members;
 end;
 
-function Channel.prototype:SetMembers(members)
+function Channel:SetMembers(members)
     self.members = members;
 end;
 
@@ -27,11 +28,11 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Channel.prototype:AddMember(member)
+function Channel:AddMember(member)
     table.insert(self.members, member);
 end;
 
-function Channel.prototype:RemoveMember(member)
+function Channel:RemoveMember(member)
     self.members = ListUtil:RemoveItem(self.members, member);
 end;
 
@@ -41,10 +42,10 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Channel.prototype:GetModerator()
+function Channel:GetModerator()
     return self.moderator;
 end;
 
-function Channel.prototype:SetModerator(moderator)
+function Channel:SetModerator(moderator)
     self.moderator = moderator;
 end;

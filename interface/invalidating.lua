@@ -1,9 +1,4 @@
-Invalidating = FritoLib.OOP.Mixin{
-    "Measure", "UpdateLayout",
-    "InvalidateSize", "InvalidateLayout", "ValidateNow",
-    "GetMeasuredWidth", "GetMeasuredHeight"
-};
-
+Invalidating = OOP.MixinLibrary();
 local Invalidating = Invalidating;
 
 -- Boolean of whether to fake validation on iterations that throw errors.

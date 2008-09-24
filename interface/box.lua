@@ -1,4 +1,4 @@
-Box = FritoLib.OOP.Class(DisplayObjectContainer);
+Box = OOP.Class(DisplayObjectContainer);
 local Box = Box;
 
 Box.direction = LayoutUtil.direction
@@ -18,8 +18,8 @@ Box.defaultValues = {
 --
 -------------------------------------------------------------------------------
 
-function Box.prototype:init()
-    Box.super.prototype.init(self);
+function Box:init()
+    Box.super.init(self);
 end;
 
 function Box:ToString()
@@ -32,10 +32,10 @@ end;
 --
 -------------------------------------------------------------------------------
 
-StyleClient.AddComputedValue(Box.prototype, "FlowDirection", StyleClient.CHANGE_LAYOUT);
-StyleClient.AddComputedValue(Box.prototype, "Direction", StyleClient.CHANGE_SIZE);
-StyleClient.AddComputedValue(Box.prototype, "Gap", StyleClient.CHANGE_SIZE);
-StyleClient.AddComputedValue(Box.prototype, "Alignment", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(Box, "FlowDirection", StyleClient.CHANGE_LAYOUT);
+StyleClient.AddComputedValue(Box, "Direction", StyleClient.CHANGE_SIZE);
+StyleClient.AddComputedValue(Box, "Gap", StyleClient.CHANGE_SIZE);
+StyleClient.AddComputedValue(Box, "Alignment", StyleClient.CHANGE_LAYOUT);
 
 -------------------------------------------------------------------------------
 --
@@ -43,9 +43,9 @@ StyleClient.AddComputedValue(Box.prototype, "Alignment", StyleClient.CHANGE_LAYO
 --
 -------------------------------------------------------------------------------
 
-function Box.prototype:FetchDefaultFromTable(valueName)
+function Box:FetchDefaultFromTable(valueName)
     return Box.defaultValues[valueName] or
-        Box.super.prototype.FetchDefaultFromTable(self, valueName);
+        Box.super.FetchDefaultFromTable(self, valueName);
 end;
 
 -------------------------------------------------------------------------------
@@ -54,8 +54,8 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Box.prototype:Measure()
-    Box.super.prototype.Measure(self);
+function Box:Measure()
+    Box.super.Measure(self);
     local direction = self:GetDirection();
     for child in self:Iter() do
         if direction == Box.direction.HORIZONTAL then
@@ -74,8 +74,8 @@ function Box.prototype:Measure()
     end;
 end;
 
-function Box.prototype:UpdateLayout()
-    debug("Box.prototype:UpdateLayout")
+function Box:UpdateLayout()
+    debug("Box:UpdateLayout")
     LayoutUtil:Chain(
         self,
         self.children,
@@ -84,5 +84,5 @@ function Box.prototype:UpdateLayout()
         self:GetFlowDirection(), 
         self:GetGap()
     );
-    Box.super.prototype.UpdateLayout(self)
+    Box.super.UpdateLayout(self)
 end;

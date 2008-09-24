@@ -1,18 +1,23 @@
-Log = FritoLib.OOP.Class(LogEntry);
+Log = OOP.Class(LogEntry);
 local Log = Log;
 
-function MixinLog(obj, logAttrName)
-    if not logAttrName then
-        logAttrName = "log";
-    end;
-    obj.Print = function(self, ...)
-        return obj[logAttrName]:Print(...);
-    end;
-    obj.Head = function(self, ...)
-        return obj[logAttrName]:Head(...);
-    end;
-    obj.Tail = function(self, ...)
-        return obj[logAttrName]:Tail(...);
+function LogMixin(class)
+    logAttrName = logAttrName or "log";
+    OOP.IntegrateLibrary({
+        Print = function(self, ...)
+            return obj[logAttrName]:Print(...);
+        end,
+        Head = function(self, ...)
+            return obj[logAttrName]:Head(...);
+        end,
+        Tail = function(self, ...)
+            return obj[logAttrName]:Tail(...);
+        end
+    }, class);
+    return function(self, class)
+        if not self[logAttrName] then
+            self[logAttrName] = Log();
+        end;
     end;
 end;
 
@@ -22,10 +27,18 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Log.prototype:init(prefix)
-    Log.super.prototype.init(self, LogEntry.entryTypes.LIST);
+function Log:__init(prefix, suppressMasterLog)
+    Log.__super.__init(self, LogEntry.entryTypes.LIST);
     self.prefix = tostring(prefix);
     self.listeners = {};
+
+    if false and not suppressMasterLog then
+        self.DetachMasterLog = self:Listen(self, function(self, logEntry)
+            if MasterLog and self ~= MasterLog and not self.suppressMasterLog then
+                MasterLog:InsertLogEntry(logEntry);
+            end;
+        end);
+    end;
 end;
 
 -------------------------------------------------------------------------------
@@ -35,8 +48,8 @@ end;
 -------------------------------------------------------------------------------
 
 local function MixinLogEntryCreator(entryType)
-    Log.prototype["Log" .. entryType] = function(self, ...)
-        return self:InsertLogEntry(LogEntry:new(entryType, self:GetPrefix(), ...));
+    Log["Log" .. entryType] = function(self, ...)
+        return self:InsertLogEntry(LogEntry(entryType, self:GetPrefix(), ...));
     end;
 end;
 
@@ -46,26 +59,30 @@ MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.MESSAGE));
 MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.WARNING));
 MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.ERROR));
 
-function Log.prototype:Log(...)
-    return self:InsertLogEntry(LogEntry:new(LogEntry.entryTypes.MESSAGE, self:GetPrefix(), ...));
+function Log:Log(...)
+    return self:InsertLogEntry(LogEntry(LogEntry.entryTypes.MESSAGE, self:GetPrefix(), ...));
 end;
 
-function Log.prototype:InsertLogEntry(logEntry, doQuietly)
+function Log:InsertLogEntry(logEntry, isQuiet)
+    if isQuiet == nil then
+        isQuiet = self:IsQuiet();
+    end;
     table.insert(self, logEntry);
-    if doQuietly then
+    if isQuiet then
         return logEntry;
     end;
     for _, listenerFunc in ipairs(self.listeners) do
         listenerFunc(logEntry);
     end;
-    if MasterLog and self ~= MasterLog then
-        MasterLog:InsertLogEntry(logEntry);
-    end;
     return logEntry;
 end;
 
-function Log.prototype:InsertLogEntryQuietly(logEntry, doQuietly)
+function Log:InsertLogEntryQuietly(logEntry)
     return self:InsertLogEntry(logEntry, true);
+end;
+
+function Log:InsertLogEntryLoudly(logEntry)
+    return self:InsertLogEntry(logEntry, false);
 end;
 
 -------------------------------------------------------------------------------
@@ -74,7 +91,7 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Log.prototype:Listen(listenerFunc, ...)
+function Log:Listen(listenerFunc, ...)
     listenerFunc = ObjFunc(listenerFunc, ...);
     table.insert(self.listeners, listenerFunc);
     local this = self;
@@ -83,7 +100,7 @@ function Log.prototype:Listen(listenerFunc, ...)
     end;
 end;
 
-function Log.prototype:Pipe(medium)
+function Log:Pipe(medium)
     if not medium or type(medium) ~= "string" then
         error("Invalid medium");
     end;
@@ -93,8 +110,23 @@ function Log.prototype:Pipe(medium)
     end);
 end;
 
-function Log.prototype:SyndicateTo(log)
+function Log:SyndicateTo(log)
     return self:Listen(log, "InsertLogEntryQuietly");
+end;
+
+-------------------------------------------------------------------------------
+--
+--  Quietness
+--
+-------------------------------------------------------------------------------
+
+function Log:SetQuiet(isQuiet)
+    self.isQuiet = isQuiet;
+    return self.isQuiet;
+end;
+
+function Log:IsQuiet()
+    return self.isQuiet;
 end;
 
 -------------------------------------------------------------------------------
@@ -103,7 +135,7 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Log.prototype:Head(numShown)
+function Log:Head(numShown)
     if not numShown then
         numShown = 10;
     end;
@@ -113,7 +145,7 @@ function Log.prototype:Head(numShown)
     end;
 end;
 
-function Log.prototype:Tail(numShown)
+function Log:Tail(numShown)
     if not numShown then
         numShown = 10;
     end;
@@ -123,10 +155,3 @@ function Log.prototype:Tail(numShown)
         self:Print(unpack(self[i]));
     end;
 end;
-
--------------------------------------------------------------------------------
---
---  Utility
---
--------------------------------------------------------------------------------
-

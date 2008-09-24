@@ -1,11 +1,10 @@
-Stage = AceLibrary("AceOO-2.0").Class(DisplayObjectContainer);
+Stage = OOP.Class(DisplayObjectContainer);
 local Stage = Stage;
 
 function Stage:GetStage()
 	if not Stage.stage then
-		Stage.stage = Stage:new();
+		Stage.stage = Stage();
 	end;
-	_stage = Stage.stage;
 	return Stage.stage;
 end;
 
@@ -15,15 +14,11 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Stage.prototype:init()
-	Stage.super.prototype.init(self);
+function Stage:__init()
+	Stage.__super.__init(self);
 	if Stage.stage then
 		error("Cannot have multiple instances of the Stage.");
 	end;
-end;
-
-function Stage:ToString()
-	return "Stage";
 end;
 
 -------------------------------------------------------------------------------
@@ -32,16 +27,16 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Stage.prototype:GetParentFrame()
+function Stage:GetParentFrame()
 	return UIParent;
 end;
 
-function Stage.prototype:ConstructChildren()
-	Stage.super.prototype.ConstructChildren(self);
+function Stage:ConstructChildren()
+	Stage.super.ConstructChildren(self);
 	self:GetFrame():SetPoint("CENTER", 0, 0);
 end;
 
-function Stage.prototype:ComputeValue(valueName)
+function Stage:ComputeValue(valueName)
 	if valueName == "Width" then
 		return self:GetParentFrame():GetWidth();
 	end;
@@ -56,8 +51,8 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Stage.prototype:DoAdd(child)
-	Stage.super.prototype.DoAdd(self, child);
+function Stage:DoAdd(child)
+	Stage.super.DoAdd(self, child);
 	local childFrame = child:GetFrame();
 	if childFrame:GetNumPoints() == 0 then
 		-- No points, so this child would be 'invisible.' To prevent this behavior,
@@ -67,8 +62,8 @@ function Stage.prototype:DoAdd(child)
 	end;
 end;
 
-function Stage.prototype:DoRemove(child)
-	Stage.super.prototype.DoRemove(self, child);
+function Stage:DoRemove(child)
+	Stage.super.DoRemove(self, child);
 	child:GetFrame():ClearAllPoints();
 end;
 
@@ -78,6 +73,6 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Stage.prototype:SetParent(parent)
+function Stage:SetParent(parent)
 	error("The Stage cannot have a parent.");
 end;

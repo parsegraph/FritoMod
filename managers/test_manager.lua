@@ -1,12 +1,13 @@
-TestManager = {
-    groups = {}
-};
-TestManager.log = Log:new("TestManager");
-MixinLog(TestManager);
+TestManager = OOP.Class(Log, OOP.Singleton);
 local TestManager = TestManager;
 
+function TestManager:__init(prefix)
+    TestManager.__super.__init(self, prefix or "TestManager");
+    self.groups = {};
+end;
+
 function TestManager:AddTest(testGroupName, testName, returnType, returnValue, testFunc, ...)
-    self:InsertTestCase(testGroupName, TestCase:new(testName, returnType, returnValue, testFunc, ...));
+    self:InsertTestCase(testGroupName, TestCase(testName, returnType, returnValue, testFunc, ...));
 end;
 
 function TestManager:InsertTestCase(testGroupName, testCase)
@@ -24,7 +25,7 @@ end;
 
 function TestManager:Run(testGroupName)
     if not testGroupName then
-        self.log:Log("Running all tests.");
+        self:Log("Running all tests.");
         local totalFailed = 0;
         local totalTests = 0;
         for testGroupName, testGroup in pairs(self.groups) do
@@ -32,9 +33,9 @@ function TestManager:Run(testGroupName)
             totalTests = totalTests + #testGroup;
         end;
         if totalFailed > 0 then
-            self.log:LogError(totalFailed, "of", totalTests, "test(s) FAILED.");
+            self:LogError(totalFailed, "of", totalTests, "test(s) FAILED.");
         else
-            self.log:Log("All", totalTests, "tests successful. :)");
+            self:Log("All", totalTests, "tests successful. :)");
         end;
         return totalFailed;
     end;
@@ -42,10 +43,10 @@ function TestManager:Run(testGroupName)
     if not tests then
         error("Tests not found for testGroup: '" .. tostring(testGroupName) .. "'");
     end;
-    self.log:Log("Running testGroup", testGroupName);
+    self:Log("Running testGroup", testGroupName);
     local failed = 0;
     for _, test in pairs(tests) do
-        --local releaser = test:SyndicateTo(self.log);
+        --local releaser = test:SyndicateTo(self);
         local result = test:Execute();
         if not result then
             test:Print(nil, "debug");
@@ -54,9 +55,9 @@ function TestManager:Run(testGroupName)
         --releaser();
     end;
     if failed > 0 then
-        self.log:LogError(failed, "of", #tests, "test(s) FAILED in testGroup:", testGroupName);
+        self:LogError(failed, "of", #tests, "test(s) FAILED in testGroup:", testGroupName);
     else
-        self.log:Log("All", #tests, "tests successful for testGroup:", testGroupName);
+        self:Log("All", #tests, "tests successful for testGroup:", testGroupName);
     end;
     return failed;
 end;

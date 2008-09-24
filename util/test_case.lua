@@ -1,4 +1,4 @@
-TestCase = FritoLib.OOP.Class(Log);
+TestCase = OOP.Class(Log);
 local TestCase = TestCase;
 
 TestCase.returnTypes = {
@@ -7,8 +7,8 @@ TestCase.returnTypes = {
     EXCEPTION = "exception",
 }
 
-function TestCase.prototype:init(testName, returnType, returnValue, testFunc, ...)
-    TestCase.super.prototype.init(self, format("Test Case - %s", testName));
+function TestCase:__init(testName, returnType, returnValue, testFunc, ...)
+    TestCase.__super.__init(self, format("Test Case - %s", testName));
     self.testName = testName;
     self.returnType = returnType;
     self.returnValue = returnValue;
@@ -19,14 +19,14 @@ function TestCase:ToString()
     return "TestCase";
 end;
 
-function TestCase.prototype:NakedExecute(catchExceptions)
+function TestCase:NakedExecute(catchExceptions)
     if catchExceptions then
         return { pcall(self.testFunc) };
     end;
     return testFunc();
 end;
 
-function TestCase.prototype:Execute(dontCatchExceptions)
+function TestCase:Execute(dontCatchExceptions)
     self:Log(format("Test started, expecting '%s'", self.returnType));
     self:LogData("Expected Results", self.returnType, self.returnValue);
     local releaser = MasterLog:SyndicateTo(self);

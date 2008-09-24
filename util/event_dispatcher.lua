@@ -1,42 +1,50 @@
-EventDispatcher = AceLibrary("AceOO-2.0").Mixin{
-    "TriggerEvent", "AddListener", 
-    "AddEventConnector", "InitEventConnectors", "GetEventConnector"
-};
+EventDispatcher = OOP.Mixin(
+    function(class)
+        OOP.IntegrateLibrary(EventDispatcher, class);
+        local connectors = {};
+        class.AddStaticEventConnector = function(eventName, unappliedFunc, ...)
+            unappliedFunc = Unapplied(unappliedFunc, ...);
+            eventConnectors = connectors[eventName];
+            if not eventConnectors then
+                eventConnectors = {};
+                connectors[eventName] = eventConnectors;
+            end;
+            table.insert(eventConnectors, unappliedFunc);
+        end;
+        return function(self, class)
+            for eventName, unappliedConnectors in pairs(connectors) do
+                for _, unappliedFunc in ipairs(unappliedConnectors) do
+                    self:AddEventConnector(eventName, unappliedFunc(self));
+                end;
+            end;
+        end;
+    end
+);
 local EventDispatcher = EventDispatcher;
 
-function EventDispatcher.MixinStaticEventConnectors(prototype)
-    local connectors = prototype.staticEventConnectors;
-    if not connectors then
-        connectors = {};
-        prototype.staticEventConnectors = connectors;
-    end;
-    prototype["AddStaticEventConnector"] = function(eventName, unappliedFunc, ...)
-        local unappliedFunc = Unapplied(unappliedFunc, ...);
-        connectors[eventName] = unappliedFunc;
-    end;
-    prototype["ApplyStaticEventConnectors"] = function(self)
-        for eventName, unappliedFunc in pairs(connectors) do
-            self:AddConnector(unappliedFunc(self));
-        end;
-    end;
-end;
-
 -------------------------------------------------------------------------------
 --
---  Connector Methods
+--  EventConnector Methods
+--  These methods are used to initialize a event listener when it's first connected.
+--  A "event connector" should be some function used to retrieve the value of that
+--  event, in the form that the event listener would expect.
 --
+--  A related example is with ActionScript's data-binding, where on the first connection,
+--  the data is bound.
 -------------------------------------------------------------------------------
-
-function EventDispatcher:InitEventConnectors()
-    self.prototype.class.ApplyStaticEventConnectors(self);
-end;
 
 function EventDispatcher:AddEventConnector(eventName, connectorFunc, ...)
     connectorFunc = ObjFunc(connectorFunc, ...);
     if not self.eventConnectors then 
         self.eventConnectors = {};
     end;
-    self.eventConnectors[eventName] = connectorFunc;
+    local connectors = self.eventConnectors[eventName];
+    if not connectors then
+        connectors = { connectorFunc };
+        self.eventConnectors = connectors;
+    else
+        table.insert(connectors, connectorFunc);
+    end;
 end;
 
 function EventDispatcher:GetEventConnector(eventName)
@@ -84,13 +92,15 @@ function EventDispatcher:AddListener(eventName, listenerFunc, ...)
     end;
     local eventList = self.events[eventName];
     if not eventList then
-        eventList = List:new();
+        eventList = List();
         self.events[eventName] = eventList;
     end;
     if eventList:Add(listenerFunc) then
-        connectorFunc = self:GetEventConnector(eventName);
-        if connectorFunc then
-            listenerFunc(eventName, connectorFunc());
+        local connectors = self:GetEventConnector(eventName);
+        if connectors then
+            for _, connector in ipairs(connectors) do
+                connector(eventName, listenerFunc);
+            end;
         end;
     end;
     return function()

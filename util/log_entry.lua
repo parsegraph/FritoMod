@@ -1,4 +1,4 @@
-LogEntry = FritoLib.OOP.Class();
+LogEntry = OOP.Class();
 local LogEntry = LogEntry;
 
 LogEntry.entryTypes = {
@@ -17,13 +17,12 @@ LogEntry.entryTypes = {
 --
 -------------------------------------------------------------------------------
 
-function LogEntry.prototype:init(entryType, prefix, ...)
-    LogEntry.super.prototype.init(self);
+function LogEntry:__init(entryType, prefix, ...)
     if entryType == nil then
         entryType = LogEntry.entryTypes.MESSAGE;
     end;
     self.entryType = string.lower(entryType);
-    self.prefix = prefix;
+    self:SetPrefix(prefix);
     self.data = { ... };
 end;
 
@@ -33,12 +32,16 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function LogEntry.prototype:GetEntryType()
+function LogEntry:GetEntryType()
     return self.entryType;
 end;
 
-function LogEntry.prototype:GetPrefix()
+function LogEntry:GetPrefix()
     return self.prefix;
+end;
+
+function LogEntry:SetPrefix(prefix)
+    self.prefix = prefix;
 end;
 
 -------------------------------------------------------------------------------
@@ -47,20 +50,20 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function LogEntry.prototype:ToString()
+function LogEntry:ToString()
     return self:Print(nil, API.Chat.mediums.NULL);
 end;
 
 LogEntry.PREFIX_SYNTAX = "%s: %s";
 
-function LogEntry.prototype:Print(prefix, medium)
+function LogEntry:Print(prefix, medium)
     --rawdebug("Print", prefix, medium, self:GetEntryType());
     medium = medium or API.Chat.mediums.DEBUG;
     prefix = prefix or "";
     local oldPrefix = prefix;
     local currentPrefix = self:GetPrefix();
     if currentPrefix ~= nil then
-        if prefix ~= "" then
+        if prefix ~= "" and prefix ~= currentPrefix then
             prefix = format(LogEntry.PREFIX_SYNTAX, prefix, currentPrefix);
         else
             prefix = currentPrefix;
