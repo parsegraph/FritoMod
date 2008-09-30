@@ -13,8 +13,8 @@ IterationManager.FRAMERATE = .05;
 --
 -------------------------------------------------------------------------------
 
-function IterationManager:init()
-	IterationManager.super.init(self);
+function IterationManager:__Init()
+	IterationManager.super.__Init(self);
 end;
 
 -------------------------------------------------------------------------------

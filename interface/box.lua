@@ -18,12 +18,8 @@ Box.defaultValues = {
 --
 -------------------------------------------------------------------------------
 
-function Box:init()
-    Box.super.init(self);
-end;
-
-function Box:ToString()
-    return "Box";
+function Box:__Init()
+    Box.super.__Init(self);
 end;
 
 -------------------------------------------------------------------------------

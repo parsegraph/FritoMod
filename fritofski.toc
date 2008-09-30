@@ -8,7 +8,6 @@
 
 shortcuts.lua
 
-core.lua
 oop.lua
 icons.lua
 mapscales.lua
@@ -26,6 +25,7 @@ util\layout.lua
 api\core.lua
 api\chat.lua
 api\unit.lua
+api\frame.lua
 
 data\core.lua
 
@@ -50,3 +50,5 @@ managers\unit_manager.lua
 test\util\test_case.lua
 test\managers\test_manager.lua
 test\managers\unit_manager.lua
+
+bootstrapper.lua

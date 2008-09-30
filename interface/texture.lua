@@ -20,8 +20,8 @@ Texture.mediaKeyNames = {
 --
 -------------------------------------------------------------------------------
 
-function Texture:init()
-	Texture.super.init(self);
+function Texture:__Init()
+	Texture.__super.__Init(self);
 end;
 
 function Texture:ToString()

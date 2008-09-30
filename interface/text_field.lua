@@ -28,8 +28,8 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function TextField:init(text)
-	TextField.super.init(self);
+function TextField:__Init(text)
+	TextField.super.__Init(self);
 	self:SetText(text);
 end;
 
