@@ -4,14 +4,7 @@
 ## Notes: Frito's UI Library.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: Ace2
-## SavedVariables: FritoBarsDB 
-
-libs\LibStub\LibStub.lua
-libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
-libs\UTF8\utf8.lua
-
-locales\FritoBars.enUS.lua
+## SavedVariables: FritoMod
 
 shortcuts.lua
 
