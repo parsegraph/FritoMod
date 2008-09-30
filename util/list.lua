@@ -1,4 +1,4 @@
-List = AceLibrary("AceOO-2.0").Class();
+List = OOP.Class();
 local List = List;
 
 ListUtil = {}
@@ -219,10 +219,6 @@ function List:IsEmpty()
         return true;
     end;
     return false;
-end;
-
-function List:Length()
-  return #self;
 end;
 
 function List:GetValues()
