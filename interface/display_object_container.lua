@@ -7,8 +7,8 @@ local DisplayObjectContainer = DisplayObjectContainer;
 --
 -------------------------------------------------------------------------------
 
-function DisplayObjectContainer:__init()
-    DisplayObjectContainer.__super.__init(self);
+function DisplayObjectContainer:__Init()
+    DisplayObjectContainer.__super.__Init(self);
     self.children = List();
     local this = self;
     self.children.DoAdd = function(list, child)

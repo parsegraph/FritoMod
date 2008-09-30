@@ -17,8 +17,8 @@ DisplayObject.mediaKeyNames = {};
 --
 -------------------------------------------------------------------------------
 
-function DisplayObject:init()
-	DisplayObject.__super.__init(self);
+function DisplayObject:__Init()
+	DisplayObject.__super.__Init(self);
 	self:ConstructChildren();
 end;
 

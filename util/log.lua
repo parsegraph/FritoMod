@@ -27,8 +27,8 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Log:__init(prefix, suppressMasterLog)
-    Log.__super.__init(self, LogEntry.entryTypes.LIST);
+function Log:__Init(prefix, suppressMasterLog)
+    Log.__super.__Init(self, LogEntry.entryTypes.LIST);
     self.prefix = tostring(prefix);
     self.listeners = {};
 

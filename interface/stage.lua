@@ -14,8 +14,8 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Stage:__init()
-	Stage.__super.__init(self);
+function Stage:__Init()
+	Stage.__super.__Init(self);
 	if Stage.stage then
 		error("Cannot have multiple instances of the Stage.");
 	end;

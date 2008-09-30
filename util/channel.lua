@@ -1,8 +1,8 @@
 Channel = OOP.Class(Log);
 local Channel = Channel;
 
-function Channel:__init(channelName)
-    Channel.__super.__init(self);
+function Channel:__Init(channelName)
+    Channel.__super.__Init(self);
     self.channelName = channelName;
     self:Pipe(channelName);
     self.memberNames = {};

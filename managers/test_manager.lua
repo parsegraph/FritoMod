@@ -1,8 +1,8 @@
 TestManager = OOP.Class(Log, OOP.Singleton);
 local TestManager = TestManager;
 
-function TestManager:__init(prefix)
-    TestManager.__super.__init(self, prefix or "TestManager");
+function TestManager:__Init(prefix)
+    TestManager.__super.__Init(self, prefix or "TestManager");
     self.groups = {};
 end;
 

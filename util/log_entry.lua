@@ -17,7 +17,7 @@ LogEntry.entryTypes = {
 --
 -------------------------------------------------------------------------------
 
-function LogEntry:__init(entryType, prefix, ...)
+function LogEntry:__Init(entryType, prefix, ...)
     if entryType == nil then
         entryType = LogEntry.entryTypes.MESSAGE;
     end;
