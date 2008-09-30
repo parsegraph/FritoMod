@@ -4,6 +4,22 @@
 --
 -------------------------------------------------------------------------------
 
+function CloneTable(table, destination)
+    destination = destination or {};
+    for k, v in pairs(table) do
+        destination[k] = v;
+    end;
+    return destination;
+end;
+
+function CloneList(list, destination)
+    destination = destination or {};
+    for _, v in ipairs(list) do
+        table.insert(destination, v);
+    end;
+    return destination;
+end;
+
 DIGITS = "0123456789"
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 ALPHANUMERICS = DIGITS .. ALPHABET;
