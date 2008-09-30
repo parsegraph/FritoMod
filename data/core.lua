@@ -21,7 +21,9 @@ function Data:MixinScalar(class, name, lowerName, upperName)
     end;
     -- These event connectors are Unapplied, since they have no current
     -- 'self' they can immediately refer to.
-    class:AddStaticEventConnector(eventName, "Get" .. name);
+    class:AddStaticEventConnector(eventName, function(self, eventName, listenerFunc)
+        listenerFunc(self["Get" .. name](self));
+    end);
 end;
 
 function Data:MixinRange(class, name, lowerName, upperName)
@@ -81,5 +83,7 @@ function Data:MixinRange(class, name, lowerName, upperName)
             max
         );
     end;
-    class:AddStaticEventConnector(eventName, "Get" .. name);
+    class:AddStaticEventConnector(eventName, function(self, eventName, listenerFunc)
+        listenerFunc(self["Get" .. name](self));
+    end);
 end;

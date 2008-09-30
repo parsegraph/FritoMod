@@ -6,22 +6,22 @@ EventDispatcher = setmetatable({}, {
         -- Static event connectors are added to every instance of the class
         -- on construction. These are useful if you want class-wide event connectors,
         -- which is usually the case.
-        class.AddStaticEventConnector = function(eventName, unappliedFunc, ...)
-            unappliedFunc = Unapplied(unappliedFunc, ...);
+        class.AddStaticEventConnector = function(eventName, connectorFunc, ...)
+            connectorFunc = ObjFunc(connectorFunc, ...);
             eventConnectors = staticConnectors[eventName];
             if not eventConnectors then
                 eventConnectors = {};
                 staticConnectors[eventName] = eventConnectors;
             end;
-            table.insert(eventConnectors, unappliedFunc);
+            table.insert(eventConnectors, connectorFunc);
         end;
 
         -- Static event initializers are added to event instance of the class on
         -- construction. These are useful if you want class-wide event initializers, which
         -- is usually the case.
-        class.SetStaticEventInitializer = function(eventName, unappliedFunc, ...)
-            unappliedFunc = Unapplied(unappliedFunc, ...);
-            staticInitializers[eventName] = unappliedFunc;
+        class.SetStaticEventInitializer = function(eventName, initializerFunc, ...)
+            initializerFunc = ObjFunc(initializerFunc, ...);
+            staticInitializers[eventName] = initializerFunc;
         end;
 
         -- Return the constructor.
@@ -31,13 +31,8 @@ EventDispatcher = setmetatable({}, {
             local connectorTable = {};
             local listenerTable = {};
 
-            -- When we construct an object, we need to apply all our Unapplied's that we've created
-            -- from the staticConnectors. This means that every connector will have self passed as
-            -- the first argument.
-            for eventName, unappliedConnectors in pairs(staticConnectors) do
-                connectors[eventName] = ListUtil:Map(unappliedConnectors, {}, function(unappliedFunc)
-                    return unappliedFunc(instance);
-                end);
+            for eventName, connectors in pairs(staticConnectors) do
+                connectorTable[eventName] = CloneList(connectors);
             end;
 
             -- Event initializers are fired when an event is first registered with this object. For example,
@@ -46,7 +41,7 @@ EventDispatcher = setmetatable({}, {
             -- only be one initializer per event. If no initializer is found, then a default initializer is used
             -- (and may be registered with the eventName of the boolean value true.
             --
-            -- Initializers are called with the signature initializer(eventName)
+            -- Initializers are called with the signature initializer(self, eventName)
             function instance:SetEventInitializer(eventName, initializerFunc, ...)
                 initializers[eventName] = ObjFunc(initializerFunc, ...);
             end;
@@ -106,8 +101,9 @@ EventDispatcher = setmetatable({}, {
 
                 -- If this is the first listener attached to this event, we call any initializer
                 -- that's available.
-                if #listeners == 0 and initializers[eventName] then
-                    local sanitizer = initializers[eventName](self, eventName);
+                local initializer = initializers[eventName] or initializers[true];
+                if #listeners == 0 and initializer then
+                    local sanitizer = initializer(self, eventName);
                     if sanitizer then
                         sanitizers[eventName] = sanitizer;
                     end;
@@ -121,7 +117,7 @@ EventDispatcher = setmetatable({}, {
                 local connectors = connectorTable[eventName];
                 if connectors then
                     for _, connector in ipairs(connectors) do
-                        connector(eventName, listenerFunc);
+                        connector(self, eventName, listenerFunc);
                     end;
                 end;
 
