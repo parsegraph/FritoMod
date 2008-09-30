@@ -218,10 +218,12 @@ OOP.MixinLibrary = function(constructorFunc, library)
         constructorFunc = nil;
     end;
     library = library or {};
-    return function(class) 
-        OOP.IntegrateLibrary(library, class);
-        return constructorFunc;
-    end;
+    return setmetatable(library, {
+        __call = function(class) 
+            OOP.IntegrateLibrary(library, class);
+            return constructorFunc;
+        end;
+    });
 end;
 
 -- Guarantees a Singleton.
