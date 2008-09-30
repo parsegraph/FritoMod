@@ -219,7 +219,7 @@ OOP.MixinLibrary = function(constructorFunc, library)
     end;
     library = library or {};
     return setmetatable(library, {
-        __call = function(class) 
+        __call = function(library, class) 
             OOP.IntegrateLibrary(library, class);
             return constructorFunc;
         end;
