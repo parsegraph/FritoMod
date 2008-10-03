@@ -1,20 +1,70 @@
 IterationManager = OOP.Class(EventDispatcher, ComponentSingleton);
 local IterationManager = IterationManager;
 
-IterationManager.EVENT_UPDATE = "UpdateEvent";
-IterationManager.EVENT_PREPROCESS = "PreprocessEvent";
-IterationManager.EVENT_POSTPROCESS = "PostprocessEvent";
+IterationManager.events = {
+    UPDATE = "update",
+    PREPROCESS = "preprocess",
+    POSTPROCESS = "postprocess"
+};
 
 IterationManager.FRAMERATE = .05;
 
--------------------------------------------------------------------------------
---
---  Constructor
---
--------------------------------------------------------------------------------
-
 function IterationManager:__Init()
 	IterationManager.super.__Init(self);
+    self.timers = {};
+end;
+
+-- Perform one complete iteration. These events should always be called together, in this order, and
+-- only from this function.
+function IterationManager:Iterate()
+	self:DispatchEvent(IterationManager.events.PREPROCESS);
+	self:DispatchEvent(IterationManager.events.UPDATE);
+	self:DispatchEvent(IterationManager.events.POSTPROCESS);
+end;
+
+function IterationManager:CallPeriodically(granularity, periodicFunc, ...)
+    -- Granularity is optional, though it does complicate this workflow to have to check
+    -- if it was passed.
+    if type(granularity) ~= "number" then
+        periodicFunc = ObjFunc(granularity, periodicFunc, ...);
+        granularity = nil;
+    else
+        periodicFunc = ObjFunc(periodicFunc, ...);
+    end;
+    -- Last and first iterations for the timer here will be set on the first iteration.
+    local timer = {
+        periodicFunc = periodicFunc,
+        granularity = granularity or 0,
+        lastIteration = 0,
+        firstIteration = 0,
+    };
+    table.insert(self.timers, timer);
+    -- Return the function used to remove this periodic function.
+    return function()
+        for i, candidate in ipairs(self.timers) do
+            if candidate == timer then
+                table.remove(self.timers, i);
+                return;
+            end;
+        end;
+    end;
+end;
+
+function IterationManager:IterateTimers()
+    local currentTime = API:GetCurrentTime();
+    for _, timer in pairs(self.timers) do
+        if not timer.lastIteration then
+            timer.lastIteration = currentTime;
+            timer.firstIteration = currentTime;
+        end
+        if not timer.granularity or timer.lastIteration + timer.granularity < currentTime then
+            timer.periodicFunc(
+                currentTime - timer.firstIteration, 
+                currentTime - timer.lastIteration
+            );
+            timer.lastIteration = currentTime;
+        end;
+    end;
 end;
 
 -------------------------------------------------------------------------------
@@ -25,35 +75,27 @@ end;
 
 function IterationManager:Attach(aceEvent, framerate)
 	framerate = framerate or IterationManager.FRAMERATE;
-	aceEvent:ScheduleRepeatingEvent(IterationManager.EVENT_UPDATE, self.OnUpdate, framerate, self);
+	aceEvent:ScheduleRepeatingEvent(IterationManager.events.UPDATE, self.OnUpdate, framerate, self);
 end;
 
 function IterationManager:Detach(aceEvent)
-	aceEvent:UnscheduleRepeatingEvent(IterationManager.EVENT_UPDATE, self.OnUpdate, framerate, self);
+	aceEvent:UnscheduleRepeatingEvent(IterationManager.events.UPDATE, self.OnUpdate, framerate, self);
 end;
 
 -------------------------------------------------------------------------------
 --
---  Processor Manipulation Methods
+--  Convenience Methods: EventDispatcher
 -- 
 -------------------------------------------------------------------------------
 
-function IterationManager:AddPreprocessor(...)
-	return self:AddListener(IterationManager.EVENT_PREPROCESS, ...);
+function IterationManager:AddPreprocessor(listenerFunc, ...)
+	return self:AddListener(IterationManager.events.PREPROCESS, listenerFunc, ...);
 end;
 
-function IterationManager:AddPostprocessor(...)
-	return self:AddListener(IterationManager.EVENT_POSTPROCESS, ...);
+function IterationManager:AddIterator(listenerFunc, ...)
+	return self:AddListener(IterationManager.events.UPDATE, listenerFunc, ...);
 end;
 
--------------------------------------------------------------------------------
---
---  Iteration Utility and Listeners
--- 
--------------------------------------------------------------------------------
-
-function IterationManager:OnUpdate()
-	self:TriggerEvent(IterationManager.EVENT_PREPROCESS);
-	Stage.GetStage():ValidateNow();
-	self:TriggerEvent(IterationManager.EVENT_POSTPROCESS);
+function IterationManager:AddPostprocessor(listenerFunc, ...)
+	return self:AddListener(IterationManager.events.POSTPROCESS, listenerFunc, ...);
 end;
