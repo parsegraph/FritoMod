@@ -43,20 +43,20 @@ function Environment:ChangeRunLevel(runLevel)
     if not LookupValue(Environment.runLevels, runLevel) then
         error("Runlevel is not valid: " .. runLevel);
     end;
-    function Increment()
-        if self.runLevel == runLevel then
-            return;
-        elseif self.runLevel < runLevel then
+    while runLevel ~= self.runLevel do
+        if self.runLevel < runLevel then
+            for _, bootstrapperFunc in self.bootstrapper[runLevel] do
+                RunBootstrapper(self, runLevel, bootstrapperFunc);
+            end;
             self.runLevel = self.runLevel + 1;
         else
             self.runLevel = self.runLevel - 1;
+            local sanitizers = self.sanitizers[runLevel];
+            while #sanitizers do
+                local sanitizer = table.remove(sanitizers);
+                sanitizer(runLevel);
+            end;
         end;
-    end;
-    while runLevel ~= self.runLevel do
-        for _, bootstrapperFunc in self.bootstrapper[runLevel] do
-            RunBootstrapper(self, runLevel, bootstrapperFunc);
-        end;
-        Increment();
     end;
 end;
 
@@ -95,7 +95,7 @@ end;
 
 function Environment:FlushDelayed()
     while #self.delayedCalls do
-        self.delayedCalls[1]();
-        table.remove(self.delayedCalls, 1);
+        local delayedCall = table.remove(self.delayedCalls);
+        delayedCall();
     end;
 end;
