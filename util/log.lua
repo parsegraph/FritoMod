@@ -5,13 +5,13 @@ function LogMixin(class)
     logAttrName = logAttrName or "log";
     OOP.IntegrateLibrary({
         Print = function(self, ...)
-            return obj[logAttrName]:Print(...);
+            return self[logAttrName]:Print(...);
         end,
         Head = function(self, ...)
-            return obj[logAttrName]:Head(...);
+            return self[logAttrName]:Head(...);
         end,
         Tail = function(self, ...)
-            return obj[logAttrName]:Tail(...);
+            return self[logAttrName]:Tail(...);
         end
     }, class);
     return function(self, class)
