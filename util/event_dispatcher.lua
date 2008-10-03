@@ -1,37 +1,17 @@
 EventDispatcher = function(class)
-    local staticConnectors = {};
-    local staticInitializers = {};
-
-    -- Static event connectors are added to every instance of the class
-    -- on construction. These are useful if you want class-wide event connectors,
-    -- which is usually the case.
-    class.AddStaticEventConnector = function(eventName, connectorFunc, ...)
-        connectorFunc = ObjFunc(connectorFunc, ...);
-        eventConnectors = staticConnectors[eventName];
-        if not eventConnectors then
-            eventConnectors = {};
-            staticConnectors[eventName] = eventConnectors;
-        end;
-        table.insert(eventConnectors, connectorFunc);
-    end;
-
-    -- Static event initializers are added to event instance of the class on
-    -- construction. These are useful if you want class-wide event initializers, which
-    -- is usually the case.
-    class.SetStaticEventInitializer = function(eventName, initializerFunc, ...)
-        initializerFunc = ObjFunc(initializerFunc, ...);
-        staticInitializers[eventName] = initializerFunc;
-    end;
+    local staticConnectors, staticInitializers;
 
     -- Return the constructor.
-    return function(instance, class)
+    function constructor(instance, class)
         local initializers = setmetatable({}, {__index = staticInitializers});
         local sanitizers = {};
         local connectorTable = {};
         local listenerTable = {};
 
-        for eventName, connectors in pairs(staticConnectors) do
-            connectorTable[eventName] = CloneList(connectors);
+        if staticConnectors then
+            for eventName, connectors in pairs(staticConnectors) do
+                connectorTable[eventName] = CloneList(connectors);
+            end;
         end;
 
         -- Event initializers are fired when an event is first registered with this object. For example,
@@ -142,5 +122,37 @@ EventDispatcher = function(class)
                 end;
             end;
         end;
+    end;
+
+    if class then
+        staticInitializers = {};
+        staticConnectors = {};
+
+        -- Static event connectors are added to every instance of the class
+        -- on construction. These are useful if you want class-wide event connectors,
+        -- which is usually the case.
+        class.AddStaticEventConnector = function(eventName, connectorFunc, ...)
+            connectorFunc = ObjFunc(connectorFunc, ...);
+            eventConnectors = staticConnectors[eventName];
+            if not eventConnectors then
+                eventConnectors = {};
+                staticConnectors[eventName] = eventConnectors;
+            end;
+            table.insert(eventConnectors, connectorFunc);
+        end;
+
+        -- Static event initializers are added to event instance of the class on
+        -- construction. These are useful if you want class-wide event initializers, which
+        -- is usually the case.
+        class.SetStaticEventInitializer = function(eventName, initializerFunc, ...)
+            initializerFunc = ObjFunc(initializerFunc, ...);
+            staticInitializers[eventName] = initializerFunc;
+        end;
+        return constructor;
+    else
+        -- We're creating an EventDispatcher independently of any class.
+        local instance = {};
+        constructor(instance);
+        return instance;
     end;
 end;
