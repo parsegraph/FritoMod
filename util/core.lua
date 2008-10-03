@@ -4,6 +4,53 @@
 --
 -------------------------------------------------------------------------------
 
+function DecorateTable(table, metatable)
+    local oldMetatable = getmetatable(table);
+    setmetatable(metatable, oldMetatable);
+    setmetatable(table, metatable);
+    return table, oldMetatable;
+end;
+
+function LazyInitialize(table, initializerFunc, ...)
+    initializerFunc = ObjFunc(initializerFunc, ...);
+    local oldMetatable;
+    function initialize()
+        setmetatable(table, oldMetatable);
+        initializerFunc(table);
+    end;
+    table, oldMetatable = DecorateTable(table, {
+        __index = function(self, key)
+            initialize();
+            return self[key];
+        end,
+        __call = function(self, ...)
+            initialize();
+            return self(...);
+        end,
+    });
+    return table;
+end;
+
+function LazyMaskInitialize(realTable, initializerFunc, ...)
+    local maskTable = setmetatable({}, {
+        __index = realTable, 
+        __call = function(self, ...) 
+            return realTable(...) 
+        end
+    });
+    LazyInitialize(maskTable, initializerFunc, ...);
+    return maskTable;
+end;
+
+function LookupValue(table, value)
+    for k,v in pairs(table) do
+        if v == value then
+            return true;
+        end;
+    end;
+    return false;
+end;
+
 function CloneTable(table, destination)
     destination = destination or {};
     for k, v in pairs(table) do
