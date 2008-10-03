@@ -3,15 +3,15 @@ function print(...)
 end;
 
 function debug(...)
-    return MasterLog:LogDebug(...);
+    return Environment.GetInstance():LogDebug(...);
 end;
 
 function log(...)
-    return MasterLog:LogMessage(...);
+    return Environment.GetInstance():LogMessage(...);
 end;
 
 function warning(...)
-    return MasterLog:LogWarning(...);
+    return Environment.GetInstance():LogWarning(...);
 end;
 
 function rawdebug(...)
