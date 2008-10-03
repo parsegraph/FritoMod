@@ -1,5 +1,5 @@
-Frame = OOP.Class(nil, EventDispatcher);
-local Frame = Frame;
+API.Frame = OOP.Class(EventDispatcher);
+local Frame = API.Frame;
 
 Frame.__AddInitializer(function(class)
     class.REVERSE_WIDGET_HANDLERS = {
@@ -32,6 +32,10 @@ Frame.__AddInitializer(function(class)
     end;
 end);
 
+Frame.frameTypes = {
+    FRAME = "frame"
+};
+
 Frame.SetStaticEventInitializer(true, function(self, eventName)
     local widgetEventName = Frame.WIDGET_HANDLERS[eventName];
     if not widgetEventName then
@@ -41,6 +45,24 @@ Frame.SetStaticEventInitializer(true, function(self, eventName)
         self:DispatchEvent(eventName, ...);
     end);
     return function()
-        self.frame:SetScript(widgetEventName, nil);
+        self:GetFrame():SetScript(widgetEventName, nil);
     end;
 end);
+
+function Frame:__Init(frameType, inheritedFrames)
+    frameType = string.lower(frameType);
+    if not LookupValue(Frame.frameTypes, frameType) then
+        error("Unrecognized frameType: " .. frameType);
+    end;
+    self.type = frameType;
+    if type(inheritedFrames) == "string" then
+        self.inheritedFrames = { string.split(",", inheritedFrames) };
+    else
+        self.inheritedFrames = inheritedFrames;
+    end;
+    self.rawFrame = CreateFrame(self.type, nil, nil, string.join(",", self.inheritedFrames));
+end;
+
+function Frame:GetFrame()
+    return self.rawFrame;
+end;
