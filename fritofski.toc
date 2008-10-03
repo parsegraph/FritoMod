@@ -11,6 +11,7 @@ shortcuts.lua
 oop.lua
 icons.lua
 mapscales.lua
+environment.lua
 
 util\core.lua
 util\log_entry.lua
@@ -51,4 +52,3 @@ test\util\test_case.lua
 test\managers\test_manager.lua
 test\managers\unit_manager.lua
 
-bootstrapper.lua
