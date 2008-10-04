@@ -157,7 +157,10 @@ function ObjFunc(objOrFunc, funcOrName, ...)
             return funcOrName(objOrFunc, unpackall(args, {...}));
         end;
     else
-        error(format("Invalid parameters given objOrFunc: '%s', funcOrName: '%s'", objOrFunc, funcOrName));
+        error(format("Invalid parameters given objOrFunc: '%s', funcOrName: '%s'", 
+            objOrFunc or "<falsy>", 
+            funcOrName or "<falsy>"
+        ));
     end;
 end;
 
