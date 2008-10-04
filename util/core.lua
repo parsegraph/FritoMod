@@ -4,6 +4,12 @@
 --
 -------------------------------------------------------------------------------
 
+function MapCall(functionList, ...)
+    for _, func in ipairs(functionList) do
+        func(...);
+    end;
+end;
+
 function DecorateTable(table, metatable)
     local oldMetatable = getmetatable(table);
     setmetatable(metatable, oldMetatable);
