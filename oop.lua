@@ -29,6 +29,7 @@ OOP.Class = function(parentClass, ...)
     local initializers = { ... };
     if parentClass and (type(parentClass) ~= "table" or not rawget(parentClass, "__Init")) then
         table.insert(initializers, 1, parentClass);
+        parentClass = nil;
     end;
 
     local class = nil;
