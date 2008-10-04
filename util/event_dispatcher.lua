@@ -1,12 +1,12 @@
 EventDispatcher = function(class)
     local staticConnectors, staticInitializers;
 
-    -- Return the constructor.
-    function constructor(instance, class)
+    function Constructor(instance, class)
         local initializers = setmetatable({}, {__index = staticInitializers});
         local sanitizers = {};
         local connectorTable = {};
         local listenerTable = {};
+        local forwarders = {};
 
         if staticConnectors then
             for eventName, connectors in pairs(staticConnectors) do
@@ -37,16 +37,25 @@ EventDispatcher = function(class)
             table.insert(connectors, ObjFunc(connectorFunc, ...));
         end;
 
+        -- Forwards any event dispatched from this instance to the given function, calling the forwarderFunc
+        -- as though it was another event listener.
+        function instance:AddForwarder(forwarderFunc, ...)
+            forwarderFunc = ObjFunc(forwarderFunc, ...);
+            table.insert(forwarders, forwarderFunc);
+        end;
+
         -- Dispatches a event, notifying all listeners registered with it. Every listener is called with
         -- the signature listener(eventName, ...). All return values are ignored, and if a listener
         -- throws, no cleanup is attempted, and the event will not be fired on any remaining listeners.
         function instance:DispatchEvent(eventName, ...)
             local listeners = listenerTable[eventName];
-            if not listeners then 
-                return;
+            if listeners then 
+                for _, listener in ipairs(listeners) do
+                    listener(eventName, ...);
+                end;
             end;
-            for _, listener in ipairs(listeners) do
-                listener(eventName, ...);
+            for _, forwarder in ipairs(forwarders) do
+                forwarder(eventName, ...);
             end;
         end;
 
@@ -148,11 +157,11 @@ EventDispatcher = function(class)
             initializerFunc = ObjFunc(initializerFunc, ...);
             staticInitializers[eventName] = initializerFunc;
         end;
-        return constructor;
+        return Constructor;
     else
         -- We're creating an EventDispatcher independently of any class.
         local instance = {};
-        constructor(instance);
+        Constructor(instance);
         return instance;
     end;
 end;
