@@ -6,9 +6,10 @@ API.Event = LazyMaskInitialize(
             if not masterFrame then
                 error("There is no master frame for API.Event to register with!");
             end;
-            masterFrame:RegisterEvent(eventName);
+            masterFrame:GetFrame():RegisterEvent(eventName);
             return ObjFunc(masterFrame, "UnregisterEvent", eventName);
         end);
+        masterFrame:AddForwarder(self, "DispatchEvent");
     end
 );
 local Event = API.Event;

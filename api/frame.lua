@@ -50,6 +50,7 @@ Frame.SetStaticEventInitializer(true, function(self, eventName)
 end);
 
 function Frame:__Init(frameType, inheritedFrames)
+    frameType = frameType or Frame.frameTypes.FRAME;
     frameType = string.lower(frameType);
     if not LookupValue(Frame.frameTypes, frameType) then
         error("Unrecognized frameType: " .. frameType);
@@ -58,9 +59,12 @@ function Frame:__Init(frameType, inheritedFrames)
     if type(inheritedFrames) == "string" then
         self.inheritedFrames = { string.split(",", inheritedFrames) };
     else
-        self.inheritedFrames = inheritedFrames;
+        self.inheritedFrames = inheritedFrames or {};
     end;
     self.rawFrame = CreateFrame(self.type, nil, nil, string.join(",", self.inheritedFrames));
+    self:GetFrame():SetScript("OnEvent", function(rawFrame, eventName, ...)
+        self:DispatchEvent(eventName, ...);
+    end);
 end;
 
 function Frame:GetFrame()
