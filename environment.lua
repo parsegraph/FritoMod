@@ -1,79 +1,113 @@
 Environment = OOP.Class(LogMixin, OOP.Singleton);
 
--- Runlevels formalize the level of functionality that you can expect from the framework at any given
--- time.
+-- Runlevels formalize two concepts vital to the successful use of the framework: The level of functionality
+-- to expect, and the suggested order of component deployment.
+
+-- WHY RUNLEVELS? 
 --
--- Initializers should be assigned to the level they qualify some component for. In other words, a
--- function added at the NASCENT level expects everything to be in the UNBORN level, and does something
--- to make some component qualify for the NASCENT level of functionality.
+-- With such a diverse framework as this is, problems can arise over when any given component can be considered
+-- "ready." To further complicate matters, discrepancies can appear when a component is "ready" but has not yet
+-- been "deployed." An example of a non-ready component is one who has not yet created its attributes yet, but
+-- an attempt is made to access them. To combat this, the component must either initialize as immediately as
+-- possible, or do so just-in-time. Both strategies can run into race conditions, and can unnecessarily bloat
+-- the framework, either in consumption of resources or in seemingly random performance drops as the component
+-- is initialized on demand.
 --
--- Therefore, no initializers are allowed at the UNBORN level, since the framework starts at that level
--- of functionality (which is none).
+-- With a formal set of steps to initialize the framework, we provide components with another strategy to handle
+-- initialization, and to minimize race conditions and unexpected behavior due to haphazardly initalized components.
 --
--- I describe run-levels here to two separate audiences: core and non-core component developers. The 
--- difference is mostly arbitrary, but there are some guidelines. If your compoonent has heavy reliance
--- on many parts of the framework, it's not a core component. If it's not essential for some other
--- feature that other components use, it's not a core component.
+-- That said, components do not have to use this system solely to initialize themselves; runlevels augment, not 
+-- replace, existing practices of initialization, such as lazy and overeager initialization. You may use whatever
+-- method seems most appropriate to create your components.
 --
--- Not being a core component is not a bad thing, of course - in fact, non-core components are much less
--- restricted in the functionality they can expect when they're initialized, whereas core components'
--- failure, due to their coupling with other components, can cause serious problems.
+-- While initialization using this system isn't required, every component must comply with the guarantees made
+-- by any given runlevel. If any alternative method is used, it must be transparent to the end-user.
+
+-- INITIALIZATION AND DEPLOYMENT
 --
--- Also, these levels define the minimum level of preparedness for any given component. If a component
--- has no initialization or interdependence, then it's at the SAFE stage even in the UNBORN stage. More
--- importantly, a component only has to provide functionality at the given levels when requested - lazy
--- initialization is allowed, even encouraged in many cases, as long as the design decision works and 
--- is subtle. If your component is heavy, it's best to get it done with in the initialization cycle, 
--- rather than lazily.
+-- All components undergo a two-phase initialization process: Initialization and deployment. All components are
+-- initialized first, then all components deploy themselves. The distinction here is dependency, and is best shown
+-- by explaining the phases:
+--
+-- During the first phase, initialization, all components prepare themselves to be deployed and to receive dependencies
+-- from other components. There is, however, no dependencies actually made during this phase.
+--
+-- The second phase, deployment, is where interdependencies and connections are established. You may safely assume
+-- during this phase that the entire framework is available to be utilized.
+
+-- CORE AND AUXILLARY COMPONENTS
+--
+-- The problem with just having two phases involves this conundrum: How do you guarantee a fully functional framework
+-- for any one component to initialize, when the framework relies on that component to provide some functionality? We
+-- avoid this problem partially by using a two-phase initialization process; components have no interdependency during
+-- the first phase, so the order of initialization is irrelevant.
+--
+-- The second phase, deployment, is where problems arise. If you don't know whether the core parts (or any part)
+-- of the framework are fully deployed, you can be surprised by the strange results that crop up (most often due to
+-- uninitialized data and missing listener connections between components).
+--
+-- To fight this inconsistent and invalid behavior, we divide components into two groups: core and auxillary. The essentials
+-- of the framework are core components, whereas dependents are auxillaries. We guarantee that any auxillary deployment will
+-- occur with a fully deployed core framework underneath it. This means that everyday component designers don't have to worry 
+-- about whether some critical part of the framework is or isn't ready.
+--
+-- A consequence is that designers must cateogrize their component as either core or auxillary. Do so with care since a bad
+-- choice will make the initialization process awkward for any dependents. There's no hard and fast rules on what makes a
+-- component one or the other; generally, core components have more fan-out than fan-in with regard to dependencies, and 
+-- auxillary components are the reverse. Core components never depend on auxillary components. An auxillary component is 
+-- not 'essential' except to (a few) other auxillary components. 
+
+-- MAKING BOOTSTRAPPERS
+--
+-- Follow the contracts guaranteed by each runlevel. You should assign a boostrapper to the level it's intended
+-- to accomplish. (i.e, bootstrappers that do initial work on a component are assigned to the INITIALIZE level, 
+-- whereas a Addon channel connection is made in the deployment stage.) After all bootstrappers are executed,
+-- the framework should be completely finished and require no additional work to lift itself to the next runlevel.
+-- Simply put, be atomic, and consistent with the guidelines.
+
+-- A FINAL WORD
+--
+-- Judgment over what is and isn't done at any point is ultimately up to the developer. The guarantees made here must always
+-- be kept, but the manner used to achieve them is irrelevant to the contract. Therefore, initialization or deployment of some 
+-- component may occur later than what's said here, but _only_ if the result is transparent to the contracts. These cases should
+-- be the exception.
+--
+-- Be aware also that these phases are cumulative. Each runlevel guarantees all that the previous runlevels guaranteed, and no
+-- runlevel can be rolled back without rolling back any dependent runlevels first.
+
 Environment.runLevels = {
-    UNBORN = 1, -- Inhospitable
-    -- This is the starting level of readiness for the framework, and as such, no component should 
-    -- expect any guarantee of functionality beyond the builtins and included code in the framework. 
-    -- Any attempt to use the framework at this level is allowed to Fail Miserably.
-    --
-    -- If you're writing core components, you should run any independent initialization at this
-    -- point. Independent initialization means that you should initialize your component to be used,
-    -- but should _not_ make connections with any other part of the framework.
-    --
-    -- If you're writing non-core components, do nothing.
+    PREINITIALIZE = 1, 
+    -- Expect nothing at this stage. Any attempt to use the framework at this level is considered "unexpected" and
+    -- may Fail Miserably. Since this level cannot be advanced to, no bootstrappers can be assigned at this point.
 
-    NASCENT = 2, -- Functional but Unsanitary
-    -- NASCENT means core components are functioning, though interdependencies may not yet be 
-    -- established. Interdependencies include logging syndication, UI creation, listener registration
-    -- for events, etc. Simply put, the framework works, but may look like it doesn't if it's used at this
-    -- stage.
-    --
-    -- Core components should make any connections they see fit, but keep general operations waiting
-    -- until the COMPLETE stage.
-    --
-    -- If you're writing non-core components, you should do nothing at this stage. If you want, you may
-    -- initialize here (or even earlier if you really want to), but the contract here is that non-core
-    -- components are given a pristine working environment. Since NASCENT is nowhere near pristine relative
-    -- to COMPLETE, it's best to wait until that time.
+    INITIALIZE = 2, 
+    -- Unless guaranteed separately to be at some prepared state, this is equivalent to the PREINITIALIZE state in 
+    -- terms of what to expect at the start. Bootstrappers assigned here initialize all components, but make no inter-
+    -- component connections of any kind. By the end of this stage, every component is usable, but its fully-functional 
+    -- behavior may not be established.
 
-    COMPLETE = 3, -- General Operations
-    -- COMPLETE means all core components have completed everything involving their initialization. The
-    -- very worst case would be items that are initialized on the first iteration, but this initialization
-    -- should be totally transparent to the rest of the framework. The core framework is completely 
-    -- operational. 
-    --
-    -- Non-core components may initialize at this time, though interdependencies between non-core components
-    -- are not guaranteed to be stable. This is an identical situation to what core components are limited to
-    -- in the UNBORN stage.
+    DEPLOY_CORE = 3,
+    -- This stage guarantees that all components are initialized, and connections may be made amongst all of them. However,
+    -- connections cannot be expected amongst any of them. Core components should be fully operational at the end of this
+    -- stage, but auxillary components should do nothing here.
 
-    SAFE = 4,
-    -- Safe means that, like COMPLETE, all core components are fully operational and working. It also means that
-    -- all non-core components can be accessed freely and interdependencies can be established.
-    --
-    -- If you're writing non-core components, all connections can be made here. However, like with the NASCENT stage
-    -- and core components, you should wait until after this stage is complete due to initializer unpredictablity.
+    DEPLOY_AUXILLARY = 4,
+    -- This stage guarantees a sane and consistent core framework for all components. Bootstrappers may safely access this
+    -- side and expect consistently clean results. As such, core components do nothing past this phase. Auxillary components 
+    -- must be fully deployed at the end of this stage.
+
+    SAFE = 5,
+    -- Finalize any initialization of whatever has been done. Initialization at this phase is 100% complete, and the framework
+    -- is now completely event-driven. This, like PREINITIALIZE, has no requirements or expectations, and is more of a convenience
+    -- for developers than a real runlevel.
 };
 
 Environment.runLevelOrder = {
-    Environment.runLevels.UNBORN,
-    Environment.runLevels.NASCENT,
-    Environment.runLevels.COMPLETE,
-    Environment.runLevels.SAFE
+    Environment.runLevels.PREINITIALIZE,
+    Environment.runLevels.INITIALIZE,
+    Environment.runLevels.DEPLOY_CORE,
+    Environment.runLevels.DEPLOY_AUXILLARY,
+    Environment.runLevels.SAFE,
 };
 
 function Environment:__Init()
@@ -99,29 +133,38 @@ end;
 --
 -------------------------------------------------------------------------------
 
+function Environment:Bootstrap()
+    return self:ChangeRunLevel(Environment.runLevels.SAFE);
+end;
+
+function Environment:Shutdown()
+    return self:ChangeRunLevel(Environment.runLevels.PREINITIALIZE);
+end;
+
 function Environment:ChangeRunLevel(runLevel)
     if not LookupValue(Environment.runLevels, runLevel) then
         error("Runlevel is not valid: " .. runLevel);
     end;
     while runLevel ~= self.runLevel do
         if self.runLevel < runLevel then
-            for _, bootstrapperFunc in self.bootstrapper[runLevel] do
-                RunBootstrapper(self, runLevel, bootstrapperFunc);
+            local pendingRunLevel = self.runLevel + 1;
+            for _, bootstrapperFunc in self.bootstrappers[pendingRunLevel] do
+                RunBootstrapper(self, pendingRunLevel, bootstrapperFunc);
             end;
-            self.runLevel = self.runLevel + 1;
+            self.runLevel = pendingRunLevel;
         else
+            local sanitizers = self.sanitizers[self.runLevel];
             self.runLevel = self.runLevel - 1;
-            local sanitizers = self.sanitizers[runLevel];
             while #sanitizers do
                 local sanitizer = table.remove(sanitizers);
-                sanitizer(runLevel);
+                sanitizer(self.runLevel);
             end;
         end;
     end;
 end;
 
 function Environment:AddBootstrapper(runLevel, bootstrapperFunc, ...)
-    if runLevel == Environment.runLevels.UNBORN then
+    if runLevel == Environment.runLevels.PREINITIALIZE then
         error("Cannot have any bootstrappers that run at the lowest level.");
     end;
     bootstrapperFunc = ObjFunc(bootstrapperFunc, ...);
@@ -148,7 +191,7 @@ end;
 --
 -------------------------------------------------------------------------------
 
-function Environment:CallLater(delayedFunc, ....)
+function Environment:CallLater(delayedFunc, ...)
     delayedFunc = ObjFunc(delayedFunc, ...);
     table.insert(self.delayedCalls);
 end;
