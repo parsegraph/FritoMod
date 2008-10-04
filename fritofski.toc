@@ -27,6 +27,7 @@ api\core.lua
 api\chat.lua
 api\unit.lua
 api\frame.lua
+api\event.lua
 
 data\core.lua
 
