@@ -1,9 +1,7 @@
-MediaLibrary = {
-    DEFAULT = "default",
-    mediaTable = {},
-    proxyLibraries = {},
-};
+MediaLibrary = OOP.Class(ComponentSingleton);
 local MediaLibrary = MediaLibrary;
+
+MediaLibrary.DEFAULT = "default";
 
 --[[
 	MediaLibrary allows media of any form to be registered to a given name, so that it may be
@@ -29,20 +27,12 @@ local MediaLibrary = MediaLibrary;
 	
 --]]
 
--------------------------------------------------------------------------------
---
---  MediaLibrary: Default Registration
---
--------------------------------------------------------------------------------
-
-function MediaLibrary:RegisterDefaults()
-	if MediaLibrary.defaultsRegistered then
-		return;
-	end;
-	MediaLibrary.defaultsRegistered = true;
+function MediaLibrary:__Init()
+    self.mediaTable = {},
+    self.proxyLibraries = {},
 
 	-- This implicitly sets the Default, since there's a name in here that has a key of 'Default'
-	MediaLibrary:BulkAdd("Color", MATERIAL_TEXT_COLOR_TABLE);
+	self:BulkAdd("Color", MATERIAL_TEXT_COLOR_TABLE);
 
 	local function BreakColorTable(table)
 		return {table.a or 1.0, table.r, table.g, table.b};
@@ -67,33 +57,33 @@ function MediaLibrary:RegisterDefaults()
 	--  Colors
 	----------------------------------------
 
-	MediaLibrary:RegisterType("Color"); -- { A, R, G, B };
+	self:RegisterType("Color"); -- { A, R, G, B };
 
-	MediaLibrary:Add("Color", "White", {1.0, 1.0, 1.0, 1.0});
-	MediaLibrary:Add("Color", "Black", {1.0, 0.0, 0.0, 0.0});
-	MediaLibrary:Add("Color", "Blue", {1.0, 0.0, 0.0, 1.0});
-	MediaLibrary:Add("Color", "Yellow", {1.0, 1.0, 1.0, 0.0});
+	self:Add("Color", "White", {1.0, 1.0, 1.0, 1.0});
+	self:Add("Color", "Black", {1.0, 0.0, 0.0, 0.0});
+	self:Add("Color", "Blue", {1.0, 0.0, 0.0, 1.0});
+	self:Add("Color", "Yellow", {1.0, 1.0, 1.0, 0.0});
 
 	-- Some Blizzard colors
-	MediaLibrary:Add("Color", "Red", BreakColorTable(RED_FONT_COLOR));
-	MediaLibrary:Add("Color", "Green", BreakColorTable(GREEN_FONT_COLOR));
-	MediaLibrary:Add("Color", "Gray", BreakColorTable(GRAY_FONT_COLOR));
+	self:Add("Color", "Red", BreakColorTable(RED_FONT_COLOR));
+	self:Add("Color", "Green", BreakColorTable(GREEN_FONT_COLOR));
+	self:Add("Color", "Gray", BreakColorTable(GRAY_FONT_COLOR));
 
-	MediaLibrary:Add("Color", "Warning", ConvertToTable(0xFFFF6347));
-	MediaLibrary:Add("Color", "Error", ConvertToTable(0xFFB22222))
-	MediaLibrary:Add("Color", "Debug", ConvertToTable(0xFFCD5C5C));
-	MediaLibrary:Add("Color", "Message", ConvertToTable(0xFF6495ED));
+	self:Add("Color", "Warning", ConvertToTable(0xFFFF6347));
+	self:Add("Color", "Error", ConvertToTable(0xFFB22222))
+	self:Add("Color", "Debug", ConvertToTable(0xFFCD5C5C));
+	self:Add("Color", "Message", ConvertToTable(0xFF6495ED));
     
 	-- Class Colors
 	for className, classColor in pairs(RAID_CLASS_COLORS) do 
-		MediaLibrary:Add("Color", ProperNounize(className), BreakColorTable(classColor));
+		self:Add("Color", ProperNounize(className), BreakColorTable(classColor));
 	end;
 
 	----------------------------------------
 	--  Fonts
 	----------------------------------------
 
-	MediaLibrary:RegisterType("Font");
+	self:RegisterType("Font");
 
 	----------------------------------------
 	--  Sounds
@@ -109,7 +99,7 @@ function MediaLibrary:RegisterDefaults()
     }
 
 	for i, sound_name in pairs(SOUNDS) do
-        MediaLibrary:Add("Sound", sound_name, SOUNDS_DIR .. sound_name .. ".wav")
+        self:Add("Sound", sound_name, SOUNDS_DIR .. sound_name .. ".wav")
     end
 
 	----------------------------------------
@@ -118,13 +108,13 @@ function MediaLibrary:RegisterDefaults()
 
     local sharedMedia = LibStub("LibSharedMedia-3.0");
     if sharedMedia then
-        MediaLibrary:RegisterProxyLibrary(function(mediaType, mediaName, ...)
+        self:RegisterProxyLibrary(function(mediaType, mediaName, ...)
             return sharedMedia:Fetch(string.lower(mediaType), mediaName);
         end);
     end;
 
-    MediaLibrary:RegisterType("Icon");
-    MediaLibrary:RegisterProxyLibrary(
+    self:RegisterType("Icon");
+    self:RegisterProxyLibrary(
         function(mediaType, mediaName)
             if mediaType == "Icon" then
                 return "Interface\\Icons\\" .. mediaName;
@@ -209,7 +199,7 @@ function MediaLibrary:RegisterProxyLibrary(libraryFunc, ...)
     libraryFunc = ObjFunc(libraryFunc, ...)
     table.insert(self.proxyLibraries, libraryFunc)
     return function()
-        MediaLibrary.proxyLibraries = ListUtil:RemoveItem(MediaLibrary.proxyLibraries, libraryFunc);
+        self.proxyLibraries = ListUtil:RemoveItem(self.proxyLibraries, libraryFunc);
     end;
 end;
 
@@ -247,13 +237,11 @@ end;
 
 function MediaLibrary:GetDefault(mediaType)
 	--debug("MediaLibrary: Retrieving Default. (Type:", mediaType, ")");
-    return MediaLibrary:GetExplicit(mediaType, MediaLibrary.DEFAULT);
+    return self:GetExplicit(mediaType, MediaLibrary.DEFAULT);
 end;
 
 function MediaLibrary:BulkAdd(mediaType, mediaTable)
 	for mediaName, media in pairs(mediaTable) do
-		MediaLibrary:Add(mediaType, mediaName, media);
+		self:Add(mediaType, mediaName, media);
 	end;
 end;
-
-MediaLibrary:RegisterDefaults();
