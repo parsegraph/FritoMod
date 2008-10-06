@@ -1,4 +1,4 @@
-IterationManager = OOP.Class(EventDispatcher, OOP.Singleton);
+IterationManager = OOP.Class(EventDispatcher, ComponentSingleton);
 local IterationManager = IterationManager;
 
 IterationManager.EVENT_UPDATE = "UpdateEvent";

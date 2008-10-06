@@ -1,4 +1,4 @@
-TestManager = OOP.Class(Log, OOP.Singleton);
+TestManager = OOP.Class(Log, ComponentSingleton);
 local TestManager = TestManager;
 
 function TestManager:__Init(prefix)
