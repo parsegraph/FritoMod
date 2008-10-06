@@ -1,4 +1,4 @@
-API.Event = LazyMaskInitialize(
+API.Event = TableUtil:LazyInitialize(
     EventDispatcher(), 
     function(self)
         local masterFrame = API.Frame();
