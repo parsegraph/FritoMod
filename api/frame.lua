@@ -52,7 +52,7 @@ end);
 function Frame:__Init(frameType, inheritedFrames)
     frameType = frameType or Frame.frameTypes.FRAME;
     frameType = string.lower(frameType);
-    if not LookupValue(Frame.frameTypes, frameType) then
+    if not TableUtil:LookupValue(Frame.frameTypes, frameType) then
         error("Unrecognized frameType: " .. frameType);
     end;
     self.type = frameType;
