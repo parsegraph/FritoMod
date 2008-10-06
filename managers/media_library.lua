@@ -28,8 +28,8 @@ MediaLibrary.DEFAULT = "default";
 --]]
 
 function MediaLibrary:__Init()
-    self.mediaTable = {},
-    self.proxyLibraries = {},
+    self.mediaTable = {};
+    self.proxyLibraries = {};
 
 	-- This implicitly sets the Default, since there's a name in here that has a key of 'Default'
 	self:BulkAdd("Color", MATERIAL_TEXT_COLOR_TABLE);
