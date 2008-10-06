@@ -27,12 +27,12 @@ Environment = OOP.Class(LogMixin, OOP.Singleton);
 -- unexpected behavior due to haphazardly initalized components.
 --
 -- That said, components do not have to use this system solely to initialize themselves; 
--- runlevels augment, not replace, existing practices of initialization, such as lazy 
+-- runLevels augment, not replace, existing practices of initialization, such as lazy 
 -- and overeager initialization. You may use whatever method seems most appropriate 
 -- to create your components.
 --
 -- However, while initialization using this system isn't required, every component must 
--- comply with the guarantees made at any given runlevel. If any alternative method is 
+-- comply with the guarantees made at any given runLevel. If any alternative method is 
 -- used, it must be transparent to the end-user.
 
 -------------------------------------------------------------------------------
@@ -156,6 +156,14 @@ Environment.runLevelOrder = {
     Environment.runLevels.SAFE,
 };
 
+-- Bootstrappers are class-wide.
+Environment.bootstrappers = {};
+for _, runLevelName in pairs(Environment.runLevels) do
+    Environment.bootstrappers[runLevelName] = {};
+end;
+
+Environment.environments = {};
+
 function ComponentSingleton(class)
     class.GetInstance = function()
         local environment = Environment:GetCurrentEnvironment();
@@ -175,12 +183,6 @@ end;
 --
 -------------------------------------------------------------------------------
 
--- Bootstrappers are class-wide.
-Environment.bootstrappers = {};
-for _, runLevelName in pairs(Environment.runLevels) do
-    Environment.bootstrappers[runLevelName] = {};
-end;
-
 local function RunBootstrapper(environment, runLevel, bootstrapperFunc)
     local sanitizer = bootstrapperFunc(runLevel, environment);
     if IsCallable(sanitizer) then
@@ -189,12 +191,15 @@ local function RunBootstrapper(environment, runLevel, bootstrapperFunc)
 end;
 
 function Environment:AddBootstrapper(runLevel, bootstrapperFunc, ...)
+    if not runLevel then
+        error("Falsy runLevel!");
+    end;
     if runLevel == Environment.runLevels.PREINITIALIZE then
         error("Cannot have any bootstrappers that run at the lowest level.");
     end;
     bootstrapperFunc = ObjFunc(bootstrapperFunc, ...);
-    table.insert(Environment.bootstrappers[runLevel], bootstrapperFunc);
-    local releaser = Environment.GetCurrentEnvironment();
+    table.insert(Environment:GetBootstrappers(runLevel), bootstrapperFunc);
+    local releaser = Environment.SetCurrentEnvironment(nil);
     for _, environment in ipairs(Environment.environments) do
         Environment.SetCurrentEnvironment(environment);
         if runLevel <= environment:GetRunLevel() then
@@ -202,6 +207,14 @@ function Environment:AddBootstrapper(runLevel, bootstrapperFunc, ...)
         end;
     end;
     releaser();
+end;
+
+function Environment:GetBootstrappers(runLevel)
+    local bootstrappers = Environment.bootstrappers[runLevel];
+    if not bootstrappers then
+        error(format("Invalid runLevel '%s'", tostring(runLevel)));
+    end;
+    return bootstrappers;
 end;
 
 -------------------------------------------------------------------------------
@@ -218,7 +231,7 @@ function Environment:SetCurrentEnvironment(environment)
     local oldEnvironment = environment;
     Environment.currentEnvironment = environment;
     return function()
-        Environment.currentEnvironment = oldEnvironment;
+        Environment:SetCurrentEnvironment(oldEnvironment);
     end;
 end;
 
@@ -250,6 +263,7 @@ function Environment:__Init()
     end;
     self.delayedCalls = {};
     self.runLevel = Environment.runLevels.PREINITIALIZE;
+    table.insert(Environment.environments, self);
 end;
 
 function Environment:RunTests()
@@ -264,10 +278,6 @@ end;
 --  Public Interface: Bootstrappers
 --
 -------------------------------------------------------------------------------
-
-function Environment:GetBootstrappers(runLevel)
-    return Environment.bootstrappers[runLevel];
-end;
 
 function Environment:Bootstrap()
     return self:ChangeRunLevel(Environment.runLevels.SAFE);
