@@ -1,19 +1,11 @@
 ListUtil = {};
 local ListUtil = ListUtil;
 
-local function MakeEqualityComparator(comparatorFunc, ...)
-    if not comparatorFunc then
-        return Operator.Equals;
-    end;
-    return ObjFunc(comparatorFunc, ...);
-end;
-
 -------------------------------------------------------------------------------
 --
 --  ListUtil: Mapping Functions
 --
 -------------------------------------------------------------------------------
--- 
 
 ------------------------------------------
 --  MapInPlace
