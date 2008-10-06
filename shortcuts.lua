@@ -1,19 +1,19 @@
 function print(...)
-    return API.Chat:Say("debug", tostring(concat(...)));
+    return API.Chat:Say("debug", tostring(StringUtil:Concat(...)));
 end;
 
 function debug(...)
-    return Environment.GetInstance():LogDebug(...);
+    return Environment.GetCurrentEnvironment():LogDebug(...);
 end;
 
 function log(...)
-    return Environment.GetInstance():LogMessage(...);
+    return Environment.GetCurrentEnvironment():LogMessage(...);
 end;
 
 function warning(...)
-    return Environment.GetInstance():LogWarning(...);
+    return Environment.GetCurrentEnvironment():LogWarning(...);
 end;
 
 function rawdebug(...)
-    DEFAULT_CHAT_FRAME:AddMessage(tostring(concat(...)));
+    DEFAULT_CHAT_FRAME:AddMessage(tostring(StringUtil:Concat(...)));
 end;
