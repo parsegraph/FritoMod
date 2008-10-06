@@ -156,21 +156,107 @@ Environment.runLevelOrder = {
     Environment.runLevels.SAFE,
 };
 
+function ComponentSingleton(class)
+    class.GetInstance = function()
+        local environment = Environment:GetCurrentEnvironment();
+        return environment:GetComponent(class) or environment:SetComponent(class());
+    end;
+    return function()
+        local environment = Environment:GetCurrentEnvironment();
+        if environment:GetComponent(class) then
+            error("Component Singletons can only be instantitated once per Environment.");
+        end;
+    end;
+end;
+
+-------------------------------------------------------------------------------
+--
+--  Public Static Interface: Bootstrappers
+--
+-------------------------------------------------------------------------------
+
+-- Bootstrappers are class-wide.
+Environment.bootstrappers = {};
+for _, runLevelName in pairs(Environment.runLevels) do
+    Environment.bootstrappers[runLevelName] = {};
+end;
+
+local function RunBootstrapper(environment, runLevel, bootstrapperFunc)
+    local sanitizer = bootstrapperFunc(runLevel, environment);
+    if IsCallable(sanitizer) then
+        table.insert(environment.sanitizers[runLevel], sanitizer);
+    end;
+end;
+
+function Environment:AddBootstrapper(runLevel, bootstrapperFunc, ...)
+    if runLevel == Environment.runLevels.PREINITIALIZE then
+        error("Cannot have any bootstrappers that run at the lowest level.");
+    end;
+    bootstrapperFunc = ObjFunc(bootstrapperFunc, ...);
+    table.insert(Environment.bootstrappers[runLevel], bootstrapperFunc);
+    local releaser = Environment.GetCurrentEnvironment();
+    for _, environment in ipairs(Environment.environments) do
+        Environment.SetCurrentEnvironment(environment);
+        if runLevel <= environment:GetRunLevel() then
+            RunBootstrapper(environment, runLevel, bootstrapperFunc);
+        end;
+    end;
+    releaser();
+end;
+
+-------------------------------------------------------------------------------
+--
+--  Public Static Methods: Environment
+--
+-------------------------------------------------------------------------------
+
+function Environment:GetCurrentEnvironment()
+    return Environment.currentEnvironment;
+end;
+
+function Environment:SetCurrentEnvironment(environment)
+    local oldEnvironment = environment;
+    Environment.currentEnvironment = environment;
+    return function()
+        Environment.currentEnvironment = oldEnvironment;
+    end;
+end;
+
+-------------------------------------------------------------------------------
+--
+--  Public Methods: Environment
+--
+-------------------------------------------------------------------------------
+
+function Environment:GetComponent(componentKey)
+    return self.components[componentKey];
+end;
+
+function Environment:SetComponent(component, componentKey)
+    componentKey = componentKey or component.__class;
+    self.components[componentKey] = component;
+    return component;
+end;
+
+-------------------------------------------------------------------------------
+--
+--  Constructor
+--
+-------------------------------------------------------------------------------
+
 function Environment:__Init()
-    self.bootstrappers = {};
     for _, runLevelName in pairs(Environment.runLevels) do
-        self.bootstrappers[runLevelName] = {};
         self.sanitizers[runLevelName] = {};
     end;
     self.delayedCalls = {};
     self.runLevel = Environment.runLevels.PREINITIALIZE;
 end;
 
-local function RunBootstrapper(self, runLevel, bootstrapperFunc)
-    local sanitizer = bootstrapperFunc(runLevel);
-    if IsCallable(sanitizer) then
-        table.insert(self.sanitizers[runLevel], sanitizer);
-    end;
+function Environment:RunTests()
+    local testManager = TestManager.GetInstance();
+    local releaser = testManager:SyndicateTo(self);
+    testManager:Run();
+    releaser();
 end;
 
 -------------------------------------------------------------------------------
@@ -178,6 +264,10 @@ end;
 --  Public Interface: Bootstrappers
 --
 -------------------------------------------------------------------------------
+
+function Environment:GetBootstrappers(runLevel)
+    return Environment.bootstrappers[runLevel];
+end;
 
 function Environment:Bootstrap()
     return self:ChangeRunLevel(Environment.runLevels.SAFE);
@@ -194,7 +284,8 @@ function Environment:ChangeRunLevel(runLevel)
     while runLevel ~= self.runLevel do
         if self.runLevel < runLevel then
             local pendingRunLevel = self.runLevel + 1;
-            for _, bootstrapperFunc in self.bootstrappers[pendingRunLevel] do
+            local bootstrappers = self:GetBootstrappers(self:GetRunLevel());
+            for _, bootstrapperFunc in bootstrappers[pendingRunLevel] do
                 RunBootstrapper(self, pendingRunLevel, bootstrapperFunc);
             end;
             self.runLevel = pendingRunLevel;
@@ -209,26 +300,8 @@ function Environment:ChangeRunLevel(runLevel)
     end;
 end;
 
-function Environment:AddBootstrapper(runLevel, bootstrapperFunc, ...)
-    if runLevel == Environment.runLevels.PREINITIALIZE then
-        error("Cannot have any bootstrappers that run at the lowest level.");
-    end;
-    bootstrapperFunc = ObjFunc(bootstrapperFunc, ...);
-    if runLevel <= self.runLevel then
-        RunBootstrapper(self, runLevel, bootstrapperFunc);
-    end;
-    table.insert(self.bootstrappers[runLevel], bootstrapperFunc);
-end;
-
-------------------------------------------
---  Miscellaneous
-------------------------------------------
-
-function Environment:RunTests()
-    local testManager = TestManager.GetInstance();
-    local releaser = testManager:SyndicateTo(self);
-    testManager:Run();
-    releaser();
+function Environment:GetRunLevel()
+    return self.runLevel;
 end;
 
 -------------------------------------------------------------------------------
