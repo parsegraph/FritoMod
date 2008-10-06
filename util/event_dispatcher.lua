@@ -10,7 +10,7 @@ EventDispatcher = function(class)
 
         if staticConnectors then
             for eventName, connectors in pairs(staticConnectors) do
-                connectorTable[eventName] = CloneList(connectors);
+                connectorTable[eventName] = ListUtil:Clone(connectors);
             end;
         end;
 
