@@ -1,4 +1,16 @@
-Log = OOP.Class(LogEntry);
+Log = TableUtil:LazyInitialize(OOP.Class(LogEntry), function(class)
+    local function MixinLogEntryCreator(entryType)
+        Log["Log" .. entryType] = function(self, ...)
+            return self:InsertLogEntry(LogEntry(entryType, self:GetPrefix(), ...));
+        end;
+    end;
+
+    MixinLogEntryCreator(StringUtil:ProperNounize(LogEntry.entryTypes.DATA));
+    MixinLogEntryCreator(StringUtil:ProperNounize(LogEntry.entryTypes.DEBUG));
+    MixinLogEntryCreator(StringUtil:ProperNounize(LogEntry.entryTypes.MESSAGE));
+    MixinLogEntryCreator(StringUtil:ProperNounize(LogEntry.entryTypes.WARNING));
+    MixinLogEntryCreator(StringUtil:ProperNounize(LogEntry.entryTypes.ERROR));
+end);
 local Log = Log;
 
 function LogMixin(class)
@@ -46,18 +58,6 @@ end;
 --  Logging
 --
 -------------------------------------------------------------------------------
-
-local function MixinLogEntryCreator(entryType)
-    Log["Log" .. entryType] = function(self, ...)
-        return self:InsertLogEntry(LogEntry(entryType, self:GetPrefix(), ...));
-    end;
-end;
-
-MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.DATA));
-MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.DEBUG));
-MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.MESSAGE));
-MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.WARNING));
-MixinLogEntryCreator(ProperNounize(LogEntry.entryTypes.ERROR));
 
 function Log:Log(...)
     return self:InsertLogEntry(LogEntry(LogEntry.entryTypes.MESSAGE, self:GetPrefix(), ...));
