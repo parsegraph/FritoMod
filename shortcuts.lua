@@ -17,3 +17,8 @@ end;
 function rawdebug(...)
     DEFAULT_CHAT_FRAME:AddMessage(tostring(StringUtil:Concat(...)));
 end;
+
+function Start()
+    Environment:SetCurrentEnvironment(Environment());
+    Environment:GetCurrentEnvironment():Bootstrap();
+end;
