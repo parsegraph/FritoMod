@@ -258,10 +258,12 @@ end;
 -------------------------------------------------------------------------------
 
 function Environment:__Init()
+    self.delayedCalls = {};
+    self.components = {};
+    self.sanitizers = {};
     for _, runLevelName in pairs(Environment.runLevels) do
         self.sanitizers[runLevelName] = {};
     end;
-    self.delayedCalls = {};
     self.runLevel = Environment.runLevels.PREINITIALIZE;
     table.insert(Environment.environments, self);
 end;
@@ -288,14 +290,14 @@ function Environment:Shutdown()
 end;
 
 function Environment:ChangeRunLevel(runLevel)
-    if not LookupValue(Environment.runLevels, runLevel) then
+    if not TableUtil:LookupValue(Environment.runLevels, runLevel) then
         error("Runlevel is not valid: " .. runLevel);
     end;
     while runLevel ~= self.runLevel do
         if self.runLevel < runLevel then
             local pendingRunLevel = self.runLevel + 1;
             local bootstrappers = self:GetBootstrappers(self:GetRunLevel());
-            for _, bootstrapperFunc in bootstrappers[pendingRunLevel] do
+            for _, bootstrapperFunc in ipairs(bootstrappers) do
                 RunBootstrapper(self, pendingRunLevel, bootstrapperFunc);
             end;
             self.runLevel = pendingRunLevel;
