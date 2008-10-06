@@ -163,7 +163,7 @@ function Environment:__Init()
         self.sanitizers[runLevelName] = {};
     end;
     self.delayedCalls = {};
-    self.runLevel = Environment.runLevels.UNBORN;
+    self.runLevel = Environment.runLevels.PREINITIALIZE;
 end;
 
 local function RunBootstrapper(self, runLevel, bootstrapperFunc)
