@@ -3,7 +3,7 @@ local StringUtil = StringUtil;
 
 StringUtil.DIGITS = "0123456789"
 StringUtil.ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-StringUtil.ALPHANUMERICS = DIGITS .. ALPHABET;
+StringUtil.ALPHANUMERICS = StringUtil.DIGITS .. StringUtil.ALPHABET;
 
 function StringUtil:ProperNounize(name)
     name = tostring(name);
@@ -11,7 +11,7 @@ function StringUtil:ProperNounize(name)
 end;
 
 function StringUtil:ConvertToBase(base, number, digits)
-    digits = digits or StringUtil:ALPHANUMERICS;
+    digits = digits or StringUtil.ALPHANUMERICS;
     if base > #digits or base < 2 then
         error("Invalid base: " .. base);
     end;
@@ -28,7 +28,7 @@ function StringUtil:Concat(...)
 	local message = "";
 	for i=1, select("#", ...) do
         local part = tostring(select(i, ...));
-        if #message then
+        if #message > 0 then
             message = format("%s %s", message, part);
         else
             message = part;
