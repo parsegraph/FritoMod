@@ -99,7 +99,7 @@ end;
 function TableUtil:LazyInitialize(table, initializerFunc, ...)
     initializerFunc = ObjFunc(initializerFunc, ...);
     local initialize;
-    local undecorator = TableUtil:DecorateTable(table, {
+    local undecorator = TableUtil:DecorateMetatable(table, {
         __index = function(self, key)
             initialize();
             return self[key];
