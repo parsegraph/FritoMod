@@ -25,6 +25,14 @@ EventDispatcher = function(class)
             initializers[eventName] = ObjFunc(initializerFunc, ...);
         end;
 
+        function instance:GetEventInitializer(eventName, excludeDefault)
+            local initializerFunc = initializers[eventName];
+            if not initializerFunc and not excludeDefault then
+                initializerFunc = initializers[true];
+            end;
+            return initializerFunc;
+        end;
+
         -- Adds a event connector. All connectors are fired when a listener is added to a given
         -- dispatcher. Connectors should expect a signature of connector(self, eventName, listenerFunc)
         -- Notice that the listenerFunc has already been ObjFunc'd, so no extra arguments will be given.
@@ -65,6 +73,9 @@ EventDispatcher = function(class)
         -- if connectors are available for the given event - these are meant to 'initialize' the listener
         -- immediately, rather than when the event is fired next.
         function instance:AddListener(eventName, listenerFunc, ...)
+            if not eventName then
+                error("eventName is falsy!");
+            end;
             local listenerFunc = ObjFunc(listenerFunc, ...);
 
             -- If we're batch-adding a listener, recurse and collect all removers.
@@ -89,7 +100,7 @@ EventDispatcher = function(class)
 
             -- If this is the first listener attached to this event, we call any initializer
             -- that's available.
-            local initializer = initializers[eventName] or initializers[true];
+            local initializer = self:GetEventInitializer(eventName);
             if #listeners == 0 and initializer then
                 local sanitizer = initializer(self, eventName);
                 if sanitizer then

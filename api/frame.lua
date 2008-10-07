@@ -2,34 +2,30 @@ API.Frame = OOP.Class(EventDispatcher);
 local Frame = API.Frame;
 
 Frame.__AddInitializer(function(class)
-    class.REVERSE_WIDGET_HANDLERS = {
-        OnEnter = "FOCUS_ENTER", 
-        OnLeave = "FOCUS_LEAVE",
-        OnLoad = "LOAD",
-        OnSizeChanged = "SIZE_CHANGE",
-        OnUpdate = "UPDATE",
+    class.events = {
+        FOCUS_ENTER = "OnEnter",
+        FOCUS_LEAVE = "OnLeave",
+        LOAD = "OnLoad",
+        SIZE_CHANGE = "OnSizeChanged",
+        UPDATE = "OnUpdate",
 
-        OnShow = "VISIBLE_SHOW",
-        OnHide = "VISIBLE_HIDE",
+        VISIBLE_SHOW = "OnShow",
+        VISIBLE_HIDE = "OnHide",
 
-        OnKeyDown = "KEY_DOWN",
-        OnKeyUp = "KEY_UP",
-        OnChar = "KEY_CHAR",
+        KEY_DOWN = "OnKeyDown",
+        KEY_UP = "OnKeyUp",
+        KEY_CHAR = "OnChar",
 
-        OnClick = "MOUSE_CLICK", 
-        OnDoubleClick = "MOUSE_CLICK_DOUBLE",
-        OnMouseDown = "MOUSE_DOWN",
-        OnMouseUp = "MOUSE_UP",
-        OnMouseWheel = "MOUSE_WHEEL",
+        MOUSE_CLICK = "OnClick",
+        MOUSE_CLICK_DOUBLE = "OnDoubleClick",
+        MOUSE_DOWN = "OnMouseDown",
+        MOUSE_UP = "OnMouseUp",
+        MOUSE_WHEEL = "OnMouseWheel",
 
-        OnDragStart = "MOUSE_DRAG_START",
-        OnDragStop = "MOUSE_DRAG_STOP",
-        OnReceiveDrag = "MOUSE_DRAG_DROP",
+        MOUSE_DRAG_START = "OnDragStart",
+        MOUSE_DRAG_STOP = "OnDragStop",
+        MOUSE_DRAG_DROP = "OnReceiveDrag",
     };
-    class.WIDGET_HANDLERS = {};
-    for widgetEventName, handlerName in pairs(class.REVERSE_WIDGET_HANDLERS) do
-        class.WIDGET_HANDLERS[handlerName] = widgetEventName;
-    end;
 end);
 
 Frame.frameTypes = {
@@ -37,11 +33,11 @@ Frame.frameTypes = {
 };
 
 Frame.SetStaticEventInitializer(true, function(self, eventName)
-    local widgetEventName = Frame.WIDGET_HANDLERS[eventName];
-    if not widgetEventName then
+    if not TableUtil:LookupValue(Frame.events, eventName) then
         return;
     end;
-    self.frame:SetScript(widgetEventName, function(...)
+    local widgetEventName = eventName;
+    self:GetFrame():SetScript(widgetEventName, function(...)
         self:DispatchEvent(eventName, ...);
     end);
     return function()

@@ -55,8 +55,8 @@ function UnpackAll( ... )
     local collectedValues = {}
     -- Collect values from all tables.
     for i=1, select('#', ...) do
-        local table = select(i, ...);
-        for _, value in ipairs(table) do
+        local argumentGroup = select(i, ...);
+        for _, value in ipairs(argumentGroup) do
             table.insert(collectedValues, value);
         end
     end
@@ -132,7 +132,7 @@ function ObjFunc(objOrFunc, funcOrName, ...)
         end;
         return function(...) 
             --rawdebug("ObjFunc: Calling direct function partial.");
-            return objOrFunc(unpackall(args, {...}));
+            return objOrFunc(UnpackAll(args, {...}));
         end;
     elseif type(funcOrName) == "string" then
         --rawdebug("ObjFunc: Returning string-based method partial.");
@@ -142,7 +142,7 @@ function ObjFunc(objOrFunc, funcOrName, ...)
             if not func or type(func) ~= "function" then
                 error("Function not found with name: '" .. funcOrName .. "'");
             end;
-            return func(objOrFunc, unpackall(args, {...}));
+            return func(objOrFunc, UnpackAll(args, {...}));
         end;
     elseif type(funcOrName) == "function" then
         --rawdebug("ObjFunc: Returning direct method partial.");
@@ -151,7 +151,7 @@ function ObjFunc(objOrFunc, funcOrName, ...)
         end;
         return function(...)
             --rawdebug("ObjFunc: Calling direct method partial.");
-            return funcOrName(objOrFunc, unpackall(args, {...}));
+            return funcOrName(objOrFunc, UnpackAll(args, {...}));
         end;
     else
         error(format("Invalid parameters given objOrFunc: '%s', funcOrName: '%s'", 
