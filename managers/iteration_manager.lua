@@ -10,7 +10,6 @@ IterationManager.events = {
 IterationManager.FRAMERATE = .05;
 
 function IterationManager:__Init()
-	IterationManager.super.__Init(self);
     self.timers = {};
 end;
 
@@ -73,14 +72,11 @@ end;
 -- 
 -------------------------------------------------------------------------------
 
-function IterationManager:Attach(aceEvent, framerate)
-	framerate = framerate or IterationManager.FRAMERATE;
-	aceEvent:ScheduleRepeatingEvent(IterationManager.events.UPDATE, self.OnUpdate, framerate, self);
-end;
-
-function IterationManager:Detach(aceEvent)
-	aceEvent:UnscheduleRepeatingEvent(IterationManager.events.UPDATE, self.OnUpdate, framerate, self);
-end;
+Environment:AddBootstrapper(Environment.runLevels.DEPLOY_CORE, function()
+    return API.Event:AddFrameListener(API.Frame.events.UPDATE, function()
+        IterationManager:GetInstance():Iterate();
+    end);
+end);
 
 -------------------------------------------------------------------------------
 --
