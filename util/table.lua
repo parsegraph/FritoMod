@@ -35,8 +35,8 @@ end;
 ------------------------------------------
 --
 -- Clones a table.
-function TableUtil:Clone(table)
-    return TableUtil:Update({}, table);
+function TableUtil:Clone(originalTable)
+    return TableUtil:Update({}, originalTable);
 end;
 
 -------------------------------------------------------------------------------
@@ -49,14 +49,14 @@ end;
 --  LookupValue
 ------------------------------------------
 --
--- Searches for a value in the given table, returning the first key where 
+-- Searches for a value in originalTable, returning the first key where 
 -- comparatorFunc returned a truthy value. 
 --
--- When using this method, be sure that your table will never contain "falsy"
+-- When using this method, be sure that originalTable will never contain "falsy"
 -- keys. If it does, always test explicitly against nil.
-function TableUtil:LookupValue(table, value, comparatorFunc, ...)
+function TableUtil:LookupValue(originalTable, value, comparatorFunc, ...)
     comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-    for key, candidate  in pairs(table) do
+    for key, candidate  in pairs(originalTable) do
         if comparatorFunc(candidate, value) then
             return key;
         end;
@@ -78,12 +78,12 @@ end;
 --
 -- Returns a function that reverses this decoration, and restores the table
 -- to its original state.
-function TableUtil:DecorateMetatable(table, metatable)
-    local oldMetatable = getmetatable(table);
+function TableUtil:DecorateMetatable(originalTable, metatable)
+    local oldMetatable = getmetatable(originalTable);
     setmetatable(metatable, oldMetatable);
-    setmetatable(table, metatable);
+    setmetatable(originalTable, metatable);
     return function()
-        setmetatable(table, oldMetatable);
+        setmetatable(originalTable, oldMetatable);
     end;
 end;
 
@@ -96,10 +96,10 @@ end;
 -- of the given table is restored.
 --
 -- The table is returned.
-function TableUtil:LazyInitialize(table, initializerFunc, ...)
+function TableUtil:LazyInitialize(originalTable, initializerFunc, ...)
     initializerFunc = ObjFunc(initializerFunc, ...);
     local initialize;
-    local undecorator = TableUtil:DecorateMetatable(table, {
+    local undecorator = TableUtil:DecorateMetatable(originalTable, {
         __index = function(self, key)
             initialize();
             return self[key];
@@ -111,7 +111,7 @@ function TableUtil:LazyInitialize(table, initializerFunc, ...)
     });
     initialize = function()
         undecorator();
-        initializerFunc(table);
+        initializerFunc(originalTable);
     end;
-    return table;
+    return originalTable;
 end;
