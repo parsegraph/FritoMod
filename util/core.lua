@@ -91,6 +91,14 @@ local EMPTY_ARGS = {}
 --
 -- There are three patterns this method accepts, in order of precedence:
 --
+-- Unapplied function call - self[objOrFunc](self, UnpackAll(savedArgs, {...}))
+-- The partial represents an unapplied method on some future instance. When the partial 
+-- is called, the first argument must be an object that has a function reached by the
+-- name objOrFunc. 
+--
+-- This is useful when you want to call a method on some object, but aren't interested
+-- or don't know what the instance will eventually be.
+--
 -- Direct function call - objOrFunc(UnpackAll(savedArgs, {...}))
 -- objOrFunc is called directly. funcOrName is just another argument. This is useful
 -- when you're just interested in partially applying some arguments.
@@ -111,7 +119,7 @@ local EMPTY_ARGS = {}
 -- to to change.
 function ObjFunc(objOrFunc, funcOrName, ...)
     local numArgs = select("#", ...);
-    if objOrFunc and funcOrName == nil and numArgs == 0 then
+    if IsCallable(objOrFunc) and funcOrName == nil and numArgs == 0 then
         --rawdebug("ObjFunc: Returning naked function directly.");
         return objOrFunc
     end;
@@ -122,7 +130,19 @@ function ObjFunc(objOrFunc, funcOrName, ...)
             table.insert(args, select(i, ...));
         end;
     end;
-    if type(objOrFunc) == "function" then
+    if type(objOrFunc) == "string" then
+        --rawdebug("ObjFunc: Returning unapplied function partial.");
+        if funcOrName ~= nil or #args > 0 then
+            if args == EMPTY_ARGS then
+                args = {};
+            end;
+            table.insert(args, 1, funcOrName);
+        end;
+        return function(self, ...) 
+            --rawdebug("ObjFunc: Calling unapplied function partial.");
+            return self[objOrFunc](self, UnpackAll(args, {...}));
+        end;
+    elseif IsCallable(objOrFunc) then
         --rawdebug("ObjFunc: Returning direct function partial.");
         if funcOrName ~= nil or #args > 0 then
             if args == EMPTY_ARGS then
@@ -158,38 +178,6 @@ function ObjFunc(objOrFunc, funcOrName, ...)
             objOrFunc or "<falsy>", 
             funcOrName or "<falsy>"
         ));
-    end;
-end;
-
-------------------------------------------
---  Unapplied
-------------------------------------------
---
--- This function provides a second level of indirection in function calls. The
--- funcOrName provided here is a method (or method name) to be used on a not-yet-
--- known object. The function returned expects an object, and from that, will return
--- a ObjFunc using the original funcOrName with the given object, along with any
--- arguments passed in.
---
--- You probably won't use this function very often, but it's useful when you want to
--- add ObjFuncs, but don't want to bind the object immediately. We use it to add
--- static listeners: They're registered with the class as Unapplieds, and when 
--- instances of that class are made, the Unapplied static listeners are given the instance
--- where they become ObjFuncs.
-function Unapplied(funcOrName, ...)
-    local numArgs = select("#", ...);
-    if numArgs == 1 then
-        return objOrFunc
-    end;
-    local args = EMPTY_ARGS
-    if numArgs and numArgs > 0 then
-        args = {};
-        for i = 1, select("#", ...) do
-            table.insert(args, select(i, ...));
-        end;
-    end;
-    return function(self)
-        return ObjFunc(self, funcOrName, unpack(args));
     end;
 end;
 
