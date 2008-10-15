@@ -7,9 +7,8 @@ TestCase.returnTypes = {
     EXCEPTION = "exception",
 }
 
-function TestCase:__Init(testName, returnType, returnValue, testFunc, ...)
-    TestCase.__super.__Init(self, format("Test Case - %s", testName));
-    self.testName = testName;
+function TestCase:__Init(returnType, returnValue, testFunc, ...)
+    TestCase.__super.__Init(self);
     self.returnType = returnType;
     self.returnValue = returnValue;
     self.testFunc = ObjFunc(testFunc, ...);

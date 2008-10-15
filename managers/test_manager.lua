@@ -6,15 +6,57 @@ function TestManager:__Init(prefix)
     self.groups = {};
 end;
 
-function TestManager:AddTest(testGroupName, testName, returnType, returnValue, testFunc, ...)
-    self:InsertTestCase(testGroupName, TestCase(testName, returnType, returnValue, testFunc, ...));
+-------------------------------------------------------------------------------
+--
+--  Convenience Test-Case Functions
+--
+-------------------------------------------------------------------------------
+
+-- The active test-group lets you add test-cases without explicitly passing in
+-- a test group. This method returns a way to undo your setting.
+function TestManager:SetActiveTestGroup(testGroup)
+    local oldTestGroup = self.activeTestGroup;
+    self.activeTestGroup = testGroup;
+    return ObjFunc(self, "SetActiveTestGroup", oldTestGroup);
 end;
+
+function TestManager:GetActiveTestGroup()
+    return self.activeTestGroup;
+end;
+
+function TestManager:AddConstantTest(expectedConstant, testFunc, ...)
+    self:InsertTestCase(self:GetActiveTestGroup(), TestCase(
+        TestCase.returnTypes.CONSTANT, expectedConstant,
+        testFunc, ...
+    );
+end;
+
+function TestManager:AddExceptionTest(expectedException, testFunc, ...)
+    self:InsertTestCase(self:GetActiveTestGroup(), TestCase(
+        TestCase.returnTypes.EXCEPTION, expectedException,
+        testFunc, ...
+    );
+end;
+
+function TestManager:AddComplexTest(validatorFunc, testFunc, ...)
+    self:InsertTestCase(self:GetActiveTestGroup(), TestCase(
+        TestCase.returnTypes.COMPLEX, validatorFunc,
+        testFunc, ...
+    );
+end;
+
+-------------------------------------------------------------------------------
+--
+--  Workhorse Test-Case Methods
+--
+-------------------------------------------------------------------------------
 
 function TestManager:InsertTestCase(testGroupName, testCase)
     table.insert(self:GetTestGroup(testGroupName), testCase);
 end;
 
 function TestManager:GetTestGroup(testGroupName)
+    testGroupName = testGroupName or "Global Tests";
     local testGroup = self.groups[testGroupName];
     if not testGroup then
         testGroup = {};
