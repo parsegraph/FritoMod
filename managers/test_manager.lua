@@ -28,21 +28,21 @@ function TestManager:AddConstantTest(expectedConstant, testFunc, ...)
     self:InsertTestCase(self:GetActiveTestGroup(), TestCase(
         TestCase.returnTypes.CONSTANT, expectedConstant,
         testFunc, ...
-    );
+    ));
 end;
 
 function TestManager:AddExceptionTest(expectedException, testFunc, ...)
     self:InsertTestCase(self:GetActiveTestGroup(), TestCase(
         TestCase.returnTypes.EXCEPTION, expectedException,
         testFunc, ...
-    );
+    ));
 end;
 
 function TestManager:AddComplexTest(validatorFunc, testFunc, ...)
     self:InsertTestCase(self:GetActiveTestGroup(), TestCase(
         TestCase.returnTypes.COMPLEX, validatorFunc,
         testFunc, ...
-    );
+    ));
 end;
 
 -------------------------------------------------------------------------------
