@@ -361,7 +361,7 @@ end;
 function ListUtil:Reduce(list, initialValue, reduceFunc, ...)
     reduceFunc = ObjFunc(reduceFunc, ...);
     local aggregate = initialValue;
-    for index, item in ipairs(lis) do
+    for index, item in ipairs(list) do
         aggregate = reduceFunc(aggregate, item, index, list);
     end;
     return aggregate;
