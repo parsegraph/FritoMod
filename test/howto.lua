@@ -31,13 +31,20 @@
 -- TestCase(testName, returnType, returnValue, testFunc, ...);
 
 Environment:AddBootstrapper(Environment.runLevels.DEPLOY_CORE, function()
+    -- Convenient return-types and a testManager.
+    local CONSTANT = TestCase.returnTypes.CONSTANT;
+    local EXCEPTION = TestCase.returnTypes.EXCEPTION;
+    local COMPLEX = TestCase.returnTypes.COMPLEX;
     local testManager = TestManager:GetInstance();
+
+    -- Name of your testGroup.
     local testGroup = "TestGroup";
 
     -- Utility method to add cases.
     function Add(testCaseOrName, ...)
         local testCase = testCaseOrName;
         if type(testCaseOrName) ~= "table" then
+            -- TestCase(testName, returnType, returnValue, testFunc, ...);
             testCase = TestCase(testCaseOrName, ...);
         end;
         testManager:InsertTestCase(testGroup, testCase);
@@ -45,7 +52,7 @@ Environment:AddBootstrapper(Environment.runLevels.DEPLOY_CORE, function()
 
     -- Here's an example test. Feel free to remove it:
     Add("TestGroupName",
-        TestCase.returnTypes.CONSTANT, "ExpectedValue",
+        CONSTANT, "ExpectedValue",
         function()
             -- Your logic should go here.
             return "ExpectedValue";
