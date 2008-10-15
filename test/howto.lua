@@ -38,6 +38,7 @@ Environment:AddBootstrapper(Environment.runLevels.DEPLOY_CORE, function()
         testManager:InsertTestCase(testGroup, testCase);
     end;
 
+    -- Here's an example test. Feel free to remove it:
     Add("TestGroupName",
         TestCase.returnTypes.CONSTANT, "ExpectedValue",
         function()
@@ -45,5 +46,7 @@ Environment:AddBootstrapper(Environment.runLevels.DEPLOY_CORE, function()
             return "ExpectedValue";
         end
     );
+
+    -- TODO: Add your tests here.
 
 end);
