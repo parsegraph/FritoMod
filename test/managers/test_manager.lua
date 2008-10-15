@@ -24,6 +24,11 @@
 -- The common idiom is to register this at DEPLOY_CORE stage with the Environment.
 -- When in doubt, just use this as a template. Be sure to retain these instructions
 -- so you can dessiminate this process!)
+--
+-- If you decide to use the convenience function, pass in either a TestCase, or the exact 
+-- arguments used to make one. These mirror those used in AddTest:
+--
+-- TestCase(testName, returnType, returnValue, testFunc, ...);
 
 Environment:AddBootstrapper(Environment.runLevels.DEPLOY_CORE, function()
     local testManager = TestManager:GetInstance();
