@@ -115,7 +115,7 @@ function StringUtil:SnakeToProperCase(snakeString)
     return StringUtil:JoinProperCase(StringUtil:SplitByDelimiter(snakeString));
 end;
 
-function StringUtil:SnakeToCamelString(snakeString)
+function StringUtil:SnakeToCamelCase(snakeString)
     return StringUtil:JoinCamelCase(StringUtil:SplitByDelimiter(snakeString));
 end;
 
