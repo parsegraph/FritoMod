@@ -57,7 +57,7 @@ end;
 -- Splits originalString by the given delimiter, with an underscore used as the default.
 function StringUtil:SplitByDelimiter(originalString, delimiter)
     delimiter = delimiter or "_";
-    return string.split(delimiter, originalString);
+    return { string.split(delimiter, originalString) };
 end;
 
 ------------------------------------------
