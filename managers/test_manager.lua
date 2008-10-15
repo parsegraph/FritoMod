@@ -31,6 +31,27 @@ function TestManager:AddConstantTest(expectedConstant, testFunc, ...)
     ));
 end;
 
+function TestManager:AddListTest(expectedList, testFunc, ...)
+    self:InsertTestCase(self:GetActiveTestGroup(), TestCase(
+        TestCase.returnTypes.COMPLEX, 
+        function(list)
+            if not list or type(list) ~= "table" then
+                return false;
+            end;
+            if #expectedList ~= #list then
+                return false;
+            end;
+            for i=1, #list do
+                if list[i] ~= expectedList[i] then
+                    return false;
+                end;
+            end;
+            return true;
+        end,
+        testFunc, ...
+    ));
+end;
+
 function TestManager:AddExceptionTest(expectedException, testFunc, ...)
     self:InsertTestCase(self:GetActiveTestGroup(), TestCase(
         TestCase.returnTypes.EXCEPTION, expectedException,
