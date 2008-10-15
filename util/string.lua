@@ -66,7 +66,7 @@ end;
 
 function StringUtil:JoinProperCase(words)
     return ListUtil:Reduce(words, "", function(camelCase, word)
-        return camelCase + StringUtil:ProperNounize(word);
+        return camelCase .. StringUtil:ProperNounize(word);
     end);
 end;
 
