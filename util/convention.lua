@@ -29,3 +29,9 @@ function Convention:InsertRegisteredMapping(class, properMapName, nameRetrieverF
         end;
     end;
 end;
+
+function Convention:AddListenerShortcut(class, shortcutName, eventName)
+    class["Add" .. shortcutName] = function(self, listenerFunc, ...)
+        return self:AddListener(eventName, listenerFunc, ...);
+    end;
+end;
