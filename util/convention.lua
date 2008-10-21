@@ -30,8 +30,25 @@ function Convention:InsertRegisteredMapping(class, properMapName, nameRetrieverF
     end;
 end;
 
-function Convention:AddListenerShortcut(class, shortcutName, eventName)
+function Convention:InsertListenerShortcut(class, shortcutName, eventName)
     class["Add" .. shortcutName] = function(self, listenerFunc, ...)
         return self:AddListener(eventName, listenerFunc, ...);
     end;
+end;
+
+function Convention:InsertGetter(class, variableName)
+    class["Get" .. StringUtil:ProperToCamelCase(variableName)] = function(self)
+        return self[variableName];
+    end;
+end;
+
+function Convention:InsertSetter(class, variableName)
+    class["Set" .. StringUtil:ProperToCamelCase(variableName)] = function(self, value)
+        self[variableName] = value;
+    end;
+end;
+
+function Convention:InsertAccessor(class, variableName, accessorName)
+    Convention:InsertGetter(class, variableName, accessorName);
+    Convention:InsertSetter(class, variableName, accessorName);
 end;
