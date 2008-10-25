@@ -37,18 +37,59 @@ function Convention:InsertListenerShortcut(class, shortcutName, eventName)
 end;
 
 function Convention:InsertGetter(class, variableName)
-    class["Get" .. StringUtil:ProperToCamelCase(variableName)] = function(self)
+    class["Get" .. StringUtil:CamelToProperCase(variableName)] = function(self)
         return self[variableName];
     end;
 end;
 
 function Convention:InsertSetter(class, variableName)
-    class["Set" .. StringUtil:ProperToCamelCase(variableName)] = function(self, value)
+    class["Set" .. StringUtil:CamelToProperCase(variableName)] = function(self, value)
         self[variableName] = value;
     end;
 end;
 
-function Convention:InsertAccessor(class, variableName, accessorName)
-    Convention:InsertGetter(class, variableName, accessorName);
-    Convention:InsertSetter(class, variableName, accessorName);
+function Convention:InsertObservedSetter(class, variableName, observerFunc, ...)
+    observerFunc = ObjFunc(observerFunc, ...);
+    class.__AddConstructor(function(self)
+        local sanitizer;
+        self["Set" .. StringUtil:CamelToProperCase(variableName)] = function(self, value)
+            if self[variableName] == value then
+                return;
+            end;
+            if self[variableName] ~= nil and sanitizer then
+                sanitizer();
+            end;
+            self[variableName] = value;
+            sanitizer = observerFunc(value, self);
+        end;
+    end);
+end;
+
+function Convention:InsertGuardedSetter(class, variableName, guardFunc, ...)
+    guardFunc = ObjFunc(guardFunc, ...);
+    class["Set" .. StringUtil:CamelToProperCase(variableName)] = function(self, value)
+        if self[variableName] == value then
+            return;
+        end;
+        self[variableName] = guardFunc(value, self);
+    end;
+end;
+
+function Convention:InsertDefaultGetter(class, variableName, defaultValue)
+    class["Get" .. StringUtil:CamelToProperCase(variableName)] = function(self)
+        if self[variableName] ~= nil then
+            return self[variableName];
+        end;
+        return defaultValue;
+    end;
+end;
+
+function Convention:InsertAccessor(class, variableName)
+    Convention:InsertGetter(class, variableName);
+    Convention:InsertSetter(class, variableName);
+end;
+
+function Convention:InsertObservedAccessor(class, variableName, observerFunc, ...)
+    Convention:InsertGetter(class, variableName);
+    Convention:InsertGuardedSetter(class, variableName, observerFunc, ...);
 end;
