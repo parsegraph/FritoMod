@@ -15,7 +15,7 @@ function warning(...)
 end;
 
 function rawdebug(...)
-    DEFAULT_CHAT_FRAME:AddMessage(tostring(StringUtil:Concat(...)));
+    SELECTED_CHAT_FRAME:AddMessage(tostring(StringUtil:Concat(...)));
 end;
 
 function Start()
