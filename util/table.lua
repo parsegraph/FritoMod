@@ -45,10 +45,6 @@ end;
 --
 -------------------------------------------------------------------------------
 
-------------------------------------------
---  LookupValue
-------------------------------------------
---
 -- Searches for a value in originalTable, returning the first key where 
 -- comparatorFunc returned a truthy value. 
 --
@@ -61,6 +57,14 @@ function TableUtil:LookupValue(originalTable, value, comparatorFunc, ...)
             return key;
         end;
     end;
+end;
+
+-- Returns a function that tests for equality between objects. 
+local function MakeEqualityComparator(comparatorFunc, ...)
+    if not comparatorFunc then
+        return Operator.Equals;
+    end;
+    return ObjFunc(comparatorFunc, ...);
 end;
 
 -------------------------------------------------------------------------------

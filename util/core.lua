@@ -5,35 +5,16 @@
 --
 -------------------------------------------------------------------------------
 
-------------------------------------------
---  Bool
-------------------------------------------
---
--- Very naively converts a value to a boolean.
+-- Converts the specified value to a boolean.
 function Bool(value)
 	return not not value;
 end	
 
-------------------------------------------
---  IsCallable
-------------------------------------------
---
--- Returns whether the given value is callable.
+-- Returns whether the specified value is callable. A callable value is one that is
+-- a function, or a table that implements __call.
 function IsCallable(value)
     local valueType = type(value);
     return valueType == "function" or (valueType == "table" and IsCallable(getmetatable(value).__call));
-end;
-
-------------------------------------------
---  MakeEqualityComparator
-------------------------------------------
---
--- ObjFuncs a comparatorFunc, or returns Operator.Equals.
-function MakeEqualityComparator(comparatorFunc, ...)
-    if not comparatorFunc then
-        return Operator.Equals;
-    end;
-    return ObjFunc(comparatorFunc, ...);
 end;
 
 -------------------------------------------------------------------------------
@@ -42,10 +23,6 @@ end;
 --
 -------------------------------------------------------------------------------
 
-------------------------------------------
---  UnpackAll
-------------------------------------------
---
 -- Given a series of tables, return an unpacked, single table of those values.
 --
 -- For example:

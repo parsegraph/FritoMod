@@ -1,6 +1,14 @@
 ListUtil = {};
 local ListUtil = ListUtil;
 
+-- Returns a function that tests for equality between objects. 
+local function MakeEqualityComparator(comparatorFunc, ...)
+    if not comparatorFunc then
+        return Operator.Equals;
+    end;
+    return ObjFunc(comparatorFunc, ...);
+end;
+
 -------------------------------------------------------------------------------
 --
 --  ListUtil: Mapping Functions
