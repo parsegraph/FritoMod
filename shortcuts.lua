@@ -1,3 +1,8 @@
+--[[ 
+-- A collection of debug-level convenience methods. In production use, no methods named here would
+-- be used.
+--]]
+
 function print(...)
     return API.Chat:Say("debug", tostring(StringUtil:Concat(...)));
 end;
