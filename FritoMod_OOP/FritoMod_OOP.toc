@@ -1,0 +1,16 @@
+## Interface: 30200
+## Title: FritoMod: OOP
+## Notes: OOP Methods
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod_Functional
+
+
+OOP\init.lua
+OOP\Class.lua
+OOP\methods.lua
+
+methods.lua
+Mixins.lua
+
+StateMachine.lua

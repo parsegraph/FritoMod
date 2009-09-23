@@ -1,0 +1,19 @@
+## Interface: 30200
+## Title: FritoMod: UI
+## Notes: An OOP-based UI framework.
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod_Utilities, FritoMod_API, FritoMod_OOP
+## OptDependencies: FritoMod_Logging
+
+LayoutUtil.lua
+
+StyleClient.lua
+Invalidating.lua
+InvalidatingProxy.lua
+DisplayObject.lua
+DisplayObjectContainer.lua
+TextField.lua
+Stage.lua
+Texture.lua
+Box.lua

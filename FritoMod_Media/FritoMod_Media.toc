@@ -1,0 +1,9 @@
+## Interface: 30200
+## Title: FritoMod: Media
+## Notes: Media library and some sample sounds.
+## Author: Frito
+## Version: Unreleased
+## RequiredDeps: FritoMod_Utilities, FritoMod_OOP
+## OptionalDeps: LibSharedMedia-3.0
+
+MediaLibrary.lua

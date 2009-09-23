@@ -1,0 +1,8 @@
+## Interface: 30200
+## Title: FritoMod: Data
+## Notes: Data Idioms
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod_Utilities, FritoMod_Events
+
+Data.lua

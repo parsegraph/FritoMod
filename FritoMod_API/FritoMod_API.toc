@@ -1,0 +1,12 @@
+## Interface: 30200
+## Title: FritoMod: API
+## Notes: Bridge methods for Blizzard functions.
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod_Utilities, FritoMod_OOP, FritoMod_Functional, FritoMod_Events
+
+API\init.lua
+API\Chat.lua
+API\Events.lua
+API\Frames.lua
+API\Units.lua

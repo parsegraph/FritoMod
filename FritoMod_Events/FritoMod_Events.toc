@@ -1,0 +1,9 @@
+## Interface: 30200
+## Title: FritoMod: Events
+## Notes: Generic event dispatching.
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod_Utilities, FritoMod_OOP
+
+EventDispatcher.lua
+IterationManager.lua

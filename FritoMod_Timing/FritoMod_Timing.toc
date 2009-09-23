@@ -1,0 +1,8 @@
+## Interface: 30200
+## Title: FritoMod: Timing
+## Notes: Timing Framework
+## Author: Frito
+## Version: 0.00
+## Dependencies: FritoMod_Utilities, FritoMod_OOP, FritoMod_Functional
+
+Timing.lua

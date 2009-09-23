@@ -1,0 +1,10 @@
+## Interface: 30200
+## Title: FritoMod: Functional
+## Notes: A collection of some helpful functional idioms
+## Author: Frito
+## Version: Unreleased
+
+methods.lua
+currying.lua
+metatables.lua
+Operator.lua

@@ -1,0 +1,9 @@
+## Interface: 30200
+## Title: FritoMod: Units
+## Notes: Unit Framework
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod_Utilities, FritoMod_OOP, FritoMod_API, FritoMod_Data
+
+Unit.lua
+UnitManager.lua

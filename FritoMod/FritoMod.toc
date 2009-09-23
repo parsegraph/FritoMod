@@ -1,0 +1,10 @@
+## Interface: 30200
+## Title: FritoMod
+## Notes: Frito's UI Library.
+## Author: Frito
+## Version: Obsolete
+
+## channel.lua
+## environment.lua
+## icons.lua
+## mapscales.lua

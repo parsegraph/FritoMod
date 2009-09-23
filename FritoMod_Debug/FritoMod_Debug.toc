@@ -1,0 +1,7 @@
+## Interface: 30200
+## Title: FritoMod: Debug
+## Notes: Debug-level utilities
+## Author: Frito
+## Version: Unreleased
+
+methods.lua

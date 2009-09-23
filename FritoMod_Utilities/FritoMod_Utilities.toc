@@ -1,0 +1,16 @@
+## Interface: 30200
+## Title: FritoMod: Utilities
+## Notes: A suite of generic utility functions.
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod_Functional, FritoMod_OOP, FritoMod_States
+
+methods.lua
+Lists.lua
+Strings.lua
+Tables.lua
+Conventions.lua
+
+NumberBuilder.lua
+Math.lua
+
