@@ -16,6 +16,21 @@ function Bool(value)
 	return not not value;
 end	
 
+-- Returns whether the specified value is of the specified type.
+--
+-- requiredType
+--     the type that is required. Values of this type yield truthy values
+-- value
+--     the tested value
+-- returns
+--     true if value's type is equal to the specified type, otherwise false
+-- throws
+--     if required type is not a string
+function IsType(requiredType, value)
+    assert(type(requiredType) == "string", "requiredType is not a string");
+    return type(value) == requiredType;
+end;
+
 -- Returns whether the specified value is callable. A callable value is one that is
 -- a function, or a table that implements __call.
 --
@@ -165,5 +180,4 @@ function Undoable(func, ...)
         assert(IsCallable(remover), "remover is not a callable");
     end;
 end;
-
 
