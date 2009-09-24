@@ -1,2 +1,4 @@
-*
-!FritoMod_Data/
+*.swp
+*~
+*/
+!FritoMod*/
