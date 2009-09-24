@@ -1,16 +1,12 @@
 ## Interface: 30200
 ## Title: FritoMod: Testing
-## Notes: Testing suite and methods for testing FritoMod.
+## Notes: Testing suite and methods for testing.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod_Utilities, FritoMod_OOP, FritoMod_Events, FritoMod_Logging
-## OptionalDeps: FritoMod_Units
+## Dependencies: FritoMod_Functional, FritoMod_OOP, FritoMod_Utilities, FritoMod_Logging
 
 Flag.lua
 TestCase.lua
+ReflectiveTestCase.lua
+TestSuite.lua
 TestManager.lua
-
-tests\TestCase.lua
-tests\TestManager.lua
-tests\Strings.lua
-tests\UnitManager.lua

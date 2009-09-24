@@ -3,7 +3,7 @@
 ## Notes: Bridge methods for Blizzard functions.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod_Utilities, FritoMod_OOP, FritoMod_Functional, FritoMod_Events
+## Dependencies: FritoMod_Utilities, FritoMod_OOP, FritoMod_Functional
 
 API\init.lua
 API\Chat.lua
