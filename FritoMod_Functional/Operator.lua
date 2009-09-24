@@ -13,4 +13,10 @@ Operator = {
     Subtract = function(a, b) return a - b end,
     Multiply = function(a, b) return a * b end,
     Divide = function(a, b) return a / b end,
+
+    True = function() return true end,
+    False = function() return false end,
+
+    Not = function(value) return not value end,
+    Truth = function(value) return Bool(value) end
 }
