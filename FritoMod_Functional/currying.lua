@@ -199,7 +199,48 @@ function Seal(func, ...)
     end;
 end;
 
-function Method(self, func, ...)
+-- Returns a function that calls the specified function. The returned function guarantees that
+-- the specified self argument is always used as the self argument for the function. If one is
+-- provided, it is ignored.
+--
+-- self
+--     the self argument that is guaranteed to be the self argument for the specified function
+-- func, ...
+--     the function that is invoked by the returned function
+-- returns
+--     a function that behaves as described above
+-- throws
+--     if self is falsy or not a table
+-- see
+--     ForcedFunction
+function ForcedMethod(self, func, ...)
+    assert(self, "self is falsy");
+    assert(type(self) == "table", "self is not a table. Type: " .. type(self));
+    func = CurryMethod(self, func, ...);
+    return function(maybeSelf, ...)
+        if maybeSelf == self then
+            return func(...);
+        end;
+        -- It's just another argument, so include it.
+        return func(maybeSelf, ...);
+    end;
+end;
+
+-- Returns a function that calls the specified function. The returned function guarantees that
+-- the specified self argument is never used as the self argument for the function. If one is
+-- provided, it is omitted.
+--
+-- self
+--     the self argument that is ignored
+-- func, ...
+--     the function that is invoked by the returned function
+-- returns
+--     a function that behaves as described above
+-- throws
+--     if self is falsy or not a table
+-- see
+--     ForcedMethod
+function ForcedFunction(self, func, ...)
     assert(self, "self is falsy");
     assert(type(self) == "table", "self is not a table. Type: " .. type(self));
     func = Curry(func, ...);
@@ -207,6 +248,7 @@ function Method(self, func, ...)
         if maybeSelf == self then
             return func(...);
         end;
+        -- It's just another argument, so include it.
         return func(maybeSelf, ...);
     end;
 end;

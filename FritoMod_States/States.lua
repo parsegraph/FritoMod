@@ -65,7 +65,7 @@ function States.TableLookup(map, func, ...)
     func = Curry(func, ...);
     local state = {};
 
-    state.Check = Method(state, Tables.ContainsKey, map);
+    state.Check = ForcedFunction(state, Tables.ContainsKey, map);
     state.Act = function(context, value)
         func(context, map[value]);
     end;

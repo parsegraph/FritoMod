@@ -13,9 +13,8 @@ function Flag()
             return isSet;
         end
     };
-    flag.Assert = Method(flag, function(self, ...)
-            assert(self:IsSet(), ...);
-        end
-    });
+    flag.Assert = ForcedMethod(flag, function(self, ...)
+        assert(self:IsSet(), ...);
+    end);
     return flag;
 end;
