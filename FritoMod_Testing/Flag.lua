@@ -5,15 +5,17 @@
 -- the 'self' reference is not used.
 function Flag()
     local isSet = false;
-    return {
+    local flag = {
         Raise = function()
             isSet = true;
         end,
         IsSet = function()
             return isSet;
-        end,
-        Assert = function(self, ...)
-            assert(self:IsSet(), ...);
         end
     };
+    flag.Assert = Method(flag, function(self, ...)
+            assert(self:IsSet(), ...);
+        end
+    });
+    return flag;
 end;
