@@ -5,5 +5,6 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod_Utilities, FritoMod_OOP, FritoMod_API, FritoMod_Data
 
+Units.lua
 Unit.lua
 UnitManager.lua
