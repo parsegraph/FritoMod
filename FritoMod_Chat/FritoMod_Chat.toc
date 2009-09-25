@@ -1,0 +1,8 @@
+## Interface: 30200
+## Title: FritoMod: Chat
+## Notes: Some chat abstractions that make communication easier.
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod_OOP, FritoMod_Utilities 
+
+Chat.lua
