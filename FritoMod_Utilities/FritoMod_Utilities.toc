@@ -5,7 +5,6 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod_Functional, FritoMod_OOP, FritoMod_States
 
-methods.lua
 Lists.lua
 Strings.lua
 Tables.lua
