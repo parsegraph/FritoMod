@@ -29,7 +29,7 @@ function Mediums.Whisper(target, message)
    SendChatMessage(message, "whisper", nil, target);
 end;
 
-local ALIASES = Expand({
+local ALIASES = Tables.Expand({
       d = "Debug",
       g = "Guild",
       [{"p", "par", "party"}] = "Party",
