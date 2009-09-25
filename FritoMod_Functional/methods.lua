@@ -98,27 +98,28 @@ end
 --     the function that is invoked before every "new" series of invocations of the wrapped method.
 --     In practice
 function Activator(wrapped, activator, ...)
-   activator = Curry(activator, ...);
-   local deactivator = nil;
-   local count = 0;
-   return function(...)
-      if count == 0 then
-         deactivator = activator() or Noop;
-      end;
-      count = count + 1;
-      local sanitizer = wrapped(...) or Noop;
-      return function()
-         if not sanitizer then
-            return;
-         end;
-         sanitizer();
-         sanitizer = nil;
-         count = count - 1;
-         if count == 0 then
-            deactivator();
-         end;
-      end;
-   end;
+    wrapped = wrapped or Noop;
+    activator = Curry(activator, ...);
+    local deactivator = nil;
+    local count = 0;
+    return function(...)
+        if count == 0 then
+            deactivator = activator() or Noop;
+        end;
+        count = count + 1;
+        local sanitizer = wrapped(...) or Noop;
+        return function()
+            if not sanitizer then
+                return;
+            end;
+            sanitizer();
+            sanitizer = nil;
+            count = count - 1;
+            if count == 0 then
+                deactivator();
+            end;
+        end;
+    end;
 end;
 
 -- Populates a table with curried functions. The returned function will accept
