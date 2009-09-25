@@ -2,7 +2,7 @@ Iterators = DefensiveTable();
 local Iterators = Iterators;
 
 function Iterators.VisibleFields(object)
-   return function Do(_, key)
+   return function(_, key)
       local nextKey, candidate = next(object, key);
       if nextKey ~= nil then
         return nextKey, candidate;
