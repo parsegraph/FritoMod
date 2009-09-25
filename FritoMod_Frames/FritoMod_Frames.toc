@@ -1,0 +1,8 @@
+## Interface: 30200
+## Title: FritoMod: Frames
+## Notes: Frame abstractions and utilities
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod_OOP, FritoMod_Utilities 
+
+Frame.lua
