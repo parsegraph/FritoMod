@@ -2,7 +2,7 @@
 ## Title: FritoMod: Utilities - Tests
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod_Utilities, FritoMod_Testing
+## Dependencies: FritoMod, FritoMod_Utilities, FritoMod_Testing
 
 Lists.lua
 Strings.lua

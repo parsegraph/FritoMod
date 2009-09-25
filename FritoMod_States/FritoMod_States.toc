@@ -3,7 +3,7 @@
 ## Notes: State Framework.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod_Functional, FritoMod_OOP
+## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP
 
 States.lua
 StateMachine.lua

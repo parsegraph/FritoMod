@@ -3,7 +3,7 @@
 ## Notes: Logging methods and utilities.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod_Utilities, FritoMod_OOP
+## Dependencies: FritoMod, FritoMod_Utilities, FritoMod_OOP
 
 LogEntry.lua
 Log.lua

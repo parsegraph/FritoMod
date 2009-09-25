@@ -2,7 +2,7 @@
 ## Title: FritoMod: Testing - Tests
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod_Testing
+## Dependencies: FritoMod, FritoMod_Testing
 
 TestCase.lua
 TestManager.lua

@@ -3,6 +3,6 @@
 ## Notes: Event utilities
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod_Functional
+## Dependencies: FritoMod, FritoMod_Functional
 
 Events.lua

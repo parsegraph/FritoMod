@@ -3,6 +3,6 @@
 ## Notes: Frame abstractions and utilities
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod_OOP, FritoMod_Utilities 
+## Dependencies: FritoMod, FritoMod_OOP, FritoMod_Utilities 
 
 Frame.lua

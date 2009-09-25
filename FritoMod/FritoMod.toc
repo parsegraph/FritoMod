@@ -1,6 +1,6 @@
 ## Interface: 30200
 ## Title: FritoMod
-## Notes: Frito's UI Library.
+## Notes: Disabling this addon will disable all FritoMod-dependent addons.
 ## Author: Frito
 ## Version: Obsolete
 

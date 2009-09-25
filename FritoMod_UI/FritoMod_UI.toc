@@ -3,7 +3,7 @@
 ## Notes: An OOP-based UI framework.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod_Utilities, FritoMod_OOP
+## Dependencies: FritoMod, FritoMod_Utilities, FritoMod_OOP
 ## OptDependencies: FritoMod_Logging
 
 LayoutUtil.lua

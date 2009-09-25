@@ -3,6 +3,7 @@
 ## Notes: A collection of some helpful functional idioms
 ## Author: Frito
 ## Version: Unreleased
+## Dependencies: FritoMod
 
 methods.lua
 currying.lua
