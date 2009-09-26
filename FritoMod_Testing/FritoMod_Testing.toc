@@ -6,7 +6,6 @@
 ## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP, FritoMod_Utilities, FritoMod_Logging
 
 Flag.lua
-TestCase.lua
 TestSuite.lua
-ReflectiveTestCase.lua
+ReflectiveTestSuite.lua
 TestManager.lua
