@@ -2,7 +2,7 @@ TestSuite = OOP.Class();
 local TestSuite = TestSuite;
 
 function TestSuite:Constructor()
-    self.listener = CompositeFunction();
+    self.listener = CompositeTable();
 end;
 
 function TestSuite:AddListener(listenerFunc, ...)
@@ -12,7 +12,10 @@ end;
 function TestSuite:Run()
     self.listener:StartAllTests(self);
     local tests = self:GetTests();
-    for test in tests do
+    if type(tests) == "function" then
+        tests = Lists.Consume(tests);
+    end;
+    for test in ipairs(tests) do
         self.listener:TestStarted(self, test);
         if pcall(test) then
             self.listener:TestSuccessful(self, test);

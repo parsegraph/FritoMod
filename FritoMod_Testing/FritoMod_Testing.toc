@@ -7,6 +7,6 @@
 
 Flag.lua
 TestCase.lua
-ReflectiveTestCase.lua
 TestSuite.lua
+ReflectiveTestCase.lua
 TestManager.lua
