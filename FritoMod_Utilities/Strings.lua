@@ -5,6 +5,11 @@ Strings.DIGITS = "0123456789"
 Strings.ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 Strings.ALPHANUMERICS = Strings.DIGITS .. Strings.ALPHABET;
 
+function Strings.Matches(pattern, candidate)
+    candidate = tostring(candidate);
+    return Bool(candidate:find(pattern));
+end;
+
 function Strings.Join(delimiter, items)
    local length = getn(list);
    if length == 0 then 
