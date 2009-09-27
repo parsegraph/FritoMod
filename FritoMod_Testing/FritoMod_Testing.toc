@@ -9,4 +9,4 @@ Flag.lua
 TestSuite.lua
 ReflectiveTestSuite.lua
 MappedTestSuite.lua
-Tests.lua
+AllTests.lua

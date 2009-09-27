@@ -4,7 +4,7 @@ local TestSuite = TestSuite;
 function TestSuite:Constructor(name)
     self.listener = CompositeTable();
     if name then
-        Tests[name] = self;
+        AllTests[name] = self;
     end;
 end;
 
