@@ -48,7 +48,11 @@ function Iterators.IterateList(list)
     local index = 0;
     return function()
         index = index + 1;
-        return index, list[index];
+        local item = list[index];
+        if item == nil then
+            return;
+        end;
+        return index, item;
     end;
 end;
 
@@ -84,18 +88,22 @@ function Iterators.Count(startValue, endValue, step)
 end;
 
 function Iterators.VisibleFields(object)
-   return function(_, key)
-      local nextKey, candidate = next(object, key);
-      if nextKey ~= nil then
-        return nextKey, candidate;
-      end;
-      local mt = getmetatable(object);
-      if mt and type(mt.__index) == "table" and mt.__index ~= object then
-         object = mt.__index;
-         return Do();
-      end;
-      return nil;
-   end;
+    local key;
+    function DoIteration()
+        local candidate;
+        key, candidate = next(object, key);
+        if key ~= nil then
+            return key, candidate;
+        end;
+        key = nil;
+        local mt = getmetatable(object);
+        if mt and type(mt.__index) == "table" and mt.__index ~= object then
+            object = mt.__index;
+            return DoIteration();
+        end;
+        return nil;
+    end;
+    return DoIteration;
 end;
 
 function Iterators.FilterKey(iterator, func, ...)
