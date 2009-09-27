@@ -4,12 +4,36 @@ local TestSuite = TestSuite;
 function TestSuite:Constructor(name)
     self.listener = CompositeTable();
     if name then
+        self.name = name;
         AllTests[name] = self;
     end;
 end;
 
-function TestSuite:AddListener(listenerFunc, ...)
-    return self.listener:Add(listenerFunc, ...);
+function TestSuite:AddListener(listener)
+    return self.listener:Add(listener);
+end;
+
+function TestSuite:AddRecursiveListener(listener, ...)
+    local removers = {};
+    Lists.Insert(removers, self:AddListener(listener));
+    local testGenerator = self:GetTests(...);
+    while true do
+        local test = testGenerator();
+        if not test then
+            break;
+        end;
+        if OOP.InstanceOf(TestSuite, test) then
+            Lists.Insert(removers, test:AddRecursiveListener(listener));
+        end;
+    end;
+    return Curry(Lists.MapCall, removers);
+end;
+
+function TestSuite:ToString()
+    local name = self.name;
+    if not name then
+    end;
+    return format("TestSuite(%s)", name);
 end;
 
 local function RunTest(self, test)
@@ -46,23 +70,31 @@ end;
 -- returns
 --     true, if this suite executed all tests successfully
 function TestSuite:Run(...)
-    self.listener:StartAllTests(self);
-    local tests = self:GetTests(...);
-    if type(tests) == "function" then
-        tests = Lists.Consume(tests);
+    self.listener:StartAllTests(self, ...);
+    local testGenerator = self:GetTests(...);
+    if type(testGenerator) ~= "function" then
+        testGenerator = Iterator.IterateMap(tests);
     end;
     local successful = true;
-    for test in ipairs(tests) do
-        self.listener:TestStarted(self, test);
+    repeat
+        local testName, test = testGenerator();
+        if testName == nil then
+            break;
+        end;
+        if not test and testName then
+            test, testName = testName, tostring(testName);
+        end;
+        testName = tostring(testName);
+        self.listener:TestStarted(self, testName);
         local result, errorMessage = RunTest(self, test);
         if result then
-            self.listener:TestSuccessful(self, test);
+            self.listener:TestSuccessful(self, testName);
         else
             successful = false;
-            self.listener:TestFailed(self, test, errorMessage);
+            self.listener:TestFailed(self, testName, errorMessage);
         end;
-    end;
-    self.listener:FinishAllTests(self);
+    until false;
+    self.listener:FinishAllTests(self, successful);
     return successful;
 end;
 
@@ -73,6 +105,9 @@ end;
 -- * A table with a Run function. The Run function is called like a regular function with
 -- the proper self argument.
 -- * A string that represents executable code. The code is compiled and executed.
+--
+-- The returned list is expected to be a map or list. The map's keys will be used as test names,
+-- and their values will be the runnable tests.
 --
 -- ...
 --     Optional. These arguments may be used to configure which tests are ran, or how they
