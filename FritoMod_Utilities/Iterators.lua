@@ -2,23 +2,23 @@ Iterators = DefensiveTable();
 local Iterators = Iterators;
 
 function Iterators.Iterate(value, ...)
-    assert(iterator, "Iterator is falsy");
-    if IsCallable(iterator) then
-        return iterator;
+    assert(value, "value is falsy");
+    if IsCallable(value) then
+        return Curry(value, ...);
     end;
-    if type(iterator) == "table" then
-        if #iterator > 0 then
+    if type(value) == "table" then
+        if #value > 0 then
             return Iterators.IterateList(value);
         end;
         return Iterators.IterateMap(value);
     end;
-    if type(iterator) == "string" then
+    if type(value) == "string" then
         return Iterators.IterateString(value);
     end;
-    if type(iterator) == "number" then
+    if type(value) == "number" then
         return Iterators.IterateValue(value, ...);
     end;
-    error("Iterator is not a valid type. Type: " .. type(iterator));
+    error("value is not a valid type. Type: " .. type(value));
 end;
 
 function Iterators.IterateString(str)
