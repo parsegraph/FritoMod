@@ -1,5 +1,7 @@
 MappedTestSuite = OOP.Class(TestSuite);
 
+local EMPTY_SUITE;
+
 function MappedTestSuite:GetTests(matcher, ...)
     if select("#", ...) > 0 or IsCallable(matcher) then
        matcher = Curry(matcher, ...);
@@ -10,6 +12,9 @@ function MappedTestSuite:GetTests(matcher, ...)
         matcher = CurryFunction(Strings.Matches, name);
     end;
     return Iterators.FilterKey(self, function(key)
-        return not MappedTestSuite[key] and matcher(key);
-    end)
+        if not EMPTY_SUITE then
+            EMPTY_SUITE = MappedTestSuite:New();
+        end;
+        return not EMPTY_SUITE[key] and matcher(key);
+    end);
 end;
