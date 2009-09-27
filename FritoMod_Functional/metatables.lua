@@ -29,6 +29,7 @@ local function Add(self, observer)
     if not observer then
         error("observer is falsy");
     end;
+    assert(type(observer) == "table", "observer is not a table. Type: ".. type(observer));
     table.insert(self, observer);
     return Curry(Lists.RemoveFirst, self, observer);
 end;
