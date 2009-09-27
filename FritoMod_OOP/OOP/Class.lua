@@ -64,9 +64,32 @@ local CLASS_METATABLE = {
         table.insert(self.constructors, constructorFunc);
     end,
 
+    ToString = function(self)
+        -- Utilities is loaded after OOP, so Tables.Reference not be accessible if we call
+        -- this extremely early in the loading process.
+        if not Tables then
+            local metatable = getmetatable(self);
+            -- Temporarily detach the metatable so we can access the raw tostring function.
+            setmetatable(self, nil);
+            local str = tostring(self);
+            setmetatable(self, metatable);
+            return str;
+        end;
+        local reference = Tables.Reference(self);
+        if self[CLASS_NAME] then
+            return "Instance@" .. reference;
+        end;
+        return "Class@" .. reference;
+    end,
+
     -- Creates a new instance of this class.
     New = function(self, ...)
-        local instance = { __index = self};
+        local instance = { 
+            __index = self,
+            __tostring = function(self)
+                return self:ToString()
+            end
+        };
         instance[CLASS_NAME] = self;
         setmetatable(instance, instance);
 
