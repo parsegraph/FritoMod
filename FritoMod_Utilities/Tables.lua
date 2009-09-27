@@ -12,6 +12,16 @@ function Tables.Set(targetTable, key, value)
     return oldValue;
 end;
 
+function Tables.Reference(target)
+    -- Temporarily detach the metatable so we can access the raw tostring function
+    local metatable = getmetatable(target);
+    setmetatable(target, nil);
+    local str = tostring(target);
+    setmetatable(target, metatable);
+    local _, split = str:find(":[ ]+");
+    return str:sub(split + 1);
+end;
+
 -- Updates the originalTable with the values in the updatingTable. By default, this
 -- will simply copy every key/value pair from the updatingTable to the originalTable,
 -- but you can change this behavior by providing your own updateFunc.
