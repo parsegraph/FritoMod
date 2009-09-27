@@ -1,0 +1,10 @@
+## Interface: 30200
+## Title: FritoMod: OOP - Tests
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod, FritoMod_OOP, FritoMod_Testing
+
+Mixins.lua
+OOP\Class.lua
+OOP\methods.lua
+
