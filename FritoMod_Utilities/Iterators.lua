@@ -1,6 +1,14 @@
 Iterators = DefensiveTable();
 local Iterators = Iterators;
 
+function Iterators.Flip(iterator)
+    iterator = Iterators.Iterate(iterator);
+    return function()
+        local key, value = iterator();
+        return value, key;
+    end;
+end;
+
 function Iterators.Iterate(value, ...)
     assert(value, "value is falsy");
     if IsCallable(value) then
@@ -106,43 +114,32 @@ function Iterators.VisibleFields(object)
     return DoIteration;
 end;
 
-function Iterators.FilterKey(iterator, func, ...)
-    iterator = Iterators.Iterate(iterator);
-    func = Curry(func, ...);
-    return function()
-        local key, value = iterator();
-        if key ~= nil and func(key) then
-            return key, value;
+local function FilteredIterator(evaluator)
+    return function(iterator, func, ...)
+        iterator = Iterators.Iterate(iterator);
+        func = Curry(func, ...);
+        return function()
+            while true do
+                local key, value = iterator();
+                if key == nil then 
+                    break;
+                end;
+                if evaluator(func, key, value) then
+                    return key, value;
+                end;
+            end;
         end;
     end;
 end;
 
-function Iterators.FilterPair(iterator, func, ...)
-    iterator = Iterators.Iterate(iterator);
-    func = Curry(func, ...);
-    return function()
-        local key, value = iterator();
-        if key ~= nil and func(key, value) then
-            return key, value;
-        end;
-    end;
-end;
+Iterators.FilterPair = FilteredIterator(function(func, key, value)
+    return func(key, value);
+end);
 
-function Iterators.FilterValue(iterator, func, ...)
-    iterator = Iterators.Iterate(iterator);
-    func = Curry(func, ...);
-    return function()
-        local key, value = iterator();
-        if key ~= nil and func(value) then
-            return key, value;
-        end;
-    end;
-end;
+Iterators.FilterKey = FilteredIterator(function(func, key, value)
+    return func(key);
+end);
 
-function Iterators.Flip(iterator)
-    iterator = Iterators.Iterate(iterator);
-    return function()
-        local key, value = iterator();
-        return value, key;
-    end;
-end;
+Iterators.FilterValue = FilteredIterator(function(func, key, value)
+    return func(value);
+end);
