@@ -129,7 +129,7 @@ OOP.Class = function(...)
         if not mixinOrClass then
             error("Mixin or class is falsy. Index " .. n);
         end;
-        if type(mixinOrClass) == "table" and mixinOrClass[CONSTRUCTOR_NAME] then
+        if OOP.IsClass(mixinOrClass) then
             --  It's a class, so make it our super class.
             if class[SUPER_NAME] then
                 error("Class cannot have more than one super class");
