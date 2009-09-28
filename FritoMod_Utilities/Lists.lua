@@ -199,7 +199,7 @@ end;
 -- You may override the comparatorFunc used in these functions. Expect the
 -- signature comparatorFunc(candidate, item). Any truthy result returned will cause
 -- that candidate to be removed.
-
+--
 -- Removes the first occurrence, returning the original list along with the removed
 -- item.
 function Lists.RemoveFirst(list, item, comparatorFunc, ...)
@@ -215,9 +215,9 @@ end;
 
 -- Removes the last occurrence, returning the original list along with the removed
 -- item.
-function Lists.RemoveFirst(list, item, comparatorFunc, ...)
+function Lists.RemoveLast(list, item, comparatorFunc, ...)
     comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-    for reversedIndex=1,#list do 
+    for reversedIndex=#list,1,-1 do 
         -- Get the reverse order.
         local index = #list - reversedIndex + 1;
         local candidate = list[index];
@@ -292,7 +292,7 @@ end;
 --
 -- In other words, this test believes that {"A", "B", "B"} and {"A", "A", "B"} are
 -- equal, since both lists contain all elements that are in the other.
-function Lists.Equals(list, otherList, comparatorFunc, ...)
+function Lists.ContainsAll(list, otherList, comparatorFunc, ...)
     comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
     if #list ~= #otherList then
         return false;
@@ -303,6 +303,20 @@ function Lists.Equals(list, otherList, comparatorFunc, ...)
         end;
     end;
     return union;
+end;
+
+function Lists.Equals(list, otherList, comparatorFunc, ...)
+    comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+    if #list ~= #otherList then
+        return false;
+    end;
+    for i=1, #list do
+        local item = list[i];
+        if not IsEqual(comparatorFunc(otherList[i], list[i])) then
+            return false;
+        end;
+    end;
+    return true;
 end;
 
 -- Returns the first index that comparatorFunc returns a truthy value on. If no
@@ -316,7 +330,6 @@ function Lists.IndexOf(list, item, comparatorFunc, ...)
             return index;
         end;
     end;
-    return 0;
 end;
 
 -- Returns the last index that comparatorFunc returns a truthy value on. If no
@@ -325,14 +338,12 @@ end;
 -- If no value is found, then 0 is returned.
 function Lists.LastIndexOf(list, item, comparatorFunc, ...)
     comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-    for reverseIndex=1, #list do 
-        local index = #list - reverseIndex + 1;
-        local candidate = list[index];
+    for reverseIndex=#list, 1, -1 do
+        local candidate = list[reverseIndex];
         if IsEqual(comparatorFunc(candidate, item)) then
             return index;
         end;
     end;
-    return 0;
 end;
 
 -- A default reduce function that tries to do the right thing for various types.
