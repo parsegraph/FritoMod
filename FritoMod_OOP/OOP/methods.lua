@@ -12,7 +12,7 @@ function OOP.IntegrateLibrary(library, class)
 end
 
 function OOP.InstanceOf(class, instance)
-    assert(OOP.IsClass(class), "class is not a class");
+    assert(OOP.IsClass(class), "class is not a class: " .. tostring(class));
     if not OOP.IsInstance(instance) then
         return false;
     end;
@@ -21,8 +21,9 @@ function OOP.InstanceOf(class, instance)
         if candidateClass == class then
             return true;
         end;
-        if candidateClass.super ~= candidateClass then
-            candidateClass = candidateClass.super;
+        local super = candidateClass.super;
+        if super ~= nil and super ~= candidateClass then
+            candidateClass = super;
         else
             break;
         end;
@@ -35,6 +36,6 @@ function OOP.IsInstance(candidate)
 end;
 
 function OOP.IsClass(candidate)
-    return candidate and type(candidate) == "table" and type(candidate.New) == "function";
+    return candidate and type(candidate) == "table" and IsCallable(candidate.New) and not candidate.class;
 end;
 
