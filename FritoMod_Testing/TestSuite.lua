@@ -4,8 +4,13 @@ local TestSuite = TestSuite;
 function TestSuite:Constructor(name)
     self.listener = CompositeTable();
     if name then
-        self.name = name;
         AllTests[name] = self;
+    end;
+    function self:ToString()
+        if not name then
+            name = Tables.Reference(self);
+        end;
+        return format("TestSuite(%s)", name);
     end;
 end;
 
@@ -16,9 +21,9 @@ end;
 function TestSuite:AddRecursiveListener(listener, ...)
     local removers = {};
     Lists.Insert(removers, self:AddListener(listener));
-    local testGenerator = self:GetTests(...);
+    local testGenerator = self:TestGenerator(...);
     while true do
-        local test = testGenerator();
+        local test, testName = testGenerator();
         if not test then
             break;
         end;
@@ -29,22 +34,19 @@ function TestSuite:AddRecursiveListener(listener, ...)
     return Curry(Lists.MapCall, removers);
 end;
 
-function TestSuite:ToString()
-    local name = self.name;
-    if not name then
-    end;
-    return format("TestSuite(%s)", name);
-end;
-
 local function RunTest(self, test)
     if not test then
         return false, "Test is falsy";
     end;
     if IsCallable(test) then
-        return pcall(test);
+        local ranSuccessfully, result = pcall(test);
+        if ranSuccessfully then
+            return result ~= false;
+        end;
+        return false, result;
     end;
     if type(test) == "table" then
-        return pcall(test.Run, test);
+        return RunTest(self, CurryMethod(test, test.Run));
     end;
     if type(test) == "string" then
         local testfunc, err = loadstring(test);
@@ -54,6 +56,23 @@ local function RunTest(self, test)
         return false, err;
     end;
     return false, "Test is not a callable, table, or string: " .. type(test);
+end;
+
+function TestSuite:TestGenerator(...)
+    local testGenerator = self:GetTests(...);
+    if type(testGenerator) ~= "function" then
+        testGenerator = Iterators.IterateMap(testGenerator);
+    end;
+    return function()
+        local testName, test = testGenerator();
+        if testName == nil then
+            return;
+        end;
+        if not test and testName then
+            test, testName = testName, tostring(testName);
+        end;
+        return test, tostring(testName);
+    end;
 end;
 
 -- Runs tests from this test suite. Every test returned by GetTests() is invoked. Their
@@ -71,20 +90,13 @@ end;
 --     true, if this suite executed all tests successfully
 function TestSuite:Run(...)
     self.listener:StartAllTests(self, ...);
-    local testGenerator = self:GetTests(...);
-    if type(testGenerator) ~= "function" then
-        testGenerator = Iterator.IterateMap(tests);
-    end;
     local successful = true;
+    local testGenerator = self:TestGenerator(...);
     repeat
-        local testName, test = testGenerator();
-        if testName == nil then
+        local test, testName = testGenerator();
+        if not test then
             break;
         end;
-        if not test and testName then
-            test, testName = testName, tostring(testName);
-        end;
-        testName = tostring(testName);
         self.listener:TestStarted(self, testName);
         local result, errorMessage = RunTest(self, test);
         if result then

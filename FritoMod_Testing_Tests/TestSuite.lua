@@ -10,9 +10,6 @@ function TestingTests:TestSuiteIgnoresReturnedArguments()
     function suite:GetTests()
         return {
             function()
-                return false;
-            end,
-            function()
                 return true;
             end,
             function()
@@ -23,7 +20,19 @@ function TestingTests:TestSuiteIgnoresReturnedArguments()
             end
         };
     end;
-    assert(suite:Run(), "Suite ignores returned arguments");
+    assert(suite:Run(), "Suite ignores returned arguments except false");
+end;
+
+function TestingTests:TestSuiteFailsOnFalse()
+    local suite = TestSuite:New();
+    function suite:GetTests()
+        return {
+            function()
+                return false;
+            end,
+        };
+    end;
+    assert(not suite:Run(), "Suite fails on false elements");
 end;
 
 function TestingTests:TestSuiteDefaultsToSucceeding()
