@@ -27,7 +27,7 @@ function OOPTests:TestInstanceOf()
 
     local bar = Derived:New();
     assert(OOP.InstanceOf(Base, bar), "bar is an instance of Base");
-    assert(not OOP.InstanceOf(Derived, bar), "bar is an instance of Derived");
+    assert(OOP.InstanceOf(Derived, bar), "bar is an instance of Derived");
 
 end; 
 

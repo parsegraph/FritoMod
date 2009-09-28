@@ -20,7 +20,7 @@ function ClassTests:TestInheritance()
     local derivedFlag = Tests.Flag();
     local Derived = OOP.Class(Base);
     function Derived:DoSomething()
-        derivedFlag:Hit();
+        derivedFlag:Raise();
     end;
     Derived:New():DoSomething();
     assert(not baseFlag:IsSet(), "Base function is completely overridden");
