@@ -114,6 +114,22 @@ function Iterators.VisibleFields(object)
     return DoIteration;
 end;
 
+function Iterators.Map(iterator, func, ...)
+    local results = {};
+    func = Curry(func, ...);
+    while true do
+        local value = iterator();
+        if value == nil then
+            break;
+        end;
+        local result = func(value);
+        if result ~= nil then
+            Lists.Insert(results, result);
+        end;
+    end;
+    return results;
+end;
+
 local function FilteredIterator(evaluator)
     return function(iterator, func, ...)
         iterator = Iterators.Iterate(iterator);
