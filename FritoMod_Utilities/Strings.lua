@@ -10,41 +10,97 @@ function Strings.Matches(pattern, candidate)
     return Bool(candidate:find(pattern));
 end;
 
+function Strings.IsLetter(letter)
+    letter = tostring(letter);
+    return Bool(letter:find("^%a*$"));
+end;
+
+function Strings.IsNumber(letter)
+    letter = tostring(letter);
+    return Bool(letter:find("^%d*$"));
+end;
+
+function Strings.IsUpper(word)
+    return word:upper() == word;
+end;
+
+function Strings.IsLower(word)
+    return word:lower() == word;
+end;
+
+function Strings.CharAt(str, index)
+    return str:sub(index, index);
+end;
+
 function Strings.Join(delimiter, items)
-   local length = getn(list);
-   if length == 0 then 
-      return "";
-   end;
-   local joined = list[1];
-   for i = 2, len do 
-      joined = joined .. delimiter .. list[i] ;
-   end;
-   return joined;
+    assert(delimiter ~= nil, "delimiter is nil");
+    delimiter = tostring(delimiter);
+    if #items == 0 then 
+        return "";
+    end;
+    local joined = items[1];
+    for i = 2, #items do 
+        joined = joined .. delimiter .. items[i];
+    end;
+    return joined;
 end
+
+-- Splits originalString by the given delimiter, with an underscore used as the default.
+function Strings.SplitByDelimiter(delimiter, originalString)
+    if originalString == nil then
+        delimiter, originalString = "_", delimiter;
+    end;
+    delimiter = delimiter or "_";
+    return { strsplit(delimiter, originalString) };
+end;
 
 -- Splits a camelCase'd or ProperCase'd string into lower-case words. Acronyms will be 
 -- treated as single words.
 --
 -- Observe that camelCase's passed into this method will be parsed correctly; the list
 -- returned will be {"camel", "Case"}
-function Strings.SplitByCase(originalString)
-    originalString = tostring(originalString);
+function Strings.SplitByCase(target)
+    assert(target ~= nil, "target is nil");
+    target = tostring(target);
     local words = {};
-    string.gsub(originalString, "^(%l-)(%U*)$", function(initial, rest)
-        table.insert(words, initial);
-        originalString = rest;
-    end)
-    string.gsub(originalString , "(%U.*%l*)%U%l", function(word)
-        table.insert(words, string.lower(word));
-    end);
-    table.insert(words, word);
-    return words;
-end;
+    local index = 0;
 
--- Splits originalString by the given delimiter, with an underscore used as the default.
-function Strings.SplitByDelimiter(originalString, delimiter)
-    delimiter = delimiter or "_";
-    return { string.split(delimiter, originalString) };
+    -- These are forward declared to avoid problems later on. This may not be necessary.
+    local Capturing, PotentialAcronym, Acronym;
+
+    function Capturing(letter, index)
+        if not Strings.IsUpper(letter) then
+            return;
+        end;
+        Tables.Insert(words, target:sub(1, index - 1));
+        target = target:sub(index);
+        index = 0;
+        return PotentialAcronym;
+    end;
+
+    function PotentialAcronym(letter, index)
+        if Strings.IsUpper(letter) then
+            return Acronym;
+        end;
+        return Capturing;
+    end;
+
+    function InitialState(letter, index)
+        if Strings.IsUpper(state) then
+            return PotentialAcronym;
+        end;
+        return Capturing;
+    end;
+
+    local state = InitialState;
+    while index <= #target do
+        index = index + 1;
+        local letter = Strings.CharAt(target, index);
+        state = state(letter, index) or state;
+    end;
+
+    Tables.Insert(words, target);
+    return words;
 end;
 
 function Strings.JoinProperCase(words)
@@ -59,7 +115,7 @@ function Strings.JoinCamelCase(words)
 end;
 
 function Strings.JoinSnakeCase(words)
-    return string.join("_", words);
+    return Strings.Join("_", words);
 end;
 
 -- Converts AProperCase to aProperCase. 
