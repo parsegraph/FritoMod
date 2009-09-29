@@ -22,6 +22,78 @@ function Tables.Reference(target)
     return str:sub(split + 1);
 end;
 
+function Tables.Keys(map)
+    assert(map, "map is falsy");
+    local keys = {};
+    for key, _ in pairs(map) do
+        Lists.Insert(key);
+    end;
+    return keys;
+end;
+
+function Tables.Values(map)
+    assert(map, "map is falsy");
+    local values = {};
+    for _, value in pairs(map) do
+        Lists.Insert(value);
+    end;
+    return values;
+end;
+
+function Tables.MapPairs(map, func, ...)
+    assert(map, "map is falsy");
+    func = Curry(func, ...);
+    local results = {};
+    for key, value in pairs(map) do
+        local result = func(key, value);
+        if result ~= nil then
+            Lists.Insert(results, result);
+        end;
+    end;
+    return results;
+end;
+
+function Tables.MapKeys(map, func, ...)
+    func = Curry(func, ...);
+    return Tables.MapPairs(map, function(key, value)
+        return func(key);
+    end);
+end;
+
+function Tables.MapValues(map, func, ...)
+    func = Curry(func, ...);
+    return Tables.MapPairs(map, function(key, value)
+        return func(value);
+    end);
+end;
+
+function Tables.FilterPairs(map, func, ...)
+    assert(map, "map is falsy");
+    func = Curry(func, ...);
+    local filtered = {};
+    for key, value in pairs(map) do
+        local result = func(key, value);
+        if result then
+            filtered[key] = value;
+        end;
+    end;
+    return filtered;
+end;
+
+function Tables.FilterKeys(map, func, ...)
+    func = Curry(func, ...);
+    return Tables.FilterPairs(map, function(key, value)
+        return func(key);
+    end);
+end;
+
+function Tables.FilterValues(map, func, ...)
+    func = Curry(func, ...);
+    return Tables.FilterPairs(map, function(key, value)
+        return func(value);
+    end);
+end;
+
 -- Updates the originalTable with the values in the updatingTable. By default, this
 -- will simply copy every key/value pair from the updatingTable to the originalTable,
 -- but you can change this behavior by providing your own updateFunc.
