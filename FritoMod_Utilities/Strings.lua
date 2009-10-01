@@ -21,15 +21,108 @@ function Strings.IsNumber(letter)
 end;
 
 function Strings.IsUpper(word)
+    if word:lower() == word:upper() then
+        -- It contains no upper or lower-case values, so
+        -- it's neither upper nor lower case.
+        return false;
+    end;
     return word:upper() == word;
 end;
 
 function Strings.IsLower(word)
+    if word:lower() == word:upper() then
+        -- It contains no upper or lower-case values, so
+        -- it's neither upper nor lower case.
+        return false;
+    end;
     return word:lower() == word;
 end;
 
 function Strings.CharAt(str, index)
     return str:sub(index, index);
+end;
+
+function Strings.PrettyPrint(value)
+    if value == nil then
+        return "<nil>";
+    end;
+    local valueType = Strings.ProperNounize(type(value));
+    if valueType == "Table" then
+        if OOP.IsClass(value) then
+            return format("Class@%s", Tables.Reference(value));
+        end;
+        if OOP.IsInstance(value) then
+            return value:ToString();
+        end;
+        if #value then
+            return Strings.PrettyPrintList(value);
+        end
+        return Strings.PrettyPrintMap(value);
+    end;
+    local prettyPrinter = Strings["PrettyPrint" .. valueType];
+    assert(prettyPrinter, "prettyPrinter not available for type. Type: " .. valueType);
+    return prettyPrinter(value);
+end;
+
+function Strings.PrettyPrintFunction(value)
+    assert(type(value) == "table", "value is not a table. Type: " .. type(value));
+    local name = Tables.LookupValue(value) or Tables.Reference(value);
+    return format("Function@%s", name);
+end;
+
+function Strings.PrettyPrintNamedNumber(number, itemName, pluralName)
+    if not pluralName then
+        pluralName = itemName .. "s";
+    elseif not Strings.StartsWith(pluralName, itemName) then
+        pluralName = itemName + pluralName;
+    end;
+    local numberString = Strings.PrettyPrintNumber(number);
+    if number == 1 then
+        return format("%s %s", numberString, itemName);
+    end;
+    return format("%s %s", numberString, pluralName);
+end;
+
+function Strings.PrettyPrintList(value)
+    assert(type(value) == "table", "value is not a table. Type: " .. type(value));
+    local size = #value;
+    if size == 0 then
+        return "[<empty>]";
+    end;
+    local size = Strings.PrettyPrintNamedNumber(Strings.PrettyPrintNumber(size), "item");
+    local contents = Lists.Map(value, Strings.PrettyPrint);
+    return format("[<%s> %s]", size, Strings.Join(", ", contents));
+end;
+
+function Strings.PrettyPrintMap(value)
+    assert(type(value) == "table", "value is not a table. Type: " .. type(value));
+    local size = Tables.Size(value);
+    if size == 0 then
+        return "{<empty>}";
+    end;
+    size = Strings.PrettyPrintNamedNumber(Strings.PrettyPrintNumber(size), "item");
+    local contents = Tables.MapPairs(value, function(key, value)
+        return format("%s = %s", Strings.PrettyPrint(key), Strings.PrettyPrint(value));
+    end);
+    return format("[<%s> %s]", size, Strings.Join(", ", contents));
+end;
+
+function Strings.PrettyPrintNumber(value)
+    local number = tonumber(value);
+    if not number then
+        return "<NaN>";
+    end
+    -- TODO Make this add commas
+    return number;
+end;
+
+function Strings.PrettyPrintBoolean(value)
+    return Strings.ProperNounize(Bool(value));
+end;
+
+function Strings.PrettyPrintString(value)
+    value = tostring(value);
+    return format('"%s"', value);
 end;
 
 function Strings.Join(delimiter, items)
@@ -72,7 +165,7 @@ function Strings.SplitByCase(target)
         if not Strings.IsUpper(letter) then
             return;
         end;
-        Tables.Insert(words, target:sub(1, index - 1));
+        Lists.Insert(words, target:sub(1, index - 1));
         target = target:sub(index);
         index = 0;
         return PotentialAcronym;
@@ -86,7 +179,7 @@ function Strings.SplitByCase(target)
     end;
 
     function InitialState(letter, index)
-        if Strings.IsUpper(state) then
+        if Strings.IsUpper(letter) then
             return PotentialAcronym;
         end;
         return Capturing;
@@ -98,8 +191,10 @@ function Strings.SplitByCase(target)
         local letter = Strings.CharAt(target, index);
         state = state(letter, index) or state;
     end;
+    if #target > 0 then
+        Lists.Insert(words, target);
+    end;
 
-    Tables.Insert(words, target);
     return words;
 end;
 
@@ -115,7 +210,7 @@ function Strings.JoinCamelCase(words)
 end;
 
 function Strings.JoinSnakeCase(words)
-    return Strings.Join("_", words);
+    return Strings.Join("_", words):lower();
 end;
 
 -- Converts AProperCase to aProperCase. 

@@ -14,6 +14,23 @@ function listsEqual(list, otherList)
     return true;
 end;
 
+function StringsTests:TestJoin()
+    local j = Curry(Strings.Join, " ");
+    assert(j({2,3,4}) ==  "2 3 4", "Simple group");
+end;
+
+function StringsTests:TestPrettyPrint()
+    local p = Strings.PrettyPrint;
+    assert(p("Foo") == '"Foo"', "Printing a string");
+    assert(p("") == '""', "Empty string");
+    assert(p(42) == "42", "Printing a number");
+    assert(p(false) == "False", "Printing a boolean");
+    assert(p(nil) == "<nil>", "Printing nil");
+    assert(p({1,2,3}) == "[<3 items> 1, 2, 3]", "Printing a list");
+    assert(p({}) == "{<empty>}", "Empty list");
+    --assert(p({foo="Bar"}) == "{<empty>}", "Empty list");
+end;
+
 function StringsTests:TestListsEqual()
     assert(not listsEqual({1}, {2}), "Single-item unequal lists");
     assert(listsEqual({1}, {1}), "Single-item equal lists");
@@ -21,37 +38,50 @@ function StringsTests:TestListsEqual()
     assert(not listsEqual({1,2,3}, {2}), "Mixed-length unequal lists");
 end;
 
+local function AssertSplitByCase(input, expected, description)
+    local actual = Strings.SplitByCase(input);
+    if listsEqual(expected, actual) then
+        return;
+    end;
+    error(format("%s: Expected: %s, Actual: %s", description, Strings.PrettyPrint(expected), Strings.PrettyPrint(actual)));
+end;
+
 function StringsTests:TestSplitByCaseTrivialCases()
-    assert(listsEqual(Strings.SplitByCase("caps"), {"caps"}), "Short java-case");
-    assert(listsEqual(Strings.SplitByCase("Caps"), {"caps"}), "Short Camel-case");
-    assert(listsEqual(Strings.SplitByCase("CAPS"), {"caps"}), "Short Upper-case");
-    assert(listsEqual(Strings.SplitByCase("caps"), {"caps"}), "No-op case");
+    AssertSplitByCase("caps", {"caps"}, "Short java-case");
+    AssertSplitByCase("Caps", {"Caps"}, "Short Camel-case");
+    AssertSplitByCase("CAPS", {"CAPS"}, "Short Upper-case");
 end;
 
 function StringsTests:TestSplitByCase()
-    assert(listsEqual(Strings.SplitByCase("TheSimpleTest"), {"the", "simple", "test"}), "Simple proper-case");
-    assert(listsEqual(Strings.SplitByCase("theSimpleTest"), {"the", "simple", "test"}), "Simple camel-case");
+    AssertSplitByCase("TheSimpleTest", {"The", "Simple", "Test"}, "Simple proper-case");
+    AssertSplitByCase("theSimpleTest", {"the", "Simple", "Test"}, "Simple camel-case");
 end;
 
 function StringsTests:TestSplitByCaseWithAcronyms()
-    assert(listsEqual(Strings.SplitByCase("FOOSimpleTest"), {"foo", "simple", "test"}), "Leading acronym");
-    assert(listsEqual(Strings.SplitByCase("FOOSimpleTest"), {"a", "foo", "simple", "test"}), "Sandwiched acronym");
-    assert(listsEqual(Strings.SplitByCase("theSimpleFOO"), {"the", "simple", "foo"}), "Trailing acronym");
+    AssertSplitByCase("FOOSimpleTest", {"FOO", "Simple", "Test"}, "Leading acronym");
+    AssertSplitByCase("aFOOSimpleTest", {"a", "FOO", "Simple", "Test"}, "Sandwiched acronym");
+    AssertSplitByCase("theSimpleFOO", {"the", "Simple", "FOO"}, "Trailing acronym");
 end;
 
 function StringsTests:TestSplitByCaseIgnoresWhitespace()
-    assert(listsEqual(Strings.SplitByCase("  caps  "), {"  caps  "}), "Both leading and trailing whitespace");
-    assert(listsEqual(Strings.SplitByCase("  caps"), {"  caps"}), "Leading whitespace");
-    assert(listsEqual(Strings.SplitByCase("caps  "), {"caps  "}), "Trailing whitespace");
-    assert(listsEqual(Strings.SplitByCase("ca  ps"), {"ca ps"}), "Internal whitespace");
+    AssertSplitByCase("  caps  ", {"  caps  "}, "Both leading and trailing whitespace");
+    AssertSplitByCase("  caps", {"  caps"}, "Leading whitespace");
+    AssertSplitByCase("caps  ", {"caps  "}, "Trailing whitespace");
+    AssertSplitByCase("ca  ps", {"ca  ps"}, "Internal whitespace");
     local spaces = (" "):rep(5);
-    assert(listsEqual(Strings.SplitByCase(spaces), {spaces}), "Only whitespace");
+    AssertSplitByCase(spaces, {spaces}, "Only whitespace");
+end;
+
+function StringsTests:TestSplitByCasePersistsSpecialValues()
+    AssertSplitByCase("foo1234Bar", {"foo1234", "Bar"}, "Lower-cased special values");
+    AssertSplitByCase("blackFOO42Red", {"black", "FOO42", "Red"}, "Sandwiched upper-case symbols");
+    AssertSplitByCase("blackFOO42", {"black", "FOO42"}, "Trailing upper-case symbols");
+    AssertSplitByCase("blackFoo42", {"black", "Foo42"}, "Trailing lower-case symbols");
 end;
 
 function StringsTests:TestSplitByCaseCoercesValues()
-    assert(listsEqual(Strings.SplitByCase(42), {"42"}), "Number value");
-    assert(listsEqual(Strings.SplitByCase(Noop), {tostring(Noop)}), "Function value");
-    assert(listsEqual(Strings.SplitByCase(false), {"false"}), "Boolean value");
+    AssertSplitByCase(42, {"42"}, "Number value");
+    AssertSplitByCase(false, {"false"}, "Boolean value");
 end;
 
 function StringsTests:TestSplitByCaseFailsOnNil()
@@ -59,7 +89,7 @@ function StringsTests:TestSplitByCaseFailsOnNil()
 end;
 
 function StringsTests:TestSplitByCaseHandlesEmptyString()
-    assert(listsEqual(Strings.SplitByCase(""), {""}), "Empty string");
+    AssertSplitByCase("", {}, "Empty string");
 end;
 
 function StringsTests:TestSplitByDelimiter()
