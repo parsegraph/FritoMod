@@ -54,7 +54,7 @@ function Strings.PrettyPrint(value)
         if OOP.IsInstance(value) then
             return value:ToString();
         end;
-        if #value then
+        if #value > 0 then
             return Strings.PrettyPrintList(value);
         end
         return Strings.PrettyPrintMap(value);
@@ -113,7 +113,7 @@ function Strings.PrettyPrintNumber(value)
         return "<NaN>";
     end
     -- TODO Make this add commas
-    return number;
+    return tostring(number);
 end;
 
 function Strings.PrettyPrintBoolean(value)
@@ -144,7 +144,9 @@ function Strings.SplitByDelimiter(delimiter, originalString)
         delimiter, originalString = "_", delimiter;
     end;
     delimiter = delimiter or "_";
-    return { strsplit(delimiter, originalString) };
+    return Lists.Filter({ strsplit(delimiter, originalString) }, function(value)
+        return value ~= "";
+    end);
 end;
 
 -- Splits a camelCase'd or ProperCase'd string into lower-case words. Acronyms will be 
