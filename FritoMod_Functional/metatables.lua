@@ -1,5 +1,13 @@
 -- Functions that deal with metatables.
 
+local function AssertTable(target)
+    if target == nil then
+        target = {};
+    end;
+    assert(type(target) == "table", "table is not a table object");
+    return target;
+end;
+
 -- Returns a function that attaches the specified metatable to all given tables.
 --
 -- metatable
@@ -10,17 +18,14 @@ local function MetatableAttacher(metatable)
     assert(type(metatable) == "table", "metatable is not a table object");
     -- Attaches a metatable to the specified table.
     --
-    -- table
+    -- target
     --     the table that will act as the target for this operation. If nil, a new table is created.
     -- returns
     --     table
-    return function(table)
-        if table == nil then
-            table = {};
-        end;
-        assert(type(table) == "table", "table is not a table object");
-        setmetatable(table, metatable);
-        return table;
+    return function(target)
+        target = AssertTable(target);
+        setmetatable(target, metatable);
+        return target;
     end;
 end;
 
@@ -85,3 +90,38 @@ DefensiveTable = MetatableAttacher({
         error("key not found: " .. key);
     end
 });
+
+function OrderedMap(target)
+    target = AssertTable(target);
+
+    local insertionOrder = {};
+    local values = {};
+
+    setmetatable(target, {
+        __newindex = function(self, key, value)
+            if values[key] ~= nil then
+                if value == nil then
+                    Lists.RemoveFirst(insertionOrder, key);
+                end;
+            else
+                Lists.Insert(insertionOrder, key);
+            end;
+            values[key] = value;
+        end,
+
+        __index = values
+    });
+
+    function target:Iterator()
+        local iterator = Iterators.IterateList(insertionOrder);
+        return function()
+            local index, key = iterator();
+            if not index then
+                return;
+            end;
+            return key, values[key];
+        end;
+    end;
+
+    return target;
+end;
