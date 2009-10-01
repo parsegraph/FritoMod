@@ -1,13 +1,25 @@
 ReflectiveTestSuite = OOP.Class(TestSuite);
 local ReflectiveTestSuite = ReflectiveTestSuite;
 
-local EMPTY_SUITE;
+function ReflectiveTestSuite:Constructor(name)
+    self.class.super.Constructor(self, name);
 
-function ReflectiveTestSuite:GetTests()
-    return Iterators.FilterKey(Iterators.VisibleFields(self), function(key)
-        if not EMPTY_SUITE then
-            EMPTY_SUITE = ReflectiveTestSuite:New();
+    local tests = OrderedMap();
+
+    function self:__index(key)
+        local value = self.class[key];
+        if value then
+            return value;
         end;
-        return not EMPTY_SUITE[key];
-    end);
+        return tests[key];
+    end;
+
+    function self:GetTests()
+        return tests:Iterator();
+    end;
+
+    function self:__newindex(key, value)
+        tests[key] = value;
+    end;
+
 end;
