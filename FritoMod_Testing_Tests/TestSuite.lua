@@ -1,4 +1,4 @@
-local TestingTests = ReflectiveTestSuite:New("com.dafrito.testing");
+local TestingTests = ReflectiveTestSuite:New("FritoMod_Testing.TestSuite");
 
 function TestingTests:TestSuiteErrorsWhenNotOverridden()
     local suite = TestSuite:New();
