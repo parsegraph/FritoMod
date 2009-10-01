@@ -3,15 +3,25 @@ local TestSuite = TestSuite;
 
 function TestSuite:Constructor(name)
     self.listener = CompositeTable();
+    self.name = name or "";
     if name then
         AllTests[name] = self;
     end;
-    function self:ToString()
-        if not name then
-            name = Tables.Reference(self);
-        end;
-        return format("TestSuite(%s)", name);
+end;
+
+function TestSuite:GetName()
+    if self.name == "" then
+        return;
     end;
+    return self.name;
+end;
+
+function TestSuite:ToString()
+    local name = self:GetName();
+    if not name then
+        name = Tables.Reference(self);
+    end;
+    return format("TestSuite(%s)", name);
 end;
 
 function TestSuite:AddListener(listener)
@@ -34,28 +44,22 @@ function TestSuite:AddRecursiveListener(listener, ...)
     return Curry(Lists.MapCall, removers);
 end;
 
-local function RunTest(self, test)
-    if not test then
-        return false, "Test is falsy";
-    end;
+local function CoerceTest(test)
+    assert(test, "Test is falsy");
     if IsCallable(test) then
-        local ranSuccessfully, result = pcall(test);
-        if ranSuccessfully then
-            return result ~= false;
-        end;
-        return false, result;
+        return test;
     end;
     if type(test) == "table" then
-        return RunTest(self, CurryMethod(test, test.Run));
+        return CurryMethod(test, test.Run);
     end;
     if type(test) == "string" then
         local testfunc, err = loadstring(test);
         if testFunc then
-            return RunTest(self, testFunc);
+            return testFunc;
         end;
-        return false, err;
+        error(err);
     end;
-    return false, "Test is not a callable, table, or string: " .. type(test);
+    error("Test is not a callable, table, or string: " .. type(test));
 end;
 
 function TestSuite:TestGenerator(...)
@@ -69,7 +73,7 @@ function TestSuite:TestGenerator(...)
             return;
         end;
         if not test and testName then
-            test, testName = testName, tostring(testName);
+            test, testName = testName, testName;
         end;
         return test, tostring(testName);
     end;
@@ -90,20 +94,26 @@ end;
 --     true, if this suite executed all tests successfully
 function TestSuite:Run(...)
     self.listener:StartAllTests(self, ...);
-    local successful = true;
+    local allTestsSuccessful = true;
     local testGenerator = self:TestGenerator(...);
     repeat
         local test, testName = testGenerator();
         if not test then
             break;
         end;
-        self.listener:TestStarted(self, testName);
-        local result, errorMessage = RunTest(self, test);
-        if result then
-            self.listener:TestSuccessful(self, testName);
+        local success, result = pcall(CoerceTest, test);
+        if success then
+            local testRunner = result;
+            self.listener:TestStarted(self, testName, testRunner);
+            success, result = pcall(testRunner);
+            if success and result ~= false then
+                self.listener:TestSuccessful(self, testName, testRunner);
+            else
+                allTestsSuccessful = false;
+                self.listener:TestFailed(self, testName, testRunner, result);
+            end;
         else
-            successful = false;
-            self.listener:TestFailed(self, testName, errorMessage);
+            self.listener:InternalError(self, testName, result);
         end;
     until false;
     self.listener:FinishAllTests(self, successful);
