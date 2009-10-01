@@ -1,6 +1,21 @@
 Tables = DefensiveTable();
 local Tables = Tables;
 
+function Tables.Size(map)
+    local count = 0;
+    for k, v in pairs(map) do
+        count = count + 1;
+    end;
+    return count;
+end;
+
+function Tables.IsEmpty(map)
+    for k, v in pairs(map) do
+        return false;
+    end;
+    return true;
+end;
+
 function Tables.Get(targetTable, key)
     return targetTable[key];
 end;
@@ -88,6 +103,30 @@ function Tables.FilterKeys(map, func, ...)
 end;
 
 function Tables.FilterValues(map, func, ...)
+    func = Curry(func, ...);
+    return Tables.FilterPairs(map, function(key, value)
+        return func(value);
+    end);
+end;
+
+function Tables.ReducePairs(map, initialValue, func, ...)
+    assert(map, "map is falsy");
+    func = Curry(func, ...);
+    local aggregate;
+    for key, value in pairs(map) do
+        aggregate = reduceFunc(aggregate, value, key, map);
+    end;
+    return aggregate;
+end;
+
+function Tables.ReduceKeys(map, func, ...)
+    func = Curry(func, ...);
+    return Tables.ReducePairs(map, function(key, value)
+        return func(key);
+    end);
+end;
+
+function Tables.ReduceValues(map, func, ...)
     func = Curry(func, ...);
     return Tables.FilterPairs(map, function(key, value)
         return func(value);
@@ -182,7 +221,7 @@ end;
 function Tables.LookupValue(originalTable, value, comparatorFunc, ...)
     comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
     for key, candidate in pairs(originalTable) do
-        if IsEqual(comparatorFunc(candidate)) then
+        if IsEqual(comparatorFunc(candidate, value)) then
             return key;
         end;
     end;
