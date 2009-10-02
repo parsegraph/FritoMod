@@ -16,6 +16,11 @@ function StringsTests:TestPrettyPrint()
     Assert.Equals("{<empty>}", p({}), "Empty list");
 end;
 
+function StringsTests:TestPrettyPrintWithGlobalFunction()
+    local p = Strings.PrettyPrint;
+    Assert.Equals("Function@Noop", p(Noop), "Global functions are named");
+end;
+
 function StringsTests:TestSplitByCaseTrivialCases()
     local s = Strings.SplitByCase;
     Assert.Equals({"caps"}, s("caps"), "Short java-case");
