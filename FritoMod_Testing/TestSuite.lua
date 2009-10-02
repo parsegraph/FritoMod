@@ -110,7 +110,7 @@ function TestSuite:Run(...)
                 self.listener:TestSuccessful(self, testName, testRunner);
             else
                 allTestsSuccessful = false;
-                self.listener:TestFailed(self, testName, testRunner, result);
+                self.listener:TestFailed(self, testName, testRunner, tostring(result));
             end;
         else
             self.listener:InternalError(self, testName, result);
