@@ -1,19 +1,19 @@
-API.Unit = {};
-local Unit = API.Unit;
+Units = {};
+local Units = Units;
 
-Unit.factions = {
+Units.factions = {
     HORDE = "horde",
     ALLIANCE = "alliance"
 }
 
-Unit.ids = {
+Units.ids = {
     PLAYER = "player",
     TARGET = "target",
     FOCUS = "focus",
     MOUSEOVER = "mouseover"
 };
 
-Unit.classes = {
+Units.classes = {
     DRUID = "druid",
     HUNTER = "hunter",
     MAGE = "mage",
@@ -25,7 +25,7 @@ Unit.classes = {
     WARRIOR = "warrior",
 };
 
-Unit.races = {
+Units.races = {
     GNOME = "gnome",
     DWARF = "dwarf",
     HUMAN = "human",
@@ -39,23 +39,23 @@ Unit.races = {
     BLOODELF = "blood_elf"
 };
 
-Unit.realms = {
+Units.realms = {
     LOCAL = "local"
 };
 
-Unit.factions = {
+Units.factions = {
     ALLIANCE = "alliance",
     HORDE = "horde",
     NEUTRAL = "neutral"
 };
 
-Unit.genders = {
+Units.genders = {
     MALE = "male",
     FEMALE = "female",
     UNKNOWN = "unknown"
 };
 
-Unit.languages = {
+Units.languages = {
     COMMON = "common",
     DARNASSIAN = "darnassian",
     DWARVEN = "dwarven",
@@ -71,77 +71,77 @@ Unit.languages = {
     TROLL = "troll"
 };
 
-function Unit:GetDefaultLanguage(unitID)
+function Units.GetDefaultLanguage(unitID)
     if not self:GetExistence(unitID) then
-        error("API.Unit:GetDefaultLanguage - Unit does not exist: " .. unitID);
+        error("API.Units.GetDefaultLanguage - Unit does not exist: " .. unitID);
     end;
     local language = GetDefaultLanguage(unitID);
-    return Unit.languages[string.upper(language)];
+    return Units.languages[string.upper(language)];
 end;
 
-function Unit:GetName(unitID)
+function Units.GetName(unitID)
     if not self:GetExistence(unitID) then
-        error("API.Unit:GetName - Unit does not exist: " .. unitID);
+        error("API.Units.GetName - Unit does not exist: " .. unitID);
     end;
     local name = UnitName(unitID);
     return name;
 end;
 
-function Unit:GetRealm(unitID)
+function Units.GetRealm(unitID)
     if not UnitIsVisible(unitID) then
-        error("API.Unit:GetRealm - Unit is not visible and cannot be accurately queried.");
+        error("API.Units.GetRealm - Unit is not visible and cannot be accurately queried.");
     end;
     local _, realm = UnitName(unitID);
     if not realm then
-        return Unit.realm.LOCAL;
+        return Units.realm.LOCAL;
     end;
     return realm
 end;
 
-function Unit:GetLevel(unitID)
+function Units.GetLevel(unitID)
     if not UnitExists(unitID) then
-        error("API.Unit:GetLevel - Unit does not exist: " .. unitID);
+        error("API.Units.GetLevel - Unit does not exist: " .. unitID);
     end;
     local level = UnitLevel(unitID);
     if level == 0 then
-        error("API.Unit:GetLevel - Unit's level is 0: " .. unitID);
+        error("API.Units.GetLevel - Unit's level is 0: " .. unitID);
     end;
     return level;
 end;
 
-function Unit:GetFaction(unitID)
+function Units.GetFaction(unitID)
     if not self:GetExistence(unitID) then
-        error("API.Unit:GetFaction - Unit does not exist: " .. unitID);
+        error("API.Units.GetFaction - Unit does not exist: " .. unitID);
     end;
     local faction = string.upper(UnitFactionGroup(unitID));
-    faction = Unit.factions[faction];
+    faction = Units.factions[faction];
     if not faction then
-        return Unit.factions.NEUTRAL;
+        return Units.factions.NEUTRAL;
     end;
     return factions;
 end;
 
-function Unit:GetGender(unitID)
+function Units.GetGender(unitID)
     if not self:GetExistence(unitID) then
-        error("API.Unit:GetGender - Unit does not exist: " .. unitID);
+        error("API.Units.GetGender - Unit does not exist: " .. unitID);
     end;
     local genderID = UnitSex(unitID);
     if genderID == 2 then
-        return Unit.genders.MALE
+        return Units.genders.MALE
     end;
     if genderID == 3 then
-        return Unit.genders.FEMALE;
+        return Units.genders.FEMALE;
     end;
-    return Unit.genders.UNKNOWN;
+    return Units.genders.UNKNOWN;
 end;
 
-function Unit:GetExistence(unitID)
+function Units.GetExistence(unitID)
     return Bool(UnitExists(unitID));
 end;
 
-function Unit:GetGUID(unitID)
+function Units.GetGUID(unitID)
     if not self:GetExistence(unitID) then
-        error("API.Unit:GetGUID - Unit does not exist: " .. unitID);
+        error("API.Units.GetGUID - Unit does not exist: " .. unitID);
     end;
     local guid = UnitGUID(unitID);
     return guid;

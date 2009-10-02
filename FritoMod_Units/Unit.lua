@@ -1,4 +1,4 @@
-Unit = OOP.Class(EventDispatcher)
+Unit = OOP.Class();
 local Unit = Unit;
 
 Data:MixinScalar(Unit, "Name");
