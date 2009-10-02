@@ -1,4 +1,4 @@
-DisplayObject = OOP.Class(EventDispatcher, StyleClient, Invalidating);
+DisplayObject = OOP.Class(StyleClient, Invalidating);
 local DisplayObject = DisplayObject;
 
 DisplayObject.defaultValues = {

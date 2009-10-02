@@ -1,3 +1,4 @@
+-- XXX Event-dispatching is commented out until we figure out what to do with it.
 Data = {};
 local Data = Data;
 
@@ -13,11 +14,11 @@ function Data:MixinScalar(class, properName, lowerName, upperName)
             return;
         end;
         self[lowerName] = value;
-        self:DispatchEvent(eventName, value);
+        --self:DispatchEvent(eventName, value);
     end;
-    class:AddStaticEventConnector(eventName, function(self, eventName, listenerFunc)
-        listenerFunc(eventName, self["Get" .. properName](self));
-    end);
+    --class:AddStaticEventConnector(eventName, function(self, eventName, listenerFunc)
+    --    listenerFunc(eventName, self["Get" .. properName](self));
+    --end);
 end;
 
 function Data:MixinRange(class, properName, lowerName, upperName)
@@ -54,7 +55,7 @@ function Data:MixinRange(class, properName, lowerName, upperName)
         self[currentValue] = current;
         self[minValue] = min;
         self[maxValue] = max;
-        self:DispatchEvent(eventName, current, max, min);
+        --self:DispatchEvent(eventName, current, max, min);
     end;
     class["SetCurrent" .. properName] = function(self, current)
         return self["Set" .. properName](self, 
@@ -77,7 +78,7 @@ function Data:MixinRange(class, properName, lowerName, upperName)
             max
         );
     end;
-    class:AddStaticEventConnector(eventName, function(self, eventName, listenerFunc)
+    --[[class:AddStaticEventConnector(eventName, function(self, eventName, listenerFunc)
         listenerFunc(eventName, self["Get" .. properName](self));
-    end);
+    end);]]
 end;
