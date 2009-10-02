@@ -1,4 +1,4 @@
-local MathTests = ReflectiveTestSuite:New("FritoMod_Functional.Math");
+local MathTests = ReflectiveTestSuite:New("FritoMod_Utilities.Math");
 
 function MathTests:TestParseTime()
     local p = Math.Parse;
