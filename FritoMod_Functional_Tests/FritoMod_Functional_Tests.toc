@@ -1,0 +1,7 @@
+## Interface: 30200
+## Title: FritoMod: Functional - Tests
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod, FritoMod_Testing, FritoMod_Functional
+
+metatables.lua
