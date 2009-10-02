@@ -71,17 +71,17 @@ end;
 
 function StringsTests:TestSplitByDelimiter()
     local s = Strings.SplitByDelimiter;
-    Assert.Equals({}, s(""), "Empty string");
+    Assert.Equals({""}, s(""), "Empty string");
     Assert.Equals({"foo"}, s("foo"), "No delimiters");
     Assert.Equals({"Foo"}, s("Foo"), "No delimiters, mixed capitalization");
     Assert.Equals({"Foo", "Time"}, s("Foo_Time"), "Simple delimiters");
     Assert.Equals({"Foo", "Time", "Base", "Bar"}, s("Foo_Time_Base_Bar"), "Complex delimiter");
     Assert.Equals({"Foo", "Time"}, s("Foo___Time"), "Wide delimiter");
-    Assert.Equals({}, s("___"), "Only delimiter");
+    Assert.Equals({""}, s("___"), "Only delimiter");
     Assert.Equals({"Foo"}, s("___Foo"), "Leading delimiter");
     Assert.Equals({"Foo"}, s("Foo___"), "Trailing delimiter");
     Assert.Equals({"No", "Time"}, s(" ", "No Time"), "Custom delimiter");
-    Assert.Equals(Strings.SplitByDelimiter, nil, "SplitByDelimiter fails on nil arguments");
+    Assert.Exception("SplitByDelimiter fails on nil arguments", Strings.SplitByDelimiter, nil);
 end;
 
 function StringsTests:TestSplitByDelimiterCoercesValues()
@@ -128,8 +128,8 @@ function StringsTests:TestJoinCamelCaseComplexCases()
     Assert.Equals("theGreatExample", s({"ThE", "GREAT", "example"}), "Mixed cases");
     Assert.Equals("greatAExample", s({"great", "a", "example"}), "Sandwiched one-letter word");
     Assert.Equals("theGreatA", s({"the", "great", "a"}), "Trailing one-letter word");
-    Assert.Equals("GreatExample", s({"", "great", "", "example", ""}), "Spurious empty strings");
-    Assert.Equals("Great_Example", s({"great", "_", "example"}), "Spurious delimiters");
+    Assert.Equals("greatExample", s({"", "great", "", "example", ""}), "Spurious empty strings");
+    Assert.Equals("great_Example", s({"great", "_", "example"}), "Suspicious delimiter");
 end;
 
 function StringsTests:TestJoinSnakeCaseTrivalCases()
@@ -145,7 +145,7 @@ function StringsTests:TestJoinSnakeCaseTrivalCases()
 end;
 
 function StringsTests:TestJoinSnakeCaseComplexCases()
-    local s = Strings.JoinCamelCase;
+    local s = Strings.JoinSnakeCase;
     Assert.Equals("the_great_example", s({"The", "Great", "Example"}), "No-op case");
     Assert.Equals("the_great_example", s({"ThE", "GREAT", "example"}), "Mixed cases");
     Assert.Equals("great_a_example", s({"great", "a", "example"}), "Sandwiched one-letter word");
@@ -176,7 +176,7 @@ function StringsTests:TestProperNounize()
     Assert.Equals("Proper", p("PROPER"), "Upper case");
     Assert.Equals("Proper", p("pRoPeR"), "Mixed case");
     Assert.Equals("P", p("P"), "One letter, upper");
-    Assert.Equals("p", p("p"), "One letter, lower");
+    Assert.Equals("P", p("p"), "One letter, lower");
     Assert.Equals("1", p("1"), "Number");
     Assert.Equals("1234", p("1234"), "Number");
     Assert.Equals("1234", p(1234), "Number, coerced");
@@ -190,7 +190,7 @@ function StringsTests:TestConvertToBase()
     Assert.Equals("1111", c(2, 15), "15, base 2");
     Assert.Equals("100", c(16, 256), "256, base 16");
     Assert.Equals("-100", c(16, -256), "-256, base 16");
-    Assert.Equals("FF", c(16, 255, "255, base 16"))
+    Assert.Equals("FF", c(16, 255), "255, base 16");
 end;
 
 function StringsTests:TestConcat()

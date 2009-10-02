@@ -65,8 +65,13 @@ function Strings.PrettyPrint(value)
 end;
 
 function Strings.PrettyPrintFunction(value)
-    assert(type(value) == "table", "value is not a table. Type: " .. type(value));
-    local name = Tables.LookupValue(value) or Tables.Reference(value);
+    assert(type(value) == "function", "value is not a function. Type: " .. type(value));
+    local name = Tables.LookupValue(_G, value);
+    if not name then
+        name = tostring(value);
+        local _, split = name:find(":[ ]+");
+        name= name:sub(split + 1);
+    end
     return format("Function@%s", name);
 end;
 
@@ -128,25 +133,54 @@ end;
 function Strings.Join(delimiter, items)
     assert(delimiter ~= nil, "delimiter is nil");
     delimiter = tostring(delimiter);
-    if #items == 0 then 
-        return "";
-    end;
-    local joined = items[1];
-    for i = 2, #items do 
-        joined = joined .. delimiter .. items[i];
-    end;
-    return joined;
+    return Lists.Reduce(items, "", function(concatted, word)
+        word = tostring(word);
+        if #word == 0 then
+            return concatted;
+        end;
+        if #concatted > 0 then
+            return concatted .. delimiter  .. word;
+        end;
+        return word;
+    end);
+end
+
+function Strings.Concat(...)
+    return Strings.Join(" ", { ... });
 end
 
 -- Splits originalString by the given delimiter, with an underscore used as the default.
+--
+-- delimiter
+--     a pattern indicating what defines the "split" characters
 function Strings.SplitByDelimiter(delimiter, originalString)
     if originalString == nil then
-        delimiter, originalString = "_", delimiter;
+        delimiter, originalString = nil, delimiter;
     end;
-    delimiter = delimiter or "_";
-    return Lists.Filter({ strsplit(delimiter, originalString) }, function(value)
-        return value ~= "";
-    end);
+    assert(originalString ~= nil, "originalString is nil");
+    if delimiter == nil then
+        delimiter = "[_]+";
+    end;
+    delimiter = tostring(delimiter);
+    local items = {};
+    local remainder = tostring(originalString);
+    while true do
+        local startMatch, endMatch = remainder:find(delimiter);
+        if not startMatch then
+            if #remainder > 0 then
+                Lists.Insert(items, remainder);
+            end;
+            break;
+        end;
+        if startMatch > 1 then
+            Lists.Insert(items, remainder:sub(1, startMatch - 1));
+        end;
+        remainder = remainder:sub(endMatch + 1);
+    end;
+    if #items == 0 then
+        Lists.Insert(items, "");
+    end;
+    return items;
 end;
 
 -- Splits a camelCase'd or ProperCase'd string into lower-case words. Acronyms will be 
@@ -163,24 +197,51 @@ function Strings.SplitByCase(target)
     -- These are forward declared to avoid problems later on. This may not be necessary.
     local Capturing, PotentialAcronym, Acronym;
 
-    function Capturing(letter, index)
+    function Capturing(letter)
         if not Strings.IsUpper(letter) then
             return;
         end;
+        -- To hopefully explain the indices we use here, take a look at this picture:
+        -- "MatchFoo...
+        --   ..21^
+        -- 
+        -- We're at the 'F'. The end of the previous word is one index back, so we're at
+        -- the start of the new word.
         Lists.Insert(words, target:sub(1, index - 1));
         target = target:sub(index);
-        index = 0;
+        
+        -- Set it to one since we've already iterated the first element. Otherwise, we'll
+        -- mistakenly think we're in an acronym.
+        index = 1;
         return PotentialAcronym;
     end;
 
-    function PotentialAcronym(letter, index)
+    function Acronym(letter)
+        if not Strings.IsLower(letter) then
+            return;
+        end;
+        -- To hopefully explain the indices we use here, take a look at this picture:
+        -- "MATCHFoo...
+        --   ...21^
+        -- 
+        -- We're at the 'o', but the end of the previous word is two indices back. The
+        -- start of this word is one step back.
+        Lists.Insert(words, target:sub(1, index - 2));
+        target = target:sub(index - 1);
+        
+        -- Set it to one since we've already iterated the first element. 
+        index = 1;
+        return Capturing;
+    end;
+
+    function PotentialAcronym(letter)
         if Strings.IsUpper(letter) then
             return Acronym;
         end;
         return Capturing;
     end;
 
-    function InitialState(letter, index)
+    function InitialState(letter)
         if Strings.IsUpper(letter) then
             return PotentialAcronym;
         end;
@@ -191,7 +252,7 @@ function Strings.SplitByCase(target)
     while index <= #target do
         index = index + 1;
         local letter = Strings.CharAt(target, index);
-        state = state(letter, index) or state;
+        state = state(letter) or state;
     end;
     if #target > 0 then
         Lists.Insert(words, target);
@@ -255,21 +316,19 @@ function Strings.ConvertToBase(base, number, digits)
     if base > #digits or base < 2 then
         error("Invalid base: " .. base);
     end;
+    local isNegative = Math.Signum(number) == -1;
+    number = abs(number);
     local converted = "";
     while number > 0 do
         local place = (number % base) + 1;
         number = math.floor(number / base);
-        converted = string.sub(digits, place, place) .. converted;
+        converted = Strings.CharAt(digits, place) .. converted;
     end
+    if #converted == 0 then
+        converted = Strings.CharAt(digits, 1);
+    end;
+    if isNegative then
+        converted = "-" .. converted;
+    end;
     return converted;
 end
-
-function Strings.Concat(...)
-    return Lists.Reduce({...}, "", function(concatted, word)
-        word = tostring(word);
-        if #concatted > 0 then
-            return concatted .. " " .. word;
-        end;
-        return word;
-    end);
-end;

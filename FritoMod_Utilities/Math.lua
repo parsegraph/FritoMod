@@ -16,6 +16,16 @@ function Math.Mean(values)
     return sum / #values;
 end;
 
+function Math.Signum(number)
+    if number > 0 then
+        return 1;
+    end;
+    if number < 0 then
+        return -1;
+    end;
+    return 0;
+end;
+
 local states = {};
 
 -- Numeric specials are the least flexible of any number, and can only
