@@ -75,6 +75,23 @@ CompositeTable = MetatableAttacher({
     end
 });
 
+
+function FocusedTable(target, func, ...)
+    target = AssertTable(target);
+    func = Curry(func, ...);
+    setmetatable(target, {
+        __index = function(self, key)
+            return function(maybeSelf, ...)
+                if maybeSelf == self then
+                    return func(maybeSelf, key, ...);
+                end;
+                return func(key, maybeSelf, ...);
+            end;
+        end
+    });
+    return target;
+end;
+
 -- Augments a table such that every non-existent key defaults to Noop. This is useful if you're
 -- creating an observer or class but are only interested in part of the functionality provided.
 NoopTable = MetatableAttacher({
