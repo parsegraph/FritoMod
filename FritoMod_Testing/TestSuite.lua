@@ -116,8 +116,8 @@ function TestSuite:Run(...)
             self.listener:InternalError(self, testName, result);
         end;
     until false;
-    self.listener:FinishAllTests(self, successful);
-    return successful;
+    self.listener:FinishAllTests(self, allTestsSuccessful);
+    return allTestsSuccessful;
 end;
 
 -- Returns all tests that this test suite contains. A test may be one of the following:
