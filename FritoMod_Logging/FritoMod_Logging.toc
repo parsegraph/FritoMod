@@ -1,9 +1,0 @@
-## Interface: 30200
-## Title: FritoMod: Logging
-## Notes: Logging methods and utilities.
-## Author: Frito
-## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Utilities, FritoMod_OOP
-
-LogEntry.lua
-Log.lua
