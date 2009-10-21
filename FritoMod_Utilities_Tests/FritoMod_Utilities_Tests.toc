@@ -4,7 +4,6 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Utilities, FritoMod_Testing
 
-Lists.lua
 Strings.lua
 Math.lua
 Metatables.lua
