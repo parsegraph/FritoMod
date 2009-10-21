@@ -64,6 +64,20 @@ function Iterators.IterateList(list)
     end;
 end;
 
+function Iterators.Repeat(...)
+    local args = { ... };
+    local iterator = nil;
+    return function()
+        local value = iterator();
+        if value == nil then
+            iterator = Iterators.Iterate(unpack(args));
+            value = iterator();
+            assert(value ~= nil, "Cannot repeat over an empty iterable");
+        end;
+        return value;
+    end;
+end;
+
 function Iterators.Count(startValue, endValue, step)
     if endValue == nil and step == nil then
         -- Intentionally make endValue the current startValue.
