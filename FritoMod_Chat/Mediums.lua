@@ -1,8 +1,51 @@
+-- Mediums is a registry of mediums to which to send messages. To use, simply do:
+--
+-- Mediums.Say("Hello!");
+-- Mediums.RaidWarning("Sup raid :)");
+--
+-- You don't have to necessarily use proper capitalization:
+--
+-- Mediums.YELL("I AM YELLING!");
+-- Mediums.RaidWARNING("Hello again, raid members!");
+--
+-- Matter of fact, there's a healthy amount of aliases for these standard channels:
+--
+-- Mediums.g("Sup guild!");
+-- Mediums.RW("This is a raid warning");
+--
+-- Spaces and underscores are also ignored:
+--
+-- Mediums.RAID_WARNING("Raid warning!");
+--
+-- If given a non-standard name, it will first check if it's a channel name...
+--
+-- Mediums.Notime("This is sent to the NOTIME channel, if you're in it.");
+--
+-- As a last resort, it will whisper a player by that name:
+--
+-- Mediums.Threep("This is a whisper to Threep");
+--
+-- You can be explicit and send directly to a channel:
+--
+-- Mediums.Channel("Threep", "This is always sent to the 'threep' channel");
+--
+-- You can even batch-send a message to many mediums:
+-- 
+-- Mediums[{"g", "p"}]("Hello to my party and my guild");
+--
+-- If necessary, you can even use functions as keys:
+--
+-- local r = Iterators.Repeat({"guild", "party"});
+-- Mediums[r]("This is sent to the guild");
+-- Mediums[r]("This is sent to the party");
+-- Mediums[r]("This is sent to the guild again");
+
 Mediums = {};
 local Mediums = Mediums;
 
-local function SendMessage(medium, message)
-   SendChatMessage(message, medium);
+local function SendMessage(medium, message, ...)
+    message = Strings.Concat(message, ...);
+    SendChatMessage(message, medium);
 end;
 
 Mediums.Say = CurryFunction(SendMessage, "SAY");
@@ -48,10 +91,12 @@ setmetatable(Mediums, {
             return Mediums[medium()];
         end;
         if type(medium) == "table" and #medium > 0 then
-            for _, childMedium in ipairs(medium) do
-                return Mediums[childMedium];
+            return function(...)
+                for i=1, #medium do 
+                    childMedium = medium[i];
+                    return Mediums[childMedium](...);
+                end;
             end;
-            return;
         end;
         if type(medium) == "string" then
             medium = strtrim(medium);
