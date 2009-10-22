@@ -3,7 +3,7 @@
 ## Notes: A suite of generic utility functions.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP, FritoMod_States
+## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP, FritoMod_States, FritoMod_Collections
 
 Metatables.lua
 Lists.lua
