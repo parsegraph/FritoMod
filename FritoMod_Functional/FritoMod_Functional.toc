@@ -7,5 +7,4 @@
 
 methods.lua
 currying.lua
-metatables.lua
 Operator.lua

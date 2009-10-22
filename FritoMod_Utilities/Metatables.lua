@@ -1,5 +1,13 @@
 -- Functions that deal with metatables.
+Metatables = {};
+local Metatables = Metatables;
 
+-- Ensures a target is either already a table or a nil value.
+--
+-- returns
+--     target or a new table
+-- throws
+--     if target is non-nil and not a table
 local function AssertTable(target)
     if target == nil then
         target = {};
@@ -29,7 +37,7 @@ local function MetatableAttacher(metatable)
     end;
 end;
 
--- Adds the specified observer to self. Used for composite tables.
+-- Adds the specified observer to self. Used with Metatables.Multicast
 local function Add(self, observer)
     if not observer then
         error("observer is falsy");
@@ -61,7 +69,7 @@ end;
 --     the table that is the target of this operation. If nil, a new table is created.
 -- returns
 --     table
-CompositeTable = MetatableAttacher({
+Metatables.Multicast = MetatableAttacher({
     __index = function(self, key)
         if key == "Add" then
             return Add;
@@ -76,7 +84,7 @@ CompositeTable = MetatableAttacher({
 });
 
 
-function FocusedTable(target, func, ...)
+function Metatables.FocusedTable(target, func, ...)
     target = AssertTable(target);
     func = Curry(func, ...);
     setmetatable(target, {
@@ -94,7 +102,7 @@ end;
 
 -- Augments a table such that every non-existent key defaults to Noop. This is useful if you're
 -- creating an observer or class but are only interested in part of the functionality provided.
-NoopTable = MetatableAttacher({
+Metatables.Noop = MetatableAttacher({
     __index = function(self, key)
         return Noop;
     end
@@ -102,13 +110,13 @@ NoopTable = MetatableAttacher({
 
 -- Augments a table such that every non-existent key causes an error. This is useful if you wish
 -- to explicitly avoid this class of potential programming problems.
-DefensiveTable = MetatableAttacher({
+Metatables.Defensive = MetatableAttacher({
     __index = function(self, key)
         error("key not found: " .. key);
     end
 });
 
-function OrderedMap(target)
+function Metatables.OrderedMap(target)
     target = AssertTable(target);
 
     local insertionOrder = {};

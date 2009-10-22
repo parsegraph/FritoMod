@@ -10,6 +10,7 @@ Strings.lua
 Tables.lua
 Iterators.lua
 Conventions.lua
+Metatables.lua
 
 NumberBuilder.lua
 Math.lua
