@@ -102,9 +102,9 @@ function Mixins.Iteration(library, iteratorFunc)
         -- iterable
         --     an iterable usable by this library
         -- key
-        --     the key that will be inserted into this library
+        --     the key that will be inserted into this iterable
         -- value
-        --     the value that will be inserted into this library
+        --     the value that will be inserted into this iterable
         -- returns
         --     the old value
         -- throws
@@ -114,6 +114,24 @@ function Mixins.Iteration(library, iteratorFunc)
             local oldValue = iterable[key];
             iterable[key] = value;
             return oldValue;
+        end;
+    end;
+
+    if library.Delete == nil then
+        -- Deletes the specified key from the specified iterable.
+        --
+        -- This is an optional operation.
+        --
+        -- iterable
+        --     an iterable usable by this library
+        -- key
+        --     the key that will be deleted from this iterable
+        -- returns
+        --     the value that was at the specified key
+        -- throws
+        --     if this library does not support this operation
+        function library.Delete(iterable, key)
+            return library.Set(iterable, key, nil);
         end;
     end;
 
