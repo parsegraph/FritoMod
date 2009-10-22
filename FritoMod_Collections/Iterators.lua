@@ -1,13 +1,11 @@
 Iterators = Metatables.Defensive();
 local Iterators = Iterators;
 
-function Iterators.Flip(iterator)
-    iterator = Iterators.Iterate(iterator);
-    return function()
-        local key, value = iterator();
-        return value, key;
-    end;
-end;
+-- Mixes in iteration functionality for iterators
+Mixins.Iteration(Iterators, function(iterator)
+    assert(IsCallable(iterator), "Iterator is not callable. Type: " .. type(iterator));
+    return iterator;
+end);
 
 function Iterators.Iterate(value, ...)
     assert(value, "value is falsy");
@@ -64,6 +62,14 @@ function Iterators.IterateList(list)
     end;
 end;
 
+function Iterators.Flip(iterator)
+    iterator = Iterators.Iterate(iterator);
+    return function()
+        local key, value = iterator();
+        return value, key;
+    end;
+end;
+
 function Iterators.Repeat(...)
     local args = { ... };
     local iterator = nil;
@@ -78,7 +84,22 @@ function Iterators.Repeat(...)
     end;
 end;
 
-function Iterators.Count(startValue, endValue, step)
+-- Consumes an iterator, returning a list of its elements.
+--
+-- iterator, ...
+--     the iterator that returns results
+-- returns
+--     a list of all results 
+function Iterators.Consume(iterator, ...)
+    iterator = Curry(iterator, ...);
+    local items = {};
+    for value in iterator do
+        table.insert(items, value);
+    end;
+    return items;
+end;
+
+function Iterators.Counter(startValue, endValue, step)
     if endValue == nil and step == nil then
         -- Intentionally make endValue the current startValue.
         startValue, endValue, step = 1, startValue, step;
@@ -109,7 +130,7 @@ function Iterators.Count(startValue, endValue, step)
     end;
 end;
 
-function Iterators.VisibleFields(object)
+function Iterators.IterateVisibleFields(object)
     local key;
     function DoIteration()
         local candidate;
@@ -127,49 +148,3 @@ function Iterators.VisibleFields(object)
     end;
     return DoIteration;
 end;
-
-function Iterators.Map(iterator, func, ...)
-    local results = {};
-    func = Curry(func, ...);
-    while true do
-        local value = iterator();
-        if value == nil then
-            break;
-        end;
-        local result = func(value);
-        if result ~= nil then
-            Lists.Insert(results, result);
-        end;
-    end;
-    return results;
-end;
-
-local function FilteredIterator(evaluator)
-    return function(iterator, func, ...)
-        iterator = Iterators.Iterate(iterator);
-        func = Curry(func, ...);
-        return function()
-            while true do
-                local key, value = iterator();
-                if key == nil then 
-                    break;
-                end;
-                if evaluator(func, key, value) then
-                    return key, value;
-                end;
-            end;
-        end;
-    end;
-end;
-
-Iterators.FilterPair = FilteredIterator(function(func, key, value)
-    return func(key, value);
-end);
-
-Iterators.FilterKey = FilteredIterator(function(func, key, value)
-    return func(key);
-end);
-
-Iterators.FilterValue = FilteredIterator(function(func, key, value)
-    return func(value);
-end);
