@@ -250,6 +250,156 @@ function Mixins.Iteration(library, iteratorFunc)
         end;
     end;
 
+    if library.Remove == nil then
+        -- Removes the first matching value from the specified iterable, according to the specified
+        -- comparator and specified target value.
+        -- 
+        -- iterable
+        --     an iterable usable by this library.
+        -- targetValue
+        --     the searched value
+        -- comparatorFunc, ...
+        --     optional. The comparator that performs the search for the specified value
+        -- returns
+        --     the removed key, or nil if no value was removed
+        function library.Remove(iterable, targetValue, comparatorFunc, ...)
+            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            for key, candidate in library.Iterator(iterable) do
+                if IsEqual(comparatorFunc(candidate, targetValue)) then
+                    library.Delete(iterable, key);
+                    return key;
+                end;
+            end;
+        end;
+    end;
+
+    if library.RemoveAll == nil then
+        -- Removes all matching values from the specified iterable, according to the specified
+        -- comparator and specified value.
+        --
+        -- This function does not modify the iterable until every item has been iterated. While
+        -- this minimizes the chance of corrupted iteration, it is also potentially more 
+        -- inefficient than a safe, iterable-specific solution.
+        -- 
+        -- iterable
+        --     an iterable usable by this library.
+        -- targetValue
+        --     the searched value
+        -- comparatorFunc, ...
+        --     optional. The comparator that performs the search for the specified value
+        -- returns
+        --     the number of removed elements
+        function library.RemoveAll(iterable, targetValue, comparatorFunc, ...)
+            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            local removedKeys = {};
+            for key, candidate in library.Iterator(iterable) do
+                if IsEqual(comparatorFunc(candidate, targetValue)) then
+                    table.insert(removedKeys, key);
+                end;
+            end;
+            for i=#removedKeys, 1, -1 do
+                library.Delete(iterable, removedKeys[i]);
+            end;
+            return #removedKeys;
+        end;
+    end;
+
+    if library.RemoveLast == nil then
+        -- Removes the last matching value from the specified iterable, according to the specified
+        -- comparator and specified value.
+        -- 
+        -- iterable
+        --     an iterable usable by this library.
+        -- targetValue
+        --     the searched value
+        -- comparatorFunc, ...
+        --     optional. The comparator that performs the search for the specified value
+        -- returns
+        --     the removed key, or nil if no value was removed
+        function library.RemoveLast(iterable, targetValue, comparatorFunc, ...)
+            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            for key, candidate in library.ReverseIterator(iterable) do
+                if IsEqual(comparatorFunc(candidate, targetValue)) then
+                    library.Delete(iterable, key);
+                    return key;
+                end;
+            end;
+        end;
+    end;
+
+    if library.RemoveAt == nil then
+        -- Removes the first matching key from the specified iterable, according to the specified
+        -- comparator and specified target key.
+        -- 
+        -- iterable
+        --     an iterable usable by this library.
+        -- targetKey
+        --     the searched key
+        -- comparatorFunc, ...
+        --     optional. The comparator that performs the search for the specified value
+        -- returns
+        --     the removed value, or nil if no key was removed
+        function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
+            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            for candidate, value in library.Iterator(iterable) do
+                if IsEqual(comparatorFunc(candidate, targetKey)) then
+                    library.Delete(iterable, key);
+                    return value;
+                end;
+            end;
+        end;
+    end;
+
+    if library.RemoveAllAt == nil then
+        -- Removes all matching keys from the specified iterable, according to the specified
+        -- comparator and specified target key.
+        -- 
+        -- iterable
+        --     an iterable usable by this library.
+        -- targetKey
+        --     the searched key
+        -- comparatorFunc, ...
+        --     optional. The comparator that performs the search for the specified value
+        -- returns
+        --     the number of removed elements
+        function library.RemoveAll(iterable, targetKey, comparatorFunc, ...)
+            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            local removedKeys = {};
+            for candidate, value in library.Iterator(iterable) do
+                if IsEqual(comparatorFunc(candidate, targetKey)) then
+                    table.insert(removedKeys, key);
+                end;
+            end;
+            for i=#removedKeys, 1, -1 do
+                library.Delete(iterable, removedKeys[i]);
+            end;
+            return #removedKeys;
+        end;
+    end;
+
+    if library.RemoveLastAt == nil then
+        -- Removes the last matching key from the specified iterable, according to the specified
+        -- comparator and specified target key.
+        -- 
+        -- iterable
+        --     an iterable usable by this library.
+        -- targetKey
+        --     the searched key
+        -- comparatorFunc, ...
+        --     optional. The comparator that performs the search for the specified value
+        -- returns
+        --     the removed value, or nil if no key was removed
+        function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
+            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            for candidate, value in library.ReverseIterator(iterable) do
+                if IsEqual(comparatorFunc(candidate, targetKey)) then
+                    library.Delete(iterable, key);
+                    return value;
+                end;
+            end;
+        end;
+    end;
+
     if library.KeyIterator == nil then
         -- Returns an iterator that iterates over the keys in iterable.
         --
