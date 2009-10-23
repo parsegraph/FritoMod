@@ -1,4 +1,4 @@
-Tables = DefensiveTable();
+Tables = Metatables.Defensive();
 local Tables = Tables;
 
 function Tables.Size(map)

@@ -4,7 +4,7 @@ local ReflectiveTestSuite = ReflectiveTestSuite;
 function ReflectiveTestSuite:Constructor(name)
     self.class.super.Constructor(self, name);
 
-    local tests = OrderedMap();
+    local tests = Metatables.OrderedMap();
 
     function self:__index(key)
         local value = self.class[key];

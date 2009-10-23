@@ -1,4 +1,4 @@
-Iterators = DefensiveTable();
+Iterators = Metatables.Defensive();
 local Iterators = Iterators;
 
 function Iterators.Flip(iterator)

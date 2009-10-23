@@ -1,4 +1,4 @@
-Lists = DefensiveTable();
+Lists = Metatables.Defensive();
 local Lists = Lists;
 
 function Lists.Insert(list, value)

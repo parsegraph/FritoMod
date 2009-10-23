@@ -2,7 +2,7 @@ TestSuite = OOP.Class();
 local TestSuite = TestSuite;
 
 function TestSuite:Constructor(name)
-    self.listener = CompositeTable();
+    self.listener = Metatables.Multicast();
     self.name = name or "";
     if name then
         AllTests[name] = self;

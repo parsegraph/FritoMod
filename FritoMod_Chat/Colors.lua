@@ -1,4 +1,4 @@
-Colors = DefensiveTable();
+Colors = Metatables.Defensive();
 local Colors = Colors;
 
 function Colors.ColorMessage(color, message)
