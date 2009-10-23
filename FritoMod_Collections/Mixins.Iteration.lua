@@ -15,6 +15,15 @@ local function IsEqual(value)
     return value and (type(value) ~= "number" or value == 0);
 end;
 
+-- Adds an operation for keys and values to the specified library. The operation
+-- is given the appropriate iterator function for the item type.
+--
+-- library
+--     the library that is the target of this mixin
+-- name
+--     the name format. "Key", or "Value" will be interpolated
+-- operation
+--     the function that is mixed in. It should expect a iterator function for its first argument
 local function MixinKeyValueOperation(library, name, operation)
     if library[format(name, "Key")] == nil then
         library[format(name, "Key")] = Curry(operation, library.KeyIterator);
@@ -24,6 +33,17 @@ local function MixinKeyValueOperation(library, name, operation)
     end;
 end;
 
+-- Adds an operation for keys, values, and pairs to the specified library. The operation
+-- is given a chooser function that selects the appropriate item for the item type.
+--
+-- library
+--     the library that is the target of this mixin
+-- name
+--     the name format. "Pair", "Key", or "Value" will be interpolated
+-- operation
+--     the function that is mixed in. It should expect a chooser function for the first argument.
+--     The chooser has the signature chooser(key, value) and returns the appropriate item for
+--     the item type.
 local function MixinKeyValuePairOperation(library, name, operation)
     if library[format(name, "Pair")] == nil then
         library[format(name, "Pair")] = Curry(operation, function(key, value)
@@ -39,6 +59,27 @@ local function MixinKeyValuePairOperation(library, name, operation)
         library[format(name, "Value")] = Curry(operation, function(key, value)
             return value;
         end);
+    end;
+end;
+
+-- Adds an operation for keys, values, and pairs to the specified library.
+--
+-- library
+--     the library that is the target of this mixin
+-- name
+--     the name format. "Pair", "Key", or "Value" will be interpolated
+-- operation
+--     the function that is mixed in. It should expect the item type as the first
+--     argument.
+local function MixinKeyValuePairOperationByName(library, name, operation)
+    if library[format(name, "Pair")] == nil then
+        library[format(name, "Pair")] = Curry(operation, "Pair");
+    end;
+    if library[format(name, "Key")] == nil then
+        library[format(name, "Key")] = Curry(operation, "Key");
+    end;
+    if library[format(name, "Value")] == nil then
+        library[format(name, "Value")] = Curry(operation, "Value");
     end;
 end;
 
@@ -992,6 +1033,67 @@ function Mixins.Iteration(library, iteratorFunc)
             return true;
         end;
     end;
+
+    -- Returns a new iterable that contains any items that are contained in both iterable
+    -- and otherIterable, according to the specified comparatorFunc.
+    --
+    -- This operation is applicable for keys, values, or pairs.
+    --
+    -- This is an optional operation.
+    --
+    -- iterable, otherIterable
+    --     the iterables that are used for comparison
+    -- comparatorFunc, ...
+    --     optional. the function that performs the search, with the signature 
+    --     comparatorFunc(candidate, otherCandidate). It should return a truthy value if the two 
+    --     values match. If it returns a numeric value, then only zero indicates 
+    --     a match.
+    -- returns
+    --     a new iterable containing all items contained in both iterables
+    MixinKeyValuePairOperationByName(library, "UnionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
+        comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+        local union = library.New();
+        local contains = library["Contains" .. name];
+        for key, value in library.Iterator(iterable) do
+            if contains(otherIterable, comparatorFunc) then
+                library.Set(union, key, value);
+            end;
+        end;
+        return union;
+    end);
+
+    -- Returns a new iterable that contains only items that are contained in one of the iterables,
+    -- according to the specified comparatorFunc.
+    --
+    -- This operation is applicable for keys, values, or pairs.
+    --
+    -- This is an optional operation.
+    --
+    -- iterable, otherIterable
+    --     the iterables that are used for comparison
+    -- comparatorFunc, ...
+    --     optional. the function that performs the search, with the signature 
+    --     comparatorFunc(candidate, otherCandidate). It should return a truthy value if the two 
+    --     values match. If it returns a numeric value, then only zero indicates 
+    --     a match.
+    -- returns
+    --     a new iterable containing all items contained in only one of the iterables
+    MixinKeyValuePairOperationByName(library, "IntersectionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
+        comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+        local difference = library.New();
+        local contains = library["Contains" .. name];
+        for key, value in library.Iterator(iterable) do
+            if not contains(otherIterable, comparatorFunc) then
+                library.Set(union, key, value);
+            end;
+        end;
+        for key, value in library.Iterator(otherIterable) do
+            if not contains(iterable, comparatorFunc) then
+                library.Set(union, key, value);
+            end;
+        end;
+        return union;
+    end);
 
     -- Returns the number of times the specified item occurs in the specified iterable.
     --
