@@ -495,9 +495,7 @@ function Mixins.Iteration(library, iteratorFunc)
         --     an iterator that returns each pair in iterable, in reverse
         function library.ReverseIterator(iterable)
             local keys = {};
-            for key in library.EachKey(iterable) do
-                table.insert(keys, 1, key);
-            end;
+            library.EachKey(iterable, table.insert, keys, 1);
             local index = 0;
             return function()
                 index = index + 1;
@@ -874,7 +872,7 @@ function Mixins.Iteration(library, iteratorFunc)
     -- target
     --     the searched value
     -- comparatorFunc, ...
-    --     the function that performs the search, with the signature 
+    --     optional. the function that performs the search, with the signature 
     --     comparatorFunc(candidate, target). It should return a truthy value if the two 
     --     values match. If it returns a numeric value, then only zero indicates 
     --     a match.
@@ -883,13 +881,67 @@ function Mixins.Iteration(library, iteratorFunc)
     --     specified comparator
     MixinKeyValueOperation(library, "Contains%s", function(iterator, iterable, target, comparatorFunc, ...)
         comparatorFunc = MakeEqualityComparator(comparatorFunc);
-        for candidate in library.KeyIterator(iterable) do
+        for candidate in iterator(iterable) do
             if IsEqual(comparatorFunc(candidate, target)) then
                 return true;
             end;
         end;
         return false;
     end);
+
+    if library.KeyFor == nil then
+        -- Returns the first key found for the specified value. Comparison is defined by the 
+        -- specified comparatorFunc.
+        --
+        -- iterable
+        --     a value that is iterable by this library
+        -- targetValue
+        --     the value that is searched for
+        -- comparatorFunc, ...
+        --     optional. the function that performs the search, with the signature 
+        --     comparatorFunc(candidate, target). It should return a truthy value if the two 
+        --     values match. If it returns a numeric value, then only zero indicates 
+        --     a match.
+        -- returns
+        --     the first key that corresponds to to a value that matches the specified value, 
+        --     according to comparatorFunc
+        function library.KeyFor(iterable, value, comparatorFunc, ...)
+            comparatorFunc = MakeEqualityComparator(comparatorFunc);
+            for key, candidate in library.Iterator(iterable) do
+                if IsEqual(comparatorFunc(candidate, value)) then
+                    return key;
+                end;
+            end;
+        end;
+    end;
+
+    if library.LastKeyFor == nil then
+        -- Returns the last key for the specified value. Comparison is defined by the specified 
+        -- comparatorFunc.
+        --
+        -- iterable
+        --     a value that is iterable by this library
+        -- targetValue
+        --     the value that is searched for
+        -- comparatorFunc, ...
+        --     optional. the function that performs the search, with the signature 
+        --     comparatorFunc(candidate, target). It should return a truthy value if the two 
+        --     values match. If it returns a numeric value, then only zero indicates 
+        --     a match.
+        -- returns
+        --     the last key that corresponds to to a value that matches the specified value, 
+        --     according to comparatorFunc
+        function library.LastKeyFor(iterable, targetValue, comparatorFunc, ...)
+            comparatorFunc = MakeEqualityComparator(comparatorFunc);
+            for key, candidate in library.ReverseIterator(iterable) do
+                if IsEqual(comparatorFunc(candidate, targetValue)) then
+                    return key;
+                end;
+            end;
+        end;
+    end;
+
+
 
     if library.ContainsAll == nil then
         -- Returns whether the searched iterable contains all values in the control iterable. Equality
