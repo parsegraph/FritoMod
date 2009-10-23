@@ -3,8 +3,10 @@
 ## Notes: A libray of functions dealing with collections.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP
+## Dependencies: FritoMod, FritoMod_Functional
+
+Mixins.Iteration.lua
+Iterators.lua
 
 Lists.lua
 Tables.lua
-Iterators.lua
