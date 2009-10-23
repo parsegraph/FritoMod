@@ -38,16 +38,6 @@ function Tables.Expand(targetTable)
     return targetTable;
 end;
 
-function Tables.Clear(targetTable)
-    local keys = {};
-    for key, _ in pairs(targetTable) do
-        table.insert(keys, key);
-    end;
-    for _, key in ipairs(keys) do
-        targetTable[key] = nil;
-    end;
-end;
-
 -- Inserts the given metatable in between the given table and its original
 -- metatable, such that table --> metatable --> oldMetatable.
 --
