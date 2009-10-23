@@ -254,6 +254,8 @@ function Mixins.Iteration(library, iteratorFunc)
         -- Removes the first matching value from the specified iterable, according to the specified
         -- comparator and specified target value.
         -- 
+        -- This is an optional operation.
+        --
         -- iterable
         --     an iterable usable by this library.
         -- targetValue
@@ -281,6 +283,8 @@ function Mixins.Iteration(library, iteratorFunc)
         -- this minimizes the chance of corrupted iteration, it is also potentially more 
         -- inefficient than a safe, iterable-specific solution.
         -- 
+        -- This is an optional operation.
+        --
         -- iterable
         --     an iterable usable by this library.
         -- targetValue
@@ -308,6 +312,8 @@ function Mixins.Iteration(library, iteratorFunc)
         -- Removes the last matching value from the specified iterable, according to the specified
         -- comparator and specified value.
         -- 
+        -- This is an optional operation.
+        --
         -- iterable
         --     an iterable usable by this library.
         -- targetValue
@@ -331,6 +337,8 @@ function Mixins.Iteration(library, iteratorFunc)
         -- Removes the first matching key from the specified iterable, according to the specified
         -- comparator and specified target key.
         -- 
+        -- This is an optional operation.
+        --
         -- iterable
         --     an iterable usable by this library.
         -- targetKey
@@ -353,7 +361,13 @@ function Mixins.Iteration(library, iteratorFunc)
     if library.RemoveAllAt == nil then
         -- Removes all matching keys from the specified iterable, according to the specified
         -- comparator and specified target key.
+        --
+        -- This function does not modify the iterable until every item has been iterated. While
+        -- this minimizes the chance of corrupted iteration, it is also potentially more 
+        -- inefficient than a safe, iterable-specific solution.
         -- 
+        -- This is an optional operation.
+        --
         -- iterable
         --     an iterable usable by this library.
         -- targetKey
@@ -362,7 +376,7 @@ function Mixins.Iteration(library, iteratorFunc)
         --     optional. The comparator that performs the search for the specified value
         -- returns
         --     the number of removed elements
-        function library.RemoveAll(iterable, targetKey, comparatorFunc, ...)
+        function library.RemoveAllAt(iterable, targetKey, comparatorFunc, ...)
             comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
             local removedKeys = {};
             for candidate, value in library.Iterator(iterable) do
@@ -399,6 +413,46 @@ function Mixins.Iteration(library, iteratorFunc)
             end;
         end;
     end;
+
+    if library.Clear == nil then
+        -- Removes every element from the specified iterable.
+        --
+        -- iterable
+        --     the iterable that is modified by this operation
+        function library.Clear(iterable)
+            local keys = library.Keys(iterable);
+            for i=#keys, 1, -1 do
+                library.Delete(iterable, keys[i]);
+            end;
+        end;
+    end;
+
+    -- Returns whether the two iterables contain the same elements, in the same order.
+    --
+    -- This option is applicable to keys, values, or pairs.
+    --
+    -- iterable, otherIterable
+    --     the two values that are compared against
+    -- comparatorFunc, ...
+    --     optional. the function that performs the comparison, with the signature 
+    --     comparatorFunc(item, otherItem) where the items are the keys, values, or pairs.
+    --     It should return a truthy value if the two values match. If it returns a numeric 
+    --     value, then only zero indicates a match.
+    -- 
+    MixinKeyValuePairOperation(library, "%ssEqual", function(chooser, iterable, otherIterable, comparatorFunc, ...)
+        local iterator = library.Iterator(iterable);
+        local otherIterator = library.Iterator(otherIterator);
+        local key, value = iterator();
+        local otherKey, otherValue = otherIterator();
+        while key ~= nil and otherKey ~= nil do
+            if not IsEqual(comparatorFunc(chooser(key, value), chooser(otherKey, otherValue))) then
+                return false;
+            end;
+            key, value = iterator();
+            otherKey, otherValue = otherIterator();
+        end;
+        return key == nil and otherKey == nil;
+    end);
 
     if library.KeyIterator == nil then
         -- Returns an iterator that iterates over the keys in iterable.
@@ -836,6 +890,56 @@ function Mixins.Iteration(library, iteratorFunc)
         end;
         return false;
     end);
+
+    if library.ContainsAll == nil then
+        -- Returns whether the searched iterable contains all values in the control iterable. Equality
+        -- is defined by the comparator func.
+        --
+        -- searchedIterable
+        --     the iterable that is searched for values
+        -- controlIterable
+        --     the itearble that contains the values to search for
+        -- comparatorFunc, ...
+        --     the function that performs the search, with the signature 
+        --     comparatorFunc(candidate, target). It should return a truthy value if the two 
+        --     values match. If it returns a numeric value, then only zero indicates 
+        --     a match.
+        -- returns
+        --     true if searchedIterable contains every value in the control iterable, otherwise false
+        function library.ContainsAll(searchedIterable, controlIterable, comparatorFunc, ...)
+            for value in library.ValueIterator(controlIterable) do
+                if not library.ContainsValue(searchedIterable, value, comparatorFunc, ...) then
+                    return false;
+                end;
+            end;
+            return true;
+        end;
+    end;
+
+    if library.ContainsAllKeys == nil then
+        -- Returns whether the searched iterable contains all keys in the control iterable. Equality
+        -- is defined by the comparator func.
+        --
+        -- searchedIterable
+        --     the iterable that is searched for keys
+        -- controlIterable
+        --     the itearble that contains the keys to search for
+        -- comparatorFunc, ...
+        --     the function that performs the search, with the signature 
+        --     comparatorFunc(candidate, target). It should return a truthy value if the two 
+        --     values match. If it returns a numeric value, then only zero indicates 
+        --     a match.
+        -- returns
+        --     true if searchedIterable contains every value in the control iterable, otherwise false
+        function library.ContainsAllKeys(searchedIterable, controlIterable, comparatorFunc, ...)
+            for key in library.KeyIterator(controlIterable) do
+                if not library.ContainsKey(searchedIterable, key, comparatorFunc, ...) then
+                    return false;
+                end;
+            end;
+            return true;
+        end;
+    end;
 
     -- Returns the number of times the specified item occurs in the specified iterable.
     --
