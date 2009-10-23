@@ -620,7 +620,7 @@ function Mixins.Iteration(library, iteratorFunc)
             end;
         end;
         return results;
-    end;
+    end);
 
     if library.CallEach == nil then
         -- Calls every function in the specified iterable.
