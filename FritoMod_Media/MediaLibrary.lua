@@ -76,7 +76,7 @@ function MediaLibrary:Constructor()
     
 	-- Class Colors
 	for className, classColor in pairs(RAID_CLASS_COLORS) do 
-		self:Add("Color", ProperNounize(className), BreakColorTable(classColor));
+		self:Add("Color", Strings.ProperNounize(className), BreakColorTable(classColor));
 	end;
 
 	----------------------------------------
@@ -199,7 +199,7 @@ function MediaLibrary:RegisterProxyLibrary(libraryFunc, ...)
     libraryFunc = Curry(libraryFunc, ...)
     table.insert(self.proxyLibraries, libraryFunc)
     return function()
-        self.proxyLibraries = ListUtil:RemoveItem(self.proxyLibraries, libraryFunc);
+        self.proxyLibraries = Lists.RemoveItem(self.proxyLibraries, libraryFunc);
     end;
 end;
 
