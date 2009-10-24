@@ -94,7 +94,7 @@ end;
 --     true, if this suite executed all tests successfully
 function TestSuite:Run(...)
     self.listener:StartAllTests(self, ...);
-    local allTestsSuccessful = true;
+    local failedTests = 0;
     local testGenerator = self:TestGenerator(...);
     repeat
         local test, testName = testGenerator();
@@ -105,19 +105,25 @@ function TestSuite:Run(...)
         if success then
             local testRunner = result;
             self.listener:TestStarted(self, testName, testRunner);
-            success, result = pcall(testRunner);
-            if success and result ~= false then
-                self.listener:TestSuccessful(self, testName, testRunner);
+            success, result, reason = pcall(testRunner);
+            if success ~= true then
+                failedTests = failedTests + 1;
+                self.listener:TestErrored(self, testName, testRunner, tostring(result));
+            elseif result == false then
+                failedTests = failedTests + 1;
+                self.listener:TestFailed(self, testName, testRunner, tostring(reason));
             else
-                allTestsSuccessful = false;
-                self.listener:TestFailed(self, testName, testRunner, tostring(result));
+                self.listener:TestSuccessful(self, testName, testRunner);
             end;
         else
             self.listener:InternalError(self, testName, result);
         end;
     until false;
-    self.listener:FinishAllTests(self, allTestsSuccessful);
-    return allTestsSuccessful;
+    self.listener:FinishAllTests(self, failedTests == 0);
+    if failedTests == 0 then
+        return;
+    end;
+    return false, format("%d test(s) failed", failedTests);
 end;
 
 -- Returns all tests that this test suite contains. A test may be one of the following:
