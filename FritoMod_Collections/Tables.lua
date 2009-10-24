@@ -1,8 +1,9 @@
-Tables = Metatables.Defensive();
+Tables = {}
 local Tables = Tables;
 
 -- Mixes in iteration functionality for tables
 Mixins.Iteration(Tables, pairs);
+Metatables.Defensive(Tables);
 
 -- Expands the keys in the specified table. Any key that is a table will be iterated,
 -- and its children will be used as new keys in the specified table. Their values will

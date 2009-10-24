@@ -1,4 +1,4 @@
-Iterators = Metatables.Defensive();
+Iterators = {};
 local Iterators = Iterators;
 
 -- Mixes in iteration functionality for iterators
@@ -6,6 +6,7 @@ Mixins.Iteration(Iterators, function(iterator)
     assert(IsCallable(iterator), "Iterator is not callable. Type: " .. type(iterator));
     return iterator;
 end);
+Metatables.Defensive(Iterators);
 
 function Iterators.Iterate(value, ...)
     assert(value, "value is falsy");
