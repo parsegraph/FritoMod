@@ -3,5 +3,3 @@
 ## Author: Frito
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Testing, FritoMod_Functional
-
-metatables.lua
