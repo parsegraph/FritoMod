@@ -1,4 +1,4 @@
-local ListsTests = ReflectiveTestSuite:New("FritoMod_Collections.lists");
+local ListsTests = ReflectiveTestSuite:New("FritoMod_Collections.Lists");
 
 function ListsTests:TestContainsAll()
 
