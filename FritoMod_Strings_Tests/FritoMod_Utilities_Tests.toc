@@ -1,0 +1,8 @@
+## Interface: 30200
+## Title: FritoMod: Strings - Tests
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod, FritoMod_Strings, FritoMod_Testing
+
+Strings.lua
+
