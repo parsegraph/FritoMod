@@ -41,7 +41,7 @@ local initialize = Activator(Noop, function()
     eventsFrame:SetScript("OnEvent", function(frame, event, ...)
         local listeners = eventListeners[event];
         if listeners then
-            Lists.MapCall(listeners, ...);
+            Lists.CallEach(listeners, ...);
         end;
     end);
     return function()

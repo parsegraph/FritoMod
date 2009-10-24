@@ -13,7 +13,7 @@ local timingFrame = CreateFrame("Frame", nil, UIParent);
 --     a function that removes the specified listener
 Timing.AddUpdateListener = Activator(FunctionPopulator(updateListeners), function()
     timingFrame:SetScript("OnUpdate", function(frame, elapsed) 
-       Lists.MapCall(updateListeners, elapsed);
+       Lists.CallEach(updateListeners, elapsed);
     end);
     return Curry(timingFrame, "SetScript", "OnUpdate", nil);
 end);
@@ -31,7 +31,7 @@ end);
 -- returns
 --     a function that throttles invocations of function
 function Timing.Throttle(cooldownTime, func, ...)
-    cooldownTime = Math.ParseTime(cooldownTime);
+    cooldownTime = Parsers.Time(cooldownTime);
     func = Curry(func, ...);
     local lastCall = 0;
     return function(...)
@@ -54,7 +54,7 @@ end;
 -- returns
 --     a function that, when invoked, stops this timer.
 function Timing.Periodic(period, func, ...)
-    period = Math.ParseTime(period);
+    period = Parsers.Time(period);
     func = Curry(func, ...);
     local totalElapsed = 0;
     return Timing.AddUpdateListener(function(elapsedSinceLastIteration)
@@ -67,7 +67,7 @@ function Timing.Periodic(period, func, ...)
 end;
 
 function Timing.Rhythmic(period, func, ...)
-    period = Math.ParseTime(period);
+    period = Parsers.Time(period);
     func = Curry(func, ...);
     local totalElapsed = 0;
     return Timing.AddUpdateListener(function(elapsedSinceLastIteration)
@@ -80,7 +80,7 @@ function Timing.Rhythmic(period, func, ...)
 end;
 
 function Timing.Burst(period, func, ...)
-    period = Math.ParseTime(period);
+    period = Parsers.Time(period);
     func = Curry(func, ...);
     local totalElapsed = 0;
     return Timing.AddUpdateListener(function(elapsedSinceLastIteration)
