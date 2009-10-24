@@ -41,7 +41,7 @@ function TestSuite:AddRecursiveListener(listener, ...)
             Lists.Insert(removers, test:AddRecursiveListener(listener));
         end;
     end;
-    return Curry(Lists.MapCall, removers);
+    return Curry(Lists.CallEach, removers);
 end;
 
 local function CoerceTest(test)
