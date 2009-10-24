@@ -11,7 +11,7 @@ function TestingTests:TestListenersDuringSuccess()
         return {Noop};
     end;
     local order = {};
-    suite:AddListener(FocusedTable({}, function(self, eventName, ...)
+    suite:AddListener(Metatables.FocusedTable({}, function(self, eventName, ...)
         Lists.Insert(order, eventName);
     end));
     local expected = {
@@ -30,7 +30,7 @@ function TestingTests:TestListenersDuringFailure()
         return {Operator.False};
     end;
     local order = {};
-    suite:AddListener(FocusedTable({}, function(self, eventName, ...)
+    suite:AddListener(Metatables.FocusedTable({}, function(self, eventName, ...)
         Lists.Insert(order, eventName);
     end));
     local expected = {
@@ -58,7 +58,7 @@ function TestingTests:TestSuiteIgnoresReturnedArguments()
             end
         };
     end;
-    Assert.Equals(true, suite:Run(), "Suite ignores returned arguments except false");
+    assert(false ~= suite:Run(), "Suite ignores returned arguments except false");
 end;
 
 function TestingTests:TestSuiteFailsOnFalse()
@@ -78,5 +78,5 @@ function TestingTests:TestSuiteDefaultsToSucceeding()
     function suite:GetTests()
         return {};
     end;
-    Assert.Equals(true, suite:Run(), "Suite defaults to success");
+    assert(false ~= suite:Run(), "Suite defaults to success");
 end;
