@@ -1,0 +1,8 @@
+## Interface: 30200
+## Title: FritoMod: Math
+## Notes: A collection of some math functions.
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod, FritoMod_Functional
+
+Math.lua

@@ -3,6 +3,6 @@
 ## Notes: Timing Framework
 ## Author: Frito
 ## Version: 0.00
-## Dependencies: FritoMod, FritoMod_Utilities, FritoMod_OOP, FritoMod_Functional
+## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Collections 
 
 Timing.lua

@@ -3,7 +3,7 @@
 ## Notes: Media library and some sample sounds.
 ## Author: Frito
 ## Version: Unreleased
-## RequiredDeps: FritoMod, FritoMod_Utilities, FritoMod_OOP
+## RequiredDeps: FritoMod, FritoMod_Functional, FritoMod_Collections, FritoMod_OOP, FritoMod_Strings
 ## OptionalDeps: LibSharedMedia-3.0
 
 MediaLibrary.lua

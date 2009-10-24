@@ -1,0 +1,7 @@
+## Interface: 30200
+## Title: FritoMod: Math - Tests
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod, FritoMod_Math, FritoMod_Testing
+
+Math.lua

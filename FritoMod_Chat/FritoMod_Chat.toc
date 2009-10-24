@@ -3,7 +3,7 @@
 ## Notes: Some chat abstractions that make communication easier.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_OOP, FritoMod_Utilities, FritoMod_Media
+## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Collections, FritoMod_Strings, FritoMod_Media
 
 Colors.lua
 Mediums.lua
