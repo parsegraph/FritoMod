@@ -75,6 +75,24 @@ function UnpackAll(...)
     return unpack(collectedValues);
 end
 
+function Reference(target)
+    local str = nil;
+    if type(target) == "table" then
+        -- Temporarily detach the metatable so we can access the raw tostring function
+        local metatable = getmetatable(target);
+        setmetatable(target, nil);
+        local str = tostring(target);
+        setmetatable(target, metatable);
+    elseif type(target) == "function" then
+        str = tostring(target);
+    else
+        error("Type has no reference. Type: " .. type(target));
+    end;
+    local _, split = str:find(":[ ]+");
+    return str:sub(split + 1);
+end;
+
+
 -- Returns a function that wraps the specified function. Before the specified function is
 -- invoked, the activator is called. Subsequent calls to the returned function will directly
 -- call the specified function.

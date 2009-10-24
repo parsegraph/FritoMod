@@ -49,7 +49,7 @@ function Strings.PrettyPrint(value)
     local valueType = Strings.ProperNounize(type(value));
     if valueType == "Table" then
         if OOP.IsClass(value) then
-            return format("Class@%s", Tables.Reference(value));
+            return format("Class@%s", Reference(value));
         end;
         if OOP.IsInstance(value) then
             return value:ToString();
@@ -68,9 +68,7 @@ function Strings.PrettyPrintFunction(value)
     assert(type(value) == "function", "value is not a function. Type: " .. type(value));
     local name = Tables.LookupValue(_G, value);
     if not name then
-        name = tostring(value);
-        local _, split = name:find(":[ ]+");
-        name= name:sub(split + 1);
+        name = Reference(value);
     end
     return format("Function@%s", name);
 end;

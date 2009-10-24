@@ -27,16 +27,6 @@ function Tables.Set(targetTable, key, value)
     return oldValue;
 end;
 
-function Tables.Reference(target)
-    -- Temporarily detach the metatable so we can access the raw tostring function
-    local metatable = getmetatable(target);
-    setmetatable(target, nil);
-    local str = tostring(target);
-    setmetatable(target, metatable);
-    local _, split = str:find(":[ ]+");
-    return str:sub(split + 1);
-end;
-
 function Tables.Keys(map)
     assert(map, "map is falsy");
     local keys = {};
