@@ -2,6 +2,41 @@ if Metatables == nil then
     Metatables = {};
 end;
 
+-- Ensures a target is either already a table or a nil value.
+--
+-- returns
+--     target or a new table
+-- throws
+--     if target is non-nil and not a table
+local function AssertTable(target)
+    if target == nil then
+        target = {};
+    end;
+    assert(type(target) == "table", "table is not a table object");
+    return target;
+end;
+
+-- Returns a function that attaches the specified metatable to all given tables.
+--
+-- metatable
+--     the metatble to attach to given tables
+-- returns
+--     a function that attaches the specified metatable to classes
+local function MetatableAttacher(metatable)
+    assert(type(metatable) == "table", "metatable is not a table object");
+    -- Attaches a metatable to the specified table.
+    --
+    -- target
+    --     the table that will act as the target for this operation. If nil, a new table is created.
+    -- returns
+    --     table
+    return function(target)
+        target = AssertTable(target);
+        setmetatable(target, metatable);
+        return target;
+    end;
+end;
+
 -- Adds the specified observer to self. Used with Metatables.Multicast
 local function Add(self, observer)
     if not observer then
