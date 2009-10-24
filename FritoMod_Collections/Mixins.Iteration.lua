@@ -316,6 +316,14 @@ function Mixins.Iteration(library, iteratorFunc)
         end;
     end;
 
+    if library.RemoveValue == nil then
+        library.RemoveValue = Curry(library, "Remove");
+    end;
+
+    if library.RemoveFirst == nil then
+        library.RemoveFirst = Curry(library, "Remove");
+    end;
+
     if library.RemoveAll == nil then
         -- Removes all matching values from the specified iterable, according to the specified
         -- comparator and specified value.
@@ -596,6 +604,10 @@ function Mixins.Iteration(library, iteratorFunc)
         end;
     end);
 
+    if library.Each == nil then
+        library.Each = Curry(library, "EachValue");
+    end;
+
     -- Iterates over all items in the specified iterable, collecting results
     -- in a returned object.
     --
@@ -622,6 +634,10 @@ function Mixins.Iteration(library, iteratorFunc)
         return results;
     end);
 
+    if library.Map == nil then
+        library.Map = Curry(library, "MapValues");
+    end;
+
     if library.CallEach == nil then
         -- Calls every function in the specified iterable.
         -- 
@@ -632,7 +648,7 @@ function Mixins.Iteration(library, iteratorFunc)
         -- throws
         --     if any value in iterable is not callable
         function library.CallEach(iterable, ...)
-            for func in library.Iterator(iterable) do
+            for func in library.ValueIterator(iterable) do
                 assert(IsCallable(func), "func is not callable. Type: " .. type(func));
                 func(...);
             end;
@@ -687,6 +703,10 @@ function Mixins.Iteration(library, iteratorFunc)
         end;
         return filtered;
     end);
+
+    if library.Filter == nil then
+        library.Filter = Curry(library, "FilterValue");
+    end;
 
     if library.DefaultReduce == nil then
         -- A default reduce function that tries to do the right thing for various types.
@@ -791,6 +811,10 @@ function Mixins.Iteration(library, iteratorFunc)
         end;
         return aggregate;
     end);
+
+    if library.Reduce == nil then
+        library.Reduce = Curry(library, "ReduceValues");
+    end;
 
     if library.Clone == nil then
         -- Returns an iterable that is the clone of the specified iterable.
@@ -930,6 +954,10 @@ function Mixins.Iteration(library, iteratorFunc)
         return false;
     end);
 
+    if library.Contains == nil then
+        library.Contains = Curry(library, "ContainsValue");
+    end;
+
     if library.KeyFor == nil then
         -- Returns the first key found for the specified value. Comparison is defined by the 
         -- specified comparatorFunc.
@@ -982,9 +1010,7 @@ function Mixins.Iteration(library, iteratorFunc)
         end;
     end;
 
-
-
-    if library.ContainsAll == nil then
+    if library.ContainsAllValues == nil then
         -- Returns whether the searched iterable contains all values in the control iterable. Equality
         -- is defined by the comparator func.
         --
@@ -999,7 +1025,7 @@ function Mixins.Iteration(library, iteratorFunc)
         --     a match.
         -- returns
         --     true if searchedIterable contains every value in the control iterable, otherwise false
-        function library.ContainsAll(searchedIterable, controlIterable, comparatorFunc, ...)
+        function library.ContainsAllValues(searchedIterable, controlIterable, comparatorFunc, ...)
             for value in library.ValueIterator(controlIterable) do
                 if not library.ContainsValue(searchedIterable, value, comparatorFunc, ...) then
                     return false;
@@ -1007,6 +1033,10 @@ function Mixins.Iteration(library, iteratorFunc)
             end;
             return true;
         end;
+    end;
+
+    if library.ContainsAll == nil then
+        library.ContainsAll = Curry(library, "ContainsAllValues");
     end;
 
     if library.ContainsAllKeys == nil then
@@ -1062,6 +1092,10 @@ function Mixins.Iteration(library, iteratorFunc)
         return union;
     end);
 
+    if library.Union == nil then
+        library.Union = Curry(library, "UnionByValue");
+    end;
+
     -- Returns a new iterable that contains only items that are contained in one of the iterables,
     -- according to the specified comparatorFunc.
     --
@@ -1095,6 +1129,10 @@ function Mixins.Iteration(library, iteratorFunc)
         return union;
     end);
 
+    if library.Intersection == nil then
+        library.Intersection = Curry(library, "IntersectionByValue");
+    end;
+
     -- Returns the number of times the specified item occurs in the specified iterable.
     --
     -- This operation is applicable for both keys and values.
@@ -1121,5 +1159,9 @@ function Mixins.Iteration(library, iteratorFunc)
         end;
         return count;
     end);
+
+    if library.Frequency == nil then
+        library.Frequency = Curry(library, "ValueFrequency");
+    end;
 
 end;
