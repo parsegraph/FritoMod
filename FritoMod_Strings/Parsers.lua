@@ -1,3 +1,8 @@
+if Parsers == nil then
+    Parsers = {};
+end;
+local Parsers = Parsers;
+
 local states = {};
 
 -- Numeric specials are the least flexible of any number, and can only
@@ -103,7 +108,7 @@ states.magnitudes.Transition = {"regulars", "irregulars", "singles"};
 
 states.initial = {"numbers", "magnitudes", "flexibleMagnitudes", "regulars", "irregulars", "singles", "specials", "qualifiers"};
 
-function Math.Parse(number)
+function Parsers.Number(number)
     if type(number) == "number" then
         return number;
     end;
@@ -131,7 +136,7 @@ local timeMagnitudes = {
     day = 1000 * 60 * 60 * 24,
 };
 
-function Math.ParseTime(time)
+function Parsers.Time(time)
     if type(number) == "number" then
         return number;
     end;
