@@ -3,7 +3,7 @@
 ## Notes: Testing suite and methods for testing.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP, FritoMod_Utilities
+## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP, FritoMod_Collections
 
 Flag.lua
 TestSuite.lua
