@@ -3,9 +3,9 @@
 ## Notes: A suite of string utility functions.
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP, FritoMod_States
+## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP, FritoMod_Utilities, FritoMod_States
 
 Strings.lua
 
-Parsers.lua
 NumberBuilder.lua
+Parsers.lua
