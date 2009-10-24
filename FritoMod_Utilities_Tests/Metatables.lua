@@ -1,7 +1,7 @@
-local MetatableTests = ReflectiveTestSuite:New("FritoMod_Functional.metatables");
+local MetatableTests = ReflectiveTestSuite:New("FritoMod_Utilities.Metatables");
 
-function MetatableTests:TestCompositeTable()
-    local comp = CompositeTable();
+function MetatableTests:TestMulticast()
+    local comp = Metatables.Multicast();
 
     local x = Tests.Flag();
     local y = Tests.Flag();
@@ -18,8 +18,8 @@ function MetatableTests:TestCompositeTable()
     y:Assert("X and Y have been raised");
 end;
 
-function MetatableTests:TestDefensiveTable()
-    local defensive = DefensiveTable();
+function MetatableTests:TestDefensive()
+    local defensive = Metatables.Defensive();
 
     Assert.Exception("DefensiveTable throws on missing method calls", function()
         defensive:MissingMethod();
