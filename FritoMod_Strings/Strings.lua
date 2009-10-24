@@ -145,8 +145,8 @@ function Strings.Join(delimiter, items)
     end);
 end
 
-function Strings.Concat(...)
-    return Strings.Join(" ", { ... });
+function Strings.JoinValues(delimiter, ...)
+    return Strings.Join(delimiter, { ... });
 end
 
 -- Splits originalString by the given delimiter, with an underscore used as the default.
@@ -255,7 +255,7 @@ function Strings.SplitByCase(target)
         state = state(letter) or state;
     end;
     if #target > 0 then
-        Lists.Insert(words, target);
+        table.insert(words, target);
     end;
 
     return words;
@@ -316,7 +316,7 @@ function Strings.ConvertToBase(base, number, digits)
     if base > #digits or base < 2 then
         error("Invalid base: " .. base);
     end;
-    local isNegative = Math.Signum(number) == -1;
+    local isNegative = number < 0;
     number = abs(number);
     local converted = "";
     while number > 0 do
