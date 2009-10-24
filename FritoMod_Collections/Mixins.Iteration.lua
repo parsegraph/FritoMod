@@ -205,7 +205,7 @@ function Mixins.Iteration(library, iteratorFunc)
         function library.Insert(iterable, value)
             assert(type(iterable) == "table", "Iterable is not a table");
             table.insert(iterable, value);
-            return Curry(library.RemoveValue, iterable, value);
+            return Curry(library.Remove, iterable, value);
         end;
     end;
 
@@ -255,7 +255,7 @@ function Mixins.Iteration(library, iteratorFunc)
         function library.InsertAt(list, index, value)
             assert(type(index) == "number", "index is not a number. Type: " .. type(index));
             table.insert(list, index, value);
-            return Curry(library.RemoveValue, iterable, value);
+            return Curry(library.Remove, iterable, value);
         end;
     end;
 

@@ -11,7 +11,7 @@ function MappedTestSuite:GetTests(matcher, ...)
         name = tostring(name);
         matcher = CurryFunction(Strings.Matches, name);
     end;
-    return Iterators.FilterKey(self, function(key)
+    return Tables.FilterKeys(self, function(key)
         if not EMPTY_SUITE then
             EMPTY_SUITE = MappedTestSuite:New();
         end;

@@ -9,7 +9,7 @@ local function Add(self, observer)
     end;
     assert(type(observer) == "table", "observer is not a table. Type: ".. type(observer));
     table.insert(self, observer);
-    return Curry(Lists.RemoveFirst, self, observer);
+    return Curry(Lists.Remove, self, observer);
 end;
 
 -- Creates a "composite" table. The returned table forwards all method calls
@@ -58,7 +58,7 @@ function Metatables.OrderedMap(target)
         __newindex = function(self, key, value)
             if values[key] ~= nil then
                 if value == nil then
-                    Lists.RemoveFirst(insertionOrder, key);
+                    Lists.Remove(insertionOrder, key);
                 end;
             else
                 Lists.Insert(insertionOrder, key);
