@@ -1,4 +1,4 @@
-local StringsTests = ReflectiveTestSuite:New("FritoMod_Utilities.Strings");
+local StringsTests = ReflectiveTestSuite:New("FritoMod_Strings.Strings");
 
 function StringsTests:TestJoin()
     local j = Curry(Strings.Join, " ");

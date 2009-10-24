@@ -5,4 +5,4 @@
 ## Dependencies: FritoMod, FritoMod_Strings, FritoMod_Testing
 
 Strings.lua
-
+Parsers.lua
