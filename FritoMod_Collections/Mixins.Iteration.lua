@@ -668,7 +668,7 @@ function Mixins.Iteration(library, iteratorFunc)
         --     if any value in iterable is not callable
         function library.MapCall(iterable, ...)
             local args = { ... };
-            return library.MapPairs(iterable, function(func)
+            return library.MapValues(iterable, function(func)
                 assert(IsCallable(func), "func is not callable. Type: " .. type(func));
                 return func(unpack(args));
             end);
