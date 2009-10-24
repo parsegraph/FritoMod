@@ -1,4 +1,7 @@
-Mixins = {};
+
+if Mixins == nil then
+    Mixins = {};
+end;
 local Mixins = Mixins;
 
 -- Transforms the specified table into a mixin. When the class is initialized, 
