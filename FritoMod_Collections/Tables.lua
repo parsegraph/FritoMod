@@ -2,8 +2,16 @@ Tables = {}
 local Tables = Tables;
 
 -- Mixes in iteration functionality for tables
-Mixins.Iteration(Tables, pairs);
-Metatables.Defensive(Tables);
+Mixins.Iteration(Tables, function(iterable)
+    assert(type(iterable) == "table", "iterable is not a table");
+    local key = nil;
+    return function()
+        local value;
+        key, value = next(iterable, key);
+        return key, value;
+    end;
+end);
+Metatables.Defensive(Lists);Metatables.Defensive(Tables);
 
 -- Expands the keys in the specified table. Any key that is a table will be iterated,
 -- and its children will be used as new keys in the specified table. Their values will
