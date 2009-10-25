@@ -79,6 +79,58 @@ function TestSuite:TestGenerator(...)
     end;
 end;
 
+local function HookAssert(flag)
+    flag:Clear();
+    local oldAssert = _G.assert;
+    _G.assert = function(expression, ...)
+        if not expression then
+            flag:Raise();
+            choke();
+        end;
+        oldAssert(expression, ...);
+    end;
+    return function()
+        _G.assert = oldAssert;
+    end;
+end;
+
+local function WrapTestRunner(testRunner)
+    return function()
+        local result, reason = testRunner();
+        assert(result ~= false, reason or "Test returned false");
+    end;
+end;
+
+local function InterpretTestResult(assertionFlag, testRanSuccessfully, result, extendedReason)
+    if testRanSuccessfully and result ~= false then
+        return "Successful";
+    end;
+    if assertionFlag:IsSet() then
+        return "Failed", tostring(result);
+    end;
+    if result == false then
+        return "Failed", tostring(extendedReason or "Test returned false");
+    end;
+    return "Errored", tostring(result);
+end;
+
+local function RunTest(self, test, testName)
+    local assertionFlag = Tests.Flag();
+    local success, result = pcall(CoerceTest, test);
+    if not success then
+        self.listener:InternalError(self, testName, result);
+        return false;
+    end;
+    local testRunner = result;
+    self.listener:TestStarted(self, testName, testRunner);
+    local unhookAssert = HookAssert(assertionFlag);
+    local testState, reason = InterpretTestResult(assertionFlag, pcall(testRunner));
+    unhookAssert();
+    testRunner = WrapTestRunner(testRunner);
+    self.listener["Test" .. testState](self.listener, self, testName, testRunner, reason);
+    return testState == "Successful";
+end;
+
 -- Runs tests from this test suite. Every test returned by GetTests() is invoked. Their
 -- results are sent to this test suite's listeners.
 --
@@ -91,39 +143,22 @@ end;
 --     are defined by subclasses. If a suite does not have any filtering or customizing 
 --     abilitiy, these arguments are silently ignored.
 -- returns
---     true, if this suite executed all tests successfully
+--     false if this test suite failed
+-- returns
+--     a string describing the reason of the failure
 function TestSuite:Run(...)
     self.listener:StartAllTests(self, ...);
-    local failedTests = 0;
-    local testGenerator = self:TestGenerator(...);
-    repeat
-        local test, testName = testGenerator();
-        if not test then
-            break;
+    local unsuccessfulTests = 0;
+    for test, testName in self:TestGenerator(...) do
+        if not RunTest(self, test, testName) then
+            unsuccessfulTests = unsuccessfulTests + 1;
         end;
-        local success, result = pcall(CoerceTest, test);
-        if success then
-            local testRunner = result;
-            self.listener:TestStarted(self, testName, testRunner);
-            success, result, reason = pcall(testRunner);
-            if success ~= true then
-                failedTests = failedTests + 1;
-                self.listener:TestErrored(self, testName, testRunner, tostring(result));
-            elseif result == false then
-                failedTests = failedTests + 1;
-                self.listener:TestFailed(self, testName, testRunner, tostring(reason));
-            else
-                self.listener:TestSuccessful(self, testName, testRunner);
-            end;
-        else
-            self.listener:InternalError(self, testName, result);
-        end;
-    until false;
-    self.listener:FinishAllTests(self, failedTests == 0);
-    if failedTests == 0 then
-        return;
     end;
-    return false, format("%d test(s) failed", failedTests);
+    self.listener:FinishAllTests(self, unsuccessfulTests == 0);
+    if unsuccessfulTests == 0 then
+        return true;
+    end;
+    return false, format("%d test(s) failed", unsuccessfulTests);
 end;
 
 -- Returns all tests that this test suite contains. A test may be one of the following:
