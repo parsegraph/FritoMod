@@ -5,10 +5,9 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP, FritoMod_Collections
 
-Flag.lua
+Tests.lua
 TestSuite.lua
 MappedTestSuite.lua
 AllTests.lua
 ReflectiveTestSuite.lua
-Tests.lua
 Assert.lua
