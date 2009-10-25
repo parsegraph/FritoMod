@@ -154,6 +154,7 @@ function FunctionPopulator(populatedTable)
     return function(listener, ...)
         listener = Curry(listener, ...);
         table.insert(populatedTable, listener);
+        -- XXX This uses a method in Collections. Move it to that project?
         return Curry(Lists.RemoveFirst, populatedTable, listener);
     end;
 end;
