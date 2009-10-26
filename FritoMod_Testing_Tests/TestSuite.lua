@@ -80,3 +80,20 @@ function TestingTests:TestSuiteDefaultsToSucceeding()
     end;
     assert(false ~= suite:Run(), "Suite defaults to success");
 end;
+
+function TestingTests:TestSuiteHandlesChildTests()
+    local suite = TestSuite:New();
+
+    function suite:GetTests()
+        local child = TestSuite:New();
+        function child:GetTests()
+            return { 
+                function() 
+                    assert(true);
+                end 
+            };
+        end;
+        return { child };
+    end;
+    assert(suite:Run());
+end;
