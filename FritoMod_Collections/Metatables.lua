@@ -95,7 +95,7 @@ function Metatables.OrderedMap(target)
                 if value == nil then
                     Lists.Remove(insertionOrder, key);
                 end;
-            else
+            elseif key ~= "Iterator" then
                 Lists.Insert(insertionOrder, key);
             end;
             values[key] = value;
@@ -105,14 +105,9 @@ function Metatables.OrderedMap(target)
     });
 
     function target:Iterator()
-        local iterator = Iterators.IterateList(insertionOrder);
-        return function()
-            local index, key = iterator();
-            if not index then
-                return;
-            end;
-            return key, values[key];
-        end;
+        return Lists.DecorateValueIterator(insertionOrder, function(mappedKey)
+            return mappedKey, values[mappedKey];
+        end);
     end;
 
     return target;
