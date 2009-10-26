@@ -4,5 +4,6 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Testing
 
-TestSuite.lua
 Assert.lua
+TestSuite.lua
+ReflectiveTestSuite.lua
