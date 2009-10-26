@@ -107,9 +107,10 @@ function Suite:TestThatTestSuiteEmitsFailureOnAssertion()
             end,
         };
     end;
-    local counter = Tests.Counter()
-    suite:AddListener(Metatables.Noop({
+    local counter = Tests.Counter();
+    suite:AddRecursiveListener(Metatables.Noop({
         TestFailed = counter.Hit
     }));
+    suite:Run();
     counter.Assert(1);
 end;
