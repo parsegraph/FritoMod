@@ -90,11 +90,11 @@ local function InterpretTestResult(assertionFlag, testRanSuccessfully, result, e
     if testRanSuccessfully and result ~= false then
         return "Successful";
     end;
-    if assertionFlag:IsSet() then
-        return "Failed", tostring(result);
-    end;
     if result == false then
         return "Failed", tostring(extendedReason or "Test returned false");
+    end;
+    if assertionFlag:IsSet() then
+        return "Failed", tostring(result);
     end;
     return "Errored", tostring(result);
 end;
