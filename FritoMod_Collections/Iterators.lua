@@ -134,10 +134,10 @@ end;
 function Iterators.IterateVisibleFields(object)
     local key;
     function DoIteration()
-        local candidate;
-        key, candidate = next(object, key);
+        local value;
+        key, value= next(object, key);
         if key ~= nil then
-            return key, candidate;
+            return key, value;
         end;
         key = nil;
         local mt = getmetatable(object);
