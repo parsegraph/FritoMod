@@ -79,20 +79,6 @@ function TestSuite:TestGenerator(...)
     end;
 end;
 
-local function HookAssert(flag)
-    flag:Clear();
-    local oldAssert = _G.assert;
-    _G.assert = function(expression, ...)
-        if not expression then
-            flag:Raise();
-        end;
-        oldAssert(expression, ...);
-    end;
-    return function()
-        _G.assert = oldAssert;
-    end;
-end;
-
 local function WrapTestRunner(testRunner)
     return function()
         local result, reason = testRunner();
@@ -122,9 +108,15 @@ local function RunTest(self, test, testName)
     end;
     local testRunner = result;
     self.listener:TestStarted(self, testName, testRunner);
-    local unhookAssert = HookAssert(assertionFlag);
+    local unhookAssert = HookGlobal("assert", function(expression, ...)
+        if not expression then
+            assertionFlag:Raise();
+        end;
+    end);
+    local unhookError = HookGlobal("error", assertionFlag.Raise);
     local testState, reason = InterpretTestResult(assertionFlag, pcall(testRunner));
     unhookAssert();
+    unhookError();
     testRunner = WrapTestRunner(testRunner);
     self.listener["Test" .. testState](self.listener, self, testName, testRunner, reason);
     return testState == "Successful";
