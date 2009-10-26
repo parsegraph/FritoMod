@@ -85,7 +85,6 @@ local function HookAssert(flag)
     _G.assert = function(expression, ...)
         if not expression then
             flag:Raise();
-            choke();
         end;
         oldAssert(expression, ...);
     end;
