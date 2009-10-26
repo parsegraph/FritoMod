@@ -578,7 +578,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     the function that evaluates the given items, returning true if they should be included
     --     in the specified iterator
     -- returns
-    --     an iterator that bheaves as specified above
+    --     an iterator that behaves as specified above
     MixinKeyValuePairOperation(library, "Filtered%sIterator", function(chooser, iterable, filterFunc, ...)
         filterFunc = Curry(filterFunc, ...);
         local iterator = library.Iterator(iterable);
