@@ -23,7 +23,7 @@ function CategorizeIcons(icons)
 end;
 
 function Collapse(tree)
-    function count(tree)
+    local function count(tree)
         local sum = 0;
         for _, _ in pairs(tree) do
             sum = sum + 1;

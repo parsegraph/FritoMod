@@ -5,8 +5,7 @@ do
     local listeners = {};
     Tests.AddErrorListener = Activator(FunctionPopulator(listeners), function()
         local oldHandler = geterrorhandler() or Noop;
-        function OurHandler(errorMessage, frame, stack, etype, ...)
-            print("Cpaturing?");
+        local function OurHandler(errorMessage, frame, stack, etype, ...)
             seterrorhandler(oldHandler);
             -- We unhook our handler in case one of *our* handlers fails.
             pcall(Lists.CallEach, listeners, errorMessage, etype, stack, ...);

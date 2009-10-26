@@ -93,7 +93,7 @@ local CLASS_METATABLE = {
         instance[CLASS_NAME] = self;
         setmetatable(instance, instance);
 
-        function Initialize(class)
+        local function Initialize(class)
             if class[SUPER_NAME] then
                 Initialize(class[SUPER_NAME]);
             end;

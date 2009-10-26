@@ -582,7 +582,7 @@ function Mixins.Iteration(library, iteratorFunc)
     MixinKeyValuePairOperation(library, "Filtered%sIterator", function(chooser, iterable, filterFunc, ...)
         filterFunc = Curry(filterFunc, ...);
         local iterator = library.Iterator(iterable);
-        function DoIteration()
+        local function DoIteration()
             local key, value = iterator();
             if key == nil then
                 return nil;
@@ -592,7 +592,7 @@ function Mixins.Iteration(library, iteratorFunc)
             end;
             return DoIteration();
         end;
-        return DoIteration
+        return DoIteration;
     end);
 
     if library.FilteredIterator == nil then

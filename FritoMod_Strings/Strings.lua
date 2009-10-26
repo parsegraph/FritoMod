@@ -195,7 +195,7 @@ function Strings.SplitByCase(target)
     -- These are forward declared to avoid problems later on. This may not be necessary.
     local Capturing, PotentialAcronym, Acronym;
 
-    function Capturing(letter)
+    local function Capturing(letter)
         if not Strings.IsUpper(letter) then
             return;
         end;
@@ -214,7 +214,7 @@ function Strings.SplitByCase(target)
         return PotentialAcronym;
     end;
 
-    function Acronym(letter)
+    local function Acronym(letter)
         if not Strings.IsLower(letter) then
             return;
         end;
@@ -232,14 +232,14 @@ function Strings.SplitByCase(target)
         return Capturing;
     end;
 
-    function PotentialAcronym(letter)
+    local function PotentialAcronym(letter)
         if Strings.IsUpper(letter) then
             return Acronym;
         end;
         return Capturing;
     end;
 
-    function InitialState(letter)
+    local function InitialState(letter)
         if Strings.IsUpper(letter) then
             return PotentialAcronym;
         end;
