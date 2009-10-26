@@ -97,3 +97,19 @@ function Suite:TestThatTestSuiteHandlesChildTests()
     end;
     assert(suite:Run());
 end;
+
+function Suite:TestThatTestSuiteEmitsFailureOnAssertion()
+    local suite = TestSuite:New();
+    function suite:GetTests()
+        return {
+            function()
+                return false;
+            end,
+        };
+    end;
+    local counter = Tests.Counter()
+    suite:AddListener(Metatables.Noop({
+        TestFailed = counter.Hit
+    }));
+    counter.Assert(1);
+end;
