@@ -70,3 +70,26 @@ Metatables.Defensive = MetatableAttacher({
         error("key not found: " .. key);
     end
 });
+
+local function ForcedMetatable(forceFunc)
+    return function(target)
+        target = AssertTable(target);
+        for key, value in pairs(target) do
+            if type(value) == "function" then
+                target[key] = forceFunc(target, value);
+            end;
+        end;
+        setmetatable(target, {
+            __newindex = function(self, key, value)
+                if type(value) == "function" then
+                    value = forceFunc(self, value);
+                end;
+                rawset(self, key, value);
+            end
+        });
+        return target;
+    end;
+end;
+
+Metatables.ForceFunctions = ForcedMetatable(ForcedFunction);
+Metatables.ForceMethods = ForcedMetatable(ForcedMethod);
