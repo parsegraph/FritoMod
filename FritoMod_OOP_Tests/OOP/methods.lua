@@ -31,7 +31,7 @@ function OOPTests:TestInstanceOf()
 
 end; 
 
-function OOPTests:InstanceOfThrowsOnBadClass()
+function OOPTests:TestInstanceOfThrowsOnBadClass()
     local Base = OOP.Class();
     assert(OOP.InstanceOf(Base, Base:New()), "Base's instances are instances of Base");
     assert(OOP.InstanceOf(Base, OOP.Class(Base):New()), "Base's derived instances are instances of Base");
