@@ -317,11 +317,11 @@ function Mixins.Iteration(library, iteratorFunc)
     end;
 
     if library.RemoveValue == nil then
-        library.RemoveValue = Curry(library, "Remove");
+        library.RemoveValue = CurryNamedFunction(library, "Remove");
     end;
 
     if library.RemoveFirst == nil then
-        library.RemoveFirst = Curry(library, "Remove");
+        library.RemoveFirst = CurryNamedFunction(library, "Remove");
     end;
 
     if library.RemoveAll == nil then
@@ -536,7 +536,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end;
 
     if library.PairIterator == nil then
-        library.PairIterator = Curry(library, "Iterator");
+        library.PairIterator = CurryNamedFunction(library, "Iterator");
     end;
 
     -- Returns an iterator that returns decorated items from the specified iterable. The
@@ -564,7 +564,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.DecorateIterator == nil then
-        library.DecorateIterator = Curry(library, "DecoratePairIterator");
+        library.DecorateIterator = CurryNamedFunction(library, "DecoratePairIterator");
     end;
 
     -- Returns an iterator that only returns results that are approved by the specified
@@ -596,7 +596,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.FilteredIterator == nil then
-        library.FilteredIterator = Curry(library, "FilteredPairIterator");
+        library.FilteredIterator = CurryNamedFunction(library, "FilteredPairIterator");
     end;
 
     if library.ReverseIterator == nil then
@@ -669,7 +669,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.Each == nil then
-        library.Each = Curry(library, "EachValue");
+        library.Each = CurryNamedFunction(library, "EachValue");
     end;
 
     -- Iterates over all items in the specified iterable, collecting results
@@ -699,7 +699,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.Map == nil then
-        library.Map = Curry(library, "MapValues");
+        library.Map = CurryNamedFunction(library, "MapValues");
     end;
 
     if library.CallEach == nil then
@@ -769,7 +769,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.Filter == nil then
-        library.Filter = Curry(library, "FilterValue");
+        library.Filter = CurryNamedFunction(library, "FilterValue");
     end;
 
     if library.DefaultReduce == nil then
@@ -877,7 +877,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.Reduce == nil then
-        library.Reduce = Curry(library, "ReduceValues");
+        library.Reduce = CurryNamedFunction(library, "ReduceValues");
     end;
 
     if library.Clone == nil then
@@ -1019,7 +1019,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.Contains == nil then
-        library.Contains = Curry(library, "ContainsValue");
+        library.Contains = CurryNamedFunction(library, "ContainsValue");
     end;
 
     if library.KeyFor == nil then
@@ -1100,7 +1100,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end;
 
     if library.ContainsAll == nil then
-        library.ContainsAll = Curry(library, "ContainsAllValues");
+        library.ContainsAll = CurryNamedFunction(library, "ContainsAllValues");
     end;
 
     if library.ContainsAllKeys == nil then
@@ -1157,7 +1157,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.Union == nil then
-        library.Union = Curry(library, "UnionByValue");
+        library.Union = CurryNamedFunction(library, "UnionByValue");
     end;
 
     -- Returns a new iterable that contains only items that are contained in one of the iterables,
@@ -1194,7 +1194,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.Intersection == nil then
-        library.Intersection = Curry(library, "IntersectionByValue");
+        library.Intersection = CurryNamedFunction(library, "IntersectionByValue");
     end;
 
     -- Returns the number of times the specified item occurs in the specified iterable.
@@ -1225,7 +1225,7 @@ function Mixins.Iteration(library, iteratorFunc)
     end);
 
     if library.Frequency == nil then
-        library.Frequency = Curry(library, "ValueFrequency");
+        library.Frequency = CurryNamedFunction(library, "ValueFrequency");
     end;
 
 end;
