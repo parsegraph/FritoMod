@@ -1,4 +1,4 @@
-local Suite = ReflectiveTestSuite:New("FritoMod_Utilities.Metatables");
+local Suite = ReflectiveTestSuite:New("FritoMod_Functional.Metatables");
 
 function Suite:TestDefensive()
     local defensive = Metatables.Defensive();

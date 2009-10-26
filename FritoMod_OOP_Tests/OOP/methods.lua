@@ -1,4 +1,4 @@
-local OOPTests = ReflectiveTestSuite:New("FritoMod_OOP");
+local OOPTests = ReflectiveTestSuite:New("FritoMod_OOP.OOP");
 
 function OOPTests:TestIsClass()
     assert(OOP.IsClass(OOP.Class()), "class is a class");

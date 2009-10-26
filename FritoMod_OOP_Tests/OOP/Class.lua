@@ -1,4 +1,4 @@
-local ClassTests = ReflectiveTestSuite:New("com.dafrito.oop.Class");
+local ClassTests = ReflectiveTestSuite:New("FritoMod_OOP.OOP.Class");
 
 function ClassTests:TestSimpleClass()
     local Base = OOP.Class();
