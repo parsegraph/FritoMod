@@ -133,10 +133,15 @@ end;
 
 function Iterators.IterateVisibleFields(object)
     local key;
+    local maskedKeys = {};
     function DoIteration()
         local value;
-        key, value= next(object, key);
+        key, value = next(object, key);
         if key ~= nil then
+            if maskedKeys[key] then
+                return DoIteration();
+            end;
+            maskedKeys[key] = true;
             return key, value;
         end;
         key = nil;
