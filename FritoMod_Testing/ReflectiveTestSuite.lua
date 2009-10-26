@@ -8,17 +8,17 @@ function ReflectiveTestSuite:Constructor(name)
 
     function self:GetTests()
         local name = self:GetName();
-        local iterable = tests:Iterator();
-        return Iterators.DecorateIterator(Iterators.FilteredIterator(iterable, 
-            function(key, value)
-                return type(key) == "string" and key:sub(1, 4) == "Test";
-            end), function(key, value)
-                if name then
-                    return format("%s.%s", name, key), value;
-                end;
-                return key, value;
-            end
-        );
+        local iterator = tests:Iterator();
+        iterator = Iterators.FilteredIterator(iterator, function(key, value)
+           return type(key) == "string" and key:sub(1, 4) == "Test";
+        end);
+        iterator = Iterators.DecorateIterator(iterator, function(key, value)
+            if name then
+                return format("%s.%s", name, key), value;
+            end;
+            return key, value;
+        end);
+        return iterator;
     end;
 
     function self:__index(key)
