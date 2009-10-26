@@ -46,21 +46,40 @@ function Tests.Flag()
             isSet = false;
         end
     };
-    flag.Assert = ForcedMethod(flag, function(self, ...)
-        assert(self:IsSet(), ...);
+    flag.Assert = ForcedFunction(flag, function(...)
+        assert(flag.IsSet(), ...);
     end);
     return flag;
 end
 
 function Tests.Counter()
     local count = 0;
-    local counter = {
+    local counter = Metatables.ForceFunctions({
         Hit = function()
             count = count + 1;
         end,
         Count = function()
             return count;
         end,
-    };
+        Clear = function()
+            count = 0;
+        end,
+        AssertGreaterThan = function(num)
+            assert(count > num, format("Count was %d, but assertion requires strictly more than %d", count, num));
+        end,
+        AssertAtLeast = function(num)
+            assert(count >= num, format("Count was %d, but assertion requires at least %d", count, num));
+        end,
+        AssertEquals = function(num)
+            assert(count == num, format("Count was %d, but assertion requires exactly %d", count, num));
+        end,
+        AssertLessThan = function(num)
+            assert(count < num, format("Count was %d, but assertion requires strictly less than %d", count, num));
+        end,
+        AssertAtMost = function(num)
+            assert(count <= num, format("Count was %d, but assertion requires at most %d", count, num));
+        end,
+    });
+    counter.Assert = counter.AssertEquals;
     return counter;
 end;
