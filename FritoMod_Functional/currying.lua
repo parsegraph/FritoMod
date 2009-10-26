@@ -79,6 +79,38 @@ function CurryFunction(func, ...)
     end;
 end
 
+-- Curries a function that is on an object by name, but does not bind that function to that
+-- object.
+--
+-- Since this never caches the actual function, the returned function stays updated with the
+-- specified object.
+--
+-- obj
+--     the object that will contain the specified named function
+-- name
+--     the name of the function
+-- ...
+--     optional. Any arguments that should be passed, in order, before subsequent arguments, 
+--     the specified named function
+-- returns
+--     a callable that, when invoked, invokes the specified named function on the specified 
+--     object
+-- throws
+--     if obj or name is falsy
+--     if, when invoked, there is no value for the specified name on the specified object
+--     if, when invoked, the value at the specified name is not callable
+function CurryNamedFunction(obj, name, ...)
+    assert(obj, "obj is falsy");
+    assert(name, "name is falsy");
+    local args = {...};
+    return function(...)
+        local func = obj[name];
+        assert(func ~= nil, "Named function was not found. Name: " .. name);
+        assert(IsCallable(func), "Named function is not callable.");
+        return func(UnpackAll(args, {...}));
+    end;
+end;
+
 -- Curries the specified method using the specified arguments, returning a callable that
 -- represents the curried method. This method allows func to be a reference or a string that
 -- represents a method name.
