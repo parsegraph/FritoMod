@@ -15,7 +15,7 @@ end;
 function Suite:TestForcedFunctions()
     local foo = Metatables.ForceFunctions();
     function foo:Bar(first)
-        assert(first == 1, "Self argument was ignored");
+        Assert.Equals(1, first, "Self argument was ignored");
     end;
     foo:Bar(1);
     foo.Bar(1);
