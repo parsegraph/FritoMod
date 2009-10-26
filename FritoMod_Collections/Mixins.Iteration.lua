@@ -535,6 +535,70 @@ function Mixins.Iteration(library, iteratorFunc)
         end;
     end;
 
+    if library.PairIterator == nil then
+        library.PairIterator = Curry(library, "Iterator");
+    end;
+
+    -- Returns an iterator that returns decorated items from the specified iterable. The
+    -- items are decorated using the specified decorator function. This does not affect the 
+    -- underlying iterable.
+    --
+    -- This operation is applicable to keys, values, or pairs.
+    --
+    -- iterable
+    --     a value that is iterable using library.Iterator
+    -- decoratorFunc, ...
+    --     the function that modifies the given items, returning the modified items
+    -- returns
+    --     an iterator that behaves as specified above
+    MixinKeyValuePairOperation(library, "Decorate%sIterator", function(chooser, iterable, decoratorFunc, ...)
+        decoratorFunc = Curry(decoratorFunc, ...);
+        local iterator = library.Iterator(iterable);
+        return function()
+            local key, value = iterator();
+            if key == nil then
+                return nil;
+            end;
+            return decoratorFunc(chooser(key, value));
+        end;
+    end);
+
+    if library.DecorateIterator == nil then
+        library.DecorateIterator = Curry(library, "DecoratePairIterator");
+    end;
+
+    -- Returns an iterator that only returns results that are approved by the specified
+    -- filter function. This does not affect the underlying iterable.
+    --
+    -- This operation is applicable to keys, values, or pairs.
+    --
+    -- iterable
+    --     a value that is iterable using library.Iterator
+    -- filterFunc, ...
+    --     the function that evaluates the given items, returning true if they should be included
+    --     in the specified iterator
+    -- returns
+    --     an iterator that bheaves as specified above
+    MixinKeyValuePairOperation(library, "Filtered%sIterator", function(chooser, iterable, filterFunc, ...)
+        filterFunc = Curry(filterFunc, ...);
+        local iterator = library.Iterator(iterable);
+        function DoIteration()
+            local key, value = iterator();
+            if key == nil then
+                return nil;
+            end;
+            if filterFunc(chooser(key, value)) then
+                return chooser(key, value);
+            end;
+            return DoIteration();
+        end;
+        return DoIteration
+    end);
+
+    if library.FilteredIterator == nil then
+        library.FilteredIterator = Curry(library, "FilteredPairIterator");
+    end;
+
     if library.ReverseIterator == nil then
         -- Returns an iterator that iterates over the pairs in the specified iterable, in reverse order.
         --
