@@ -54,5 +54,19 @@ function Suite:TestVisibleFieldsWhenOverridden()
     assert(flag:IsSet(), "C was never iterated");
 end;
 
-
-
+function Suite:TestVisibleFieldsCombinedWithFilteredIterator()
+    local obj = {
+        a = true,
+        bb = true,
+        c = true,
+        dd = true,
+        e = false
+    };
+    local iterator = Iterators.IterateVisibleFields(obj);
+    iterator = Iterators.FilteredIterator(iterator, function(key, value)
+        return #key % 2 == 0;
+    end);
+    local counter = Tests.Counter();
+    Iterators.Each(iterator, counter.Hit);
+    counter.Assert(2);
+end;
