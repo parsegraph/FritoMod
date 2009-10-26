@@ -1,11 +1,11 @@
-local TestingTests = ReflectiveTestSuite:New("FritoMod_Testing.TestSuite");
+local Suite = ReflectiveTestSuite:New("FritoMod_Testing.TestSuite");
 
-function TestingTests:TestSuiteErrorsWhenNotOverridden()
+function Suite:TestThatTestSuiteErrorsWhenNotOverridden()
     local suite = TestSuite:New();
     Assert.Exception("Suite requires GetTests to be overridden", suite.Run, suite);
 end;
 
-function TestingTests:TestListenersDuringSuccess()
+function Suite:TestListenersDuringSuccess()
     local suite = TestSuite:New();
     function suite:GetTests()
         return {Noop};
@@ -24,7 +24,7 @@ function TestingTests:TestListenersDuringSuccess()
     Assert.Equals(expected, order, "One successful test emits proper events");
 end;
 
-function TestingTests:TestListenersDuringFailure()
+function Suite:TestListenersDuringFailure()
     local suite = TestSuite:New();
     function suite:GetTests()
         return {Operator.False};
@@ -43,7 +43,7 @@ function TestingTests:TestListenersDuringFailure()
     Assert.Equals(expected, order, "One failed test emits proper events");
 end;
 
-function TestingTests:TestSuiteIgnoresReturnedArguments()
+function Suite:TestThatTestSuiteIgnoresReturnedArguments()
     local suite = TestSuite:New();
     function suite:GetTests()
         return {
@@ -61,7 +61,7 @@ function TestingTests:TestSuiteIgnoresReturnedArguments()
     assert(false ~= suite:Run(), "Suite ignores returned arguments except false");
 end;
 
-function TestingTests:TestSuiteFailsOnFalse()
+function Suite:TestThatTestSuiteFailsOnFalse()
     local suite = TestSuite:New();
     function suite:GetTests()
         return {
@@ -73,7 +73,7 @@ function TestingTests:TestSuiteFailsOnFalse()
     Assert.Equals(false, suite:Run(), "Suite fails on false elements");
 end;
 
-function TestingTests:TestSuiteDefaultsToSucceeding()
+function Suite:TestThatTestSuiteDefaultsToSucceeding()
     local suite = TestSuite:New();
     function suite:GetTests()
         return {};
@@ -81,7 +81,7 @@ function TestingTests:TestSuiteDefaultsToSucceeding()
     assert(false ~= suite:Run(), "Suite defaults to success");
 end;
 
-function TestingTests:TestSuiteHandlesChildTests()
+function Suite:TestThatTestSuiteHandlesChildTests()
     local suite = TestSuite:New();
 
     function suite:GetTests()
