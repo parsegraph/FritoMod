@@ -52,7 +52,7 @@ function ListsTests:TestConsume()
 
 end;
 
-function ListsTests:Join()
+function ListsTests:TestJoin()
 
 end;
 
