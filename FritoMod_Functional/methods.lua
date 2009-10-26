@@ -201,3 +201,16 @@ function Undoable(func, ...)
     end;
 end;
 
+function HookGlobal(name, func, ...)
+    local func = Curry(func, ...);
+    local old = _G[name];
+    _G[name] = function(...)
+        func();
+        if old then
+            return old(...);
+        end;
+    end;
+    return function()
+        _G[name] = old;
+    end;
+end;
