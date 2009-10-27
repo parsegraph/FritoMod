@@ -1,14 +1,27 @@
 local Suite = ReflectiveTestSuite:New("FritoMod_Functional.currying");
 
-function Suite:TestCurryAcceptsNilValues()
-    local function Sum(a,b,c,d,e)
-       a = a or 0;
-       b = b or 0;
-       c = c or 0;
-       return a + b + c;
+local function Sum(...)
+    local sum = 0;
+    for i=1, select("#", ...) do
+        sum = sum + (select(i, ...) or 0);
     end;
-    local curried = Curry(Sum, 1, nil, 1);
-    Assert.Equals(2, curried());
+    return sum;
+end;
+
+function Suite:TestCurryAcceptsNilValues()
+    Assert.Equals(4, Curry(Sum, 1, 1, 1, 1)(), "Four one's");
+    Assert.Equals(3, Curry(Sum, nil, 1, 1, 1)(), "X111 Test");
+    Assert.Equals(3, Curry(Sum, 1, nil, 1, 1)(), "1X11 Test");
+    Assert.Equals(3, Curry(Sum, 1, 1, nil, 1)(), "11X1 Test");
+    Assert.Equals(3, Curry(Sum, 1, 1, 1, nil)(), "111X Test");
+    Assert.Equals(2, Curry(Sum, nil, 1, 1, nil)(), "X11 Test");
+    Assert.Equals(1, Curry(Sum, nil, 1)(), "X1 Test");
+    Assert.Equals(2, Curry(Sum, 1, nil, 1)(), "1X1 Test");
+    Assert.Equals(1, Curry(Sum, nil, nil, 1)(), "XX1 Test");
+end;
+
+function Suite:TestCurryAcceptsNilValuesWhenTheRealValuesAreFarApart()
+    Assert.Equals(2, Curry(Sum, nil,1,nil,nil,nil,nil,nil,nil,nil,1)(), "Boss Nil-Value Curry Test");
 end;
 
 function Suite:TestForcedFunctionOnNoop()
