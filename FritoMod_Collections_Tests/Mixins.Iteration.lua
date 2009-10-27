@@ -3,12 +3,14 @@ if Mixins == nil then
 end;
 
 function Mixins.IterationTests(Suite, library)
-    local function NewIterable()
-        local iterable = library.New();
-        library.Insert(iterable, "A");
-        library.Insert(iterable, "BB");
-        library.Insert(iterable, "CCC");
-        return iterable;
+    if Suite.NewIterable == nil then
+        function Suite:NewIterable()
+            local iterable = library.New();
+            library.Insert(iterable, "A");
+            library.Insert(iterable, "BB");
+            library.Insert(iterable, "CCC");
+            return iterable;
+        end;
     end;
 
     function Check(iterable, key, value)
@@ -17,7 +19,7 @@ function Mixins.IterationTests(Suite, library)
     end;
 
     function Suite:TestBidiIterator()
-        local iterable = NewIterable();
+        local iterable = self:NewIterable();
         local counter = Tests.Counter();
         for key, value in library.BidiPairIterator(iterable) do
             counter.Hit();
@@ -27,7 +29,7 @@ function Mixins.IterationTests(Suite, library)
     end;
 
     function Suite:TestBidiIteratorNext()
-        local iterable = NewIterable();
+        local iterable = self:NewIterable();
         local iterator = library.BidiPairIterator(iterable);
         local counter = Tests.Counter();
         while true do
@@ -42,7 +44,7 @@ function Mixins.IterationTests(Suite, library)
     end;
 
     function Suite:TestBidiIteratorPrevious()
-        local iterable = NewIterable();
+        local iterable = self:NewIterable();
         local counter = Tests.Counter();
         local iterator = library.BidiPairIterator(iterable);
         -- Seek the iterator to the end
@@ -59,7 +61,7 @@ function Mixins.IterationTests(Suite, library)
     end;
 
     function Suite:TestBidiIteratorStress()
-        local iterable = NewIterable();
+        local iterable = self:NewIterable();
         local iterator = library.BidiPairIterator(iterable);
         local stride = 0;
         while stride <= library.Size(iterable) do
