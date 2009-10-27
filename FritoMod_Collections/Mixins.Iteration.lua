@@ -29,13 +29,11 @@ end;
 --
 -- library
 --     a table that provides an Iterator function
--- iteratorFunc
---     optional. a function that creates an iterator usable for this library
 -- returns
 --     library
 -- see
 --     Mixins.MutableIteration for more iteration methods if your iterables can be modified
-function Mixins.Iteration(library, iteratorFunc)
+function Mixins.Iteration(library)
 
     local function NewIterable()
         if rawget(library, "New") ~= nil then
@@ -65,32 +63,27 @@ function Mixins.Iteration(library, iteratorFunc)
         return CurryNamedFunction(library, "Remove", iterable, oldValue);
     end;
 
+    -- Returns an iterator that iterates over the pairs in iterable.
+    --
+    -- iterable
+    --     a value that is iterable using this function
+    -- returns
+    --     a function that returns a pair in iterable each time it is called. When
+    --     it exhausts the pairs in iterable, it permanentlys returns nil.
     if library.Iterator == nil then
-        -- Returns an iterator that iterates over the pairs in iterable.
-        --
-        -- iterable
-        --     a value that is iterable using this function
-        -- returns
-        --     a function that returns a pair in iterable each time it is called. When
-        --     it exhausts the pairs in iterable, it permanentlys returns nil.
-        library.Iterator = iteratorFunc;
+        -- This function must be explicitly implemented by clients.
     end;
 
-    assert(IsCallable(library.Iterator), "Library does not implement Iterator");
-
+    -- Retrieves the value for the specified key in the specified iterable.
+    --
+    -- This is an optional operation.
+    --
+    -- iterable
+    --     an iterable usable by this library
+    -- key
+    --     the key that will be searched for in this library
     if library.Get == nil then
-        -- Retrieves the value for the specified key in the specified iterable.
-        --
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library
-        -- key
-        --     the key that will be searched for in this library
-        function library.Get(iterable, key)
-            assert(type(iterable) == "table", "Iterable is not a table");
-            return iterable[key];
-        end;
+        -- This function must be explicitly implemented by clients.
     end;
 
     -- Returns whether the two iterables contain the same elements, in the same order.

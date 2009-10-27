@@ -2,11 +2,13 @@ Iterators = {};
 local Iterators = Iterators;
 
 -- Mixes in iteration functionality for iterators
-Mixins.Iteration(Iterators, function(iterator)
+Mixins.Iteration(Iterators);
+Metatables.Defensive(Iterators);
+
+function Iterators.Iterator(iterator)
     assert(IsCallable(iterator), "Iterator is not callable. Type: " .. type(iterator));
     return iterator;
-end);
-Metatables.Defensive(Iterators);
+end;
 
 function Iterators.Iterate(value, ...)
     assert(value, "value is falsy");
