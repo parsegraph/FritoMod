@@ -641,6 +641,39 @@ function Mixins.Iteration(library)
         library.Contains = CurryNamedFunction(library, "ContainsValue");
     end;
 
+    if nil == rawget(library, "ContainsPair") then
+        -- Returns whether the specified iterable contains the specified pair.
+        --
+        -- iterable
+        --     a value that is iterable using library.Iterator
+        -- targetKey
+        --     the searched key
+        -- targetValue
+        --     the corresponding value
+        -- comparatorFunc, ...
+        --     optional. the function that performs the search, with the signature 
+        --     comparatorFunc(candidateKey, candidateValue, targetKey, targetValue). 
+        --     It should return a truthy value if, and only if, both the keys and the values
+        --     match. If the comparator returns a numeric value, then only zero indicates 
+        --     a match.
+        -- returns
+        --     true if the specified iterable contains the specified pair, according to the
+        --     specified comparator
+        function library.ContainsPair(iterable, targetKey, targetValue, comparatorFunc, ...)
+            if comparatorFunc == nil and select("#", ...) == 0 then
+                comparatorFunc = function(candidateKey, candidateValue, targetKey, targetValue)
+                    return candidateKey == targetKey and candidateValue == targetValue;
+                end;
+            end;
+            for candidateKey, candidateValue in library.Iterator(iterable) do
+                if IsEqual(comparatorFunc(candidateKey, candidateValue, targetKey, targetValue)) then
+                    return true;
+                end;
+            end;
+            return false;
+        end;
+    end;
+
     if library.KeyFor == nil then
         -- Returns the first key found for the specified value. Comparison is defined by the 
         -- specified comparatorFunc.
