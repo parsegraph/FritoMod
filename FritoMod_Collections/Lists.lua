@@ -2,7 +2,7 @@ Lists = {};
 local Lists = Lists;
 
 -- Mixes in iteration functionality for lists.
-Mixins.Iteration(Lists, function(iterable)
+Mixins.MutableIteration(Lists, function(iterable)
     assert(type(iterable) == "table", "iterable is not a table");
     local index = 0;
     return function()

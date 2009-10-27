@@ -2,7 +2,7 @@ Tables = {}
 local Tables = Tables;
 
 -- Mixes in iteration functionality for tables
-Mixins.Iteration(Tables, function(iterable)
+Mixins.MutableIteration(Tables, function(iterable)
     assert(type(iterable) == "table", "iterable is not a table. Iterable: " .. tostring(iterable));
     local key = nil;
     return function()
@@ -11,7 +11,7 @@ Mixins.Iteration(Tables, function(iterable)
         return key, value;
     end;
 end);
-Metatables.Defensive(Lists);Metatables.Defensive(Tables);
+Metatables.Defensive(Tables);
 
 function Tables.Delete(targetTable, key)
     local oldValue = targetTable[key];
