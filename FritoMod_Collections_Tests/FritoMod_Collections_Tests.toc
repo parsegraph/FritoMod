@@ -6,5 +6,7 @@
 
 Metatables.lua
 Mixins.Iteration.lua
-Lists.lua
 Iterators.lua
+Lists.lua
+Tables.lua
+
