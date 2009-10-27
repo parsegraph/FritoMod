@@ -16,7 +16,7 @@ function Suite:TestForcedFunction()
     foo:bar(1);
 end;
 
-function Suite:TestForcedMehodOnNoop()
+function Suite:TestForcedMethodOnNoop()
     local foo = {};
     foo.bar = ForcedMethod(foo, function(self, value)
         Assert.Equals(foo, self, "Self argument was passed appropriately");
@@ -25,7 +25,7 @@ function Suite:TestForcedMehodOnNoop()
     foo:bar(1);
 end;
 
-function Suite:TestForcedFunction()
+function Suite:TestForcedMethod()
     local foo = {};
     foo.bar = ForcedMethod(foo, function(self, value)
         Assert.Equals(foo, self, "Self argument was passed appropriately");
