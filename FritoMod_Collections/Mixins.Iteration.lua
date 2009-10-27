@@ -18,22 +18,52 @@ end;
 -- Mixes in a large suite of iteration functions to the specified library. This
 -- mixin will not override any functions that are already defined in library.
 --
--- The library should provide a small set of core functions, described in the function
--- below. These provide the bare minimum of abstract functionality. If these functions
--- are implemented properly, you are guaranteed to benefit from the full suite of
--- functions provided here.
+-- The library should provide, at minimum, an Iterator function that returns a function.
+-- This function should provide single-use iteration over a given iterable. All other
+-- methods are guaranteed to work provided the Iterator function works.
 --
--- Users of this mixin are encouraged to provide more efficient implementations of these
--- methods, as long as they adhere to the contracts defined here. This function does the
--- grunt work of ensuring subclass methods are preferred over the defaults given here.
+-- This mixin provides suitable, working implementations of every method. While these are
+-- sufficient for immediate use, many iterables have characteristics that enable much more
+-- efficient operations than those defined here. This mixin makes a best-effort to prefer
+-- inherited methods over the provided defaults.
 --
 -- library
---     a table that provides an Iterator method, as described above
+--     a table that provides an Iterator function
 -- iteratorFunc
---     a function that creates an iterator usable for this library
+--     optional. a function that creates an iterator usable for this library
 -- returns
 --     library
+-- see
+--     Mixins.MutableIteration for more iteration methods if your iterables can be modified
 function Mixins.Iteration(library, iteratorFunc)
+
+    local function NewIterable()
+        if library.New ~= nil then
+            return library.New();
+        end;
+        return {};
+    end;
+
+    local function InsertInto(iterable, key, value)
+        if library.InsertPair ~= nil then
+            return library.InsertPair(iterable, key, value);
+        end;
+        if type(key) ~= "number" then
+            if IsCallable(library.Set) then
+                return library.Set(iterable, key, value);
+            end;
+            assert(type(iterable) == "table", "Iterable is not a table");
+            local oldValue = iterable[key];
+            iterable[key] = value;
+            return CurryNamedFunction(library, "Delete", iterable, key);
+        end;
+        if library.Insert ~= nil then
+            return library.Insert(iterable, key, value);
+        end;
+        assert(type(iterable) == "table", "Iterable is not a table");
+        table.insert(iterable, value);
+        return CurryNamedFunction(library, "Remove", iterable, oldValue);
+    end;
 
     if library.Iterator == nil then
         -- Returns an iterator that iterates over the pairs in iterable.
@@ -48,68 +78,10 @@ function Mixins.Iteration(library, iteratorFunc)
 
     assert(IsCallable(library.Iterator), "Library does not implement Iterator");
 
-    if library.New == nil then
-        -- Returns a new, empty iterable that is usable by this library.
-        --
-        -- This is an optional operation.
-        --
-        -- returns
-        --     a new iterable usable by this library
-        -- throws
-        --     if this library does not support this operation
-        function library.New()
-            return {};
-        end;
-    end;
-
-    if library.Set == nil then
-        -- Sets the specified pair to the specified iterable, overriding any existing
-        -- values for the specified key.
-        --
-        -- This function may default to using library.Insert if that function is more
-        -- appropriate for the specified library's iterable type. For example, lists
-        -- may ignore the key provided by this function.
-        --
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library
-        -- key
-        --     the key that will be inserted into this iterable
-        -- value
-        --     the value that will be inserted into this iterable
-        -- returns
-        --     the old value
-        -- throws
-        --     if this library does not support this operation
-        function library.Set(iterable, key, value)
-            assert(type(iterable) == "table", "Iterable is not a table");
-            local oldValue = iterable[key];
-            iterable[key] = value;
-            return oldValue;
-        end;
-    end;
-
-    if library.Delete == nil then
-        -- Deletes the specified key from the specified iterable.
-        --
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library
-        -- key
-        --     the key that will be deleted from this iterable
-        -- returns
-        --     the value that was at the specified key
-        -- throws
-        --     if this library does not support this operation
-        function library.Delete(iterable, key)
-            return library.Set(iterable, key, nil);
-        end;
-    end;
-
     if library.Get == nil then
         -- Retrieves the value for the specified key in the specified iterable.
+        --
+        -- This is an optional operation.
         --
         -- iterable
         --     an iterable usable by this library
@@ -118,293 +90,6 @@ function Mixins.Iteration(library, iteratorFunc)
         function library.Get(iterable, key)
             assert(type(iterable) == "table", "Iterable is not a table");
             return iterable[key];
-        end;
-    end;
-
-    if library.Insert == nil then
-        -- Inserts the specified value to the specified iterable.
-        --
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library
-        -- value
-        --     the value that will be inserted into this library
-        -- returns
-        --     a function that, when invoked, removes the specified value
-        -- throws
-        --     if this library does not support this operation
-        function library.Insert(iterable, value)
-            assert(type(iterable) == "table", "Iterable is not a table");
-            table.insert(iterable, value);
-            return Curry(library.Remove, iterable, value);
-        end;
-    end;
-
-    if library.InsertAll == nil then
-        -- Inserts all specified values into the specified iterable.
-        --
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library
-        -- ...
-        --     the value that will be inserted into this library
-        -- returns
-        --     a function that, when invoked, removes the specified values
-        -- throws
-        --     if this library does not support this operation
-        function library.InsertAll(iterable, ...)
-            local removers = {};
-            for i=1, select("#", ...) do
-                local value = select(i, ...);
-                table.insert(removers, library.Insert(iterable, value));
-            end;
-            return function()
-                for i=1, #removers do
-                    removers[i]();
-                end;
-                removers = {};
-            end;
-        end;
-    end;
-
-    if library.InsertAt == nil then
-        -- Inserts the specified value into the specified iterable.
-        --
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library
-        -- index
-        --     the location of the inserted item
-        -- value
-        --     the value that will be inserted into this iterable
-        -- returns
-        --     a function that, when invoked, removes the specified value
-        -- throws
-        --     if this library does not support this operation
-        function library.InsertAt(list, index, value)
-            assert(type(index) == "number", "index is not a number. Type: " .. type(index));
-            table.insert(list, index, value);
-            return Curry(library.Remove, iterable, value);
-        end;
-    end;
-
-    if library.InsertAllAt == nil then
-        -- Inserts all of the specified values into the specified iterable.
-        --
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library
-        -- index
-        --     the starting location where items are inserted
-        -- ...
-        --     the values that will be inserted into this iterable
-        -- returns
-        --     a function that, when invoked, removes all specified values
-        -- throws
-        --     if this library does not support this operation
-        function library.InsertAllAt(list, index, ...)
-            assert(type(index) == "number", "index is not a number. Type: " .. type(index));
-            local removers = {};
-            for i=1, select("#", ...) do
-                local value = select(i, ...);
-                table.insert(removers, index, library.Insert(iterable, value));
-                index = index + 1;
-            end;
-            return function()
-                for i=1, #removers do
-                    removers[i]();
-                end;
-                removers = {};
-            end;
-        end;
-    end;
-
-    if library.Remove == nil then
-        -- Removes the first matching value from the specified iterable, according to the specified
-        -- comparator and specified target value.
-        -- 
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library.
-        -- targetValue
-        --     the searched value
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
-        -- returns
-        --     the removed key, or nil if no value was removed
-        function library.Remove(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-            for key, candidate in library.Iterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetValue)) then
-                    library.Delete(iterable, key);
-                    return key;
-                end;
-            end;
-        end;
-    end;
-
-    if library.RemoveValue == nil then
-        library.RemoveValue = CurryNamedFunction(library, "Remove");
-    end;
-
-    if library.RemoveFirst == nil then
-        library.RemoveFirst = CurryNamedFunction(library, "Remove");
-    end;
-
-    if library.RemoveAll == nil then
-        -- Removes all matching values from the specified iterable, according to the specified
-        -- comparator and specified value.
-        --
-        -- This function does not modify the iterable until every item has been iterated. While
-        -- this minimizes the chance of corrupted iteration, it is also potentially more 
-        -- inefficient than a safe, iterable-specific solution.
-        -- 
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library.
-        -- targetValue
-        --     the searched value
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
-        -- returns
-        --     the number of removed elements
-        function library.RemoveAll(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-            local removedKeys = {};
-            for key, candidate in library.Iterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetValue)) then
-                    table.insert(removedKeys, key);
-                end;
-            end;
-            for i=#removedKeys, 1, -1 do
-                library.Delete(iterable, removedKeys[i]);
-            end;
-            return #removedKeys;
-        end;
-    end;
-
-    if library.RemoveLast == nil then
-        -- Removes the last matching value from the specified iterable, according to the specified
-        -- comparator and specified value.
-        -- 
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library.
-        -- targetValue
-        --     the searched value
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
-        -- returns
-        --     the removed key, or nil if no value was removed
-        function library.RemoveLast(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-            for key, candidate in library.ReverseIterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetValue)) then
-                    library.Delete(iterable, key);
-                    return key;
-                end;
-            end;
-        end;
-    end;
-
-    if library.RemoveAt == nil then
-        -- Removes the first matching key from the specified iterable, according to the specified
-        -- comparator and specified target key.
-        -- 
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library.
-        -- targetKey
-        --     the searched key
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
-        -- returns
-        --     the removed value, or nil if no key was removed
-        function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-            for candidate, value in library.Iterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetKey)) then
-                    library.Delete(iterable, key);
-                    return value;
-                end;
-            end;
-        end;
-    end;
-
-    if library.RemoveAllAt == nil then
-        -- Removes all matching keys from the specified iterable, according to the specified
-        -- comparator and specified target key.
-        --
-        -- This function does not modify the iterable until every item has been iterated. While
-        -- this minimizes the chance of corrupted iteration, it is also potentially more 
-        -- inefficient than a safe, iterable-specific solution.
-        -- 
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     an iterable usable by this library.
-        -- targetKey
-        --     the searched key
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
-        -- returns
-        --     the number of removed elements
-        function library.RemoveAllAt(iterable, targetKey, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-            local removedKeys = {};
-            for candidate, value in library.Iterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetKey)) then
-                    table.insert(removedKeys, key);
-                end;
-            end;
-            for i=#removedKeys, 1, -1 do
-                library.Delete(iterable, removedKeys[i]);
-            end;
-            return #removedKeys;
-        end;
-    end;
-
-    if library.RemoveLastAt == nil then
-        -- Removes the last matching key from the specified iterable, according to the specified
-        -- comparator and specified target key.
-        -- 
-        -- iterable
-        --     an iterable usable by this library.
-        -- targetKey
-        --     the searched key
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
-        -- returns
-        --     the removed value, or nil if no key was removed
-        function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-            for candidate, value in library.ReverseIterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetKey)) then
-                    library.Delete(iterable, key);
-                    return value;
-                end;
-            end;
-        end;
-    end;
-
-    if library.Clear == nil then
-        -- Removes every element from the specified iterable.
-        --
-        -- iterable
-        --     the iterable that is modified by this operation
-        function library.Clear(iterable)
-            local keys = library.Keys(iterable);
-            for i=#keys, 1, -1 do
-                library.Delete(iterable, keys[i]);
-            end;
         end;
     end;
 
@@ -469,6 +154,33 @@ function Mixins.Iteration(library, iteratorFunc)
 
     if library.PairIterator == nil then
         library.PairIterator = CurryNamedFunction(library, "Iterator");
+    end;
+
+    MixinKeyValuePairOperation(library, "Bidi%sIterator", function(chooser, iterable)
+        local keys = library.Keys(iterable);
+        local index = 0;
+        function Get()
+            local key = keys[index];
+            return chooser(key, library.Get(iterable, key));
+        end;
+        local iterator = {
+            Next = function()
+                index = index + 1;
+                return Get();
+            end,
+            Previous = function()
+                index = index - 1;
+                return Get();
+            end
+        };
+        setmetatable(iterator, {
+            __call = iterator.Next
+        });
+        return iterator;
+    end);
+
+    if library.BidiIterator == nil then
+        library.BidiIterator = CurryNamedFunction(library, "BidiPairIterator");
     end;
 
     -- Returns an iterator that returns decorated items from the specified iterable. The
@@ -607,8 +319,8 @@ function Mixins.Iteration(library, iteratorFunc)
     -- Iterates over all items in the specified iterable, collecting results
     -- in a returned object.
     --
-    -- Values are collected in an iterable, as created by library.New. Values
-    -- are added using library.Insert.
+    -- This operation creates and modifies a iterable. If the underlying library does not
+    -- support mutable iterables, then a table is created and returned.
     --
     -- This operation is applicable for either keys, values, or pairs.
     --
@@ -620,11 +332,11 @@ function Mixins.Iteration(library, iteratorFunc)
     --     a iterable of results from the specified func
     Mixins.KeyValuePairOperation(library, "Map%ss", function(chooser, iterable, func, ...)
         func = Curry(func, ...);
-        local results = library.New();
+        local results = NewIterable();
         for key, value in library.Iterator(iterable) do
             local result = func(chooser(key, value));
             if result ~= nil then
-                library.Insert(results, result);
+                InsertInto(results, key, result);
             end;
         end;
         return results;
@@ -674,8 +386,8 @@ function Mixins.Iteration(library, iteratorFunc)
     -- Returns a subset of the specified iterable. Pairs are included if the specified
     -- func evaluates to true for the given item.
     --
-    -- Values are collected in an iterable, as created by library.New. Values
-    -- are set using library.Set.
+    -- This operation creates and modifies a iterable. If the underlying library does not
+    -- support mutable iterables, then a table is created and returned.
     --
     -- The subset should be in a form most appropriate for the library's iterable type. For 
     -- example, a library that handles lists should not leave gaps between elements.
@@ -690,11 +402,11 @@ function Mixins.Iteration(library, iteratorFunc)
     -- returns
         --     an iterable containing elements that evaluated to true, according to the specified func
     Mixins.KeyValuePairOperation(library, "Filter%ss", function(chooser, iterable, func, ...)
-        local filtered = library.New();
+        local filtered = NewIterable();
         func = Curry(func, ...);
         for key, value in library.Iterator(iterable) do
             if func(chooser(key, value)) then
-                library.Set(filtered, key, value);
+                InsertInto(filtered, key, value);
             end;
         end;
         return filtered;
@@ -812,22 +524,6 @@ function Mixins.Iteration(library, iteratorFunc)
         library.Reduce = CurryNamedFunction(library, "ReduceValues");
     end;
 
-    if library.Clone == nil then
-        -- Returns an iterable that is the clone of the specified iterable.
-        --
-        -- iterable
-        --     a value that is iterable using library.Iterator
-        -- returns
-        --     a clone of the specified iterable
-        function library.Clone(iterable)
-            local cloned = library.New();
-            for key, value in library.Iterator(iterable) do
-                library.Set(cloned, key, value);
-            end;
-            return cloned;
-        end;
-    end;
-
     if library.Keys == nil then
         -- Returns a list containing all keys in the specified iterable.
         --
@@ -883,45 +579,6 @@ function Mixins.Iteration(library, iteratorFunc)
             local iterator = library.Iterator(iterable);
             local key, value = iterator();
             return key == nil and value == nil;
-        end;
-    end;
-
-    if library.Update == nil then
-        -- Updates targetIterable such that updatingIterable is copied over it.
-        --
-        -- targetIterable
-        --     the target iterable that is affected by this operation
-        -- updatingIterable
-        --     the unmodified iterable that is the source of updates to targetIterable
-        -- func, ...
-        --     the function that performs the update.
-        function library.Update(targetIterable, updatingIterable, func, ...)
-            if not func and select("#", ...) == 0 then
-                func = library.Set;
-            end;
-            for key, value in library.Iterator(updatingIterable) do
-                func(targetIterable, key, value);
-            end;
-        end;
-    end;
-
-    if library.Reverse == nil then
-        -- Returns a new iterable that is the reverse of the specified iterable
-        --
-        -- This is an optional operation.
-        --
-        -- iterable
-        --     the iterable that is reversed
-        -- returns
-        --     a new iterable that contains every element
-        -- throws
-        --     if this library does not support this operation
-        function library.Reverse(iterable)
-            local reversed = library.New();
-            for value in library.ReverseValueIterator(iterable) do
-                library.Set(reversed, key, value);
-            end;
-            return reversed;
         end;
     end;
 
@@ -1064,9 +721,10 @@ function Mixins.Iteration(library, iteratorFunc)
     -- Returns a new iterable that contains any items that are contained in both iterable
     -- and otherIterable, according to the specified comparatorFunc.
     --
-    -- This operation is applicable for keys, values, or pairs.
+    -- This operation creates and modifies a iterable. If the underlying library does not
+    -- support mutable iterables, then a table is created and returned.
     --
-    -- This is an optional operation.
+    -- This operation is applicable for keys, values, or pairs.
     --
     -- iterable, otherIterable
     --     the iterables that are used for comparison
@@ -1079,11 +737,11 @@ function Mixins.Iteration(library, iteratorFunc)
     --     a new iterable containing all items contained in both iterables
     Mixins.KeyValuePairOperationByName(library, "UnionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
         comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-        local union = library.New();
+        local union = NewIterable();
         local contains = library["Contains" .. name];
         for key, value in library.Iterator(iterable) do
             if contains(otherIterable, comparatorFunc) then
-                library.Set(union, key, value);
+                InsertInto(union, key, value);
             end;
         end;
         return union;
@@ -1098,8 +756,6 @@ function Mixins.Iteration(library, iteratorFunc)
     --
     -- This operation is applicable for keys, values, or pairs.
     --
-    -- This is an optional operation.
-    --
     -- iterable, otherIterable
     --     the iterables that are used for comparison
     -- comparatorFunc, ...
@@ -1111,16 +767,16 @@ function Mixins.Iteration(library, iteratorFunc)
     --     a new iterable containing all items contained in only one of the iterables
     Mixins.KeyValuePairOperationByName(library, "IntersectionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
         comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
-        local difference = library.New();
+        local intersection = NewIterable();
         local contains = library["Contains" .. name];
         for key, value in library.Iterator(iterable) do
             if not contains(otherIterable, comparatorFunc) then
-                library.Set(union, key, value);
+                InsertInto(intersection, key, value);
             end;
         end;
         for key, value in library.Iterator(otherIterable) do
             if not contains(iterable, comparatorFunc) then
-                library.Set(union, key, value);
+                InsertInto(intersection, key, value);
             end;
         end;
         return union;
