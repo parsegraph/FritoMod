@@ -150,20 +150,56 @@ function Mixins.Iteration(library)
     end;
 
     Mixins.KeyValuePairOperation(library, "Bidi%sIterator", function(chooser, iterable)
-        local keys = library.Keys(iterable);
         local index = 0;
-        function Get()
-            local key = keys[index];
-            return chooser(key, library.Get(iterable, key));
+        local Get;
+        if rawget(library, "Get") ~= nil then
+            local keys = library.Keys(iterable);
+            Get = function()
+                local key = keys[index];
+                return chooser(key, library.Get(iterable, key));
+            end;
+        else
+            local iterator = library.Iterator(iterable);
+            local copy = {};
+            local keys = {};
+            Get = function()
+                local key, value;
+                if index > #keys then
+                    key, value = iterator();
+                    if key == nil then
+                        return;
+                    end;
+                    table.insert(keys, key);
+                    copy[key] = value;
+                    return key, value;
+                end;
+                if index < 0 then
+                    index = 0;
+                    return;
+                end;
+                return keys[index], copy[keys[index]];
+            end;
         end;
+        local reachedEnd = false;
         local iterator = {
             Next = function()
+                if reachedEnd and index > #keys then
+                    return;
+                end;
                 index = index + 1;
-                return Get();
+                local key, value = Get();
+                if key == nil then
+                    reachedEnd = false;
+                    return;
+                end;
+                return chooser(key, value);
             end,
             Previous = function()
+                if index == 0 then
+                    return;
+                end;
                 index = index - 1;
-                return Get();
+                return chooser(Get());
             end
         };
         setmetatable(iterator, {
