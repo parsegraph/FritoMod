@@ -280,16 +280,20 @@ function Mixins.Iteration(library)
         -- returns
         --     an iterator that returns each pair in iterable, in reverse
         function library.ReverseIterator(iterable)
+            local copy = {};
             local keys = {};
-            library.EachKey(iterable, table.insert, keys, 1);
+            library.Each(copy, function(key, value)
+                copy[key] = value;
+                table.insert(keys, 1, key);
+            end);
             local index = 0;
             return function()
-                index = index + 1;
-                if index > #keys then
-                    return nil, nil;
+                if index == #keys then
+                    return;
                 end;
+                index = index + 1;
                 local key = keys[index];
-                return key, library.Get(iterable, key);
+                return key, copy[key];
             end;
         end;
     end;
