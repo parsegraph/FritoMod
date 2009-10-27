@@ -61,17 +61,19 @@ function Mixins.IterationTests(Suite, library)
     end;
 
     function Suite:TestBidiIteratorStress()
-        local iterable = self:NewIterable();
+        local iterable = Suite:NewIterable();
         local iterator = library.BidiPairIterator(iterable);
         local stride = 0;
-        while stride <= library.Size(iterable) do
+        while stride < library.Size(iterable) do
             stride = stride + 1;
             for i=1, stride do
                 Check(iterable, iterator:Next());
             end;
-            for i=stride, 1, -1 do
+            for i=stride, 2, -1 do
                 Check(iterable, iterator:Previous());
             end;
+            -- One extra for the nil value.
+            iterator:Previous();
         end;
     end;
 end;
