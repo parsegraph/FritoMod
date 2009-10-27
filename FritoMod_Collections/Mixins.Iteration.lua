@@ -15,74 +15,6 @@ local function IsEqual(value)
     return value and (type(value) ~= "number" or value == 0);
 end;
 
--- Adds an operation for keys and values to the specified library. The operation
--- is given the appropriate iterator function for the item type.
---
--- library
---     the library that is the target of this mixin
--- name
---     the name format. "Key", or "Value" will be interpolated
--- operation
---     the function that is mixed in. It should expect a iterator function for its first argument
-local function MixinKeyValueOperation(library, name, operation)
-    if library[format(name, "Key")] == nil then
-        library[format(name, "Key")] = Curry(operation, library.KeyIterator);
-    end;
-    if library[format(name, "Value")] == nil then
-        library[format(name, "Value")] = Curry(operation, library.ValueIterator);
-    end;
-end;
-
--- Adds an operation for keys, values, and pairs to the specified library. The operation
--- is given a chooser function that selects the appropriate item for the item type.
---
--- library
---     the library that is the target of this mixin
--- name
---     the name format. "Pair", "Key", or "Value" will be interpolated
--- operation
---     the function that is mixed in. It should expect a chooser function for the first argument.
---     The chooser has the signature chooser(key, value) and returns the appropriate item for
---     the item type.
-local function MixinKeyValuePairOperation(library, name, operation)
-    if library[format(name, "Pair")] == nil then
-        library[format(name, "Pair")] = Curry(operation, function(key, value)
-            return key, value;
-        end);
-    end;
-    if library[format(name, "Key")] == nil then
-        library[format(name, "Key")] = Curry(operation, function(key, value)
-            return key;
-        end);
-    end;
-    if library[format(name, "Value")] == nil then
-        library[format(name, "Value")] = Curry(operation, function(key, value)
-            return value;
-        end);
-    end;
-end;
-
--- Adds an operation for keys, values, and pairs to the specified library.
---
--- library
---     the library that is the target of this mixin
--- name
---     the name format. "Pair", "Key", or "Value" will be interpolated
--- operation
---     the function that is mixed in. It should expect the item type as the first
---     argument.
-local function MixinKeyValuePairOperationByName(library, name, operation)
-    if library[format(name, "Pair")] == nil then
-        library[format(name, "Pair")] = Curry(operation, "Pair");
-    end;
-    if library[format(name, "Key")] == nil then
-        library[format(name, "Key")] = Curry(operation, "Key");
-    end;
-    if library[format(name, "Value")] == nil then
-        library[format(name, "Value")] = Curry(operation, "Value");
-    end;
-end;
-
 -- Mixes in a large suite of iteration functions to the specified library. This
 -- mixin will not override any functions that are already defined in library.
 --
@@ -488,7 +420,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     It should return a truthy value if the two values match. If it returns a numeric 
     --     value, then only zero indicates a match.
     -- 
-    MixinKeyValuePairOperation(library, "%ssEqual", function(chooser, iterable, otherIterable, comparatorFunc, ...)
+    Mixins.KeyValuePairOperation(library, "%ssEqual", function(chooser, iterable, otherIterable, comparatorFunc, ...)
         local iterator = library.Iterator(iterable);
         local otherIterator = library.Iterator(otherIterator);
         local key, value = iterator();
@@ -551,7 +483,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     the function that modifies the given items, returning the modified items
     -- returns
     --     an iterator that behaves as specified above
-    MixinKeyValuePairOperation(library, "Decorate%sIterator", function(chooser, iterable, decoratorFunc, ...)
+    Mixins.KeyValuePairOperation(library, "Decorate%sIterator", function(chooser, iterable, decoratorFunc, ...)
         decoratorFunc = Curry(decoratorFunc, ...);
         local iterator = library.Iterator(iterable);
         return function()
@@ -579,7 +511,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     in the specified iterator
     -- returns
     --     an iterator that behaves as specified above
-    MixinKeyValuePairOperation(library, "Filtered%sIterator", function(chooser, iterable, filterFunc, ...)
+    Mixins.KeyValuePairOperation(library, "Filtered%sIterator", function(chooser, iterable, filterFunc, ...)
         filterFunc = Curry(filterFunc, ...);
         local iterator = library.Iterator(iterable);
         local function DoIteration()
@@ -661,7 +593,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     a value that is iterable using library.Iterator
     -- func, ...
     --     the function that is called for every item in the iterable
-    MixinKeyValuePairOperation(library, "Each%s", function(chooser, iterable, func, ...)
+    Mixins.KeyValuePairOperation(library, "Each%s", function(chooser, iterable, func, ...)
         func = Curry(func, ...);
         for key, value in library.Iterator(iterable) do
             func(chooser(key, value));
@@ -686,7 +618,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     the function that is called for every pair in the iterable
     -- returns
     --     a iterable of results from the specified func
-    MixinKeyValuePairOperation(library, "Map%ss", function(chooser, iterable, func, ...)
+    Mixins.KeyValuePairOperation(library, "Map%ss", function(chooser, iterable, func, ...)
         func = Curry(func, ...);
         local results = library.New();
         for key, value in library.Iterator(iterable) do
@@ -757,7 +689,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     include the given pair in the returned subset
     -- returns
         --     an iterable containing elements that evaluated to true, according to the specified func
-    MixinKeyValuePairOperation(library, "Filter%ss", function(chooser, iterable, func, ...)
+    Mixins.KeyValuePairOperation(library, "Filter%ss", function(chooser, iterable, func, ...)
         local filtered = library.New();
         func = Curry(func, ...);
         for key, value in library.Iterator(iterable) do
@@ -864,7 +796,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     value.
     -- returns
     --     the final aggregate
-    MixinKeyValueOperation(library, "Reduce%ss", function(iterator, iterable, initial, func, ...)
+    Mixins.KeyValueOperation(library, "Reduce%ss", function(iterator, iterable, initial, func, ...)
         if not func and select("#", ...) == 0 then
             func = library.DefaultReduce;
         end;
@@ -1008,7 +940,7 @@ function Mixins.Iteration(library, iteratorFunc)
     -- returns
     --     true if the specified iterable contains the specified item, according to the
     --     specified comparator
-    MixinKeyValueOperation(library, "Contains%s", function(iterator, iterable, target, comparatorFunc, ...)
+    Mixins.KeyValueOperation(library, "Contains%s", function(iterator, iterable, target, comparatorFunc, ...)
         comparatorFunc = MakeEqualityComparator(comparatorFunc);
         for candidate in iterator(iterable) do
             if IsEqual(comparatorFunc(candidate, target)) then
@@ -1144,7 +1076,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     a match.
     -- returns
     --     a new iterable containing all items contained in both iterables
-    MixinKeyValuePairOperationByName(library, "UnionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
+    Mixins.KeyValuePairOperationByName(library, "UnionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
         comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
         local union = library.New();
         local contains = library["Contains" .. name];
@@ -1176,7 +1108,7 @@ function Mixins.Iteration(library, iteratorFunc)
     --     a match.
     -- returns
     --     a new iterable containing all items contained in only one of the iterables
-    MixinKeyValuePairOperationByName(library, "IntersectionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
+    Mixins.KeyValuePairOperationByName(library, "IntersectionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
         comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
         local difference = library.New();
         local contains = library["Contains" .. name];
@@ -1213,7 +1145,7 @@ function Mixins.Iteration(library, iteratorFunc)
     -- returns
     --     the number of times the specified item was found, according to the specified
     --     comparatorFunc
-    MixinKeyValueOperation(library, "%sFrequency", function(iterator, iterable, target, comparatorFunc, ...)
+    Mixins.KeyValueOperation(library, "%sFrequency", function(iterator, iterable, target, comparatorFunc, ...)
         comparatorFunc = MakeEqualityComparator(comparatorFunc);
         count = 0;
         for candidate in iterator(iterable) do

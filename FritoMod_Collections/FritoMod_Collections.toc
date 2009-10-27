@@ -5,9 +5,10 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Functional
 
+Mixins.lua
 Mixins.Iteration.lua
+
 Iterators.lua
 Metatables.lua
-
 Lists.lua
 Tables.lua
