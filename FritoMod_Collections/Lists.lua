@@ -14,3 +14,9 @@ Mixins.MutableIteration(Lists, function(iterable)
     end;
 end);
 Metatables.Defensive(Lists);
+
+function Lists.Insert(iterable, value)
+    table.insert(iterable, value);
+    return Curry(Lists.Remove, iterable, value);
+end;
+

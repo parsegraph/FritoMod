@@ -156,7 +156,7 @@ function Mixins.Iteration(library, iteratorFunc)
         library.PairIterator = CurryNamedFunction(library, "Iterator");
     end;
 
-    MixinKeyValuePairOperation(library, "Bidi%sIterator", function(chooser, iterable)
+    Mixins.KeyValuePairOperation(library, "Bidi%sIterator", function(chooser, iterable)
         local keys = library.Keys(iterable);
         local index = 0;
         function Get()
