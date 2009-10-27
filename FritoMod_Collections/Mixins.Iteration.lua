@@ -609,6 +609,8 @@ function Mixins.Iteration(library)
         -- Returns the first key found for the specified value. Comparison is defined by the 
         -- specified comparatorFunc.
         --
+        -- This is an optional operation.
+        --
         -- iterable
         --     a value that is iterable by this library
         -- targetValue
@@ -634,6 +636,8 @@ function Mixins.Iteration(library)
     if library.LastKeyFor == nil then
         -- Returns the last key for the specified value. Comparison is defined by the specified 
         -- comparatorFunc.
+        --
+        -- This is an optional operation.
         --
         -- iterable
         --     a value that is iterable by this library
