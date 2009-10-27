@@ -1,4 +1,5 @@
 local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators");
+Mixins.IterationTests(Suite, Iterators);
 
 function Suite:TestVisibleFields()
     local foo = {
