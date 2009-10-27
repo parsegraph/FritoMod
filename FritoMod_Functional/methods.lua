@@ -40,7 +40,14 @@ end;
 --     True if the specfied value is callable, otherwise false
 function IsCallable(value)
     local valueType = type(value);
-    return valueType == "function" or (valueType == "table" and IsCallable(getmetatable(value).__call));
+    if valueType == "function" then 
+        return true;
+    end;
+    if valueType ~= "table" then 
+        return false;
+    end;
+    local mt = getmetatable(value);
+    return mt and IsCallable(mt.__call);
 end;
 
 -- Returns an unpacked table that contains all elements in the specified tables.
