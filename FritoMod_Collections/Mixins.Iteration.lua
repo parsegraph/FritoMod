@@ -46,7 +46,7 @@ function Mixins.Iteration(library, iteratorFunc)
         library.Iterator = iteratorFunc;
     end;
 
-    assert(type(library.Iterator) == "function", "Library does not implement Iterator");
+    assert(IsCallable(library.Iterator), "Library does not implement Iterator");
 
     if library.New == nil then
         -- Returns a new, empty iterable that is usable by this library.
