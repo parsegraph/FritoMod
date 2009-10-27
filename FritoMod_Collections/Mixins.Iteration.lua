@@ -38,18 +38,18 @@ end;
 function Mixins.Iteration(library, iteratorFunc)
 
     local function NewIterable()
-        if library.New ~= nil then
+        if rawget(library, "New") ~= nil then
             return library.New();
         end;
         return {};
     end;
 
     local function InsertInto(iterable, key, value)
-        if library.InsertPair ~= nil then
+        if rawget(library, "InsertPair") ~= nil then
             return library.InsertPair(iterable, key, value);
         end;
         if type(key) ~= "number" then
-            if IsCallable(library.Set) then
+            if rawget(library, "Set") ~= nil then
                 return library.Set(iterable, key, value);
             end;
             assert(type(iterable) == "table", "Iterable is not a table");
@@ -57,7 +57,7 @@ function Mixins.Iteration(library, iteratorFunc)
             iterable[key] = value;
             return CurryNamedFunction(library, "Delete", iterable, key);
         end;
-        if library.Insert ~= nil then
+        if rawget(library, "Insert") ~= nil then
             return library.Insert(iterable, key, value);
         end;
         assert(type(iterable) == "table", "Iterable is not a table");
