@@ -25,6 +25,11 @@ function Tables.Delete(targetTable, key)
     return oldValue;
 end;
 
+function Tables.InsertPair(targetTable, key, value)
+    targetTable[key] = value;
+    return CurryNamedFunction(Tables, "Delete", key);
+end;
+
 -- Expands the keys in the specified table. Any key that is a table will be iterated,
 -- and its children will be used as new keys in the specified table. Their values will
 -- be that of the original table-key. The original table-keys will be removed.

@@ -26,3 +26,10 @@ function Lists.Insert(iterable, value)
     return Curry(Lists.Remove, iterable, value);
 end;
 
+function Lists.Delete(iterable, key)
+    return table.remove(iterable, key);
+end;
+
+function Lists.Size(iterable)
+    return #iterable;
+end;
