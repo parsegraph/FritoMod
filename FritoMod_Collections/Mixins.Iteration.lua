@@ -88,30 +88,71 @@ function Mixins.Iteration(library)
 
     -- Returns whether the two iterables contain the same elements, in the same order.
     --
-    -- This option is applicable to keys, values, or pairs.
+    -- This option is applicable to keys or values.
     --
     -- iterable, otherIterable
     --     the two values that are compared against
     -- comparatorFunc, ...
     --     optional. the function that performs the comparison, with the signature 
-    --     comparatorFunc(item, otherItem) where the items are the keys, values, or pairs.
+    --     comparatorFunc(item, otherItem) where the items are the keys, values.
     --     It should return a truthy value if the two values match. If it returns a numeric 
     --     value, then only zero indicates a match.
-    -- 
-    Mixins.KeyValuePairOperation(library, "%ssEqual", function(chooser, iterable, otherIterable, comparatorFunc, ...)
-        local iterator = library.Iterator(iterable);
-        local otherIterator = library.Iterator(otherIterator);
-        local key, value = iterator();
-        local otherKey, otherValue = otherIterator();
-        while key ~= nil and otherKey ~= nil do
-            if not IsEqual(comparatorFunc(chooser(key, value), chooser(otherKey, otherValue))) then
+    -- returns
+    --     true if the iterables contain equal items in the same order, otherwise false
+    Mixins.KeyValueOperation(library, "%ssEqual", function(iteratorFunc, iterable, otherIterable, comparatorFunc, ...)
+        comparatorFunc = MakeEqualityComparator(comparatorFunc);
+        local iterator = iteratorFunc(iterable);
+        local otherIterator = iteratorFunc(otherIterable);
+        while true do
+            local item = iterator();
+            local otherItem = otherIterator();
+            if item == nil or otherItem == nil then
+                return item == otherItem;
+            end;
+            if not IsEqual(comparatorFunc(otherItem, item)) then
                 return false;
             end;
-            key, value = iterator();
-            otherKey, otherValue = otherIterator();
         end;
-        return key == nil and otherKey == nil;
     end);
+
+
+    -- Returns whether the two iterables contain the same pairs, in the same order.
+    --
+    -- iterable, otherIterable
+    --     the two values that are compared against
+    -- comparatorFunc, ...
+    --     optional. the function that performs the comparison, with the signature 
+    --     comparatorFunc(otherKey, otherValue, key, value) where the items are the keys, 
+    --     values. It should return a truthy value if the two values match. If it 
+    --     returns a numeric value, then only zero indicates a match.
+    -- returns
+    --     true if the iterables contain equal pairs in the same order, otherwise false
+    if nil == rawget(library, "PairsEqual") then
+        function library.PairsEqual(iterable, otherIterable, comparatorFunc, ...)
+            if not comparatorFunc and select("#", ...) == 0 then
+                comparatorFunc = function(otherKey, otherValue, key, value)
+                    return key == otherKey and value == otherValue;
+                end;
+            end;
+            comparatorFunc = MakeEqualityComparator(comparatorFunc);
+            local iterator = iteratorFunc(iterable);
+            local otherIterator = iteratorFunc(otherIterable);
+            while true do
+                local key, value = iterator();
+                local otherKey, otherValue = otherIterator();
+                if key == nil or otherKey == nil then
+                    return key == otherKey;
+                end;
+                if not IsEqual(comparatorFunc(otherKey, otherValue, key, value)) then
+                    return false;
+                end;
+            end;
+        end;
+    end;
+
+    if nil == rawget(library, "Equals") then
+        library.Equals = CurryNamedFunction(library, "PairsEqual");
+    end;
 
     if library.KeyIterator == nil then
         -- Returns an iterator that iterates over the keys in iterable.
