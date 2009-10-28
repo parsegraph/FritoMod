@@ -1,6 +1,22 @@
 local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators");
 Mixins.IterationTests(Suite, Iterators);
 
+function Suite:NewIterable()
+    return Iterators.IterateMap({
+        A = 1, 
+        BB = 2,
+        CCC = 3,
+    });
+end;
+
+function Suite:GetKeys()
+    return {"A", "BB", "CCC"};
+end;
+
+function Suite:GetValues()
+    return {1, 2, 3};
+end;
+
 function Suite:TestVisibleFields()
     local foo = {
         a = 1,
