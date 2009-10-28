@@ -88,7 +88,7 @@ function Mixins.IterationTests(Suite, library)
     function Suite:TestIsEmpty()
         assert(not library.IsEmpty(Suite:NewIterable()), "IsEmpty returns false for non-empty iterable");
         assert(not library.IsEmpty(Suite:FalsyIterable()), "IsEmpty returns false for an iterable with falsy pairs"); 
-        assert(not library.IsEmpty(Suite:EmptyIterable()), "IsEmpty returns true for empty iterable");
+        assert(library.IsEmpty(Suite:EmptyIterable()), "IsEmpty returns true for empty iterable");
     end;
 
     function Suite:TestContainsKey()
