@@ -44,7 +44,10 @@ function Mixins.IterationTests(Suite, library)
         assert(iterable ~= nil, "Iterable is not nil");
         assert(iterable ~= Suite:FalsyIterable(), "FalsyIterable returns a unique value");
         for key, value in library.Iterator(Suite:FalsyIterable()) do
-            Assert.Equals(false, key, "Key is false for false-key iterable.");
+            assert(key == false or key == 1 or key == nil, 
+                "Key is falsy or one for false-key iterable. Key: " .. tostring(key));
+            assert(value == false or value == nil, 
+                "Value is falsy for false-key iterable");
             Assert.Equals(false, value, "Key is false for false-key iterable.");
         end;
     end;
