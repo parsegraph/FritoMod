@@ -3,7 +3,7 @@ local Tables = Tables;
 
 -- Mixes in iteration functionality for tables
 Mixins.Iteration(Tables, function(iterable)
-    assert(type(iterable) == "table", "iterable is not a table");
+    assert(type(iterable) == "table", "iterable is not a table. Iterable: " .. tostring(iterable));
     local key = nil;
     return function()
         local value;
