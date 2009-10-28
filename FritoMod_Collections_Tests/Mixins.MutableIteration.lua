@@ -18,9 +18,16 @@ function Mixins.MutableIterationTests(Suite, library)
     function Suite:TestDelete()
         local keys = Suite:GetKeys();
         local iterable = Suite:NewIterable();
-        local value = library.Delete(iterable, keys[1]);
-        Assert.Equals(library.Get(Suite:NewIterable(), keys[1]), value, "Removed value is returned");
-        assert(library.Get(iterable, keys[1]) == nil, "Removed value is actually removed");
+        local key = keys[1];
+        local value = library.Delete(iterable, key);
+        Assert.Equals(library.Get(Suite:NewIterable(), key), value, "Removed value is returned");
+        Assert.Equals(2, library.Size(iterable), "Iterable's size decreases after removal");
+        local newValue = library.Get(iterable, key);
+        if type(key) ~= "number" then
+            Assert.Equals(nil, newValue, "Removed value is removed from map-like iterable");
+        else
+            Assert.Equals(library.Get(Suite:NewIterable(), key + 1), newValue, "Value is removed and elements are shifted");
+        end;
     end;
 
     function Suite:TestClear()
