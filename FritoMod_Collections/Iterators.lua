@@ -2,11 +2,13 @@ Iterators = {};
 local Iterators = Iterators;
 
 -- Mixes in iteration functionality for iterators
-Mixins.Iteration(Iterators, function(iterator)
+Mixins.Iteration(Iterators);
+Metatables.Defensive(Iterators);
+
+function Iterators.Iterator(iterator)
     assert(IsCallable(iterator), "Iterator is not callable. Type: " .. type(iterator));
     return iterator;
-end);
-Metatables.Defensive(Iterators);
+end;
 
 function Iterators.Iterate(value, ...)
     assert(value, "value is falsy");
@@ -28,20 +30,28 @@ function Iterators.Iterate(value, ...)
     error("value is not a valid type. Type: " .. type(value));
 end;
 
+function Iterators.IterateValues(...)
+    return Iterators.IterateList({...});
+end;
+
 function Iterators.IterateString(str)
     assert(type(str) == "string", "str is not a string. Type: " .. type(str));
     local index = 0;
     return function()
-        local value;
-        index = index + 1;
-        if index <= #str then
-            return index, str:sub(index, index);
+        if index == #str then
+            return;
         end;
+        index = index + 1;
+        local value;
+        if index > #str then
+            index = #str;
+        end;
+        return index, str:sub(index, index);
     end;
 end;
 
 function Iterators.IterateMap(map)
-    assert(type(map) == "table", "map is not a table. Type: " .. type(list));
+    assert(type(map) == "table", "map is not a table. Type: " .. type(map));
     local index = nil;
     return function()
         local value;
@@ -54,6 +64,9 @@ function Iterators.IterateList(list)
     assert(type(list) == "table", "list is not a table. Type: " .. type(list));
     local index = 0;
     return function()
+        if index == #list then
+            return;
+        end;
         index = index + 1;
         local item = list[index];
         if item == nil then

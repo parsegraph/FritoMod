@@ -1,4 +1,29 @@
 local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators");
+Mixins.IterationTests(Suite, Iterators);
+
+function Suite:NewIterable()
+    return Iterators.IterateMap({
+        A = 1, 
+        BB = 2,
+        CCC = 3,
+    });
+end;
+
+function Suite:FalsyIterable()
+    return Iterators.IterateMap({ [false] = false });
+end;
+
+function Suite:EmptyIterable()
+    return Iterators.IterateMap({});
+end;
+
+function Suite:GetKeys()
+    return {"A", "BB", "CCC"};
+end;
+
+function Suite:GetValues()
+    return {1, 2, 3};
+end;
 
 function Suite:TestVisibleFields()
     local foo = {

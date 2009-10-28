@@ -2,7 +2,10 @@ Tables = {}
 local Tables = Tables;
 
 -- Mixes in iteration functionality for tables
-Mixins.Iteration(Tables, function(iterable)
+Mixins.MutableIteration(Tables);
+Metatables.Defensive(Tables);
+
+function Tables.Iterator(iterable)
     assert(type(iterable) == "table", "iterable is not a table. Iterable: " .. tostring(iterable));
     local key = nil;
     return function()
@@ -10,13 +13,21 @@ Mixins.Iteration(Tables, function(iterable)
         key, value = next(iterable, key);
         return key, value;
     end;
-end);
-Metatables.Defensive(Lists);Metatables.Defensive(Tables);
+end;
+
+function Tables.Get(iterable, key)
+    return iterable[key];
+end;
 
 function Tables.Delete(targetTable, key)
     local oldValue = targetTable[key];
     targetTable[key] = nil;
     return oldValue;
+end;
+
+function Tables.InsertPair(targetTable, key, value)
+    targetTable[key] = value;
+    return CurryNamedFunction(Tables, "Delete", key);
 end;
 
 -- Expands the keys in the specified table. Any key that is a table will be iterated,
