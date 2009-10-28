@@ -4,17 +4,17 @@ end;
 
 function Mixins.IterationTests(Suite, library)
 
-    local function Check(iterable, key, value)
-        assert(library.ContainsValue(iterable, value), "Iterable contains value: " .. tostring(value));
-        assert(library.ContainsKey(iterable, key), "Iterable contains key: " .. tostring(key));
-        assert(library.ContainsPair(iterable, key, value), 
+    function Suite:CheckKey(key, assertion)
+        assert(library.ContainsKey(Suite:NewIterable(), key), "Iterable contains key: " .. tostring(key));
+    end;
+    
+    function Suite:CheckValue(value, assertion)
+        assert(library.ContainsValue(Suite:NewIterable(), value), "Iterable contains value: " .. tostring(value));
+    end;
+
+    function Suite:CheckPair(key, value, assertion)
+        assert(library.ContainsPair(Suite:NewIterable(), key, value), 
             format("Iterable contains pair (%s, %s)", tostring(key), tostring(value)));
-        if rawget(library, "Get") then
-            Assert.Equals(value,library.Get(iterable, key), "Key is in iterable: " .. tostring(key));
-        end;
-        if rawget(library, "KeyFor") then
-            Assert.Equals(key, library.KeyFor(iterable, value), "Value is in iterable: " .. tostring(key));
-        end;
     end;
 
     function Suite:TestContainsKey()
@@ -23,7 +23,6 @@ function Mixins.IterationTests(Suite, library)
         assert(library.ContainsKey(iterable, key), "ContainsKey is true for contained key: " .. key);
         assert(not library.ContainsKey(iterable, "This key is not in iterable"), "ContainsKey returns false for missing key");
     end;
-    
 
     function Suite:TestKeyIterator()
         local choke = Tests.Choke(100);
@@ -31,7 +30,7 @@ function Mixins.IterationTests(Suite, library)
         local keys = {};
         for key in library.KeyIterator(iterable) do
             choke();
-            assert(library.ContainsKey(iterable, key), "KeyIterator iterates over contained key: " .. tostring(key));
+            Suite:CheckKey(key, "KeyIterator iterates over contained key: " .. tostring(key));
             keys[key] = true;
         end;
         local controlKeys = Suite:GetKeys();
@@ -48,7 +47,7 @@ function Mixins.IterationTests(Suite, library)
         local values = {};
         for value in library.ValueIterator(iterable) do
             choke();
-            assert(library.ContainsValue(iterable, value), "ValueIterator iterates over contained key: " .. tostring(value));
+            Suite:CheckValue(value, "ValueIterator iterates over contained key: " .. tostring(value));
             values[value] = true;
         end;
         local controlValues = Suite:GetValues();
@@ -64,7 +63,7 @@ function Mixins.IterationTests(Suite, library)
         local counter = Tests.Counter();
         for key, value in library.BidiPairIterator(iterable) do
             counter.Hit();
-            Check(iterable, key, value);
+            Suite:CheckPair(key, value);
         end;
         counter.Assert(3);
     end;
@@ -79,7 +78,7 @@ function Mixins.IterationTests(Suite, library)
                 break;
             end;
             counter.Hit();
-            Check(iterable, key, value);
+            Suite:CheckPair(key, value);
         end;
         counter.Assert(3);
     end;
@@ -96,7 +95,7 @@ function Mixins.IterationTests(Suite, library)
                 break;
             end;
             counter.Hit();
-            Check(iterable, key, value);
+            Suite:CheckPair(key, value);
         end;
         counter.Assert(3);
     end;
@@ -108,10 +107,10 @@ function Mixins.IterationTests(Suite, library)
         while stride < library.Size(iterable) do
             stride = stride + 1;
             for i=1, stride do
-                Check(iterable, iterator:Next());
+                Suite:CheckPair(iterator:Next());
             end;
             for i=stride, 2, -1 do
-                Check(iterable, iterator:Previous());
+                Suite:CheckPair(iterator:Previous());
             end;
             -- One extra for the nil value.
             iterator:Previous();
