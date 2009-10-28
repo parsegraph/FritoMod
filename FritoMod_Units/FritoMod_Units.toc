@@ -3,7 +3,7 @@
 ## Notes: Unit Framework
 ## Author: Frito
 ## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_OOP, FritoMod_Data
+## Dependencies: FritoMod, FritoMod_OOP
 
 Units.lua
 Unit.lua
