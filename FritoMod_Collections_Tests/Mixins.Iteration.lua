@@ -51,7 +51,7 @@ function Mixins.IterationTests(Suite, library)
     end;
 
     function Suite:TestBidiIterator()
-        local iterable = self:NewIterable();
+        local iterable = Suite:NewIterable();
         local counter = Tests.Counter();
         for key, value in library.BidiPairIterator(iterable) do
             counter.Hit();
@@ -61,7 +61,7 @@ function Mixins.IterationTests(Suite, library)
     end;
 
     function Suite:TestBidiIteratorNext()
-        local iterable = self:NewIterable();
+        local iterable = Suite:NewIterable();
         local iterator = library.BidiPairIterator(iterable);
         local counter = Tests.Counter();
         while true do
@@ -76,7 +76,7 @@ function Mixins.IterationTests(Suite, library)
     end;
 
     function Suite:TestBidiIteratorPrevious()
-        local iterable = self:NewIterable();
+        local iterable = Suite:NewIterable();
         local counter = Tests.Counter();
         local iterator = library.BidiPairIterator(iterable);
         -- Seek the iterator to the end
