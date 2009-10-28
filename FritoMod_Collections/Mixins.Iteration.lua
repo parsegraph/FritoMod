@@ -135,8 +135,8 @@ function Mixins.Iteration(library)
                 end;
             end;
             comparatorFunc = MakeEqualityComparator(comparatorFunc);
-            local iterator = iteratorFunc(iterable);
-            local otherIterator = iteratorFunc(otherIterable);
+            local iterator = library.Iterator(iterable);
+            local otherIterator = library.Iterator(otherIterable);
             while true do
                 local key, value = iterator();
                 local otherKey, otherValue = otherIterator();
