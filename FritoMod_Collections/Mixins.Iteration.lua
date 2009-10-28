@@ -880,8 +880,9 @@ function Mixins.Iteration(library, iteratorFunc)
         -- returns
         --     true if the specified iterable is empty, otherwise false
         function library.IsEmpty(iterable)
-            local iterator = library.Iterator(iterator);
-            return not Bool(iterator());
+            local iterator = library.Iterator(iterable);
+            local key, value = iterator();
+            return key == nil and value == nil;
         end;
     end;
 
