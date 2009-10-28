@@ -14,3 +14,10 @@ function Suite:GetValues()
     return {"A", "BB", "CCC"};
 end;
 
+function Suite:FalsyIterable()
+    return {false};
+end;
+
+function Suite:EmptyIterable()
+    return {};
+end;

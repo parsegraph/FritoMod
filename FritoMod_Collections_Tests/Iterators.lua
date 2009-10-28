@@ -9,6 +9,14 @@ function Suite:NewIterable()
     });
 end;
 
+function Suite:FalsyIterable()
+    return Iterators.IterateMap({ [false] = false });
+end;
+
+function Suite:EmptyIterable()
+    return Iterators.IterateMap({});
+end;
+
 function Suite:GetKeys()
     return {"A", "BB", "CCC"};
 end;

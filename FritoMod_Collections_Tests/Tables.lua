@@ -18,3 +18,10 @@ function Suite:GetValues()
     return {1, 2, 3};
 end;
 
+function Suite:FalsyIterable()
+    return { [false] = false };
+end;
+
+function Suite:EmptyIterable()
+    return {};
+end;
