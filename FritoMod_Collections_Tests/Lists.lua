@@ -1,6 +1,6 @@
 local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Lists");
 
-Mixins.IterationTests(Suite, Lists);
+Mixins.MutableIterationTests(Suite, Lists);
 
 function Suite:NewIterable()
     return {"A", "BB", "CCC"};
