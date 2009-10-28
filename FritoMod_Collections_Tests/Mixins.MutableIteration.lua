@@ -2,6 +2,16 @@ if Mixins == nil then
     Mixins = {};
 end;
 
+-- Mixes in test cases for the functions added by Mixins.MutableIteration. This also mixes in
+-- test cases for functions added by Mixins.Iteration. As a consequence, the functions required
+-- by that mixin are also required by this one.
+--
+-- Suite
+--     the test suite that is the target of this mixin
+-- library
+--     the table that contains the Mixin.Iteration-added functions tested by the specified Suite
+-- returns
+--     Suite
 function Mixins.MutableIterationTests(Suite, library)
     Mixins.IterationTests(Suite, library);
 
@@ -20,4 +30,5 @@ function Mixins.MutableIterationTests(Suite, library)
         assert(library.Equals(iterable, Suite:EmptyIterable()), "Iterable is equal to an empty iterable");
     end;
 
+    return Suite;
 end;
