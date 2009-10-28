@@ -3,19 +3,51 @@ if Mixins == nil then
 end;
 
 function Mixins.IterationTests(Suite, library)
-    if Suite.NewIterable == nil then
-        function Suite:NewIterable()
-            local iterable = library.New();
-            library.Insert(iterable, "A");
-            library.Insert(iterable, "BB");
-            library.Insert(iterable, "CCC");
-            return iterable;
+
+    local function Check(iterable, key, value)
+        assert(library.ContainsValue(iterable, value), "Iterable contains value: " .. tostring(value));
+        assert(library.ContainsKey(iterable, key), "Iterable contains key: " .. tostring(key));
+        assert(library.ContainsPair(iterable, key, value), 
+            format("Iterable contains pair (%s, %s)", tostring(key), tostring(value)));
+        if rawget(library, "Get") then
+            Assert.Equals(value,library.Get(iterable, key), "Key is in iterable: " .. tostring(key));
+        end;
+        if rawget(library, "KeyFor") then
+            Assert.Equals(key, library.KeyFor(iterable, value), "Value is in iterable: " .. tostring(key));
+        end;
+    end;
+    
+    local choke = Tests.Choke(100);
+
+    function Suite:TestKeyIterator()
+        local iterable = Suite:NewIterable();
+        local keys = {};
+        for key in library.KeyIterator(iterable) do
+            choke();
+            library.ContainsKey(iterable, key);
+            keys[key] = true;
+        end;
+        local controlKeys = Suite:GetKeys();
+        for i=1, #controlKeys do
+            local controlKey = controlKeys[i];
+            assert(keys[controlKey], "Iterated over key: " .. tostring(controlKey));
         end;
     end;
 
-    function Check(iterable, key, value)
-        Assert.Equals(library.Get(iterable, key), value, "Key is in iterable: " .. tostring(key));
-        Assert.Equals(library.KeyFor(iterable, value), key, "Value is in iterable: " .. tostring(key));
+    function Suite:TestValueIterator()
+        local iterable = Suite:NewIterable();
+        local values = {};
+        for value in library.ValueIterator(iterable) do
+            choke();
+            library.ContainsValue(iterable, value);
+            values[value] = true;
+        end;
+        local controlValues = Suite:GetValues();
+        for i=1, #controlValues do
+            choke();
+            local controlValue = controlValues[i];
+            assert(keys[controlValue], "Iterated over value: " .. tostring(controlValue));
+        end;
     end;
 
     function Suite:TestBidiIterator()
