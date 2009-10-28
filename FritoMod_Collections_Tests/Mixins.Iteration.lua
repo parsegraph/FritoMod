@@ -16,37 +16,46 @@ function Mixins.IterationTests(Suite, library)
             Assert.Equals(key, library.KeyFor(iterable, value), "Value is in iterable: " .. tostring(key));
         end;
     end;
+
+    function Suite:TestContainsKey()
+        local iterable = Suite:NewIterable();
+        local key = Suite:GetKeys()[1];
+        assert(library.ContainsKey(iterable, key), "ContainsKey is true for contained key: " .. key);
+        assert(not library.ContainsKey(iterable, "This key is not in iterable"), "ContainsKey returns false for missing key");
+    end;
     
-    local choke = Tests.Choke(100);
 
     function Suite:TestKeyIterator()
+        local choke = Tests.Choke(100);
         local iterable = Suite:NewIterable();
         local keys = {};
         for key in library.KeyIterator(iterable) do
             choke();
-            library.ContainsKey(iterable, key);
+            assert(library.ContainsKey(iterable, key), "KeyIterator iterates over contained key: " .. tostring(key));
             keys[key] = true;
         end;
         local controlKeys = Suite:GetKeys();
         for i=1, #controlKeys do
+            choke();
             local controlKey = controlKeys[i];
-            assert(keys[controlKey], "Iterated over key: " .. tostring(controlKey));
+            assert(keys[controlKey], "KeyIterator iterated over key: " .. tostring(controlKey));
         end;
     end;
 
     function Suite:TestValueIterator()
+        local choke = Tests.Choke(100);
         local iterable = Suite:NewIterable();
         local values = {};
         for value in library.ValueIterator(iterable) do
             choke();
-            library.ContainsValue(iterable, value);
+            assert(library.ContainsValue(iterable, value), "ValueIterator iterates over contained key: " .. tostring(value));
             values[value] = true;
         end;
         local controlValues = Suite:GetValues();
         for i=1, #controlValues do
             choke();
             local controlValue = controlValues[i];
-            assert(keys[controlValue], "Iterated over value: " .. tostring(controlValue));
+            assert(values[controlValue], "ValueIterator iterated over value: " .. tostring(controlValue));
         end;
     end;
 
