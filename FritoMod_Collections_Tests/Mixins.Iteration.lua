@@ -79,6 +79,16 @@ function Mixins.IterationTests(Suite, library)
         end;
     end;
 
+    function Suite:TestEquals()
+        assert(library.Equals(Suite:NewIterable(), Suite:NewIterable()), "Equals returns true for equal iterables");
+        assert(not library.Equals(Suite:NewIterable(), Suite:FalsyIterable()), 
+            "Equals returns false for unequal iterables");
+        assert(library.Equals(Suite:EmptyIterable(), Suite:EmptyIterable()), 
+            "Equals returns true for two empty iterables");
+        assert(not library.Equals(Suite:NewIterable(), Suite:EmptyIterable()), 
+            "Equals returns false when comparing empty and non-empty iterables");
+    end;
+
     function Suite:TestSize()
         Assert.Equals(3, library.Size(Suite:NewIterable()), "Size reports three for three-element iterable");
         Assert.Equals(1, library.Size(Suite:FalsyIterable()), "Size reports one for iterable with one falsy pair");
