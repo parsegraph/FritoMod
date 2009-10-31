@@ -32,6 +32,18 @@ function Assert.Success(assertion, func, ...)
     assert(pcall(func, ...), assertion);
 end;
 
+-- Asserts that the specified value is truthy. Specifically, it asserts that the specified
+-- value is neither nil nor false.
+--
+-- actual:*
+--     the tested value
+-- assertion
+--     the reason why the specified value should be truthy
+function Assert.Truthy(actual, assertion)
+    assertion = FormatName(assertion);
+    assert(actual, format("Value was not truthy%s, value was %s", assertion, s(actual)));
+end;
+
 function Assert.Falsy(actual, assertion)
     assertion = FormatName(assertion);
     assert(not actual, format("Value was not falsy%s, value was %s", assertion, s(actual)));
