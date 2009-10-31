@@ -1,3 +1,5 @@
+local s = Strings.PrettyPrint;
+
 Assert = {};
 local Assert = Assert;
 
@@ -7,8 +9,6 @@ local function FormatName(assertion)
     end;
     return format(" for assertion '%s'", tostring(assertion));
 end;
-
-local s = Strings.PrettyPrint;
 
 function Assert.Exception(assertion, func, ...)
     assert(not pcall(func, ...), assertion);
