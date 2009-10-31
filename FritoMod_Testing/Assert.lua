@@ -1,6 +1,6 @@
 local s = Strings.PrettyPrint;
 
-Assert = {};
+Assert = Metatables.Defensive();
 local Assert = Assert;
 
 local function FormatName(assertion)
