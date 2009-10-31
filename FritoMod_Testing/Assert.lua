@@ -118,6 +118,16 @@ function Assert.SizesEqual(expectedSize, actual, assertion)
         format("Size mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
 end;
 
+-- Asserts that the two tables contain equal values for each key.
+--
+-- Equivalence is determined by Assert.Equals
+--
+-- expected:table
+--     the control table
+-- actual:table
+--     the tested table
+-- assertion:string
+--     optional. describes why the two tables should be equal
 function Assert.TablesEqual(expected, actual, assertion)
     if expected == actual then
         -- Short-circuit for the common case.
