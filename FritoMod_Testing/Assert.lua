@@ -4,6 +4,7 @@ Assert = {};
 local Assert = Assert;
 
 local function FormatName(assertion)
+    assert(type(assertion) == "string", "Assertion string is not a string. Type: " .. type(assertion));
     if not assertion then
         return "";
     end;
@@ -18,7 +19,7 @@ end;
 -- func, ...
 --     the function that is tested
 function Assert.Exception(assertion, func, ...)
-    assert(not pcall(func, ...), assertion);
+    assert(not pcall(func, ...), format("Function must raise an exception%s", FormatName(assertion)));
 end;
 
 Assert.Failure = Assert.Exception;
@@ -35,7 +36,7 @@ Assert.RaisesException = Assert.Exception;
 -- func, ...
 --     the function that is tested
 function Assert.Success(assertion, func, ...)
-    assert(pcall(func, ...), assertion);
+    assert(pcall(func, ...), format("Function must be successful%s", FormatName(assertion)));
 end;
 
 Assert.Successful = Assert.Success;
@@ -142,6 +143,11 @@ end;
 --     optional. describes why the two tables should be equal
 function Assert.TablesEqual(expected, actual, assertion)
     assert(type(expected) == "table", "expected is not a table. Type: " .. type(expected));
+    if assertion ~= nil then
+        assert(type(assertion) == "string", "Assertion string is not a string. Type: " .. type(assertion));
+    else
+        assertion = "Tables are equal";
+    end;
     if expected == actual then
         -- Short-circuit for the common case.
         return;
