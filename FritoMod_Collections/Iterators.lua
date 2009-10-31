@@ -1,3 +1,6 @@
+-- A collection of functions dealing with iterators. Iterators are functions that accept no arguments and
+-- return the "next" value in a collection when called. When they reach the end of their collection,
+-- they return nil.
 Iterators = {};
 local Iterators = Iterators;
 
