@@ -25,6 +25,9 @@ end;
 -- returns
 --     a function that attaches the specified metatable to classes
 local function MetatableAttacher(metatable)
+    if type(metatable) == "function" then
+        metatable = { __index = metatable };
+    end;
     assert(type(metatable) == "table", "metatable is not a table object");
     -- Attaches a metatable to the specified table.
     --
@@ -57,19 +60,15 @@ end;
 
 -- Augments a table such that every non-existent key defaults to Noop. This is useful if you're
 -- creating an observer or class but are only interested in part of the functionality provided.
-Metatables.Noop = MetatableAttacher({
-    __index = function(self, key)
-        return Noop;
-    end
-});
+Metatables.Noop = MetatableAttacher(function(self, key)
+    return Noop;
+end);
 
 -- Augments a table such that every non-existent key causes an error. This is useful if you wish
 -- to explicitly avoid this class of potential programming problems.
-Metatables.Defensive = MetatableAttacher({
-    __index = function(self, key)
-        error("key not found: " .. key);
-    end
-});
+Metatables.Defensive = MetatableAttacher(function(self, key)
+    error("key not found: " .. key);
+end);
 
 local function ForcedMetatable(forceFunc)
     return function(target)
