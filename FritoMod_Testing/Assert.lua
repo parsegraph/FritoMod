@@ -153,8 +153,15 @@ function Assert.TablesEqual(expected, actual, assertion)
         return;
     end;
     Assert.SizesEqual(expected, actual, assertion);
+    local keysInExpected = {};
     for k, v in pairs(expected) do
+        keysInExpected[k] = true;
+        local actualValue = actual[k];
+        assert(actualValue ~= nil, format("Missing key '%s' in table%s", s(k), FormatName(assertion)));
         Assert.Equals(expected[k], actual[k], assertion .. ": key " .. s(k));
+    end;
+    for k, _ in pairs(actual) do
+        assert(keysInExpected[k], format("Unexpected key '%s' in table%s", s(k), FormatName(assertion)));
     end;
 end;
 
