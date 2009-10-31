@@ -85,23 +85,13 @@ function Assert.TablesEqual(expected, actual, assertion)
 end;
 
 function Assert.Equals(expected, actual, assertion)
-    local unformattedName = assertion;
-    assertion = FormatName(assertion);
     if expected == actual then
         -- Short-circuit for the common case.
         return;
     end;
-    if type(expected) ~= type(actual) then
-        error(format("Type mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
-    end;
     if type(expected) == "table" then
-        if #expected ~= #actual then
-            error(format("Size mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
-        end;
-        for k, v in pairs(expected) do
-            Assert.Equals(expected[k], actual[k], unformattedName .. ": key " .. Strings.PrettyPrint(k));
-        end;
+        Assert.TablesEqual(expected, actual, assertion);
         return;
     end;
-    error(format("Equality mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
+    Assert.Identical(expected, actual, assertion);
 end;
