@@ -16,18 +16,18 @@ end;
 
 function Assert.Falsy(actual, assertion)
     assertion = FormatName(assertion);
-    if not actual then
-        return;
-    end
-    error(format("Value was not falsy%s, value was %s", assertion, s(actual)));
+    assert(not actual, format("Value was not falsy%s, value was %s", assertion, s(actual)));
 end;
 
+-- Asserts that the specified value is nil.
+--
+-- actual:*
+--     the tested value
+-- assertion:string
+--     optional. the reason why the tested value must be nil
 function Assert.Nil(actual, assertion)
     assertion = FormatName(assertion);
-    if actual == nil then
-        return;
-    end
-    error(format("Value was not nil%s, value was %s", assertion, s(actual)));
+    assert(nil == actual, format("Value was not nil%s, value was %s", assertion, s(actual)));
 end;
 
 -- Asserts that the specified value is of the specified expected type.
@@ -69,9 +69,8 @@ function Assert.SizesEqual(expectedSize, actual, assertion)
     assert(type(expectedSize) == "number", "expectedSize is not a number. Type: " .. type(expectedSize));
     assert(expectedSize >= 0, "expectedSize must be at least zero. expectedSize" .. s(expectedSize));
     Assert.Type("table", actual, assertion);
-    if expectedSize ~= #actual then
-        error(format("Size mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
-    end;
+    assert(expectedSize == #actual,
+        format("Size mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
 end;
 
 function Assert.TablesEqual(expected, actual, assertion)
