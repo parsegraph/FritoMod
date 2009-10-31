@@ -36,7 +36,9 @@ Assert.RaisesException = Assert.Exception;
 -- func, ...
 --     the function that is tested
 function Assert.Success(assertion, func, ...)
-    assert(pcall(func, ...), format("Function must be successful%s", FormatName(assertion)));
+    local result, message = pcall(func, ...);
+    assert(result, format("Function must be successful%s, but failed with result: %s", 
+        FormatName(assertion), tostring(message or "")));
 end;
 
 Assert.Successful = Assert.Success;
