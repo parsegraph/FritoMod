@@ -10,6 +10,13 @@ local function FormatName(assertion)
     return format(" for assertion '%s'", tostring(assertion));
 end;
 
+-- Asserts that the specified function fails. The return value or exception message
+-- is ignored.
+--
+-- assertion:string
+--     the reason why the function should raise an exception
+-- func, ...
+--     the function that is tested
 function Assert.Exception(assertion, func, ...)
     assert(not pcall(func, ...), assertion);
 end;
