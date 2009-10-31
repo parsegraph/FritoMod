@@ -82,6 +82,14 @@ function Assert.Type(expectedType, value, assertion)
         format("Type mismatch%s, expected %s, got %s", assertion, s(expectedType), s(value)));
 end;
 
+-- Asserts that the specified actual value is identical(==) to the specified expected value.
+--
+-- expected:*
+--     the control value
+-- actual:*
+--     the tested value
+-- assertion:string
+--     optional. describes the reason why the specified values are identical
 function Assert.Identical(expected, actual, assertion)
     Assert.Type(type(expected), actual, assertion);
     assertion = FormatName(assertion);
