@@ -34,8 +34,8 @@ end;
 -- efficient operations than those defined here. This mixin makes a best-effort to prefer
 -- inherited methods over the provided defaults.
 --
--- library
---     a table that provides an Iterator function
+-- library:table
+--     the target of this mixin
 -- returns
 --     library
 -- see
