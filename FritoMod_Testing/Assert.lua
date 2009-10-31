@@ -120,7 +120,10 @@ end;
 
 -- Asserts that the two tables contain equal values for each key.
 --
--- Equivalence is determined by Assert.Equals
+-- Tables are equal if:
+--  * they contain the same keys, determined by identity(==)
+--  * they contain equal(Assert.Equals) values for identical keys
+--  * they contain no keys not contained by the other
 --
 -- expected:table
 --     the control table
@@ -140,6 +143,19 @@ function Assert.TablesEqual(expected, actual, assertion)
     end;
 end;
 
+-- Asserts that the two values are equal. 
+--
+-- The method of testing for equivalence depends on the expected value:
+--  * If the expected value is a instance, then expected.Equals is used
+--  * If the expected value is a table, then Assert.TablesEqual is used
+--  * All other values are compared using identity(==)
+--
+-- expected:*
+--     the expected value
+-- actual:*
+--     the actual value
+-- assertion:string
+--     optional. describes why the two values should be equivalent
 function Assert.Equals(expected, actual, assertion)
     if expected == actual then
         -- Short-circuit for the common case.
