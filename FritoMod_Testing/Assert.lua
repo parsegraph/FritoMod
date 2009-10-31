@@ -21,6 +21,12 @@ function Assert.Exception(assertion, func, ...)
     assert(not pcall(func, ...), assertion);
 end;
 
+Assert.Failure = Assert.Exception;
+Assert.Fails = Assert.Exception;
+Assert.Throws = Assert.Exception;
+Assert.Raises = Assert.Exception;
+Assert.RaisesException = Assert.Exception;
+
 -- Asserts that the specified function runs successfully. Its return value
 -- is ignored.
 --
@@ -31,6 +37,9 @@ end;
 function Assert.Success(assertion, func, ...)
     assert(pcall(func, ...), assertion);
 end;
+
+Assert.Successful = Assert.Success;
+Assert.Succeeds = Assert.Success;
 
 -- Asserts that the specified value is truthy. Specifically, it asserts that the specified
 -- value is neither nil nor false.
