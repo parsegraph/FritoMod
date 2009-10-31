@@ -1,6 +1,6 @@
-local AssertTests = ReflectiveTestSuite:New("FritoMod_Testing.Assert");
+local Suite = ReflectiveTestSuite:New("FritoMod_Testing.Assert");
 
-function AssertTests:TestEquals()
+function Suite:TestEquals()
     Assert.Equals("Foo", "Foo", "Foo is foo");
     Assert.Equals("", "", "Empty string is empty string");
     Assert.Equals({}, {}, "Empty table is empty table");
