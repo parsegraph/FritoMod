@@ -129,6 +129,7 @@ end;
 -- assertion:string
 --     optional. describes why the two tables should be equal
 function Assert.TablesEqual(expected, actual, assertion)
+    assert(type(expected) == "table", "expected is not a table. Type: " .. type(expected));
     if expected == actual then
         -- Short-circuit for the common case.
         return;
