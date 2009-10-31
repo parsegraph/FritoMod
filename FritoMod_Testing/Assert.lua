@@ -155,7 +155,7 @@ end;
 -- Asserts that the two values are equal. 
 --
 -- The method of testing for equivalence depends on the expected value:
---  * If the expected value is a instance, then expected.Equals is used
+--  * If the expected value is a table and it has an __eq method, identity(==) is used
 --  * If the expected value is a table, then Assert.TablesEqual is used
 --  * All other values are compared using identity(==)
 --
@@ -170,7 +170,7 @@ function Assert.Equals(expected, actual, assertion)
         -- Short-circuit for the common case.
         return;
     end;
-    if type(expected) == "table" then
+    if type(expected) == "table" and (not getmetatable(expected) or getmetatable(expected).__eq == nil) then
         Assert.TablesEqual(expected, actual, assertion);
         return;
     end;
