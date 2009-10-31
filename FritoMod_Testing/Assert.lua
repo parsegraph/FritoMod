@@ -14,6 +14,17 @@ function Assert.Exception(assertion, func, ...)
     assert(not pcall(func, ...), assertion);
 end;
 
+-- Asserts that the specified function runs successfully. Its return value
+-- is ignored.
+--
+-- assertion:string
+--     the reason why the function should run successfully
+-- func, ...
+--     the function that is tested
+function Assert.Success(assertion, func, ...)
+    assert(pcall(func, ...), assertion);
+end;
+
 function Assert.Falsy(actual, assertion)
     assertion = FormatName(assertion);
     assert(not actual, format("Value was not falsy%s, value was %s", assertion, s(actual)));
