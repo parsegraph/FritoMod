@@ -66,7 +66,7 @@ end;
 
 function Strings.PrettyPrintFunction(value)
     assert(type(value) == "function", "value is not a function. Type: " .. type(value));
-    local name = Tables.LookupValue(_G, value);
+    local name = Tables.KeyFor(_G, value);
     if not name then
         name = Reference(value);
     end
