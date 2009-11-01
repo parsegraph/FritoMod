@@ -250,7 +250,7 @@ function HookGlobal(name, func, ...)
     local func = Curry(func, ...);
     local old = _G[name];
     _G[name] = function(...)
-        func();
+        func(...);
         if old then
             return old(...);
         end;
