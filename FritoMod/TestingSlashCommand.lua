@@ -11,7 +11,7 @@ function TestingSlashCommand()
     end;
 
     local tests, numRan;
-    return Curry(Lists.CallEach, {
+    local removers = {
         AllTests:AddListener(Metatables.Noop({
             StartAllTests = function(self)
                 tests = {};
@@ -40,7 +40,7 @@ function TestingSlashCommand()
                 Lists.Insert(tests, runner);
             end,
         }))
-    });
+    };
 
     RegisterSlash(function(cmd)
         if not cmd or cmd == "" then
@@ -59,4 +59,6 @@ function TestingSlashCommand()
             AllTests:Run(cmd);
         end;
     end, "test");
+
+    return Curry(Lists.CallEach, removers);
 end;
