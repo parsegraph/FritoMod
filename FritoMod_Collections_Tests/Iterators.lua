@@ -53,8 +53,8 @@ function Suite:TestVisibleFieldsWhenNested()
     for key, value in Iterators.IterateVisibleFields(foo) do
         copy[key] = value;
     end;
-    copy.d = 4;
-    Assert.Equals(foo, copy, "visible fields when nested");
+    foo.d = 4;
+    Assert.Equals(foo, copy, "Field is iterated when contained in a metatable");
 end;
 
 function Suite:TestVisibleFieldsWhenOverridden()
