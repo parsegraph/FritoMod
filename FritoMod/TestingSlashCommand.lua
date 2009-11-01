@@ -3,8 +3,8 @@
 
 function TestingSlashCommand()
     local testNameColor = "FFE5B4";
-    local passedResultColor = "00FF00";
-    local failedResultColor = "FF0000";
+    local cumulativePassColor = 0x32CD32;
+    local cumulativeFailedColor = 0xE52B50;
 
     local infoColor = 0xc9c0bb;
 
@@ -43,36 +43,45 @@ function TestingSlashCommand()
         return format("Test %d (|cff%s%s|r)", testIndex, testNameColor, name);
     end;
 
-    local function ColorResult(successful)
-        if successful then
-            return format("|cff%sPassed|r", passedResultColor);
-        end;
-        return format("|cff%sFailed|r", failedResultColor);
-    end;
-
-    local tests, numRan;
+    local tests, numRan, numSuccessful, numCrashed, numFailed;
     local removers = {
         AllTests:AddListener(Metatables.Noop({
             StartAllTests = function(self)
                 tests = {};
                 numRan = 0;
+                numSuccessful = 0;
+                numFailed = 0;
+                numCrashed = 0;
             end,
                     
-            FinishAllTests = function(self, suite, successful)
-                Print("%d tests ran. Result: %s", numRan, ColorResult(successful));
+            FinishAllTests = function(self, suite, successful, report)
+                if successful then
+                    PrintWithColor(format("Cumulative: All %d tests ran successfully.", numRan), DumpColor(cumulativePassColor));
+                else
+                    PrintWithColor(format("Cumulative: %d of %d tests ran successfuly. %d failed, %d crashed",
+                        numSuccessful,
+                        numRan,
+                        numFailed,
+                        numCrashed), DumpColor(cumulativeFailedColor));
+                end;
             end
         })),
 
         AllTests:AddRecursiveListener(Metatables.Noop({
-            TestStarted = function(self, suite, name, runner)
+            TestStarted = function()
                 numRan = numRan + 1;
             end,
+            TestSuccessful = function(self, suite, name, runner, reason)
+                numSuccessful = numSuccessful + 1;
+            end,
             TestFailed = function(self, suite, name, runner, reason)
+                numFailed = numFailed + 1;
                 local testIndex = #tests + 1;
                 PrintFailure("[|cff%sFAIL|r] %d. %s\n|cff%s%s|r", testFailedColor, testIndex, name, failedReasonColor, reason);
                 Lists.Insert(tests, runner);
             end,
-            TestErrored = function(self, suite, name, runner, errorMessage)
+            TestCrashed = function(self, suite, name, runner, errorMessage)
+                numCrashed = numCrashed + 1;
                 local testIndex = #tests + 1;
                 PrintError("[|cff%sCRASH|r] %d. %s\n|cff%s%s|r", testCrashedColor, testIndex, name, crashedReasonColor, errorMessage);
                 Lists.Insert(tests, runner);
