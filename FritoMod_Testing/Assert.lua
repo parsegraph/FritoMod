@@ -1,53 +1,193 @@
-Assert = {};
+local s = Strings.PrettyPrint;
+
+Assert = Metatables.Defensive();
 local Assert = Assert;
 
 local function FormatName(assertion)
+    assert(type(assertion) == "string", "Assertion string is not a string. Type: " .. type(assertion));
     if not assertion then
         return "";
     end;
     return format(" for assertion '%s'", tostring(assertion));
 end;
 
-local s = Strings.PrettyPrint;
-
+-- Asserts that the specified function fails. The return value or exception message
+-- is ignored.
+--
+-- assertion:string
+--     the reason why the function should raise an exception
+-- func, ...
+--     the function that is tested
 function Assert.Exception(assertion, func, ...)
-    assert(not pcall(func, ...), assertion);
+    assert(not pcall(func, ...), format("Function must raise an exception%s", FormatName(assertion)));
 end;
 
+Assert.Failure = Assert.Exception;
+Assert.Fails = Assert.Exception;
+Assert.Throws = Assert.Exception;
+Assert.Raises = Assert.Exception;
+Assert.RaisesException = Assert.Exception;
+
+-- Asserts that the specified function runs successfully. Its return value
+-- is ignored.
+--
+-- assertion:string
+--     the reason why the function should run successfully
+-- func, ...
+--     the function that is tested
+function Assert.Success(assertion, func, ...)
+    local result, message = pcall(func, ...);
+    assert(result, format("Function must be successful%s, but failed with result: %s", 
+        FormatName(assertion), tostring(message or "")));
+end;
+
+Assert.Successful = Assert.Success;
+Assert.Succeeds = Assert.Success;
+
+-- Asserts that the specified value is truthy. Specifically, it asserts that the specified
+-- value is neither nil nor false.
+--
+-- actual:*
+--     the tested value
+-- assertion
+--     the reason why the specified value should be truthy
+function Assert.Truthy(actual, assertion)
+    assertion = FormatName(assertion);
+    assert(actual, format("Value was not truthy%s, value was %s", assertion, s(actual)));
+end;
+
+-- Asserts that the specified value is falsy. Specifically, it asserts that the specified
+-- value is either nil or false.
+--
+-- actual:*
+--     the tested value
+-- assertion
+--     the reason why the specified value should be falsy
 function Assert.Falsy(actual, assertion)
     assertion = FormatName(assertion);
-    if not actual then
-        return;
-    end
-    error(format("Value was not falsy%s, value was %s", assertion, s(actual)));
+    assert(not actual, format("Value was not falsy%s, value was %s", assertion, s(actual)));
 end;
 
+-- Asserts that the specified value is nil.
+--
+-- actual:*
+--     the tested value
+-- assertion:string
+--     optional. the reason why the tested value must be nil
 function Assert.Nil(actual, assertion)
     assertion = FormatName(assertion);
-    if actual == nil then
-        return;
-    end
-    error(format("Value was not nil%s, value was %s", assertion, s(actual)));
+    assert(nil == actual, format("Value was not nil%s, value was %s", assertion, s(actual)));
 end;
 
-function Assert.Equals(expected, actual, assertion)
-    local unformattedName = assertion;
+-- Asserts that the specified value is of the specified expected type.
+--
+-- expectedType
+--     the string name of the expected type
+-- value
+--     the value that is tested. Its type will be compared against the expected type
+-- assertion:string
+--     optional. the string that describes the reason why the types should be equal
+function Assert.Type(expectedType, value, assertion)
+    assert(type(expectedType) == "string", "expectedType must be a string value");
     assertion = FormatName(assertion);
+    assert(expectedType == type(value),
+        format("Type mismatch%s, expected %s, got %s", assertion, s(expectedType), s(value)));
+end;
+
+-- Asserts that the specified actual value is identical(==) to the specified expected value.
+--
+-- expected:*
+--     the control value
+-- actual:*
+--     the tested value
+-- assertion:string
+--     optional. describes the reason why the specified values are identical
+function Assert.Identical(expected, actual, assertion)
+    Assert.Type(type(expected), actual, assertion);
+    assertion = FormatName(assertion);
+    assert(expected == actual,
+        format("Identity mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
+end;
+
+-- Asserts that the size of the specified actual list is equal to the expected size.
+--
+-- expectedSize:number, table
+--     indicates the expected size of the table, or could be a table whose size will be used
+--     as the control
+-- actual:table
+--     the value that is tested
+-- assertion:string
+--     optional. describes the reason why these two tables should be equal
+function Assert.SizesEqual(expectedSize, actual, assertion)
+    assertion = FormatName(assertion);
+    if type(expectedSize) == "table" then
+        expectedSize = #expectedSize;
+    end;
+    assert(type(expectedSize) == "number", "expectedSize is not a number. Type: " .. type(expectedSize));
+    assert(expectedSize >= 0, "expectedSize must be at least zero. expectedSize" .. s(expectedSize));
+    Assert.Type("table", actual, assertion);
+    assert(expectedSize == #actual,
+        format("Size mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
+end;
+
+-- Asserts that the two tables contain equal values for each key.
+--
+-- Tables are equal if:
+--  * they contain the same keys, determined by identity(==)
+--  * they contain equal(Assert.Equals) values for identical keys
+--  * they contain no keys not contained by the other
+--
+-- expected:table
+--     the control table
+-- actual:table
+--     the tested table
+-- assertion:string
+--     optional. describes why the two tables should be equal
+function Assert.TablesEqual(expected, actual, assertion)
+    assert(type(expected) == "table", "expected is not a table. Type: " .. type(expected));
+    if assertion ~= nil then
+        assert(type(assertion) == "string", "Assertion string is not a string. Type: " .. type(assertion));
+    else
+        assertion = "Tables are equal";
+    end;
     if expected == actual then
         -- Short-circuit for the common case.
         return;
     end;
-    if type(expected) ~= type(actual) then
-        error(format("Type mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
+    Assert.SizesEqual(expected, actual, assertion);
+    local keysInExpected = {};
+    for k, v in pairs(expected) do
+        keysInExpected[k] = true;
+        local actualValue = actual[k];
+        assert(actualValue ~= nil, format("Missing key '%s' in table%s", s(k), FormatName(assertion)));
+        Assert.Equals(expected[k], actual[k], assertion .. ": key " .. s(k));
     end;
-    if type(expected) == "table" then
-        if #expected ~= #actual then
-            error(format("Size mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
-        end;
-        for k, v in pairs(expected) do
-            Assert.Equals(expected[k], actual[k], unformattedName .. ": key " .. Strings.PrettyPrint(k));
-        end;
+    for k, _ in pairs(actual) do
+        assert(keysInExpected[k], format("Unexpected key '%s' in table%s", s(k), FormatName(assertion)));
+    end;
+end;
+
+-- Asserts that the two values are equal. 
+--
+-- The method of testing for equivalence depends on the expected value:
+--  * If the expected value is a table and it has an __eq method, identity(==) is used
+--  * If the expected value is a table, then Assert.TablesEqual is used
+--  * All other values are compared using identity(==)
+--
+-- expected:*
+--     the expected value
+-- actual:*
+--     the actual value
+-- assertion:string
+--     optional. describes why the two values should be equivalent
+function Assert.Equals(expected, actual, assertion)
+    if expected == actual then
+        -- Short-circuit for the common case.
         return;
     end;
-    error(format("Equality mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
+    if type(expected) == "table" and (not getmetatable(expected) or getmetatable(expected).__eq == nil) then
+        Assert.TablesEqual(expected, actual, assertion);
+        return;
+    end;
+    Assert.Identical(expected, actual, assertion);
 end;
