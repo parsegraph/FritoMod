@@ -246,16 +246,57 @@ function Undoable(func, ...)
     end;
 end;
 
-function HookGlobal(name, func, ...)
-    local func = Curry(func, ...);
-    local old = _G[name];
-    _G[name] = function(...)
-        func(...);
-        if old then
-            return old(...);
+-- Decorates the global function of the specified name, calling the specified function whenever the
+-- global is called. The spy function merely observes calls to the global; it does not affect them.
+--
+-- name:*
+--     the name of the global function
+-- spyFunc, ...
+--     the function that should be called before any invocation of the global. It should expect the
+--     same arguments as the spied global. Its returned values are ignored
+-- returns
+--     a remover function that, when invoked, restores the global to its value before the global was
+--     hooked. The remover will throw if the global has been changed since this function was called.
+function SpyGlobal(name, spyFunc, ...)
+    spyFunc = Curry(spyFunc, ...);
+    local spiedGlobal = _G[name];
+    local function Spy(...)
+        spyFunc(...);
+        if spiedGlobal then
+            return spiedGlobal(...);
         end;
     end;
+    _G[name] = Spy; 
     return function()
-        _G[name] = old;
+        assert(_G[name] == Spy, "Global has been modified, so spy cannot be safely removed. Name: " .. name);
+        _G[name] = spiedGlobal;
+    end;
+end;
+
+-- Hooks the global function with the specified name, calling the specified function before the global
+-- is called. The hook function should return the arguments passed to it, as these arguments will then
+-- be passed to the original global, like the following:
+--     return originalGlobal(hookFunc(...));
+--
+-- name:*
+--     the global name of the function that is hooked
+-- hookFunc, ...
+--     the function that is called before the hooked global is called. It should expect the arguments that
+--     the hooked global would expect, and should return those arguments. The returned arguments are then
+--     passed to the hooked global
+-- returns
+--     a remover function that, when invoked, restores the global to its value before the global was
+--     hooked. The remover will throw if the global has been changed since this function was called.
+function HookGlobal(name, hookFunc, ...)
+    hookFunc = Curry(hookFunc, ...);
+    local hookedGlobal = _G[name];
+    assert(IsCallable(hookedGlobal), "Global function is not callable. Name: " .. name);
+    local function Hook(...)
+        return hookedGlobal(hookFunc(...));
+    end;
+    _G[name] = Hook;
+    return function()
+        assert(_G[name] == Hook, "Global has been modified, so hook cannot be safely removed. Name: " .. name);
+        _G[name] = hookedGlobal;
     end;
 end;
