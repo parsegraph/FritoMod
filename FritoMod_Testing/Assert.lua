@@ -127,7 +127,7 @@ function Assert.SizesEqual(expectedSize, actual, assertion)
     assert(expectedSize >= 0, "expectedSize must be at least zero. expectedSize" .. s(expectedSize));
     Assert.Type("table", actual, assertion);
     assert(expectedSize == #actual,
-        format("Size mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
+        format("Size mismatch%s, expected %s, got %s", assertion, s(expectedSize), s(actual)));
 end;
 
 Assert.SizeEqual = Assert.SizesEqual;
