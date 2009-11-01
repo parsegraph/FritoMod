@@ -2,12 +2,20 @@
 -- requires some code that's not in FritoMod proper.
 
 function TestingSlashCommand()
-    do
-        local baseColor = "75B2DD";
-        local testNameColor = "00BFFF";
-        local function TestName(testIndex, name)
-            return format("|r|c%s|rTest %d (|c%s%s|r)", baseColor, testIndex, testNameColor, name);
+    local baseColor = "75B2DD";
+    local testNameColor = "00BFFF";
+    local passedResultColor = "00FF00";
+    local failedResultColor = "FF0000";
+    
+    local function TestName(testIndex, name)
+        return format("|r|cff%s|rTest %d (|cff%s%s|r)", baseColor, testIndex, testNameColor, name);
+    end;
+
+    local function ColorResult(successful)
+        if successful then
+            return format("|cff%sPassed|r", passedResultColor);
         end;
+        return format("|cff%sFailed|r", failedResultColor);
     end;
 
     local tests, numRan;
@@ -19,10 +27,7 @@ function TestingSlashCommand()
             end,
                     
             FinishAllTests = function(self, suite, successful)
-                local result = "Failed";
-                if successful then
-                    result = "Passed";
-                end;
+                local result = ColorResult(successful);
                 print(format("%d tests ran. Result: ", numRan)  ..  result);
             end
         })),
