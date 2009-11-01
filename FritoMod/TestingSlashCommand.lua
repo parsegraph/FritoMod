@@ -2,13 +2,16 @@
 -- requires some code that's not in FritoMod proper.
 
 function TestingSlashCommand()
-    local baseColor = "75B2DD";
     local testNameColor = "00BFFF";
     local passedResultColor = "00FF00";
     local failedResultColor = "FF0000";
-    
+
+    local function Print(text, ...)
+        DEFAULT_CHAT_FRAME:AddMessage(format(text, ...), 0x00, 0xCC, 0xCC);
+    end;
+
     local function TestName(testIndex, name)
-        return format("|r|cff%s|rTest %d (|cff%s%s|r)", baseColor, testIndex, testNameColor, name);
+        return format("Test %d (|cff%s%s|r)", testIndex, testNameColor, name);
     end;
 
     local function ColorResult(successful)
@@ -27,8 +30,7 @@ function TestingSlashCommand()
             end,
                     
             FinishAllTests = function(self, suite, successful)
-                local result = ColorResult(successful);
-                print(format("%d tests ran. Result: ", numRan)  ..  result);
+                Print("%d tests ran. Result: %s", numRan, ColorResult(successful));
             end
         })),
 
@@ -37,11 +39,11 @@ function TestingSlashCommand()
                 numRan = numRan + 1;
             end,
             TestFailed = function(self, suite, name, runner, reason)
-                print(format("%s failed with ssertion: %s" , TestName(#tests + 1, name), reason));
+                Print("%s failed with ssertion: %s" , TestName(#tests + 1, name), reason);
                 Lists.Insert(tests, runner);
             end,
             TestErrored = function(self, suite, name, runner, errorMessage)
-                print(format("%s crashed with error: %s" , TestName(#tests + 1, name), errorMessage));
+                Print("%s crashed with error: %s" , TestName(#tests + 1, name), errorMessage);
                 Lists.Insert(tests, runner);
             end,
         }))
@@ -56,7 +58,7 @@ function TestingSlashCommand()
             local index = tonumber(cmd);
             local test = tests[index];
             if not test then
-                print("Test not found: '" .. cmd .. "'");
+                Print("Test not found: '%s'", cmd);
                 return;
             end;
             test();
