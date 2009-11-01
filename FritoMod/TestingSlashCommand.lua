@@ -10,7 +10,7 @@ function TestingSlashCommand()
         DEFAULT_CHAT_FRAME:AddMessage(format(text, ...), 0x00, 0xCC, 0xCC);
     end;
 
-    local function TestName(testIndex, name)
+    local function TestInfo(testIndex, name)
         return format("Test %d (|cff%s%s|r)", testIndex, testNameColor, name);
     end;
 
@@ -39,11 +39,13 @@ function TestingSlashCommand()
                 numRan = numRan + 1;
             end,
             TestFailed = function(self, suite, name, runner, reason)
-                Print("%s failed with ssertion: %s" , TestName(#tests + 1, name), reason);
+                local testInfo = TestInfo(#tests + 1, name)
+                Print("[FAIL] %s\n%s", testInfo, reason);
                 Lists.Insert(tests, runner);
             end,
             TestErrored = function(self, suite, name, runner, errorMessage)
-                Print("%s crashed with error: %s" , TestName(#tests + 1, name), errorMessage);
+                local testInfo = TestInfo(#tests + 1, name)
+                Print("[CRASH] %s\n%s", testInfo, reason);
                 Lists.Insert(tests, runner);
             end,
         }))
