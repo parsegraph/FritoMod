@@ -86,40 +86,44 @@ local function WrapTestRunner(testRunner)
     end;
 end;
 
-local function InterpretTestResult(assertionFlag, testRanSuccessfully, result, extendedReason)
+local function InterpretTestResult(stackTraces, testRanSuccessfully, result, extendedReason)
     if testRanSuccessfully and result ~= false then
         return "Successful";
     end;
     if result == false then
         return "Failed", tostring(extendedReason or "Test returned false");
     end;
-    if assertionFlag:IsSet() then
-        return "Failed", tostring(result);
+    if #stackTraces > 0 then
+        local stackTrace = table.remove(stackTraces);
+        local file, num, reason = strsplit(":", tostring(result), 3);
+        return "Failed", format("Assertion failed: \"%s\"\n%s", strtrim(reason), stackTrace);
     end;
-    return "Errored", tostring(result);
+    return "Crashed", tostring(result);
 end;
 
 local function RunTest(self, test, testName)
-    local assertionFlag = Tests.Flag();
     local success, result = pcall(CoerceTest, test);
     if not success then
         self.listener:InternalError(self, testName, result);
         return false;
     end;
     local testRunner = result;
+    local stackTraces = {};
     self.listener:TestStarted(self, testName, testRunner);
-    local unhookAssert = HookGlobal("assert", function(expression, ...)
+    local unhookAssert = SpyGlobal("assert", function(expression, message, ...)
         if not expression then
-            assertionFlag:Raise();
+            table.insert(stackTraces, debugstack(4, 3, 0)); 
         end;
     end);
-    local unhookError = HookGlobal("error", assertionFlag.Raise);
-    local testState, reason = InterpretTestResult(assertionFlag, pcall(testRunner));
+    local unhookError = SpyGlobal("error", function()
+        table.insert(stackTraces, debugstack(4, 3, 0)); 
+    end);
+    local testState, reason = InterpretTestResult(stackTraces, pcall(testRunner));
     unhookAssert();
     unhookError();
     testRunner = WrapTestRunner(testRunner);
     self.listener["Test" .. testState](self.listener, self, testName, testRunner, reason);
-    return testState == "Successful";
+    return testState;
 end;
 
 -- Runs tests from this test suite. Every test returned by GetTests() is invoked. Their
@@ -139,17 +143,30 @@ end;
 --     a string describing the reason of the failure
 function TestSuite:Run(...)
     self.listener:StartAllTests(self, ...);
-    local unsuccessfulTests = 0;
+    local testResults = {
+        All = Tests.Counter(),
+        Successful = Tests.Counter(),
+        Failed = Tests.Counter(),
+        Crashed = Tests.Counter()
+    };
     for test, testName in self:TestGenerator(...) do
-        if not RunTest(self, test, testName) then
-            unsuccessfulTests = unsuccessfulTests + 1;
-        end;
+        testResults.All:Hit();
+        local result = RunTest(self, test, testName);
+        testResults[result].Hit();
     end;
-    self.listener:FinishAllTests(self, unsuccessfulTests == 0);
-    if unsuccessfulTests == 0 then
-        return true;
+    local successful = testResults.All:Count() == testResults.Successful:Count();
+    local report;
+    if successful then
+        report = format("All %d tests ran successfully.", testResults.All:Count());
+    else
+        report = format("%d of %d tests ran successfully, %d failed, %d crashed", 
+            testResults.Successful:Count(), 
+            testResults.All:Count(),
+            testResults.Failed:Count(),
+            testResults.Crashed:Count());
     end;
-    return false, format("%d test(s) failed", unsuccessfulTests);
+    self.listener:FinishAllTests(self, successful, report);
+    return successful, report;
 end;
 
 -- Returns all tests that this test suite contains. A test may be one of the following:

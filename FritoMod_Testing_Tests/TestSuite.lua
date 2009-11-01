@@ -1,5 +1,66 @@
 local Suite = ReflectiveTestSuite:New("FritoMod_Testing.TestSuite");
 
+function Suite:TestErrorStackTraceOutputsProperly()
+    local suite = TestSuite:New();
+    function suite:GetTests()
+        return {
+            function()
+                error("Intentional error");
+            end;
+        };
+    end;
+    suite:AddListener(Metatables.Noop({
+        TestFailed = function(self, suite, testName, testRunner, reason)
+            local reason, trace = strsplit("\n", reason, 3);
+            Assert.Equals("Assertion failed: \"Intentional error\"", reason);
+            assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
+                "First line of stace trace is relevant. Trace: " .. trace);
+        end
+    }));
+    suite:Run();
+end;
+
+function Suite:TestAssertStackTraceOutputsProperly()
+    local suite = TestSuite:New();
+    function suite:GetTests()
+        return {
+            function()
+                assert(false, "Intentional false assertion");
+            end;
+        };
+    end;
+    suite:AddListener(Metatables.Noop({
+        TestFailed = function(self, suite, testName, testRunner, reason)
+            local reason, trace = strsplit("\n", reason, 3);
+            Assert.Equals("Assertion failed: \"Intentional false assertion\"", reason);
+            assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
+                "First line of stace trace is relevant. Trace: " .. trace);
+        end
+    }));
+    suite:Run();
+end;
+
+function Suite:TestCrashStackTraceOutputsProperly()
+    local suite = TestSuite:New();
+    function suite:GetTests()
+        return {
+            function()
+                local foo = {};
+                foo = nil;
+                -- Intentional crash
+                foo.bar = 42;
+            end;
+        };
+    end;
+    suite:AddListener(Metatables.Noop({
+        TestCrashed = function(self, suite, testName, testRunner, reason)
+            assert(reason:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+: attempt to"),
+                "Reason contains stack trace");
+        end
+    }));
+    suite:Run();
+end;
+
 function Suite:TestThatTestSuiteErrorsWhenNotOverridden()
     local suite = TestSuite:New();
     Assert.Exception("Suite requires GetTests to be overridden", suite.Run, suite);
