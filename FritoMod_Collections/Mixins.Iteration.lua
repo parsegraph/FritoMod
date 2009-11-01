@@ -745,10 +745,18 @@ function Mixins.Iteration(library)
         --     the first key that corresponds to to a value that matches the specified value, 
         --     according to comparatorFunc
         function library.KeyFor(iterable, value, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc);
+            if comparatorFunc ~= nil or select("#", ...) > 0 then
+                comparatorFunc = Curry(comparatorFunc, ...);
+            end;
             for key, candidate in library.Iterator(iterable) do
-                if comparatorFunc(candidate, value) then
-                    return key;
+                if comparatorFunc ~= nil then
+                    if comparatorFunc(candidate, value) then
+                        return key;
+                    end;
+                else
+                    if candidate == value then
+                        return key;
+                    end;
                 end;
             end;
         end;
