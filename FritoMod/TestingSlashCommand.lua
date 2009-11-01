@@ -2,12 +2,41 @@
 -- requires some code that's not in FritoMod proper.
 
 function TestingSlashCommand()
-    local testNameColor = "00BFFF";
+    local testNameColor = "FFE5B4";
     local passedResultColor = "00FF00";
     local failedResultColor = "FF0000";
 
+    local infoColor = 0xc9c0bb;
+
+    local errorColor = 0xE34234;
+    local testCrashedColor = "E34234";
+    local crashedReasonColor = "FA8072"; 
+
+    local failureColor = 0xe1a95f;
+    local testFailedColor = "EF9B0F";
+    local failedReasonColor = "c2b280";
+
+    local function DumpColor(color)
+        local r = bit.rshift(bit.band(color, 0xFF0000), 16) / 0xFF;
+        local g = bit.rshift(bit.band(color, 0x00FF00), 8) / 0xFF;
+        local b = bit.band(color, 0x0000FF) / 0xFF;
+        return r, g, b;
+    end;
+
+    local function PrintWithColor(text, r, g, b)
+        DEFAULT_CHAT_FRAME:AddMessage(text, r, g, b);
+    end;
+
     local function Print(text, ...)
-        DEFAULT_CHAT_FRAME:AddMessage(format(text, ...), 0x00, 0xCC, 0xCC);
+        PrintWithColor(format(text, ...), DumpColor(infoColor));
+    end;
+
+    local function PrintFailure(text, ...)
+        PrintWithColor(format(text, ...), DumpColor(failureColor));
+    end;
+
+    local function PrintError(text, ...)
+        PrintWithColor(format(text, ...), DumpColor(errorColor));
     end;
 
     local function TestInfo(testIndex, name)
@@ -39,13 +68,13 @@ function TestingSlashCommand()
                 numRan = numRan + 1;
             end,
             TestFailed = function(self, suite, name, runner, reason)
-                local testInfo = TestInfo(#tests + 1, name)
-                Print("[FAIL] %s\n%s", testInfo, reason);
+                local testIndex = #tests + 1;
+                PrintFailure("[|cff%sFAIL|r] %d. %s\n|cff%s%s|r", testFailedColor, testIndex, name, failedReasonColor, reason);
                 Lists.Insert(tests, runner);
             end,
             TestErrored = function(self, suite, name, runner, errorMessage)
-                local testInfo = TestInfo(#tests + 1, name)
-                Print("[CRASH] %s\n%s", testInfo, reason);
+                local testIndex = #tests + 1;
+                PrintError("[|cff%sCRASH|r] %d. %s\n|cff%s%s|r", testCrashedColor, testIndex, name, crashedReasonColor, errorMessage);
                 Lists.Insert(tests, runner);
             end,
         }))
