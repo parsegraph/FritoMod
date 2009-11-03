@@ -1,3 +1,10 @@
+if nil ~= require then
+    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/currying";
+
+    require "FritoMod_OOP/OOP/methods";
+end;
+
 local SUPER_NAME = "super";
 local CLASS_NAME = "class";
 local CONSTRUCTOR_NAME = "Constructor";
