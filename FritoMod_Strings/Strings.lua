@@ -181,6 +181,18 @@ function Strings.SplitByDelimiter(delimiter, originalString)
     return items;
 end;
 
+
+-- Removes leading and trailing whitespace from the specified string.
+--
+-- str:string
+--     the string that is the target of this operation
+-- returns:string
+--     the specified string without leading or trailing whitespace
+function Strings.Trim(str)
+    str = str:sub(str:find("[^ ]") or #str);
+    return str:sub(1, (str:find("[ ]*$" or 1)-1) or #str);
+end;
+
 -- Splits a camelCase'd or ProperCase'd string into lower-case words. Acronyms will be 
 -- treated as single words.
 --
