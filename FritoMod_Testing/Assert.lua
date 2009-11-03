@@ -1,7 +1,7 @@
 if nil ~= require then
     require "FritoMod_Functional/Metatables";
 
-    require "FritoMod_Strings/methods";
+    require "FritoMod_Strings/Strings";
 end;
 
 local s = Strings.PrettyPrint;

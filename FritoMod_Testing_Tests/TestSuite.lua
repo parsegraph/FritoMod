@@ -1,3 +1,11 @@
+if nil ~= require then
+    require "FritoMod_Testing/ReflectiveTestSuite";
+    require "FritoMod_Testing/Assert";
+    require "FritoMod_Testing/Tests";
+
+    require "FritoMod_Testing/TestSuite";
+end;
+
 local Suite = ReflectiveTestSuite:New("FritoMod_Testing.TestSuite");
 
 function Suite:TestErrorStackTraceOutputsProperly()
