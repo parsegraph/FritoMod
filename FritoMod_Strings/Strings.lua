@@ -147,22 +147,19 @@ function Strings.JoinValues(delimiter, ...)
     return Strings.Join(delimiter, { ... });
 end
 
--- Splits originalString by the given delimiter, with an underscore used as the default.
+-- Splits originalString by the given delimiter.
 --
--- delimiter
+-- delimiter:regex
 --     a pattern indicating what defines the "split" characters
-function Strings.SplitByDelimiter(delimiter, originalString)
-    if originalString == nil then
-        delimiter, originalString = nil, delimiter;
-    end;
-    assert(originalString ~= nil, "originalString is nil");
-    if delimiter == nil then
-        delimiter = "[_]+";
-    end;
+-- limit:number
+--     optional. the final number of strings that should be returned
+-- returns:list
+--     a list of strings, split by the specified delimiter
+function Strings.SplitByDelimiter(delimiter, originalString, limit)
     delimiter = tostring(delimiter);
     local items = {};
     local remainder = tostring(originalString);
-    while true do
+    while limit == nil or #items + 1 < limit do
         local startMatch, endMatch = remainder:find(delimiter);
         if not startMatch then
             if #remainder > 0 then
@@ -174,6 +171,9 @@ function Strings.SplitByDelimiter(delimiter, originalString)
             Lists.Insert(items, remainder:sub(1, startMatch - 1));
         end;
         remainder = remainder:sub(endMatch + 1);
+    end;
+    if #remainder > 0 then
+        table.insert(items, remainder);
     end;
     if #items == 0 then
         Lists.Insert(items, "");
