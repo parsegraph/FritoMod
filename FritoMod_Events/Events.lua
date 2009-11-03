@@ -27,6 +27,15 @@
 -- The event registry is designed to be as lazy as possible, so please remove listeners when you're finished
 -- listening with them so unused events can be cleaned up.
 
+if nil ~= require then
+    -- This file requires WoW-specific functionality.
+
+    require "FritoMod_Functional/methods";
+
+    require "FritoMod_Collections/Lists";
+end;
+
+
 Events = {};
 local Events = Events;
 local eventListeners;
