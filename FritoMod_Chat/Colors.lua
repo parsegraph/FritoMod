@@ -1,3 +1,17 @@
+if nil ~= require then
+    -- This file requires WoW-specific functionality
+
+    require "FritoMod_Functional/Metatables";
+
+    require "FritoMod_Math/Math";
+
+    require "FritoMod_Collections/Lists";
+
+    require "FritoMod_Strings/Strings";
+
+    require "FritoMod_Media/MediaLibrary";
+end;
+
 Colors = Metatables.Defensive();
 local Colors = Colors;
 

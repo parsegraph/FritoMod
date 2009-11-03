@@ -40,6 +40,17 @@
 -- Mediums[r]("This is sent to the party");
 -- Mediums[r]("This is sent to the guild again");
 
+if nil ~= require then
+    -- This file uses WoW-specific functionality
+ 
+    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/currying";
+
+    require "FritoMod_Collections/Tables";
+
+    require "FritoMod_Strings/Strings";
+end;
+
 Mediums = {};
 local Mediums = Mediums;
 
