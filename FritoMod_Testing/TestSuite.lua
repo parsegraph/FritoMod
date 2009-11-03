@@ -109,11 +109,11 @@ local function RunTest(self, test, testName)
     self.listener:TestStarted(self, testName, testRunner);
     local unhookAssert = SpyGlobal("assert", function(expression, message, ...)
         if not expression then
-            table.insert(stackTraces, debugstack(4, 3, 0)); 
+            table.insert(stackTraces, Tests.FormattedPartialStackTrace(6, 10, 0));
         end;
     end);
     local unhookError = SpyGlobal("error", function()
-        table.insert(stackTraces, debugstack(4, 3, 0)); 
+        table.insert(stackTraces, Tests.FormattedPartialStackTrace(6, 10, 0));
     end);
     local testState, reason = InterpretTestResult(stackTraces, pcall(testRunner));
     unhookAssert();
