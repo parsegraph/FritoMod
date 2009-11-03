@@ -1,3 +1,7 @@
+if nil ~= require then
+    require "FritoMod_Collections/Lists";
+end;
+
 Math = {};
 local Math = Math;
 
