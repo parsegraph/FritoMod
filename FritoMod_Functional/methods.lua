@@ -107,7 +107,7 @@ do
             local nilValueString = ("nil, "):rep(cumulative);
             local creator = tableCreators[cumulative];
             if not creator then
-                creator = loadstring(format("return { %s };", nilValueString));
+                creator = loadstring(("return { %s };"):format(nilValueString));
                 tableCreators[cumulative] = creator;
             end;
             local primedCollectedValues = creator();

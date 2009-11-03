@@ -28,19 +28,19 @@ function TestingSlashCommand()
     end;
 
     local function Print(text, ...)
-        PrintWithColor(format(text, ...), DumpColor(infoColor));
+        PrintWithColor(text:format(...), DumpColor(infoColor));
     end;
 
     local function PrintFailure(text, ...)
-        PrintWithColor(format(text, ...), DumpColor(failureColor));
+        PrintWithColor(text:format(...), DumpColor(failureColor));
     end;
 
     local function PrintError(text, ...)
-        PrintWithColor(format(text, ...), DumpColor(errorColor));
+        PrintWithColor(text:format(...), DumpColor(errorColor));
     end;
 
     local function TestInfo(testIndex, name)
-        return format("Test %d (|cff%s%s|r)", testIndex, testNameColor, name);
+        return ("Test %d (|cff%s%s|r)"):format(testIndex, testNameColor, name);
     end;
 
     local tests, numRan, numSuccessful, numCrashed, numFailed;
@@ -56,9 +56,9 @@ function TestingSlashCommand()
                     
             FinishAllTests = function(self, suite, successful, report)
                 if successful then
-                    PrintWithColor(format("Cumulative: All %d tests ran successfully.", numRan), DumpColor(cumulativePassColor));
+                    PrintWithColor(("Cumulative: All %d tests ran successfully."):format(numRan), DumpColor(cumulativePassColor));
                 else
-                    PrintWithColor(format("Cumulative: %d of %d tests ran successfuly. %d failed, %d crashed",
+                    PrintWithColor(("Cumulative: %d of %d tests ran successfuly. %d failed, %d crashed"):format(
                         numSuccessful,
                         numRan,
                         numFailed,

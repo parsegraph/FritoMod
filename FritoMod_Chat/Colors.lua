@@ -15,7 +15,7 @@ function Colors.ColorMessage(color, message)
         color = Chat:GetColorString(color);
     end;
     if #color ~= 8 or not string.find(color, "^[0-9a-fA-F]+$") then
-        error(format("Color is invalid: '%s'", color));
+        error(("Color is invalid: '%s'"):format(color));
     end;
     return "|c" .. color .. message .. "|r";
 end;

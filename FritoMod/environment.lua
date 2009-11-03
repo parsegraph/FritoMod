@@ -203,7 +203,7 @@ end;
 function Environment:GetBootstrappers(runLevel)
     local bootstrappers = Environment.bootstrappers[runLevel];
     if not bootstrappers then
-        error(format("Invalid runLevel '%s'", tostring(runLevel)));
+        error(("Invalid runLevel '%s'"):format(tostring(runLevel)));
     end;
     return bootstrappers;
 end;

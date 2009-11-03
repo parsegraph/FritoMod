@@ -20,7 +20,7 @@ function MappedTestSuite:GetTests(matcher, ...)
     end);
     iterator = Iterators.DecorateIterator(iterator, function(key, value)
         if name then
-            return format("%s.%s", name, key), value;
+            return ("%s.%s"):format(name, key), value;
         end;
         return key, value;
     end);

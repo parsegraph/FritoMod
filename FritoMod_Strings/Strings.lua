@@ -49,7 +49,7 @@ function Strings.PrettyPrint(value)
     local valueType = Strings.ProperNounize(type(value));
     if valueType == "Table" then
         if OOP.IsClass(value) then
-            return format("Class@%s", Reference(value));
+            return ("Class@%s"):format(Reference(value));
         end;
         if OOP.IsInstance(value) then
             return value:ToString();
@@ -70,7 +70,7 @@ function Strings.PrettyPrintFunction(value)
     if not name then
         name = Reference(value);
     end
-    return format("Function@%s", name);
+    return ("Function@%s"):format(name);
 end;
 
 function Strings.PrettyPrintNamedNumber(number, itemName, pluralName)
@@ -81,9 +81,9 @@ function Strings.PrettyPrintNamedNumber(number, itemName, pluralName)
     end;
     local numberString = Strings.PrettyPrintNumber(number);
     if number == 1 then
-        return format("%s %s", numberString, itemName);
+        return ("%s %s"):format(numberString, itemName);
     end;
-    return format("%s %s", numberString, pluralName);
+    return ("%s %s"):format(numberString, pluralName);
 end;
 
 function Strings.PrettyPrintList(value)
@@ -94,7 +94,7 @@ function Strings.PrettyPrintList(value)
     end;
     local size = Strings.PrettyPrintNamedNumber(Strings.PrettyPrintNumber(size), "item");
     local contents = Lists.Map(value, Strings.PrettyPrint);
-    return format("[<%s> %s]", size, Strings.Join(", ", contents));
+    return ("[<%s> %s]"):format(size, Strings.Join(", ", contents));
 end;
 
 function Strings.PrettyPrintMap(value)
@@ -105,9 +105,9 @@ function Strings.PrettyPrintMap(value)
     end;
     size = Strings.PrettyPrintNamedNumber(Strings.PrettyPrintNumber(size), "item");
     local contents = Tables.MapPairs(value, function(key, value)
-        return format("%s = %s", Strings.PrettyPrint(key), Strings.PrettyPrint(value));
+        return ("%s = %s"):format(Strings.PrettyPrint(key), Strings.PrettyPrint(value));
     end);
-    return format("[<%s> %s]", size, Strings.Join(", ", contents));
+    return ("[<%s> %s]"):format(size, Strings.Join(", ", contents));
 end;
 
 function Strings.PrettyPrintNumber(value)
@@ -125,7 +125,7 @@ end;
 
 function Strings.PrettyPrintString(value)
     value = tostring(value);
-    return format('"%s"', value);
+    return ('"%s"'):format(value);
 end;
 
 function Strings.Join(delimiter, items)

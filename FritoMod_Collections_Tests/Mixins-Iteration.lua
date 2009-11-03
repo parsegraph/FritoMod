@@ -35,7 +35,7 @@ function Mixins.IterationTests(Suite, library)
 
     function Suite:CheckPair(key, value, assertion)
         assert(library.ContainsPair(Suite:NewIterable(), key, value), 
-            format("Iterable contains pair (%s, %s)", tostring(key), tostring(value)));
+            ("Iterable contains pair (%s, %s)"):format(tostring(key), tostring(value)));
     end;
 
     function Suite:TestFalsyIterable()

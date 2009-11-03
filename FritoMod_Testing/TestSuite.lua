@@ -21,7 +21,7 @@ function TestSuite:ToString()
     if not name then
         name = Tables.Reference(self);
     end;
-    return format("TestSuite(%s)", name);
+    return ("TestSuite(%s)"):format(name);
 end;
 
 function TestSuite:AddListener(listener)
@@ -96,7 +96,7 @@ local function InterpretTestResult(stackTraces, testRanSuccessfully, result, ext
     if #stackTraces > 0 then
         local stackTrace = table.remove(stackTraces);
         local file, num, reason = strsplit(":", tostring(result), 3);
-        return "Failed", format("Assertion failed: \"%s\"\n%s", strtrim(reason), stackTrace);
+        return "Failed", ("Assertion failed: \"%s\"\n%s"):format(strtrim(reason), stackTrace);
     end;
     return "Crashed", tostring(result);
 end;
@@ -157,9 +157,9 @@ function TestSuite:Run(...)
     local successful = testResults.All:Count() == testResults.Successful:Count();
     local report;
     if successful then
-        report = format("All %d tests ran successfully.", testResults.All:Count());
+        report = ("All %d tests ran successfully."):format(testResults.All:Count());
     else
-        report = format("%d of %d tests ran successfully, %d failed, %d crashed", 
+        report = ("%d of %d tests ran successfully, %d failed, %d crashed"):format(
             testResults.Successful:Count(), 
             testResults.All:Count(),
             testResults.Failed:Count(),

@@ -8,7 +8,7 @@
 -- local remover;
 -- remover = Events["UNIT_SPELLMISS"](function(unitId, reason)
 --     count = count + 1;
---     Mediums.Say(format("%s missed. Reason: " .. UnitName(unitId), reason));
+--     Mediums.Say(("%s missed. Reason: %s"):format(reason, UnitName(unitId)));
 --     if count > 5 then 
 --         remover();
 --     end;

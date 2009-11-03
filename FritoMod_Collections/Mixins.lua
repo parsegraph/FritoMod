@@ -12,11 +12,11 @@ end;
 -- operation
 --     the function that is mixed in. It should expect a iterator function for its first argument
 function Mixins.KeyValueOperation(library, name, operation)
-    if library[format(name, "Key")] == nil then
-        library[format(name, "Key")] = Curry(operation, library.KeyIterator);
+    if library[name:format("Key")] == nil then
+        library[name:format("Key")] = Curry(operation, library.KeyIterator);
     end;
-    if library[format(name, "Value")] == nil then
-        library[format(name, "Value")] = Curry(operation, library.ValueIterator);
+    if library[name:format("Value")] == nil then
+        library[name:format("Value")] = Curry(operation, library.ValueIterator);
     end;
 end;
 
@@ -32,18 +32,18 @@ end;
 --     The chooser has the signature chooser(key, value) and returns the appropriate item for
 --     the item type.
 function Mixins.KeyValuePairOperation(library, name, operation)
-    if library[format(name, "Pair")] == nil then
-        library[format(name, "Pair")] = Curry(operation, function(key, value)
+    if library[name:format("Pair")] == nil then
+        library[name:format("Pair")] = Curry(operation, function(key, value)
             return key, value;
         end);
     end;
-    if library[format(name, "Key")] == nil then
-        library[format(name, "Key")] = Curry(operation, function(key, value)
+    if library[name:format("Key")] == nil then
+        library[name:format("Key")] = Curry(operation, function(key, value)
             return key;
         end);
     end;
-    if library[format(name, "Value")] == nil then
-        library[format(name, "Value")] = Curry(operation, function(key, value)
+    if library[name:format("Value")] == nil then
+        library[name:format("Value")] = Curry(operation, function(key, value)
             return value;
         end);
     end;
@@ -59,14 +59,14 @@ end;
 --     the function that is mixed in. It should expect the item type as the first
 --     argument.
 function Mixins.KeyValuePairOperationByName(library, name, operation)
-    if library[format(name, "Pair")] == nil then
-        library[format(name, "Pair")] = Curry(operation, "Pair");
+    if library[name:format("Pair")] == nil then
+        library[name:format("Pair")] = Curry(operation, "Pair");
     end;
-    if library[format(name, "Key")] == nil then
-        library[format(name, "Key")] = Curry(operation, "Key");
+    if library[name:format("Key")] == nil then
+        library[name:format("Key")] = Curry(operation, "Key");
     end;
-    if library[format(name, "Value")] == nil then
-        library[format(name, "Value")] = Curry(operation, "Value");
+    if library[name:format("Value")] == nil then
+        library[name:format("Value")] = Curry(operation, "Value");
     end;
 end;
 

@@ -130,7 +130,7 @@ function Iterators.Counter(startValue, endValue, step)
     end;
     assert(step ~= 0, "Step is zero");
     assert((step > 0  and startValue < endValue) or (step < 0 and startValue > endValue), 
-        format("Step is not valid for the range. Start: %d, End: %d, Step: %d", minValue, endValue, step)
+        ("Step is not valid for the range. Start: %d, End: %d, Step: %d"):format(minValue, endValue, step)
     );
     local current = nil;
     return function()

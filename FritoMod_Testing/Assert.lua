@@ -8,7 +8,7 @@ local function FormatName(assertion)
     if not assertion then
         return "";
     end;
-    return format(" for assertion '%s'", tostring(assertion));
+    return (" for assertion '%s'"):format(tostring(assertion));
 end;
 
 -- Asserts that the specified function fails. The return value or exception message
@@ -19,7 +19,7 @@ end;
 -- func, ...
 --     the function that is tested
 function Assert.Exception(assertion, func, ...)
-    assert(not pcall(func, ...), format("Function must raise an exception%s", FormatName(assertion)));
+    assert(not pcall(func, ...), ("Function must raise an exception%s"):format(FormatName(assertion)));
 end;
 
 Assert.Failure = Assert.Exception;
@@ -37,7 +37,7 @@ Assert.RaisesException = Assert.Exception;
 --     the function that is tested
 function Assert.Success(assertion, func, ...)
     local result, message = pcall(func, ...);
-    assert(result, format("Function must be successful%s, but failed with result: %s", 
+    assert(result, ("Function must be successful%s, but failed with result: %s"):format(
         FormatName(assertion), tostring(message or "")));
 end;
 
@@ -53,7 +53,7 @@ Assert.Succeeds = Assert.Success;
 --     the reason why the specified value should be truthy
 function Assert.Truthy(actual, assertion)
     assertion = FormatName(assertion);
-    assert(actual, format("Value was not truthy%s, value was %s", assertion, s(actual)));
+    assert(actual, ("Value was not truthy%s, value was %s"):format(assertion, s(actual)));
 end;
 
 -- Asserts that the specified value is falsy. Specifically, it asserts that the specified
@@ -65,7 +65,7 @@ end;
 --     the reason why the specified value should be falsy
 function Assert.Falsy(actual, assertion)
     assertion = FormatName(assertion);
-    assert(not actual, format("Value was not falsy%s, value was %s", assertion, s(actual)));
+    assert(not actual, ("Value was not falsy%s, value was %s"):format(assertion, s(actual)));
 end;
 
 -- Asserts that the specified value is nil.
@@ -76,7 +76,7 @@ end;
 --     optional. the reason why the tested value must be nil
 function Assert.Nil(actual, assertion)
     assertion = FormatName(assertion);
-    assert(nil == actual, format("Value was not nil%s, value was %s", assertion, s(actual)));
+    assert(nil == actual, ("Value was not nil%s, value was %s"):format(assertion, s(actual)));
 end;
 
 -- Asserts that the specified value is of the specified expected type.
@@ -91,7 +91,7 @@ function Assert.Type(expectedType, value, assertion)
     assert(type(expectedType) == "string", "expectedType must be a string value");
     assertion = FormatName(assertion);
     assert(expectedType == type(value),
-        format("Type mismatch%s, expected %s, got %s", assertion, s(expectedType), s(value)));
+        ("Type mismatch%s, expected %s, got %s"):format(assertion, s(expectedType), s(value)));
 end;
 
 -- Asserts that the specified actual value is identical(==) to the specified expected value.
@@ -106,7 +106,7 @@ function Assert.Identical(expected, actual, assertion)
     Assert.Type(type(expected), actual, assertion);
     assertion = FormatName(assertion);
     assert(expected == actual,
-        format("Identity mismatch%s, expected %s, got %s", assertion, s(expected), s(actual)));
+        ("Identity mismatch%s, expected %s, got %s"):format(assertion, s(expected), s(actual)));
 end;
 
 -- Asserts that the size of the specified actual list is equal to the expected size.
@@ -127,7 +127,7 @@ function Assert.SizesEqual(expectedSize, actual, assertion)
     assert(expectedSize >= 0, "expectedSize must be at least zero. expectedSize" .. s(expectedSize));
     Assert.Type("table", actual, assertion);
     assert(expectedSize == #actual,
-        format("Size mismatch%s, expected %s, got %s", assertion, s(expectedSize), s(actual)));
+        ("Size mismatch%s, expected %s, got %s"):format(assertion, s(expectedSize), s(actual)));
 end;
 
 Assert.SizeEqual = Assert.SizesEqual;
@@ -165,11 +165,11 @@ function Assert.TablesEqual(expected, actual, assertion)
     for k, v in pairs(expected) do
         keysInExpected[k] = true;
         local actualValue = actual[k];
-        assert(actualValue ~= nil, format("Missing key '%s' in table%s", s(k), FormatName(assertion)));
+        assert(actualValue ~= nil, ("Missing key '%s' in table%s"):format(s(k), FormatName(assertion)));
         Assert.Equals(expected[k], actual[k], assertion .. ": key " .. s(k));
     end;
     for k, _ in pairs(actual) do
-        assert(keysInExpected[k], format("Unexpected key '%s' in table%s", s(k), FormatName(assertion)));
+        assert(keysInExpected[k], ("Unexpected key '%s' in table%s"):format(s(k), FormatName(assertion)));
     end;
 end;
 

@@ -142,7 +142,7 @@ OOP.Class = function(...)
                 class:AddConstructor(constructor);
             end;
         else
-            error(format("Object is not a mixin or super-class: %s", tostring(mixinOrClass)));
+            error(("Object is not a mixin or super-class: %s"):format(tostring(mixinOrClass)));
         end;
     end
 

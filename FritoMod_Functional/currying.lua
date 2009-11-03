@@ -144,7 +144,7 @@ function CurryMethod(object, func, ...)
         error("func is falsy");
     end;
     if type(object) ~= "table" then
-        error(format("object is not a table. Received type: %s", type(object)));
+        error(("object is not a table. Received type: %s"):format(type(object)));
     end;
     local args = { ... };
     if IsCallable(func) then
