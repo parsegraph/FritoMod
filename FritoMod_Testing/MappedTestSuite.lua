@@ -1,3 +1,17 @@
+if nil ~= require then
+    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/currying";
+    require "FritoMod_Functional/Operator";
+
+    require "FritoMod_Collections/Iterators";
+
+    require "FritoMod_Strings/Strings";
+
+    require "FritoMod_OOP/OOP/Class";
+
+    require "FritoMod_Testing/TestSuite";
+end;
+
 MappedTestSuite = OOP.Class(TestSuite);
 
 local EMPTY_SUITE;

@@ -1,3 +1,16 @@
+if nil ~= require then
+    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/currying";
+    require "FritoMod_Functional/Metatables";
+
+    require "FritoMod_OOP/OOP/Class";
+    require "FritoMod_OOP/OOP/methods";
+
+    require "FritoMod_Collections/Metatables";
+    require "FritoMod_Collections/Lists";
+    require "FritoMod_Collections/Iterators";
+end;
+
 TestSuite = OOP.Class();
 local TestSuite = TestSuite;
 
@@ -5,6 +18,9 @@ function TestSuite:Constructor(name)
     self.listener = Metatables.Multicast();
     self.name = name or "";
     if name then
+        if require then
+            require("FritoMod_Testing/AllTests");
+        end;
         AllTests[name] = self;
     end;
 end;
