@@ -9,13 +9,16 @@ function Suite:TestErrorStackTraceOutputsProperly()
             end;
         };
     end;
-    suite:AddListener(Metatables.Noop({
+    suite:AddListener(Metatables.Defensive({
+        StartAllTests = Noop,
+        TestStarted = Noop,
         TestFailed = function(self, suite, testName, testRunner, reason)
             local reason, trace = strsplit("\n", reason, 3);
             Assert.Equals("Assertion failed: \"Intentional error\"", reason);
             assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
                 "First line of stace trace is relevant. Trace: " .. trace);
-        end
+        end,
+        FinishAllTests = Noop,
     }));
     suite:Run();
 end;
@@ -29,13 +32,16 @@ function Suite:TestAssertStackTraceOutputsProperly()
             end;
         };
     end;
-    suite:AddListener(Metatables.Noop({
+    suite:AddListener(Metatables.Defensive({
+        StartAllTests = Noop,
+        TestStarted = Noop,
         TestFailed = function(self, suite, testName, testRunner, reason)
             local reason, trace = strsplit("\n", reason, 3);
             Assert.Equals("Assertion failed: \"Intentional false assertion\"", reason);
             assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
                 "First line of stace trace is relevant. Trace: " .. trace);
-        end
+        end,
+        FinishAllTests = Noop,
     }));
     suite:Run();
 end;
