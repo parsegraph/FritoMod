@@ -137,6 +137,15 @@ function Tests.FormatStackTrace(stackTrace, tailStackTrace)
     return stackString;
 end;
 
+-- Alias for formatting a full stack trace.
+function Tests.FormattedStackTrace()
+    return Tests.FormatStackTrace(Tests.FullStackTrace());
+end;
+
+function Tests.FormattedPartialStackTrace(...)
+    return Tests.FormatStackTrace(Tests.PartialStackTrace(...));
+end;
+
 function Tests.Choke(choke)
     local count = 0;
     return function()
