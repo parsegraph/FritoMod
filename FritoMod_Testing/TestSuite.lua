@@ -108,8 +108,8 @@ local function InterpretTestResult(stackTraces, testRanSuccessfully, result, ext
     end;
     if #stackTraces > 0 then
         local stackTrace = table.remove(stackTraces);
-        local file, num, reason = strsplit(":", tostring(result), 3);
-        return "Failed", ("Assertion failed: \"%s\"\n%s"):format(strtrim(reason), stackTrace);
+        local file, num, reason = unpack(Strings.SplitByDelimiter(":", tostring(result), 3));
+        return "Failed", ("Assertion failed: \"%s\"\n%s"):format(Strings.Trim(reason), stackTrace);
     end;
     return "Crashed", tostring(result);
 end;
