@@ -1,3 +1,10 @@
+if nil ~= require then
+    require "FritoMod_States/States";
+    require "FritoMod_States/StateMachine";
+
+    require "FritoMod_Strings/NumberBuilder";
+end;
+
 if Parsers == nil then
     Parsers = {};
 end;

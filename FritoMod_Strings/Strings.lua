@@ -1,3 +1,12 @@
+if nil ~= require then
+    require "FritoMod_Functional/methods";
+
+    require "FritoMod_Collections/Lists";
+    require "FritoMod_Collections/Tables";
+    
+    require "FritoMod_OOP/OOP/methods";
+end;
+
 Strings = {};
 local Strings = Strings;
 

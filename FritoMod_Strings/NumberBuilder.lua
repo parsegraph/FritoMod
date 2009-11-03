@@ -1,3 +1,7 @@
+if nil ~= require then
+    require "FritoMod_OOP/OOP/Class";
+end;
+
 NumberBuilder = OOP.Class();
 
 function NumberBuilder:Constructor()
