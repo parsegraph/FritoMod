@@ -1,3 +1,7 @@
+if nil ~= require then
+    -- This file requires WoW-specific functionality
+end;
+
 UnitManager = {
     registry = {}
 };
