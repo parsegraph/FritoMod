@@ -1,3 +1,10 @@
+if nil ~= require then
+    require "FritoMod_Functional/currying";
+    require "FritoMod_Functional/Metatables";
+
+    require "FritoMod_Collections/Mixins-MutableIteration";
+end;
+
 Lists = {}; 
 local Lists = Lists;
 

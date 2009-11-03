@@ -1,3 +1,7 @@
+if nil ~= require then
+    require "FritoMod_Functional/currying";
+end;
+
 if Mixins == nil then
     Mixins = {};
 end;

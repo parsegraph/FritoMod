@@ -1,3 +1,11 @@
+if nil ~= require then
+    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/currying";
+    require "FritoMod_Functional/Metatables";
+
+    require "FritoMod_Collections/Mixins-Iteration";
+end;
+
 -- A collection of functions dealing with iterators. Iterators are functions that accept no arguments and
 -- return the "next" value in a collection when called. When they reach the end of their collection,
 -- they return nil.
