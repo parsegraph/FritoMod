@@ -1,3 +1,14 @@
+if nil ~= require then
+    -- This file uses WoW-specific functionality
+
+    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/currying";
+
+    require "FritoMod_Collections/Lists";
+
+    require "FritoMod_Strings/Parsers";
+end;
+
 Timing = {};
 local Timing = Timing;
 
