@@ -1,3 +1,11 @@
+if nil ~= require then
+    require "FritoMod_Testing/ReflectiveTestSuite";
+    require "FritoMod_Testing/Assert";
+    require "FritoMod_Testing/Tests";
+
+    require "FritoMod_Collections/Metatables";
+end;
+
 local MetatableTests = ReflectiveTestSuite:New("FritoMod_Collections.Metatables");
 
 function MetatableTests:TestMulticast()
