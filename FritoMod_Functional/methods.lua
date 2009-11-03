@@ -200,6 +200,9 @@ function FunctionPopulator(populatedTable)
         listener = Curry(listener, ...);
         table.insert(populatedTable, listener);
         -- XXX This uses a method in Collections. Move it to that project?
+        if nil ~= require then
+            require "FritoMod_Collections/Lists";
+        end;
         return Curry(Lists.RemoveFirst, populatedTable, listener);
     end;
 end;
