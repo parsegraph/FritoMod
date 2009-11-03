@@ -1,3 +1,9 @@
+if nil ~= require then
+    require "FritoMod_Functional/Mixins";
+
+    require "FritoMod_UI/InvalidatingForwarder";
+end;
+
 StyleClient = Mixins.Library();
 local StyleClient = StyleClient;
 

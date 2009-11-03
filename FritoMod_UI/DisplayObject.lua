@@ -1,3 +1,12 @@
+if nil ~= require then
+    -- This file uses WoW-specific functionality
+
+    require "FritoMod_OOP/OOP/Class";
+
+    require "FritoMod_UI/StyleClient";
+    require "FritoMod_UI/Invalidating";
+end;
+
 DisplayObject = OOP.Class(StyleClient, Invalidating);
 local DisplayObject = DisplayObject;
 

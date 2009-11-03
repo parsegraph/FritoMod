@@ -1,3 +1,7 @@
+if nil ~= require then
+    require "FritoMod_Functional/methods";
+end;
+
 LayoutUtil = {
     direction = {
         HORIZONTAL = "horizontal", 

@@ -1,3 +1,7 @@
+if nil ~= require then
+     require "FritoMod_Functional/Mixins";
+end;
+
 InvalidatingProxy = Mixins.Library();
 local InvalidatingProxy = InvalidatingProxy;
 

@@ -1,3 +1,13 @@
+if nil ~= require then
+    -- This file uses WoW-specific functionality
+
+    require "FritoMod_OOP/OOP/Class";
+
+    require "FritoMod_UI/DisplayObject";
+    require "FritoMod_UI/StyleClient";
+    require "FritoMod_UI/Stage";
+end;
+
 TextField = OOP.Class(DisplayObject);
 local TextField = TextField;
 
