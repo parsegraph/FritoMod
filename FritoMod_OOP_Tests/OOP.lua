@@ -7,9 +7,9 @@ if nil ~= require then
     require "FritoMod_OOP/OOP-Class";
 end;
 
-local OOPTests = ReflectiveTestSuite:New("FritoMod_OOP.OOP");
+local Suite = ReflectiveTestSuite:New("FritoMod_OOP.OOP");
 
-function OOPTests:TestIsClass()
+function Suite:TestIsClass()
     assert(OOP.IsClass(OOP.Class()), "class is a class");
     assert(not OOP.IsClass(nil), "IsClass gracefully handles nil values");
     assert(not OOP.IsClass("No time"), "IsClass gracefully handles non-table values");
@@ -17,7 +17,7 @@ function OOPTests:TestIsClass()
     assert(not OOP.IsClass(OOP.Class():New()), "Instances are not classes");
 end;
 
-function OOPTests:TestIsInstance()
+function Suite:TestIsInstance()
     local Base = OOP.Class();
     assert(OOP.IsInstance(OOP.Class():New()), "Instance is an instance");
     assert(not OOP.IsInstance(nil), "IsInstance gracefully handles nil values");
@@ -26,7 +26,7 @@ function OOPTests:TestIsInstance()
     assert(not OOP.IsInstance(OOP.Class()), "classes are not instances");
 end;
 
-function OOPTests:TestInstanceOf()
+function Suite:TestInstanceOf()
     local Base = OOP.Class();
     local Derived = OOP.Class(Base);
 
@@ -40,7 +40,7 @@ function OOPTests:TestInstanceOf()
 
 end; 
 
-function OOPTests:TestInstanceOfThrowsOnBadClass()
+function Suite:TestInstanceOfThrowsOnBadClass()
     local Base = OOP.Class();
     assert(OOP.InstanceOf(Base, Base:New()), "Base's instances are instances of Base");
     assert(OOP.InstanceOf(Base, OOP.Class(Base):New()), "Base's derived instances are instances of Base");

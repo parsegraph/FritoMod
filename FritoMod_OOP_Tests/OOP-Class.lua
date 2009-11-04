@@ -6,9 +6,9 @@ if nil ~= require then
     require "FritoMod_OOP/OOP-Class";
 end;
 
-local ClassTests = ReflectiveTestSuite:New("FritoMod_OOP.OOP.Class");
+local Suite = ReflectiveTestSuite:New("FritoMod_OOP.OOP.Class");
 
-function ClassTests:TestSimpleClass()
+function Suite:TestSimpleClass()
     local Base = OOP.Class();
     local flag = Tests.Flag();
     function Base:DoSomething()
@@ -18,7 +18,7 @@ function ClassTests:TestSimpleClass()
     flag:Assert("Function was called");
 end;
 
-function ClassTests:TestInheritance()
+function Suite:TestInheritance()
     local Base = OOP.Class();
     local baseFlag = Tests.Flag();
     function Base:DoSomething()
@@ -35,7 +35,7 @@ function ClassTests:TestInheritance()
     assert(derivedFlag:IsSet(), "Derived function is called");
 end;
 
-function ClassTests:TestDeepHierarchy()
+function Suite:TestDeepHierarchy()
     local Base = OOP.Class();
     local counter = Tests.Counter();
     function Base:DoSomething()
@@ -56,7 +56,7 @@ function ClassTests:TestDeepHierarchy()
     assert(counter:Count() == 4, "DoSomething fired four times");
 end;
 
-function ClassTests:TestAddConstructor()
+function Suite:TestAddConstructor()
 
     local Base = OOP.Class();
 
@@ -71,7 +71,7 @@ function ClassTests:TestAddConstructor()
     assert(not Base.flag, "Class was not affected");
 end;
 
-function ClassTests:TestAddMixin()
+function Suite:TestAddMixin()
     local Base = OOP.Class();
     Base:AddMixin(function(class)
        class.flag = true;
@@ -80,7 +80,7 @@ function ClassTests:TestAddMixin()
     assert(Base:New().flag, "Mixin added functionality");
 end;
 
-function ClassTests:TestAddMixinWithConstructor()
+function Suite:TestAddMixinWithConstructor()
     local Base = OOP.Class();
     Base:AddMixin(function(class)
        class.instances = 0;
