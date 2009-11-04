@@ -11,19 +11,6 @@ if Mixins == nil then
     Mixins = {};
 end;
 
--- Returns a function that tests for equality between objects. 
-local function MakeEqualityComparator(comparatorFunc, ...)
-    if not comparatorFunc then
-        return Operator.Equals;
-    end;
-    return Curry(comparatorFunc, ...);
-end;
-
--- Returns whether a value is truthy for purposes of comparison.
-local function IsEqual(value)
-    return value and (type(value) ~= "number" or value == 0);
-end;
-
 -- Mixes in a large suite of iteration functions to the specified library. This
 -- mixin allow you to interact with various iterable types with a healthy baseline
 -- of functionality.
@@ -242,7 +229,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- returns
         --     the removed key, or nil if no value was removed
         function library.Remove(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            comparatorFunc = library.NewComparator(comparatorFunc, ...);
             for key, candidate in library.Iterator(iterable) do
                 if IsEqual(comparatorFunc(candidate, targetValue)) then
                     return library.Delete(iterable, key);
@@ -276,7 +263,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- returns
         --     the number of removed elements
         function library.RemoveAll(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            comparatorFunc = library.NewComparator(comparatorFunc, ...);
             local removedKeys = {};
             for key, candidate in library.Iterator(iterable) do
                 if IsEqual(comparatorFunc(candidate, targetValue)) then
@@ -303,7 +290,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- returns
         --     the removed key, or nil if no value was removed
         function library.RemoveLast(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            comparatorFunc = library.NewComparator(comparatorFunc, ...);
             for key, candidate in library.ReverseIterator(iterable) do
                 if IsEqual(comparatorFunc(candidate, targetValue)) then
                     library.Delete(iterable, key);
@@ -328,7 +315,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- returns
         --     the removed value, or nil if no key was removed
         function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            comparatorFunc = library.NewComparator(comparatorFunc, ...);
             for candidate, value in library.Iterator(iterable) do
                 if IsEqual(comparatorFunc(candidate, targetKey)) then
                     library.Delete(iterable, key);
@@ -357,7 +344,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- returns
         --     the number of removed elements
         function library.RemoveAllAt(iterable, targetKey, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            comparatorFunc = library.NewComparator(comparatorFunc, ...);
             local removedKeys = {};
             for candidate, value in library.Iterator(iterable) do
                 if IsEqual(comparatorFunc(candidate, targetKey)) then
@@ -386,7 +373,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- returns
         --     the removed value, or nil if no key was removed
         function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+            comparatorFunc = library.NewComparator(comparatorFunc, ...);
             for candidate, value in library.ReverseIterator(iterable) do
                 if IsEqual(comparatorFunc(candidate, targetKey)) then
                     library.Delete(iterable, key);

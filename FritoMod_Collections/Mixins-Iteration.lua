@@ -10,26 +10,6 @@ if Mixins == nil then
     Mixins = {};
 end;
 
--- Returns a function that tests for equality between objects. 
---
--- comparatorFunc, ...
---     optional. The function that is used for comparison
--- returns
---     a curried form of comparatorFunc, or Operator.Equals
-local function MakeEqualityComparator(comparatorFunc, ...)
-    if not comparatorFunc then
-        comparatorFunc = Operator.Equals;
-    end;
-    comparatorFunc = Curry(comparatorFunc, ...);
-    return function(...)
-        local result = comparatorFunc(...);
-        if type(result) == "number" then
-            return result == 0;
-        end;
-        return Bool(result);
-    end;
-end;
-
 -- Mixes in a large suite of iteration functions to the specified library. This
 -- mixin will not override any functions that are already defined in library.
 --
@@ -78,6 +58,41 @@ function Mixins.Iteration(library)
         return CurryNamedFunction(library, "Remove", iterable, oldValue);
     end;
 
+    if nil == library.NewComparator then
+        --  Creates and returns a comparator. The created comparator function
+        --  should expect two comparable arguments and return true for equal 
+        --  values, otherwise it should return false.
+        --
+        --  If a comparatorFunc is provided, that function should be used for
+        --  equality. comparatorFunc may return numeric values, and these
+        --  values must be coerced to boolean values by this operation.
+        --
+        --  comparatorFunc, ...
+        --      optional. a function of the signature comparatorFunc(a, b) that
+        --      returns either a boolean value indicating whether the values are
+        --      equal, or a numeric value. Numeric values are interpreted as follows:
+        --
+        --      * numericValue == 0 means the values given are equal
+        --      * numericValue < 0 means a is less than b
+        --      * numericValue > 0 means b is greater than b
+        -- returns
+        --     a comparator that either wraps a given comparator or one that has
+        --     default behavior for the given library
+        function library.NewComparator(comparatorFunc, ...)
+            if not comparatorFunc then
+                return Operator.Equals;
+            end;
+            comparatorFunc = Curry(comparatorFunc, ...);
+            return function(...)
+                local result = comparatorFunc(...);
+                if type(result) == "number" then
+                    return result == 0;
+                end;
+                return Bool(result);
+            end;
+        end;
+    end;
+
     -- Returns an iterator that iterates over the pairs in iterable.
     --
     -- iterable
@@ -115,7 +130,7 @@ function Mixins.Iteration(library)
     -- returns
     --     true if the iterables contain equal items in the same order, otherwise false
     Mixins.KeyValueOperation(library, "%ssEqual", function(iteratorFunc, iterable, otherIterable, comparatorFunc, ...)
-        comparatorFunc = MakeEqualityComparator(comparatorFunc);
+        comparatorFunc = library.NewComparator(comparatorFunc, ...);
         local iterator = iteratorFunc(iterable);
         local otherIterator = iteratorFunc(otherIterable);
         while true do
@@ -149,7 +164,7 @@ function Mixins.Iteration(library)
                     return key == otherKey and value == otherValue;
                 end;
             end;
-            comparatorFunc = MakeEqualityComparator(comparatorFunc);
+            comparatorFunc = library.NewComparator(comparatorFunc, ...);
             local iterator = library.Iterator(iterable);
             local otherIterator = library.Iterator(otherIterable);
             while true do
@@ -688,7 +703,7 @@ function Mixins.Iteration(library)
     --     true if the specified iterable contains the specified item, according to the
     --     specified comparator
     Mixins.KeyValueOperation(library, "Contains%s", function(iterator, iterable, target, comparatorFunc, ...)
-        comparatorFunc = MakeEqualityComparator(comparatorFunc);
+        comparatorFunc = library.NewComparator(comparatorFunc, ...);
         for candidate in iterator(iterable) do
             if comparatorFunc(candidate, target) then
                 return true;
@@ -789,7 +804,7 @@ function Mixins.Iteration(library)
         --     the last key that corresponds to to a value that matches the specified value, 
         --     according to comparatorFunc
         function library.LastKeyFor(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = MakeEqualityComparator(comparatorFunc);
+            comparatorFunc = library.NewComparator(comparatorFunc, ...);
             for key, candidate in library.ReverseIterator(iterable) do
                 if comparatorFunc(candidate, targetValue) then
                     return key;
@@ -870,7 +885,7 @@ function Mixins.Iteration(library)
     -- returns
     --     a new iterable containing all items contained in both iterables
     Mixins.KeyValuePairOperationByName(library, "UnionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
-        comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+        comparatorFunc = library.NewComparator(comparatorFunc, ...);
         local union = NewIterable();
         local contains = library["Contains" .. name];
         for key, value in library.Iterator(iterable) do
@@ -900,7 +915,7 @@ function Mixins.Iteration(library)
     -- returns
     --     a new iterable containing all items contained in only one of the iterables
     Mixins.KeyValuePairOperationByName(library, "IntersectionBy%s", function(name, iterable, otherIterable, comparatorFunc, ...)
-        comparatorFunc = MakeEqualityComparator(comparatorFunc, ...);
+        comparatorFunc = library.NewComparator(comparatorFunc, ...);
         local intersection = NewIterable();
         local contains = library["Contains" .. name];
         for key, value in library.Iterator(iterable) do
@@ -937,7 +952,7 @@ function Mixins.Iteration(library)
     --     the number of times the specified item was found, according to the specified
     --     comparatorFunc
     Mixins.KeyValueOperation(library, "%sFrequency", function(iterator, iterable, target, comparatorFunc, ...)
-        comparatorFunc = MakeEqualityComparator(comparatorFunc);
+        comparatorFunc = library.NewComparator(comparatorFunc, ...);
         count = 0;
         for candidate in iterator(iterable) do
             if comparatorFunc(candidate, target) then
