@@ -5,12 +5,6 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Functional
 
-
-OOP\init.lua
-OOP\Class.lua
-OOP\methods.lua
-
-methods.lua
+OOP.lua
+OOP-Class.lua
 Mixins.lua
-
-StateMachine.lua

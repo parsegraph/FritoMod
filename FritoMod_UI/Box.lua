@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "FritoMod_OOP/OOP/Class";
+    require "FritoMod_OOP/OOP-Class";
 
     require "FritoMod_UI/DisplayObjectContainer";
     require "FritoMod_UI/LayoutUtil";

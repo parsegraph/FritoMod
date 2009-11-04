@@ -1,7 +1,7 @@
 if nil ~= require then
     require "FritoMod_Functional/currying";
 
-    require "FritoMod_OOP/OOP/Class";
+    require "FritoMod_OOP/OOP-Class";
 
     require "FritoMod_Strings/Strings";
 end;

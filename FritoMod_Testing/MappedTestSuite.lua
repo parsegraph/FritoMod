@@ -7,7 +7,7 @@ if nil ~= require then
 
     require "FritoMod_Strings/Strings";
 
-    require "FritoMod_OOP/OOP/Class";
+    require "FritoMod_OOP/OOP-Class";
 
     require "FritoMod_Testing/TestSuite";
 end;

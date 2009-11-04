@@ -1,7 +1,7 @@
 if nil ~= require then
     require "FritoMod_Functional/currying";
 
-    require "FritoMod_OOP/OOP/methods";
+    require "FritoMod_OOP/OOP";
 end;
 
 if Mixins == nil then

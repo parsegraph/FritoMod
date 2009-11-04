@@ -4,7 +4,7 @@ if nil ~= require then
     require "FritoMod_Collections/Lists";
     require "FritoMod_Collections/Tables";
     
-    require "FritoMod_OOP/OOP/methods";
+    require "FritoMod_OOP/OOP";
 end;
 
 Strings = {};

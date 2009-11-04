@@ -3,8 +3,8 @@ if nil ~= require then
     require "FritoMod_Functional/currying";
     require "FritoMod_Functional/Metatables";
 
-    require "FritoMod_OOP/OOP/Class";
-    require "FritoMod_OOP/OOP/methods";
+    require "FritoMod_OOP/OOP";
+    require "FritoMod_OOP/OOP-Class";
 
     require "FritoMod_Collections/Metatables";
     require "FritoMod_Collections/Lists";

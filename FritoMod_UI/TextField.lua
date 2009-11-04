@@ -1,7 +1,7 @@
 if nil ~= require then
     -- This file uses WoW-specific functionality
 
-    require "FritoMod_OOP/OOP/Class";
+    require "FritoMod_OOP/OOP-Class";
 
     require "FritoMod_UI/DisplayObject";
     require "FritoMod_UI/StyleClient";

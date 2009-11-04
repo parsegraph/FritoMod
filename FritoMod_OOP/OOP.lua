@@ -1,7 +1,5 @@
-if nil ~= require then
-    require "FritoMod_OOP/OOP/init";
-end;
 
+OOP = {};
 local OOP = OOP;
 
 -- Integrates a library into a given class. This takes all

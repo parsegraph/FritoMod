@@ -1,7 +1,7 @@
 if nil ~= require then
     require "FritoMod_Functional/Mixins";
 
-    require "FritoMod_OOP/OOP/Class";
+    require "FritoMod_OOP/OOP-Class";
 
     require "FritoMod_UI/DisplayObjectContainer";
 end;
