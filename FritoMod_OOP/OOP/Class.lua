@@ -65,17 +65,7 @@ local CLASS_METATABLE = {
     end,
 
     ToString = function(self)
-        -- Utilities is loaded after OOP, so Tables.Reference not be accessible if we call
-        -- this extremely early in the loading process.
-        if not Tables then
-            local metatable = getmetatable(self);
-            -- Temporarily detach the metatable so we can access the raw tostring function.
-            setmetatable(self, nil);
-            local str = tostring(self);
-            setmetatable(self, metatable);
-            return str;
-        end;
-        local reference = Tables.Reference(self);
+        local reference = Reference(self);
         if self[CLASS_NAME] then
             return "Instance@" .. reference;
         end;

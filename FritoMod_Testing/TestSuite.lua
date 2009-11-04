@@ -17,10 +17,7 @@ function TestSuite:GetName()
 end;
 
 function TestSuite:ToString()
-    local name = self:GetName();
-    if not name then
-        name = Tables.Reference(self);
-    end;
+    local name = self:GetName() or Reference(self);
     return ("TestSuite(%s)"):format(name);
 end;
 
