@@ -12,7 +12,7 @@ function Suite:TestSimpleClass()
     local Base = OOP.Class();
     local flag = Tests.Flag();
     function Base:DoSomething()
-        flag:Raise();
+       flag:Raise();
     end;
     Base:New():DoSomething();
     flag:Assert("Function was called");
@@ -53,11 +53,10 @@ function Suite:TestDeepHierarchy()
     local Derived = OOP.Class(Higher);
     Derived:New():DoSomething();
 
-    assert(counter:Count() == 4, "DoSomething fired four times");
+    counter.Assert(4, "DoSomething fired four times");
 end;
 
 function Suite:TestAddConstructor()
-
     local Base = OOP.Class();
 
     Base:AddConstructor(function(instance)
@@ -83,13 +82,11 @@ end;
 function Suite:TestAddMixinWithConstructor()
     local Base = OOP.Class();
     Base:AddMixin(function(class)
-       class.instances = 0;
-       return function(instance)
-          class.instances = class.instances + 1;
-       end;
+       class.instances = Tests.Counter();
+       return class.instances.Hit;
     end);
 
     Base:New();
     Base:New();
-    assert(Base.instances == 2, "Returned constructor was fired twice");
+    Base.instances.Assert(2, "Returned constructor was fired twice");
 end;
