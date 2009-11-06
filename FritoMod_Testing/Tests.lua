@@ -47,7 +47,9 @@ end;
 -- the head stack will contain the overlapping stacks. Otherwise, the middle stack levels are
 -- lost.
 --
--- This function is an alias for debugstack, if that function is available.
+-- debugstack is similar to this function though debugstack returns a formatted string and this
+-- function returns two lists. See Tests.FormattedPartialStackTrace for a function that behaves
+-- identically to that function.
 --
 -- skip:number
 --     the number of stack levels to skip. These levels are ignored, but are not subtracted from
@@ -70,10 +72,9 @@ end;
 --         a list of stack levels representing the tail of the stack, as described above. Each
 --         stack level is a table containing information. The level's information is provided by
 --         debug.getinfo
+-- see
+--     Tests.FullStackTrace, Tests.FormattedPartialStackTrace
 function Tests.PartialStackTrace(skip, numHead, numTail)
-    if debugstack then
-        return debugstack(skip, numHead, numTail);
-    end;
 	skip = math.max(skip, 2);
 	numHead = numHead or 10;
 	numTail = numTail or 10;
@@ -142,8 +143,24 @@ function Tests.FormattedStackTrace()
     return Tests.FormatStackTrace(Tests.FullStackTrace());
 end;
 
-function Tests.FormattedPartialStackTrace(...)
-    return Tests.FormatStackTrace(Tests.PartialStackTrace(...));
+-- Alias for formatting a partial stack trace. The arguments 
+--
+-- This function is identical in functionality to debugstack. In fact, if debugstack is available
+-- that function is directly called.
+--
+-- The arguments provided are immediately passed to Tests.PartialStackTrace.
+function Tests.FormattedPartialStackTrace(skip, numHead, numTail)
+    skip = skip or 1;
+    if debugstack then
+        if numHead == nil then
+            numHead = 10;
+        end;
+        if numTail == nil then
+            numTail = 10;
+        end;
+        return debugstack(skip, numHead, numTail);
+    end;
+    return Tests.FormatStackTrace(Tests.PartialStackTrace(skip + 1, numHead, numTail));
 end;
 
 function Tests.Choke(choke)
