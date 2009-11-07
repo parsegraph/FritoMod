@@ -230,7 +230,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         function library.Remove(iterable, targetValue, comparatorFunc, ...)
             comparatorFunc = library.NewComparator(comparatorFunc, ...);
             for key, candidate in library.Iterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetValue)) then
+                if comparatorFunc(candidate, targetValue) then
                     return library.Delete(iterable, key);
                 end;
             end;
@@ -265,7 +265,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
             comparatorFunc = library.NewComparator(comparatorFunc, ...);
             local removedKeys = {};
             for key, candidate in library.Iterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetValue)) then
+                if comparatorFunc(candidate, targetValue) then
                     table.insert(removedKeys, key);
                 end;
             end;
@@ -291,7 +291,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         function library.RemoveLast(iterable, targetValue, comparatorFunc, ...)
             comparatorFunc = library.NewComparator(comparatorFunc, ...);
             for key, candidate in library.ReverseIterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetValue)) then
+                if comparatorFunc(candidate, targetValue) then
                     library.Delete(iterable, key);
                     return key;
                 end;
@@ -316,7 +316,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
             comparatorFunc = library.NewComparator(comparatorFunc, ...);
             for candidate, value in library.Iterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetKey)) then
+                if comparatorFunc(candidate, targetKey) then
                     library.Delete(iterable, key);
                     return value;
                 end;
@@ -346,7 +346,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
             comparatorFunc = library.NewComparator(comparatorFunc, ...);
             local removedKeys = {};
             for candidate, value in library.Iterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetKey)) then
+                if comparatorFunc(candidate, targetKey) then
                     table.insert(removedKeys, key);
                 end;
             end;
@@ -374,7 +374,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
             comparatorFunc = library.NewComparator(comparatorFunc, ...);
             for candidate, value in library.ReverseIterator(iterable) do
-                if IsEqual(comparatorFunc(candidate, targetKey)) then
+                if comparatorFunc(candidate, targetKey) then
                     library.Delete(iterable, key);
                     return value;
                 end;
