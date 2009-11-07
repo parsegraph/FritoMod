@@ -35,6 +35,10 @@ function Tests.FullStackTrace()
         if not stackLevel then
             break;
         end;
+        if nil == stackLevel.name then
+            stackLevel.name = ("<%s:%d>"):format(stackLevel.short_src, stackLevel.linedefined);
+            stackLevel.namewhat = "function";
+        end;
         table.insert(stackTrace, stackLevel);
     end;
     return stackTrace;
@@ -110,11 +114,17 @@ function Tests.FormatStackLevel(stackLevel)
         stackLevel.source = stackLevel.source:gsub("\n.*", "");
         stackLevel.source = ("[string %s]"):format(stackLevel.source);
     end
-    local stackLevelDescription = ("%s:%s: in %s `%s'"):format(
+    local name = stackLevel.name;
+    if name == nil then
+        name = "(unnamed)";
+    elseif name:sub(1,1) ~= "<" then
+        name = ("`%s'"):format(name);
+    end;
+    local stackLevelDescription = ("%s:%s: in %s %s"):format(
         stackLevel.source,
         stackLevel.currentline,
         stackLevel.namewhat,
-        stackLevel.name or "(unnamed)"
+        name
     );
     return stackLevelDescription:gsub("/", "\\");
 end;
