@@ -106,6 +106,10 @@ function Functions.SpyGlobal(name, spyFunc, ...)
     end;
 end;
 
+function Functions.Initialized(activator, ...)
+    return Functions.Activator(Noop, activator, ...);
+end;
+
 -- Returns a function that wraps the specified function. Before the specified function is
 -- invoked, the activator is called. Subsequent calls to the returned function will directly
 -- call the specified function.
