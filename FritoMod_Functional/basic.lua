@@ -1,5 +1,5 @@
--- Some general functional idioms, such as packing/unpacking methods, coercion methods, and
--- some more complicated functional concepts, like composite functions and metatable creation.
+-- A few primitive functions that are either used pervasively or are so low-level that it doesn't
+-- make sense putting them in a higher-level project.
 
 -- A function that intentionally does nothing.
 function Noop()
