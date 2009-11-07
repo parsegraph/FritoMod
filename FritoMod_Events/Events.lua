@@ -34,6 +34,7 @@ if nil ~= require then
     require "FritoMod_Functional/Functions";
 
     require "FritoMod_Collections/Lists";
+    require "FritoMod_Collections/Functions";
 end;
 
 
@@ -65,7 +66,7 @@ setmetatable(Events, {
     -- registries for new events on-demand. There are no errors emitted if an event name is not valid.
     __index = function(self, key)
         local listeners = {};
-        self[key] = Functions.Activator(FunctionPopulator(listeners), function()
+        self[key] = Functions.Activator(Functions.FunctionPopulator(listeners), function()
             local remover = initialize();
             eventListeners[key] = listeners;
             return function()

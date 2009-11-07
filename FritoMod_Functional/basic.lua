@@ -136,25 +136,3 @@ function Reference(target)
     local _, split = str:find(":[ ]+");
     return str:sub(split + 1);
 end;
-
--- Populates a table with curried functions. The returned function will accept
--- a function or method, curry it and add it to the specified table. It will also
--- return a method that, when invoked, will remove the curried function from the
--- specified table.
---
--- populatedTable
---     the table that is populated
--- returns
---     a function that behaves as described above
-function FunctionPopulator(populatedTable)
-    assert(type(populatedTable) == "table", "populatedTable is not a table object. populatedTable: " .. type(populatedTable));
-    return function(listener, ...)
-        listener = Curry(listener, ...);
-        table.insert(populatedTable, listener);
-        -- XXX This uses a method in Collections. Move it to that project?
-        if nil ~= require then
-            require "FritoMod_Collections/Lists";
-        end;
-        return Curry(Lists.RemoveFirst, populatedTable, listener);
-    end;
-end;
