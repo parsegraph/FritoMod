@@ -2,7 +2,7 @@
 -- to partially apply a method.
 
 if nil ~= require then
-    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/basic";
 end;
 
 -- Curries the specified method or function using any specified arguments. This will make
