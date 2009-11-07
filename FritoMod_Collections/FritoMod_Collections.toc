@@ -13,3 +13,5 @@ Iterators.lua
 Metatables.lua
 Lists.lua
 Tables.lua
+Functions.lua
+

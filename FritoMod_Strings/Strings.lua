@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/basic";
 
     require "FritoMod_Collections/Lists";
     require "FritoMod_Collections/Tables";

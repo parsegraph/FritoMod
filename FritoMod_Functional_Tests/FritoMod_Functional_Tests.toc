@@ -4,6 +4,8 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Testing, FritoMod_Functional
 
-methods.lua
+basic.lua
 currying.lua
+
 Metatables.lua
+Functions.lua

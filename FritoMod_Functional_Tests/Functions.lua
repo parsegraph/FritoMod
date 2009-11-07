@@ -3,10 +3,10 @@ if nil ~= require then
     require "FritoMod_Testing/Assert";
     require "FritoMod_Testing/Tests";
 
-    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/Functions";
 end;
 
-local Suite = ReflectiveTestSuite:New("FritoMod_Functional.methods");
+local Suite = ReflectiveTestSuite:New("FritoMod_Functional.Functions");
 
 function AGlobalFunctionNoOneShouldEverUse(stuff)
     Assert.Equals(4, stuff, "Internal global receives externally received value");
@@ -15,7 +15,7 @@ end;
 
 function Suite:TestHookGlobal()
     local counter = Tests.Counter();
-    local remover = HookGlobal("AGlobalFunctionNoOneShouldEverUse", function(stuff)
+    local remover = Functions.HookGlobal("AGlobalFunctionNoOneShouldEverUse", function(stuff)
         counter.Hit();
         Assert.Equals(2, stuff, "Wrapped function receives externally received value");
         return stuff * 2;
@@ -28,9 +28,18 @@ function Suite:TestHookGlobal()
     counter.Assert(1, "Hook function only fires once");
 end;
 
+function Suite:TestHookGlobalFailsWhenIntermediatelyModified()
+    local remover = Functions.HookGlobal("AGlobalFunctionNoOneShouldEverUse", Noop);
+    local original = AGlobalFunctionNoOneShouldEverUse;
+    AGlobalFunctionNoOneShouldEverUse = nil;
+    Assert.Exception("HookGlobal fails when global is modified between calls", remover);
+    AGlobalFunctionNoOneShouldEverUse = original;
+    remover();
+end;
+
 function Suite:TestSpyGlobal()
     local counter = Tests.Counter();
-    local remover = SpyGlobal("AGlobalFunctionNoOneShouldEverUse", function(stuff)
+    local remover = Functions.SpyGlobal("AGlobalFunctionNoOneShouldEverUse", function(stuff)
         counter.Hit();
         Assert.Equals(4, stuff, "Spied global receives original value");
         return stuff * 2;
@@ -44,7 +53,7 @@ function Suite:TestSpyGlobal()
 end;
 
 function Suite:TestSpyGlobalFailsWhenIntermediatelyModified()
-    local remover = SpyGlobal("AGlobalFunctionNoOneShouldEverUse", Noop);
+    local remover = Functions.SpyGlobal("AGlobalFunctionNoOneShouldEverUse", Noop);
     local original = AGlobalFunctionNoOneShouldEverUse;
     AGlobalFunctionNoOneShouldEverUse = nil;
     Assert.Exception("SpyGlobal fails when global is modified between calls", remover);
@@ -52,25 +61,3 @@ function Suite:TestSpyGlobalFailsWhenIntermediatelyModified()
     remover();
 end;
 
-function Suite:TestHookGlobalFailsWhenIntermediatelyModified()
-    local remover = HookGlobal("AGlobalFunctionNoOneShouldEverUse", Noop);
-    local original = AGlobalFunctionNoOneShouldEverUse;
-    AGlobalFunctionNoOneShouldEverUse = nil;
-    Assert.Exception("HookGlobal fails when global is modified between calls", remover);
-    AGlobalFunctionNoOneShouldEverUse = original;
-    remover();
-end;
-
-function Suite:TestUnpackAll()
-    local a, b, c = UnpackAll({1,2,3});
-    Assert.Equals(1, a, "A value");
-    Assert.Equals(2, b, "B value");
-    Assert.Equals(3, c, "C value");
-end;
-
-function Suite:TestUnpackAllWithNilValues()
-    local a, b, c = UnpackAll({1,nil,3});
-    Assert.Equals(1, a, "A value");
-    Assert.Equals(nil, b, "B value");
-    Assert.Equals(3, c, "C value");
-end;
