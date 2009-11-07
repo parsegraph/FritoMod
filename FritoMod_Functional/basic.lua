@@ -233,31 +233,3 @@ function SpyGlobal(name, spyFunc, ...)
         _G[name] = spiedGlobal;
     end;
 end;
-
--- Hooks the global function with the specified name, calling the specified function before the global
--- is called. The hook function should return the arguments passed to it, as these arguments will then
--- be passed to the original global, like the following:
---     return originalGlobal(hookFunc(...));
---
--- name:*
---     the global name of the function that is hooked
--- hookFunc, ...
---     the function that is called before the hooked global is called. It should expect the arguments that
---     the hooked global would expect, and should return those arguments. The returned arguments are then
---     passed to the hooked global
--- returns
---     a remover function that, when invoked, restores the global to its value before the global was
---     hooked. The remover will throw if the global has been changed since this function was called.
-function HookGlobal(name, hookFunc, ...)
-    hookFunc = Curry(hookFunc, ...);
-    local hookedGlobal = _G[name];
-    assert(IsCallable(hookedGlobal), "Global function is not callable. Name: " .. name);
-    local function Hook(...)
-        return hookedGlobal(hookFunc(...));
-    end;
-    _G[name] = Hook;
-    return function()
-        assert(_G[name] == Hook, "Global has been modified, so hook cannot be safely removed. Name: " .. name);
-        _G[name] = hookedGlobal;
-    end;
-end;
