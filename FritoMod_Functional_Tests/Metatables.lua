@@ -8,6 +8,50 @@ end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Functional.Metatables");
 
+function Suite:TestDefaultValue()
+    local t = {};
+    Metatables.DefaultValue(t, true);
+    Assert.Equals(true, t.missing, "t returns the specified default value");
+    Metatables.DefaultValue(t, false);
+    Assert.Equals(false, t.missing, "t returns the new default value");
+end;
+
+function Suite:TestDefaultValueNeverActuallyAssignsTheDefaultValue()
+    local t = {};
+    Metatables.DefaultValue(t, true);
+    Assert.Equals(true, t.missing, "t returns the specified default value");
+    Assert.Nil(rawget(t, "missing"), "t is never actually assigned the default value");
+end;
+
+function Suite:TestDefaultValueIsPickyAboutNilValues()
+    local t = {};
+    Assert.Exception("DefaultValue throws when given nil table", Metatables.DefaultValue, nil, true);
+    Assert.Exception("DefaultValue throws when given nil defaultValue", Metatables.DefaultValue, t, nil);
+    Assert.Nil(Metatables.DefaultValue(t, 1), "DefaultValue does not return anything");
+end;
+
+function Suite:TestConstructedValue()
+    local t = {};
+    Metatables.ConstructedValue(t, function(key)
+        return "Value: " .. key;
+    end);
+    Assert.Equals("Value: 1", t[1], "t returns the constructed default value");
+    Assert.Equals("Value: 1", rawget(t, 1), "The constructed default value is actually assigned");
+    Metatables.ConstructedValue(t, function(key)
+        return "Bar: " .. key;
+    end);
+    Assert.Equals("Value: 1", t[1], "t retains the default value");
+    Assert.Equals("Bar: 2", t[2], "t assigns the new default from the most recent ConstructedValue call");
+end;
+
+function Suite:TestConstructedValueIsPickyAboutNilValues()
+    local t = {};
+    Assert.Exception("ConstructedValue throws when given nil table", Metatables.ConstructedValue, nil, Noop);
+    Assert.Exception("ConstructedValue throws when given nil constructor", 
+        Metatables.ConstructedValue, t, nil);
+    Assert.Nil(Metatables.ConstructedValue(t, Tables.New), "ConstructedValue does not return anything");
+end;
+
 function Suite:TestDefensive()
     local defensive = Metatables.Defensive();
 

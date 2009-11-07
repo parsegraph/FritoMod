@@ -97,3 +97,78 @@ end;
 
 Metatables.ForceFunctions = ForcedMetatable(ForcedFunction);
 Metatables.ForceMethods = ForcedMetatable(ForcedMethod);
+
+-- Adds a metatable to the specified target that returns the specified default value for any
+-- non-existent key. The default value is never assigned to the specified table.
+--
+-- target
+--     the table that is the target of this operation. Its metatable will be overridden by
+--     this operation's created metatable
+-- defaultValue
+--     the value that is returned for non-existent keys
+-- throws
+--     if target is nil
+--     if defaultValue is nil
+Metatables.DefaultValue = function(target, defaultValue)
+    assert(type(target) == "table", "target is not a table. Type: " .. type(target));
+    assert(defaultValue ~= nil, "Nil defaultValue does not make sense");
+    setmetatable(target, {
+        __index = function(self, key)
+            return defaultValue;
+        end
+    });
+end;
+
+-- Adds a metatable to the specified target that handles the creation of default values for that
+-- table. The specified constructor is used to create a new default value, and that value is
+-- assigned as the new value for the given key.
+--
+-- target
+--     the table that is the target of this operation. Its metatable will be overridden by
+--     this operation's created metatable
+-- constructorFunc, ...
+--     the function that constructs new values for a given key. It should expect the signature
+--     constructorFunc(key). It will be invoked whenever a new key needs to be created.
+-- throws
+--     if target is nil
+--     if constructorFunc is not a function
+Metatables.ConstructedValue = function(target, constructorFunc, ...)
+    assert(type(target) == "table", "target is not a table. Type: " .. type(target));
+    constructorFunc = Curry(constructorFunc, ...);
+    setmetatable(target, {
+        __index = function(self, key)
+            local value = constructorFunc(key);
+            rawset(self, key, value);
+            return value;
+        end
+    });
+end;
+
+-- A metatable that provides on-demand FunctionPopulators on all missing keys in the specified target.
+-- The registered functions are added, using the given key, to the specified registry.
+--
+-- target
+--     the table that is the target of this operation. Its metatable will be overridden by
+--     this operation's created metatable
+-- registry
+--     the table that will be populated by the FunctionPopulators created by this metatable. 
+-- returns
+--     target, registry
+function Metatables.FunctionRegistry(target, registry)
+    assert(type(target) == "table", "target is not a table");
+    assert(type(registry) == "table", "registry is not a table");
+    setmetatable(target, {
+        __index = function(self, name)
+            local listeners = {};
+            self[name] = Activator(FunctionPopulator(listeners), function()
+                registry[name] = listeners;
+                return function()
+                    registry[name] = nil;
+                    target[name] = nil;
+                end;
+            end);
+            return rawget(self, key);
+        end
+    });
+    return target, registry;
+end;
