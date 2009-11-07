@@ -28,7 +28,9 @@ local MAX_STACK_TRACE = 999;
 function Tests.FullStackTrace()
     assert(debug, "FullStackTrace is not available without debug");
     local stackTrace = {};
-	for i=1, MAX_STACK_TRACE do
+    -- We start at 2 instead of 1 since we don't wish to include the FullStackTrace call
+    -- in the stack trace.
+	for i=2, MAX_STACK_TRACE do
         local stackLevel = debug.getinfo(i);
         if not stackLevel then
             break;
