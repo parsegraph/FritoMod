@@ -5,7 +5,7 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod
 
-methods.lua
+basic.lua
 currying.lua
 Operator.lua
 Metatables.lua
