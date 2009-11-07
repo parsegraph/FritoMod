@@ -7,3 +7,13 @@ if nil ~= require then
 end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Functions");
+
+function Suite:TestFunctionPopulator()
+    local functions = {};
+    local populator = Functions.FunctionPopulator(functions);
+    local remover = populator(Noop);
+    Assert.Equals(1, #functions, "Only one function was added to functions");
+    remover();
+    Assert.Equals(0, #functions, "Returned remover removes added function");
+end;
+
