@@ -1,3 +1,8 @@
+if nil ~= require then
+    require "FritoMod_Functional/currying";
+
+    require "FritoMod_OOP/OOP/methods";
+end;
 
 if Mixins == nil then
     Mixins = {};

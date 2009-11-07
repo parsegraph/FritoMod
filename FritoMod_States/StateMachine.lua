@@ -1,3 +1,11 @@
+if nil ~= require then
+    require "FritoMod_Functional/currying";
+
+    require "FritoMod_OOP/OOP/Class";
+
+    require "FritoMod_States/States";
+end;
+
 StateMachine = OOP.Class();
 local StateMachine = StateMachine;
 

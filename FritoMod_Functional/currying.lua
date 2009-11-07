@@ -1,6 +1,10 @@
 -- Methods that provide currying, a common functional programming idiom that allows one
 -- to partially apply a method.
 
+if nil ~= require then
+    require "FritoMod_Functional/methods";
+end;
+
 -- Curries the specified method or function using any specified arguments. This will make
 -- a best-effort approach to determine what method to invoke.
 --

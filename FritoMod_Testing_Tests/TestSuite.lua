@@ -1,3 +1,13 @@
+if nil ~= require then
+    require "FritoMod_Strings/Strings";
+
+    require "FritoMod_Testing/ReflectiveTestSuite";
+    require "FritoMod_Testing/Assert";
+    require "FritoMod_Testing/Tests";
+
+    require "FritoMod_Testing/TestSuite";
+end;
+
 local Suite = ReflectiveTestSuite:New("FritoMod_Testing.TestSuite");
 
 function Suite:TestErrorStackTraceOutputsProperly()
@@ -13,7 +23,7 @@ function Suite:TestErrorStackTraceOutputsProperly()
         StartAllTests = Noop,
         TestStarted = Noop,
         TestFailed = function(self, suite, testName, testRunner, reason)
-            local reason, trace = strsplit("\n", reason, 3);
+            local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
             Assert.Equals("Assertion failed: \"Intentional error\"", reason);
             assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
                 "First line of stace trace is relevant. Trace: " .. trace);
@@ -36,7 +46,7 @@ function Suite:TestAssertStackTraceOutputsProperly()
         StartAllTests = Noop,
         TestStarted = Noop,
         TestFailed = function(self, suite, testName, testRunner, reason)
-            local reason, trace = strsplit("\n", reason, 3);
+            local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
             Assert.Equals("Assertion failed: \"Intentional false assertion\"", reason);
             assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
                 "First line of stace trace is relevant. Trace: " .. trace);

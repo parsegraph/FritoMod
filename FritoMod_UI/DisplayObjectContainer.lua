@@ -1,3 +1,9 @@
+if nil ~= require then
+    require "FritoMod_OOP/OOP/Class";
+
+    require "FritoMod_UI/DisplayObject";
+end;
+
 DisplayObjectContainer = OOP.Class(DisplayObject);
 local DisplayObjectContainer = DisplayObjectContainer;
 

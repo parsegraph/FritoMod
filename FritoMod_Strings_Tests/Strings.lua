@@ -1,3 +1,13 @@
+if nil ~= require then
+    require "FritoMod_Functional/currying";
+
+    require "FritoMod_Testing/ReflectiveTestSuite";
+    require "FritoMod_Testing/Assert";
+    require "FritoMod_Testing/Tests";
+
+    require "FritoMod_Strings/Strings";
+end;
+
 local StringsTests = ReflectiveTestSuite:New("FritoMod_Strings.Strings");
 
 function StringsTests:TestJoin()

@@ -1,3 +1,12 @@
+if nil ~= require then
+    require "FritoMod_Functional/methods";
+    require "FritoMod_Functional/currying";
+    require "FritoMod_Functional/Operator";
+
+    require "FritoMod_Collections/Mixins";
+    require "FritoMod_Collections/Mixins-Iteration";
+end;
+
 if Mixins == nil then
     Mixins = {};
 end;

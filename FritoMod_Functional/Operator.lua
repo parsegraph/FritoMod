@@ -1,3 +1,7 @@
+if nil ~= require then
+    require "FritoMod_Functional/methods";
+end;
+
 Operator = {
     Equals = function(a, b) return a == b end,
     NotEquals = function(a, b) return a ~= b end,

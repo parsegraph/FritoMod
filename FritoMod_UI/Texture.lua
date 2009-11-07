@@ -1,3 +1,11 @@
+if nil ~= require then
+    require "FritoMod_OOP/OOP/Class";
+
+    require "FritoMod_UI/LayoutUtil";
+    require "FritoMod_UI/StyleClient";
+    require "FritoMod_UI/InvalidatingProxy";
+end;
+
 Texture = OOP.Class(StyleClient, InvalidatingProxy);
 local Texture = Texture;
 
