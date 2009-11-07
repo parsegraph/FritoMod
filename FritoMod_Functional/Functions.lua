@@ -129,7 +129,7 @@ end;
 --     the function that is invoked before every "new" series of invocations of the wrapped method.
 --     In practice
 function Functions.Activator(wrapped, activator, ...)
-    wrapped = wrapped or Noop;
+    assert(IsCallable(wrapped), "wrapped function is not callable. Type: " .. type(wrapped));
     activator = Curry(activator, ...);
     local deactivator = nil;
     local count = 0;
