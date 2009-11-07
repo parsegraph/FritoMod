@@ -165,7 +165,10 @@ end;
 --
 -- The arguments provided are immediately passed to Tests.PartialStackTrace.
 function Tests.FormattedPartialStackTrace(skip, numHead, numTail)
-    skip = skip or 1;
+    if nil == skip then
+        skip = 0;
+    end;
+    skip = math.max(2, skip + 2);
     if debugstack then
         if numHead == nil then
             numHead = 10;

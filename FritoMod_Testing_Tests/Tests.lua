@@ -81,6 +81,8 @@ end;
 function Suite:TestFormattedPartialStackTrace()
     local stackTrace = Tests.FormattedPartialStackTrace();
     local firstLine, _ = unpack(Strings.SplitByDelimiter("\n", stackTrace, 2));
-    assert(firstLine:match("FritoMod_Testing\\Tests\.lua:[0-9]+: in [a-zA-Z]+ `FormattedPartialStackTrace'"), 
-        "First line of default stack trace refers to the FormattedPartialStackTrace call. Line was: " .. firstLine);
+    assert(firstLine:match("FritoMod_Testing_Tests[/\\]Tests\.lua:[0-9]+: in [a-zA-Z]+ " ..
+        "<[.a-zA-Z_/\\]+[/\\]FritoMod_Testing_Tests[/\\]Tests\.lua"),
+        "First line of default stack trace refers to the site of the stack-trace call. Line was: " ..
+        Strings.PrettyPrint(firstLine));
 end;
