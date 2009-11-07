@@ -153,7 +153,9 @@ end;
 
 -- Alias for formatting a full stack trace.
 function Tests.FormattedStackTrace()
-    return Tests.FormatStackTrace(Tests.FullStackTrace());
+    local stackTrace = Tests.FullStackTrace();
+    table.remove(stackTrace, 1);
+    return Tests.FormatStackTrace(stackTrace);
 end;
 
 -- Alias for formatting a partial stack trace. The arguments 
