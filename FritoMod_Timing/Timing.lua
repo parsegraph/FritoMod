@@ -3,6 +3,7 @@ if nil ~= require then
 
     require "FritoMod_Functional/basic";
     require "FritoMod_Functional/currying";
+    require "FritoMod_Functional/Functions";
 
     require "FritoMod_Collections/Lists";
 
@@ -22,7 +23,7 @@ local timingFrame = CreateFrame("Frame", nil, UIParent);
 --     the function that is fired every update
 -- returns
 --     a function that removes the specified listener
-Timing.AddUpdateListener = Activator(FunctionPopulator(updateListeners), function()
+Timing.AddUpdateListener = Functions.Activator(FunctionPopulator(updateListeners), function()
     timingFrame:SetScript("OnUpdate", function(frame, elapsed) 
        Lists.CallEach(updateListeners, elapsed);
     end);

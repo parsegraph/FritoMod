@@ -106,3 +106,50 @@ function Functions.SpyGlobal(name, spyFunc, ...)
     end;
 end;
 
+-- Returns a function that wraps the specified function. Before the specified function is
+-- invoked, the activator is called. Subsequent calls to the returned function will directly
+-- call the specified function.
+--
+-- A practical example of this function is a event listener. Whenever a event listener is 
+-- attached, it must be first registered with the frame. Typically, this means that RegisterEvent
+-- must be called greedily and is typically never relinquished. For short-lived event listeners,
+-- this is problematic. However, with this utility, writing a lazy event registry is trivial:
+--
+-- local listeners = {};
+-- local inserter = Curry(Lists.Insert, listeners);
+-- local activator = function()
+--     frame:RegisterEvent("SOMETHING");
+--     return Curry(frame, "UnregisterEvent", "SOMETHING");
+-- end;
+-- local AddListener = Functions.Activator(inserter, activator);
+--
+-- wrapped
+--     the internal function that is called for every invocation of the returned method
+-- activator, ...
+--     the function that is invoked before every "new" series of invocations of the wrapped method.
+--     In practice
+function Functions.Activator(wrapped, activator, ...)
+    wrapped = wrapped or Noop;
+    activator = Curry(activator, ...);
+    local deactivator = nil;
+    local count = 0;
+    return function(...)
+        if count == 0 then
+            deactivator = activator() or Noop;
+        end;
+        count = count + 1;
+        local sanitizer = wrapped(...) or Noop;
+        return function()
+            if not sanitizer then
+                return;
+            end;
+            sanitizer();
+            sanitizer = nil;
+            count = count - 1;
+            if count == 0 then
+                deactivator();
+            end;
+        end;
+    end;
+end;
+

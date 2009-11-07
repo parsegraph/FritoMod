@@ -1,6 +1,7 @@
 if nil ~= require then
     require "FritoMod_Functional/basic";
     require "FritoMod_Functional/currying";
+    require "FritoMod_Functional/Functions";
 
     require "FritoMod_Collections/Lists";
 end;
@@ -10,7 +11,7 @@ local Tests = Tests;
 
 do
     local listeners = {};
-    Tests.AddErrorListener = Activator(FunctionPopulator(listeners), function()
+    Tests.AddErrorListener = Functions.Activator(FunctionPopulator(listeners), function()
         local oldHandler = geterrorhandler() or Noop;
         local function OurHandler(errorMessage, frame, stack, etype, ...)
             seterrorhandler(oldHandler);
