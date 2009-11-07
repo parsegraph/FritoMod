@@ -3,3 +3,6 @@
 ## Author: Frito
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Testing
+
+portability.lua
+sanity.lua
