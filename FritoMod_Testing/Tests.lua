@@ -160,7 +160,7 @@ function Tests.FormattedPartialStackTrace(skip, numHead, numTail)
         end;
         return debugstack(skip, numHead, numTail);
     end;
-    return Tests.FormatStackTrace(Tests.PartialStackTrace(skip + 1, numHead, numTail));
+    return Tests.FormatStackTrace(Tests.PartialStackTrace(skip, numHead, numTail));
 end;
 
 function Tests.Choke(choke)

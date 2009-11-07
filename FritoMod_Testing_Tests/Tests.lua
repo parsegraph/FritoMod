@@ -56,3 +56,10 @@ function Suite:TestCounterAsserts()
     counter:Hit();
     counter:Assert(1, "Counter asserts that it's at one");
 end;
+
+function Suite:TestFormattedPartialStackTrace()
+    local stackTrace = Tests.FormattedPartialStackTrace();
+    local firstLine, _ = unpack(Strings.SplitByDelimiter("\n", stackTrace, 2));
+    assert(firstLine:match("FritoMod_Testing\\Tests\.lua:[0-9]+: in [a-zA-Z]+ `FormattedPartialStackTrace'"), 
+        "First line of default stack trace refers to the FormattedPartialStackTrace call. Line was: " .. firstLine);
+end;
