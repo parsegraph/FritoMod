@@ -6,7 +6,7 @@ if nil ~= require then
     require "FritoMod_Functional/methods";
 end;
 
-local Suite = ReflectiveTestSuite:New("FritoMod_Functional.methods");
+local Suite = ReflectiveTestSuite:New("FritoMod_Functional.basic");
 
 function AGlobalFunctionNoOneShouldEverUse(stuff)
     Assert.Equals(4, stuff, "Internal global receives externally received value");
