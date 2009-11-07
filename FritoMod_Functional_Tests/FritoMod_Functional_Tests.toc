@@ -6,4 +6,6 @@
 
 basic.lua
 currying.lua
+
 Metatables.lua
+Functions.lua
