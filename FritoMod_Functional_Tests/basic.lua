@@ -8,35 +8,6 @@ end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Functional.basic");
 
-function AGlobalFunctionNoOneShouldEverUse(stuff)
-    Assert.Equals(4, stuff, "Internal global receives externally received value");
-    return stuff;
-end;
-
-function Suite:TestSpyGlobal()
-    local counter = Tests.Counter();
-    local remover = SpyGlobal("AGlobalFunctionNoOneShouldEverUse", function(stuff)
-        counter.Hit();
-        Assert.Equals(4, stuff, "Spied global receives original value");
-        return stuff * 2;
-    end);
-    local result = AGlobalFunctionNoOneShouldEverUse(4);
-    Assert.Equals(4, result, "Spied global returns original value");
-    remover();
-    result = AGlobalFunctionNoOneShouldEverUse(4);
-    Assert.Equals(4, result, "Spied global returns original value after removal");
-    counter.Assert(1, "Spy function only fires once");
-end;
-
-function Suite:TestSpyGlobalFailsWhenIntermediatelyModified()
-    local remover = SpyGlobal("AGlobalFunctionNoOneShouldEverUse", Noop);
-    local original = AGlobalFunctionNoOneShouldEverUse;
-    AGlobalFunctionNoOneShouldEverUse = nil;
-    Assert.Exception("SpyGlobal fails when global is modified between calls", remover);
-    AGlobalFunctionNoOneShouldEverUse = original;
-    remover();
-end;
-
 function Suite:TestUnpackAll()
     local a, b, c = UnpackAll({1,2,3});
     Assert.Equals(1, a, "A value");

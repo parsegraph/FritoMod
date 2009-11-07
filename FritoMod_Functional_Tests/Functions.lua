@@ -36,3 +36,28 @@ function Suite:TestHookGlobalFailsWhenIntermediatelyModified()
     AGlobalFunctionNoOneShouldEverUse = original;
     remover();
 end;
+
+function Suite:TestSpyGlobal()
+    local counter = Tests.Counter();
+    local remover = Functions.SpyGlobal("AGlobalFunctionNoOneShouldEverUse", function(stuff)
+        counter.Hit();
+        Assert.Equals(4, stuff, "Spied global receives original value");
+        return stuff * 2;
+    end);
+    local result = AGlobalFunctionNoOneShouldEverUse(4);
+    Assert.Equals(4, result, "Spied global returns original value");
+    remover();
+    result = AGlobalFunctionNoOneShouldEverUse(4);
+    Assert.Equals(4, result, "Spied global returns original value after removal");
+    counter.Assert(1, "Spy function only fires once");
+end;
+
+function Suite:TestSpyGlobalFailsWhenIntermediatelyModified()
+    local remover = Functions.SpyGlobal("AGlobalFunctionNoOneShouldEverUse", Noop);
+    local original = AGlobalFunctionNoOneShouldEverUse;
+    AGlobalFunctionNoOneShouldEverUse = nil;
+    Assert.Exception("SpyGlobal fails when global is modified between calls", remover);
+    AGlobalFunctionNoOneShouldEverUse = original;
+    remover();
+end;
+

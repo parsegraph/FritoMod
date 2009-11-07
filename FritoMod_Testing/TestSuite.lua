@@ -2,6 +2,7 @@ if nil ~= require then
     require "FritoMod_Functional/basic";
     require "FritoMod_Functional/currying";
     require "FritoMod_Functional/Metatables";
+    require "FritoMod_Functional/Functions";
 
     require "FritoMod_OOP/OOP";
     require "FritoMod_OOP/OOP-Class";
@@ -123,12 +124,12 @@ local function RunTest(self, test, testName)
     local testRunner = result;
     local stackTraces = {};
     self.listener:TestStarted(self, testName, testRunner);
-    local unhookAssert = SpyGlobal("assert", function(expression, message, ...)
+    local unhookAssert = Functions.SpyGlobal("assert", function(expression, message, ...)
         if not expression then
             table.insert(stackTraces, Tests.FormattedPartialStackTrace(3, 10, 0));
         end;
     end);
-    local unhookError = SpyGlobal("error", function()
+    local unhookError = Functions.SpyGlobal("error", function()
         table.insert(stackTraces, Tests.FormattedPartialStackTrace(3, 10, 0));
     end);
     local testState, reason = InterpretTestResult(stackTraces, pcall(testRunner));

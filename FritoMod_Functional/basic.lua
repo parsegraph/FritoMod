@@ -206,30 +206,3 @@ function FunctionPopulator(populatedTable)
         return Curry(Lists.RemoveFirst, populatedTable, listener);
     end;
 end;
-
--- Decorates the global function of the specified name, calling the specified function whenever the
--- global is called. The spy function merely observes calls to the global; it does not affect them.
---
--- name:*
---     the name of the global function
--- spyFunc, ...
---     the function that should be called before any invocation of the global. It should expect the
---     same arguments as the spied global. Its returned values are ignored
--- returns
---     a remover function that, when invoked, restores the global to its value before the global was
---     hooked. The remover will throw if the global has been changed since this function was called.
-function SpyGlobal(name, spyFunc, ...)
-    spyFunc = Curry(spyFunc, ...);
-    local spiedGlobal = _G[name];
-    local function Spy(...)
-        spyFunc(...);
-        if spiedGlobal then
-            return spiedGlobal(...);
-        end;
-    end;
-    _G[name] = Spy; 
-    return function()
-        assert(_G[name] == Spy, "Global has been modified, so spy cannot be safely removed. Name: " .. name);
-        _G[name] = spiedGlobal;
-    end;
-end;
