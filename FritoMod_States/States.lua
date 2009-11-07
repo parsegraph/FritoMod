@@ -5,7 +5,6 @@
 -- to use this framework. They are defined in readme.txt
 
 if nil ~= require then
-    require "FritoMod_Functional/methods";
     require "FritoMod_Functional/currying";
 
     require "FritoMod_Collections/Tables";

@@ -1,5 +1,4 @@
 if nil ~= require then
-    require "FritoMod_Functional/methods";
     require "FritoMod_Functional/currying";
     require "FritoMod_Functional/Operator";
 
