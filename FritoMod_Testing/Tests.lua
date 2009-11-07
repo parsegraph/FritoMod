@@ -55,7 +55,8 @@ end;
 --
 -- skip:number
 --     the number of stack levels to skip. These levels are ignored, but are not subtracted from
---     numHead. Defaults to 2.
+--     numHead. Defaults to 1, meaning the most-recent stack level returned is the one that was 
+--     active when this function was called.
 -- numHead:number
 --     the number of stack levels to contain in the head stack trace. If this is greater than the
 --     size of the stack, all stack levels are contained in that trace. The head stack trace is
@@ -77,11 +78,11 @@ end;
 -- see
 --     Tests.FullStackTrace, Tests.FormattedPartialStackTrace
 function Tests.PartialStackTrace(skip, numHead, numTail)
-	skip = math.max(skip, 2);
+    skip = skip or 1;
 	numHead = numHead or 10;
 	numTail = numTail or 10;
     local stackTrace = Tests.FullStackTrace();
-    for i=1, skip do
+    for i=1, math.max(1, skip) do
         table.remove(stackTrace, 1);
     end;
     local headStackTrace = {};
