@@ -8,6 +8,15 @@ end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Functional.currying");
 
+function Suite:TestCurry()
+    local function Do(x, y)
+        return x + y;
+    end;
+    Assert.Equals(3, Curry(Do, 1, 2)(), "Curry adds both arguments to the function");
+    Assert.Equals(3, Curry(Do)(1, 2), "Curry handles no arguments properly");
+    Assert.Equals(3, Curry(Do, 1)(2), "Curry handles split arguments properly");
+end;
+
 local function Sum(...)
     local sum = 0;
     for i=1, select("#", ...) do
