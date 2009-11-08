@@ -27,6 +27,7 @@ end;
 --     a callable that, when invoked, will call the specified method or function.
 -- throws
 --     if objOrFunc is a callable table, falsy, or is not a string, table, or function.
+--     if any arguments, either curried or passed, are nil
 function Curry(...)
     if select("#", ...) == 1 then
         local potentialCallable = select(1, ...);
@@ -79,6 +80,9 @@ end;
 --     func. These are optional.
 -- returns
 --     A callable that, when invoked, invokes func with the specified arguments.
+-- throws
+--     if any curried arguments are nil
+--     if passed arguments are nil while also having curried arguments
 function CurryFunction(func, ...)
     if not func then
         error("func is falsy");
@@ -86,8 +90,12 @@ function CurryFunction(func, ...)
     if not IsCallable(func) then
         error("func is not a function or string. Received type: %s", func);
     end;
-    if select("#", ...) == 0 then
+    local numArgs = select("#", ...);
+    if numArgs == 0 then
         return func;
+    end;
+    for i=1, numArgs do
+        assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
     end;
     local args = {...};
     return function(...)
@@ -115,9 +123,14 @@ end
 --     if obj or name is falsy
 --     if, when invoked, there is no value for the specified name on the specified object
 --     if, when invoked, the value at the specified name is not callable
+--     if any curried or passed arguments are nil
 function CurryNamedFunction(obj, name, ...)
     assert(obj, "obj is falsy");
     assert(name, "name is falsy");
+    local numArgs = select("#", ...);
+    for i=1, numArgs do
+        assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
+    end;
     local args = {...};
     return function(...)
         local func = obj[name];
@@ -152,6 +165,8 @@ end;
 --     func. These are optional.
 -- returns
 --     A callable that invokes the curried method, passing along subsequent arguments.
+-- throws
+--     if any curried or passed arguments are nil
 function CurryMethod(object, func, ...)
     if not object then
         error("object is falsy");
@@ -161,6 +176,10 @@ function CurryMethod(object, func, ...)
     end;
     if type(object) ~= "table" then
         error(("object is not a table. Received type: %s"):format(type(object)));
+    end;
+    local numArgs = select("#", ...);
+    for i=1, select("#", ...) do
+        assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
     end;
     local args = { ... };
     if IsCallable(func) then
@@ -199,9 +218,15 @@ end
 --     func. These are optional.
 -- returns
 --     A callable that invokes the curried method, passing along subsequent arguments.
+-- throws
+--     if any curried or passed arguments are nil
 function CurryHeadlessMethod(func, ...)
     if not func then
         error("func is falsy");
+    end;
+    local numArgs = select("#", ...);
+    for i=1, select("#", ...) do
+        assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
     end;
     local args = {...};
     if IsCallable(func) then

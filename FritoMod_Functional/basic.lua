@@ -80,8 +80,8 @@ do
         local cumulative = 0;
         local isSparse = false;
         local lingeringArgs = false;
-        for i=1, select('#', ...) do
-            local argumentGroup = select(i, ...);
+        for groupIndex=1, select('#', ...) do
+            local argumentGroup = select(groupIndex, ...);
             if not argumentGroup then
                 error("argumentGroup is falsy");
             end;
@@ -91,31 +91,10 @@ do
             for i=1, #argumentGroup do
                 cumulative = cumulative + 1;
                 local value = argumentGroup[i]; 
-                lingeringArgs = lingeringArgs or (isSparse and value);
-                isSparse = isSparse or value == nil;
+                assert(value ~= nil, ("Value is nil at index %d in table %d"):format(i, groupIndex));
                 collectedValues[cumulative] = value;
             end
         end
-        if lingeringArgs then
-            -- We're in dangerous territory. Lua doesn't guarantee the length will be correct
-            -- when the array is sparse like this. However, it seems to work consistently when
-            -- we initialize an array of the same size as we want. 
-            --
-            -- In case anyone was wondering, this is a massive, massive hack. In Lua 5.2, we
-            -- will use the __len metamethod to enforce length, and we won't have to deal in
-            -- these barbaric terms.
-            local nilValueString = ("nil, "):rep(cumulative);
-            local creator = tableCreators[cumulative];
-            if not creator then
-                creator = loadstring(("return { %s };"):format(nilValueString));
-                tableCreators[cumulative] = creator;
-            end;
-            local primedCollectedValues = creator();
-            for i=1, cumulative do
-                primedCollectedValues[i] = collectedValues[i];
-            end;
-            collectedValues = primedCollectedValues;
-        end;
         return unpack(collectedValues);
     end
 end;

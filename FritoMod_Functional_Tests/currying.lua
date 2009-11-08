@@ -24,6 +24,13 @@ function Suite:TestCurryDoesntCurryPlainFunctions()
     Assert.Equals(Do, Curry(Do), "Curry doesn't needlessly curry functions");
 end;
 
+function Suite:TestCurryRejectsCurriedNilValues()
+    local function Do(x, y)
+        return x + y;
+    end;
+    Assert.Exception("Curry rejects curried nil values", Curry, Do, nil, 2);
+end;
+
 local function Sum(...)
     local sum = 0;
     for i=1, select("#", ...) do
@@ -32,20 +39,9 @@ local function Sum(...)
     return sum;
 end;
 
-function Suite:TestCurryAcceptsNilValues()
-    Assert.Equals(4, Curry(Sum, 1, 1, 1, 1)(), "Four one's");
-    Assert.Equals(3, Curry(Sum, nil, 1, 1, 1)(), "X111 Test");
-    Assert.Equals(3, Curry(Sum, 1, nil, 1, 1)(), "1X11 Test");
-    Assert.Equals(3, Curry(Sum, 1, 1, nil, 1)(), "11X1 Test");
-    Assert.Equals(3, Curry(Sum, 1, 1, 1, nil)(), "111X Test");
-    Assert.Equals(2, Curry(Sum, nil, 1, 1, nil)(), "X11 Test");
-    Assert.Equals(1, Curry(Sum, nil, 1)(), "X1 Test");
-    Assert.Equals(2, Curry(Sum, 1, nil, 1)(), "1X1 Test");
-    Assert.Equals(1, Curry(Sum, nil, nil, 1)(), "XX1 Test");
-end;
-
-function Suite:TestCurryAcceptsNilValuesWhenTheRealValuesAreFarApart()
-    Assert.Equals(2, Curry(Sum, nil,1,nil,nil,nil,nil,nil,nil,nil,1)(), "Boss Nil-Value Curry Test");
+function Suite:TestCurryRejectsPassedNilValues()
+    local curried = Curry(Sum, 2);
+    Assert.Exception("Curry rejects passed nil values", curried, nil, 3);
 end;
 
 function Suite:TestForcedFunctionOnNoop()
