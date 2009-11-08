@@ -30,3 +30,7 @@ end;
 function Suite:TestVarargsSizeIsConstant()
     Assert.Equals(2, Count(nil, nil), "Varargs retains size in spite of nil values");
 end;
+
+function Suite:TestUnpackWithNils()
+    Assert.Equals(2, Count(unpack({nil, 2})), "Unpack unpacks correctly when array is of correct size");
+end;
