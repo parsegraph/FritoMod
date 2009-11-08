@@ -53,7 +53,7 @@ function Curry(...)
     end;
     if type(objOrFunc) == "table" then 
         local metatable = getmetatable(objOrFunc);
-        if metatable and IsCallable(getmetatable(objOrFunc).__call) then
+        if type(metatable) == "table" and IsCallable(metatable.__call) then
             -- Callable tables are too ambiguous to be implicitly curried. If you need to curry
             -- a callable table, use the CurryMethod or CurryFunction methods.
             error("objOrFunc is a callable table and therefore ambiguous.");
