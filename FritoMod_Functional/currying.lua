@@ -12,21 +12,25 @@ end;
 -- coerced into a method or function, so we just disallow them outright. Use CurryMethod or
 -- CurryFunction to get the behavior you need.
 --
--- objOrFunc
+-- objOrFunc:function, table, string
 --     Either:
 --     a. A reference to a function. CurryFunction will be used.
 --     b. A non-callable table. CurryMethod will be used.
 --     c. A string that is the name of a method. CurryHeadlessMethod will be used.
--- funcOrName
+-- funcOrName:*
 --     If objOrFunc is a table, then this is a string referring to a method, or a method 
 --     reference.
 --     If objOrfunc is a function, then this is simply the first argument.
 -- ...
---     arguments that are curried to the method or function
+--     optional. Any number of non-nil arguments that are curried to the specified method 
+--     or function.
 -- returns
---     a callable that, when invoked, will call the specified method or function.
+--     a partially applied method that, when invoked, will call the specified function or method, 
+--     passing along partially-applied arguments and subsequent arguments, in that order. It will 
+--     return the value returned by the specified function or method
 -- throws
---     if objOrFunc is a callable table, falsy, or is not a string, table, or function.
+--     if objOrFunc is a callable table
+--     if objOrFunc is not a string, table, or function
 --     if any arguments, either curried or passed, are nil
 function Curry(...)
     if select("#", ...) == 1 then
@@ -62,8 +66,8 @@ function Curry(...)
     error("objOrFunc is not a string, table, or function. Received type: " .. type(objOrFunc));
 end;
 
--- Curries the specified function using any specified arguments, returning a callable
--- that represents the curried function.
+-- Partially applies the specified function using the specified arguments, returning a function that
+-- will apply the specified function using any provided arguments.
 --
 -- For example, all examples are equivalent:
 -- a.) Naive call
@@ -73,14 +77,15 @@ end;
 -- curried = CurryFunction(foo, a, b)
 -- curried(c, d) -- invokes foo(a, b, c, d)
 --
--- func
---     A callable that is curried
+-- func:function
+--     called in the returned function
 -- ...
---     Any arguments that should be passed, in order, before subsequent arguments, to 
---     func. These are optional.
--- returns
---     A callable that, when invoked, invokes func with the specified arguments.
+--     optional. Any non-nil arguments that should be partially applied for the specified function
+-- returns:function
+--     a function that will invoke the partially applied function with any passed arguments. It will
+--     return the value returned by the paritally applied function.
 -- throws
+--     if func is not callable
 --     if any curried arguments are nil
 --     if passed arguments are nil while also having curried arguments
 function CurryFunction(func, ...)
@@ -103,21 +108,21 @@ function CurryFunction(func, ...)
     end;
 end
 
--- Curries a function that is on an object by name, but does not bind that function to that
--- object.
+-- Returns a partially applied function that, when invoked, calls the function on the specified
+-- object with the specified name. This is different from CurryMethod in that this function does
+-- not automatically include the object as the first argument.
 --
 -- Since this never caches the actual function, the returned function stays updated with the
--- specified object.
+-- specified object. It is therefore useful if you wish to succinctly refer to a changing method.
 --
--- obj
+-- object:table
 --     the object that will contain the specified named function
--- name
+-- name:*
 --     the name of the function
 -- ...
---     optional. Any arguments that should be passed, in order, before subsequent arguments, 
---     the specified named function
--- returns
---     a callable that, when invoked, invokes the specified named function on the specified 
+--     optional. Any number of non-nil arguments that are partially applied to the specified function
+-- returns:function
+--     a function that, when invoked, invokes the specified named function on the specified 
 --     object
 -- throws
 --     if obj or name is falsy
@@ -140,9 +145,8 @@ function CurryNamedFunction(obj, name, ...)
     end;
 end;
 
--- Curries the specified method using the specified arguments, returning a callable that
--- represents the curried method. This method allows func to be a reference or a string that
--- represents a method name.
+-- Returns a partially applied method that, when invoked, calls a method on the specified
+-- object.
 --
 -- For example, all examples are equivalent:
 -- a.) Naive call
@@ -156,15 +160,16 @@ end;
 -- curried = CurryMethod(obj, "foo", a, b);
 -- curried(c, d);
 --
--- object
---     The object that contains the curried method.
--- func
---     A reference to a method, or a string representing the name of the method, that is curried.
+-- object:table
+--     the object that holds the curried method
+-- func:*
+--     a reference to a method, or the name of the method that will be invoked
 -- ...
---     Any arguments that should be passed, in order, before subsequent arguments, to 
---     func. These are optional.
--- returns
---     A callable that invokes the curried method, passing along subsequent arguments.
+--     optional. Any arguments that are partially applied to the specified method
+-- returns:function
+--     a partially applied method that, when invoked, will call the specified method, passing
+--     along partially-applied arguments and subsequent arguments, in that order. It will return
+--     the value returned by the specified method
 -- throws
 --     if any curried or passed arguments are nil
 function CurryMethod(object, func, ...)
@@ -211,13 +216,16 @@ end
 -- curried = CurryHeadlessMethod("foo", a, b);
 -- curried(obj, c, d); -- invokes foo(obj, a, b, c, d);
 --
--- func
+-- func:*
 --     A reference to a method, or a string representing the name of the method, that is curried.
 -- ...
 --     Any arguments that should be passed, in order, before subsequent arguments, to 
 --     func. These are optional.
--- returns
---     A callable that invokes the curried method, passing along subsequent arguments.
+-- returns:function
+--     a partially applied method that, when invoked, will call the specified method. The first argument
+--     provided should be the self reference. This reference will be passed first to the specified method,
+--     followed by partially-applied arguments, and finally arguments passed to the returned function. It
+--     will return the value returned by the specified method.
 -- throws
 --     if any curried or passed arguments are nil
 function CurryHeadlessMethod(func, ...)
