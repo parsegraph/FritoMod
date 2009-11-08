@@ -22,3 +22,10 @@ function Suite:TestSparseArrayIsWipedOutDuringRemoval()
     table.remove(list, 3);
     Assert.Equals(0, #list, "Sparse array's size is lost due to table.remove");
 end;
+
+function Suite:TestVarargsSizeIsConstant()
+    local function Count(...)
+        return select("#", ...);
+    end;
+    Assert.Equals(2, Count(nil, nil), "Varargs retains size in spite of nil values");
+end;
