@@ -61,6 +61,29 @@ function Suite:TestSpyGlobalFailsWhenIntermediatelyModified()
     remover();
 end;
 
+function Suite:TestObserve()
+    local function Sum(a, b)
+        return a + b;
+    end;
+    local observedValue = nil
+    local ObservedSum = Functions.Observe(Sum, function(a, b)
+        observedValue = b;
+    end);
+    Assert.Equals(3, ObservedSum(1, 2), "Wrapped function returns appropriate value");
+    Assert.Equals(2, observedValue, "Observer is called with arguments");
+end;
+
+function Suite:TestObserveIsCalledBeforeWrapped()
+    local observerFlag = Tests.Flag();
+    local function Wrapped()
+        assert(observerFlag.IsSet(), "Observer is fired before wrapped");
+    end;
+    local ObservedFunc = Functions.Observe(Wrapped, function()
+        observerFlag.Raise();
+    end);
+    ObservedFunc();
+end;
+
 function Suite:TestActivatorInitialState()
     local initializerFlag = Tests.Flag();
     local uninitializerFlag = Tests.Flag();

@@ -110,6 +110,28 @@ function Functions.Initialized(activator, ...)
     return Functions.Activator(Noop, activator, ...);
 end;
 
+-- Allows the specified observer to spectate calls to wrapped, without affecting wrapped.
+--
+-- This returns a function that, when called, will invoke the observer with the given arguments, 
+-- and then call the observed function.
+--
+-- observedFunc:callable
+--     the actual function that is called after the observer.
+-- observer, ...
+--     the observer that receives arguments that will be passed to the observedFunc. The observer
+--     cannot affect primitive values, though it has access to the arguments so non-primitive values
+--     may be affected by the observer.
+-- returns:function
+--     a function that wraps the observed function, invoking the observer first.
+function Functions.Observe(observedFunc, observer, ...)
+    assert(IsCallable(observedFunc), "observedFunc function is not callable. Type: " .. type(observedFunc));
+    observer = Curry(observer, ...);
+    return function(...)
+        observer(...);
+        return observedFunc(...);
+    end;
+end;
+
 -- Returns a function that wraps the specified function. Before the specified function is
 -- invoked, the activator is called. Subsequent calls to the returned function will directly
 -- call the specified function.
