@@ -17,6 +17,13 @@ function Suite:TestCurry()
     Assert.Equals(3, Curry(Do, 1)(2), "Curry handles split arguments properly");
 end;
 
+function Suite:TestCurryDoesntCurryPlainFunctions()
+    local function Do(x, y)
+        return x + y;
+    end;
+    Assert.Equals(Do, Curry(Do), "Curry doesn't needlessly curry functions");
+end;
+
 local function Sum(...)
     local sum = 0;
     for i=1, select("#", ...) do

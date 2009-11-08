@@ -27,12 +27,24 @@ end;
 --     a callable that, when invoked, will call the specified method or function.
 -- throws
 --     if objOrFunc is a callable table, falsy, or is not a string, table, or function.
-function Curry(objOrFunc, funcOrName, ...)
+function Curry(...)
+    if select("#", ...) == 1 then
+        local potentialCallable = select(1, ...);
+        if IsCallable(potentialCallable) then
+            assert(type(potentialCallable) == "function", 
+                "Callable objects must be functions. Type: " .. type(potentialCallable));
+            return potentialCallable;
+        end;
+        if type(potentialCallable) == "string" then
+            return CurryHeadlessMethod(potentialCallable);
+        end;
+    end;
+    objOrFunc, funcOrName = ...;
     if not objOrFunc then
         error("objOrFunc is falsy");
     end;
     if type(objOrFunc) == "function" then 
-        return CurryFunction(objOrFunc, funcOrName, ...);
+        return CurryFunction(...);
     end;
     if type(objOrFunc) == "table" then 
         local metatable = getmetatable(objOrFunc);
@@ -41,10 +53,10 @@ function Curry(objOrFunc, funcOrName, ...)
             -- a callable table, use the CurryMethod or CurryFunction methods.
             error("objOrFunc is a callable table and therefore ambiguous.");
         end;
-        return CurryMethod(objOrFunc, funcOrName, ...);
+        return CurryMethod(...);
     end;
     if type(objOrFunc) == "string" then
-        return CurryHeadlessMethod(objOrFunc, funcOrName, ...);
+        return CurryHeadlessMethod(...);
     end;
     error("objOrFunc is not a string, table, or function. Received type: " .. type(objOrFunc));
 end;
