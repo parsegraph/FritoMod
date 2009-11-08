@@ -39,5 +39,7 @@ function Suite:TestVarargsSizeIsConstant()
 end;
 
 function Suite:TestUnpackWithNils()
-    Assert.Equals(2, Count(unpack({nil, 2})), "Unpack unpacks correctly when array is of correct size");
+    local total, nonNils = Count(unpack({nil, 2}));
+    Assert.Equals(2, total, "Unpack unpacks correctly when array is of correct size");
+    Assert.Equals(1, nonNils, "Unpack passes non-nil values");
 end;
