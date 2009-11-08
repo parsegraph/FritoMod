@@ -61,6 +61,15 @@ function Suite:TestSpyGlobalFailsWhenIntermediatelyModified()
     remover();
 end;
 
+function Suite:TestOnlyOnce()
+    local counter = Tests.Counter();
+    local Wrapped = Functions.OnlyOnce(counter.Hit);
+    Wrapped();
+    counter.Assert(1, "OnlyOnce invokes wrapped function on first call");
+    Wrapped();
+    counter.Assert(1, "Subsequent calls do not invoke the wrapped function");
+end;
+
 function Suite:TestObserve()
     local function Sum(a, b)
         return a + b;

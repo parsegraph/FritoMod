@@ -110,6 +110,26 @@ function Functions.Initialized(activator, ...)
     return Functions.Activator(Noop, activator, ...);
 end;
 
+-- Ensures that the specified function is only called once, despite multiple invocations of the
+-- returned function.
+--
+-- func, ...
+--     a function that is called. It will be called up to once by the returned function
+-- returns:function
+--     a function that calls the specified function up to once. Subsequent calls do nothing and
+--     return nothing
+function Functions.OnlyOnce(func, ...)
+    func = Curry(func, ...);
+    local called = false;
+    return function(...)
+        if called then
+            return;
+        end;
+        called = true;
+        return func(...);
+    end;
+end;
+
 -- Allows the specified observer to spectate calls to wrapped, without affecting wrapped.
 --
 -- This returns a function that, when called, will invoke the observer with the given arguments, 
