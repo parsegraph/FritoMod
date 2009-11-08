@@ -17,10 +17,14 @@ end;
 --     the function that is mixed in. It should expect a iterator function for its first argument
 function Mixins.KeyValueOperation(library, name, operation)
     if library[name:format("Key")] == nil then
-        library[name:format("Key")] = Curry(operation, library.KeyIterator);
+        library[name:format("Key")] = function(...)
+            return operation(library.KeyIterator, ...);
+        end;
     end;
     if library[name:format("Value")] == nil then
-        library[name:format("Value")] = Curry(operation, library.ValueIterator);
+        library[name:format("Value")] = function(...)
+            return operation(library.ValueIterator, ...);
+        end;
     end;
 end;
 
