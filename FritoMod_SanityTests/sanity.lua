@@ -14,3 +14,11 @@ function Suite:TestSparseArray()
     list[3] = true;
     Assert.Equals(3, #list, "Sparse array retains size");
 end;
+
+function Suite:TestSparseArrayIsWipedOutDuringRemoval()
+    local list = {nil, nil, nil};
+    list[3] = true;
+    list[2] = true;
+    table.remove(list, 3);
+    Assert.Equals(0, #list, "Sparse array's size is lost due to table.remove");
+end;
