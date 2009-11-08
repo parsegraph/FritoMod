@@ -8,3 +8,9 @@ if nil ~= require then
 end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_SanityTests.sanity");
+
+function Suite:TestSparseArray()
+    local list = {nil, nil, nil};
+    list[3] = true;
+    Assert.Equals(3, #list, "Sparse array retains size");
+end;
