@@ -9,6 +9,10 @@ end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_SanityTests.sanity");
 
+local function Count(...)
+    return select("#", ...);
+end;
+
 function Suite:TestSparseArray()
     local list = {nil, nil, nil};
     list[3] = true;
@@ -24,8 +28,5 @@ function Suite:TestSparseArrayIsWipedOutDuringRemoval()
 end;
 
 function Suite:TestVarargsSizeIsConstant()
-    local function Count(...)
-        return select("#", ...);
-    end;
     Assert.Equals(2, Count(nil, nil), "Varargs retains size in spite of nil values");
 end;
