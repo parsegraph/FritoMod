@@ -10,7 +10,14 @@ end;
 local Suite = ReflectiveTestSuite:New("FritoMod_SanityTests.sanity");
 
 local function Count(...)
-    return select("#", ...);
+    local total = select("#", ...);
+    local nonNils = 0;
+    for i=1, total do
+        if select(i, ...) ~= nil then
+            nonNils = nonNils + 1;
+        end;
+    end;
+    return total, nonNils;
 end;
 
 function Suite:TestSparseArray()
