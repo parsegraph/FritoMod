@@ -1,6 +1,12 @@
 -- Tests that assert that non-standard functionality is available to FritoMod. Test failure
 -- indicates that the environment is lacking some required, albeit non-standard, components.
 
+if nil ~= require then
+    require "FritoMod_Testing/ReflectiveTestSuite";
+    require "FritoMod_Testing/Assert";
+    require "FritoMod_Testing/Tests";
+end;
+
 local Suite = ReflectiveTestSuite:New("FritoMod_SanityTests.portability");
 
 function Suite:TestStackTraceAccessors()
