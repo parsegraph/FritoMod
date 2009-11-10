@@ -44,6 +44,20 @@ function Suite:TestCurryRejectsPassedNilValues()
     Assert.Exception("Curry rejects passed nil values", curried, nil, 3);
 end;
 
+function Suite:TestForcedSeal()
+    local function Sniff(value, ...)
+        Assert.Equals(true, value, "ForcedSeal passes curried arguments");
+        Assert.Equals(0, select("#", ...), "ForcedSeal suppresses additional arguments");
+        return 2;
+    end;
+    local sealed = ForcedSeal(Sniff, true);
+    Assert.Equals(2, sealed(), "ForcedSeal returns sealed function's returned value");
+
+    Assert.Exception("Sealed function rejects nil arguments", sealed, nil);
+    Assert.Exception("Sealed function rejects intermediate nil arguments", sealed, 1, nil, 3);
+    Assert.Exception("ForcedSeal rejects nil arguments", ForcedSeal, Sniff, nil);
+end;
+
 function Suite:TestForcedFunctionOnNoop()
     local foo = {};
     foo.bar = ForcedFunction(foo, function(value)

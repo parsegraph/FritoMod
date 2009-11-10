@@ -280,6 +280,25 @@ function Seal(func, ...)
     end;
 end;
 
+-- Curries the given function, returning a function that calls that function without passing
+-- additional arguments. If additional arguments are given to the returned function, an assertion
+-- is raised.
+--
+-- func, ...
+--     the curried function that is sealed by this operation
+-- returns:function
+--     a function that, when called, invokes the curried function. If the returned function is
+--     passed any arguments, an assertion is raised
+-- throws
+--     if arguments are passed to the returned function
+function ForcedSeal(func, ...)
+    func = Curry(func, ...);
+    return function(...)
+        assert(select("#", ...) == 0, "Force-sealed function must not be passed arguments");
+        return func();
+    end;
+end;
+
 -- Returns a function that calls the specified function. The returned function guarantees that
 -- the specified self argument is always used as the self argument for the function. If one is
 -- provided, it is ignored.
