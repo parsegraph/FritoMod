@@ -8,6 +8,11 @@ end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Functional.Functions");
 
+function Suite:TestReturn()
+    local returned = {Functions.Return(1,2,3)};
+    Assert.Equals({1,2,3}, returned, "Return returns provided arguments");
+end;
+
 function Suite:TestValues()
     local returner = Functions.Values(true);
     Assert.Equals(true, returner(), "Values returns given value");

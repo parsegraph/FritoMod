@@ -9,6 +9,17 @@ if nil == Functions then
 end;
 local Functions = Functions;
 
+-- Blindly returns the given arguments. This implements a very primitive operation and
+-- is ideal to be used in currying situations.
+--
+-- ...:*
+--     arguments that should be returned by this operation
+-- returns:*
+--     ...
+function Functions.Return(...)
+    return ...;
+end;
+
 -- Returns a function that returns the specified values as-is.
 --
 -- ...:*
