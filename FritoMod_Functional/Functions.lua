@@ -173,13 +173,14 @@ end;
 --     return nothing
 function Functions.OnlyOnce(func, ...)
     func = Curry(func, ...);
-    local called = false;
     return function(...)
-        if called then
+        if not func then
             return;
         end;
-        called = true;
-        return func(...);
+        -- Assign func to a temporary variable to let it fall out of scope.
+        local called = func;
+        func = nil;
+        return called(...);
     end;
 end;
 
