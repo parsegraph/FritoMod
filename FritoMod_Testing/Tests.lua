@@ -205,8 +205,11 @@ end;
 --
 -- This class' methods operate through closure, so they may be invoked directly;
 -- the 'self' reference is not used.
-function Tests.Flag()
-    local isSet = false;
+--
+-- isSet:boolean
+--     optional. the isSet state of the false. Defaults to false
+function Tests.Flag(isSet)
+    local isSet = Bool(isSet);
     local flag = {
         Raise = function()
             isSet = true;

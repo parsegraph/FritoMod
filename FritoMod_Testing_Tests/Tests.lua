@@ -13,6 +13,11 @@ function Suite:TestSimpleFlagMechanics()
     assert(flag.IsSet(), "Flag raises");
 end;
 
+function Suite:TestFlagCanBeSetOnConstruction()
+    local flag = Tests.Flag(true);
+    assert(flag.IsSet(), "Flag can be set to raised");
+end;
+
 function Suite:TestFlagIgnoresSpuriousRaiseCalls()
     local flag = Tests.Flag();
     flag.Raise();
