@@ -18,6 +18,12 @@ function Suite:TestFlagCanBeSetOnConstruction()
     assert(flag.IsSet(), "Flag can be set to raised");
 end;
 
+function Suite:TestCounterCanBeSetOnConstruction()
+    local counter = Tests.Counter(2);
+    Assert.Equals(2, counter.Count(), "Counter accepts an optional initial value");
+    Assert.Exception("Counter rejects non-numeric initial values", Tests.Counter, true);
+end;
+
 function Suite:TestFlagIgnoresSpuriousRaiseCalls()
     local flag = Tests.Flag();
     flag.Raise();

@@ -227,8 +227,14 @@ function Tests.Flag(isSet)
     return flag;
 end
 
-function Tests.Counter()
-    local count = 0;
+function Tests.Counter(count)
+    if type(count) ~= "number" then
+        if count == nil then
+            count = 0;
+        else
+            count = assert(tonumber(count), "Initial is not a number. Initial value: " .. tostring(count));
+        end;
+    end;
     local counter = Metatables.ForceFunctions({
         Hit = function()
             count = count + 1;
