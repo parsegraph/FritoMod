@@ -45,5 +45,16 @@ function Mixins.MutableIterationTests(Suite, library)
         assert(library.Equals(iterable, Suite:EmptyIterable()), "Iterable is equal to an empty iterable");
     end;
 
+    function Suite:TestInsertPair()
+        if not rawget(library, "InsertPair") then
+            return true;
+        end;
+        local iterable = Suite:EmptyIterable();
+        local remover = library.InsertPair(iterable, "Foo", "Bar");
+        assert(library.ContainsValue(iterable, "Bar"), "InsertPair inserts the specified value");
+        remover();
+        assert(not library.ContainsValue(iterable, "Bar"), "InsertPair returns remover that undoes insertion");
+    end;
+
     return Suite;
 end;

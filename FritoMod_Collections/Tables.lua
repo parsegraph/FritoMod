@@ -34,7 +34,7 @@ end;
 
 function Tables.InsertPair(targetTable, key, value)
     targetTable[key] = value;
-    return CurryNamedFunction(Tables, "Delete", key);
+    return CurryNamedFunction(Tables, "Delete", targetTable, key);
 end;
 
 -- Expands the keys in the specified table. Any key that is a table will be iterated,
