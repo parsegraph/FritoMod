@@ -160,7 +160,7 @@ function Metatables.FunctionRegistry(target, registry)
     setmetatable(target, {
         __index = function(self, name)
             local listeners = {};
-            self[name] = Activator(FunctionPopulator(listeners), function()
+            self[name] = Functions.Activator(Functions.FunctionPopulator(listeners), function()
                 registry[name] = listeners;
                 return function()
                     registry[name] = nil;
