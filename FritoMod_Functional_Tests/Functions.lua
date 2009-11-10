@@ -130,6 +130,25 @@ function Suite:TestChain()
     Assert.Equals(3, chained(2), "Chain ultimately returns value returned from receiver");
 end;
 
+function Suite:TestNiftyChainExample()
+    local queue = {};
+    local function Push(value)
+        table.insert(queue, value);
+        return Curry(Lists.Remove, queue, value);
+    end;
+    Push(true);
+    local remover = Push(true);
+    remover();
+    remover();
+    Assert.Size(0, queue, "Remover is not idempotent, so many values are removed");
+    local safePush = Functions.Chain(Push, Functions.OnlyOnce);
+    safePush(true);
+    remover = safePush(true);
+    remover();
+    remover();
+    Assert.Size(1, queue, "Chain and OnlyOnce allow idempotent functions");
+end;
+
 function Suite:TestActivatorInitialState()
     local initializerFlag = Tests.Flag();
     local uninitializerFlag = Tests.Flag();
