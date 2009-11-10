@@ -1,6 +1,6 @@
 ## Interface: 30200
 ## Title: FritoMod: Collections
-## Notes: A libray of functions dealing with collections.
+## Notes: Iteration, metatables, and collections.
 ## Author: Frito
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Functional
