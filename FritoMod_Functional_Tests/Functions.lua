@@ -8,18 +8,18 @@ end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Functional.Functions");
 
-function Suite:TestReturn()
-    local returner = Functions.Return(true);
-    Assert.Equals(true, returner(), "Return returns given value");
-    returner = Functions.Return(1, 2, 3);
-    Assert.Equals({1,2,3}, {returner()}, "Return can return multiple values");
-    Assert.Exception("Return rejects nil value", Functions.Return, nil);
-    Assert.Exception("Return rejects intermediate nil values", Functions.Return, 1, nil, 3);
+function Suite:TestValues()
+    local returner = Functions.Values(true);
+    Assert.Equals(true, returner(), "Values returns given value");
+    returner = Functions.Values(1, 2, 3);
+    Assert.Equals({1,2,3}, {returner()}, "Values can return multiple values");
+    Assert.Exception("Values rejects nil value", Functions.Values, nil);
+    Assert.Exception("Values rejects intermediate nil values", Functions.Values, 1, nil, 3);
 end;
 
-function Suite:TestReturnSealsItsReturnedFunction()
-    local returner = Functions.Return(true);
-    Assert.Exception("Returner ignores given arguments", returner, {1,2});
+function Suite:TestValuesSealsItsReturnedFunction()
+    local returner = Functions.Values(true);
+    Assert.Exception("Values rejects passed arguments", returner, {1,2});
 end;
 
 function AGlobalFunctionNoOneShouldEverUse(stuff)

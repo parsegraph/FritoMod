@@ -18,7 +18,7 @@ local Functions = Functions;
 -- throws
 --     if no values are given. Use Noop if you want a function that returns nothing
 --     if any value is nil
-function Functions.Return(...)
+function Functions.Values(...)
     local numArgs = select("#", ...);
     assert(numArgs > 0, "Return must be passed at least one argument");
     for i=1, numArgs do
