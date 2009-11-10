@@ -12,7 +12,7 @@ local Tests = Tests;
 
 do
     local listeners = {};
-    Tests.AddErrorListener = Functions.Activator(Functions.FunctionPopulator(listeners), function()
+    Tests.AddErrorListener = Functions.Lazy(Functions.FunctionPopulator(listeners), function()
         local oldHandler = geterrorhandler() or Noop;
         local function OurHandler(errorMessage, frame, stack, etype, ...)
             seterrorhandler(oldHandler);

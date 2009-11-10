@@ -163,7 +163,7 @@ function Suite:TestNiftyChainExample()
     Assert.Size(1, queue, "Chain and OnlyOnce allow idempotent functions");
 end;
 
-function Suite:TestActivatorInitialState()
+function Suite:TestLazyInitialState()
     local initializerFlag = Tests.Flag();
     local uninitializerFlag = Tests.Flag();
     local value = nil;
@@ -172,7 +172,7 @@ function Suite:TestActivatorInitialState()
         Assert.Equals(true, element, "Correct value was passed to wrapped function");
         value = element;
     end;
-    local func = Functions.Activator(Wrapped, function()
+    local func = Functions.Lazy(Wrapped, function()
         assert(not initializerFlag.IsSet(), "Initializer is never called redundantly");
         initializerFlag.Raise();
         return function()
@@ -189,11 +189,11 @@ function Suite:TestActivatorInitialState()
     assert(uninitializerFlag.IsSet(), "Initialization is undone after remover is called");
 end;
 
-function Suite:TestActivatorWithNesting()
+function Suite:TestLazyWithNesting()
     local items = {};
     local counter = Tests.Counter();
     local uninitializerFlag = Tests.Flag();
-    local func = Functions.Activator(Curry(Lists.Insert, items), function()
+    local func = Functions.Lazy(Curry(Lists.Insert, items), function()
         counter.Hit();
         return uninitializerFlag.Raise;
     end);
@@ -209,11 +209,11 @@ function Suite:TestActivatorWithNesting()
     Assert.Equals({}, items, "Items contains nothing");
 end;
 
-function Suite:TestActivatorRenews()
+function Suite:TestLazyRenews()
     local items = {};
     local startedCounter = Tests.Counter();
     local stoppedCounter = Tests.Counter();
-    local func = Functions.Activator(Curry(Lists.Insert, items), function()
+    local func = Functions.Lazy(Curry(Lists.Insert, items), function()
         startedCounter.Hit();
         return stoppedCounter.Hit;
     end);

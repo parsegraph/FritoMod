@@ -160,7 +160,7 @@ function Functions.SpyGlobal(name, spyFunc, ...)
 end;
 
 function Functions.Initialized(activator, ...)
-    return Functions.Activator(Noop, activator, ...);
+    return Functions.Lazy(Noop, activator, ...);
 end;
 
 -- Ensures that the specified function is only called once, despite multiple invocations of the
@@ -220,14 +220,14 @@ end;
 --     frame:RegisterEvent("SOMETHING");
 --     return Curry(frame, "UnregisterEvent", "SOMETHING");
 -- end;
--- local AddListener = Functions.Activator(inserter, activator);
+-- local AddListener = Functions.Lazy(inserter, activator);
 --
 -- wrapped
 --     the internal function that is called for every invocation of the returned method
 -- activator, ...
 --     the function that is invoked before every "new" series of invocations of the wrapped method.
 --     In practice
-function Functions.Activator(wrapped, activator, ...)
+function Functions.Lazy(wrapped, activator, ...)
     assert(IsCallable(wrapped), "wrapped function is not callable. Type: " .. type(wrapped));
     activator = Curry(activator, ...);
     local deactivator = nil;
