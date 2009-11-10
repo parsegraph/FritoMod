@@ -108,6 +108,24 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- This function must be explicitly implemented by clients.
     end;
 
+    if library.InsertFunction == nil then
+        -- Inserts the specified curried function into the specified iterable.
+        --
+        -- This is an optional operation.
+        --
+        -- iterable
+        --     an iterable used by this library
+        -- func, ...
+        --     the function that is inserted into this iterable
+        -- returns
+        --     a function that, when invoked, removes the specified function
+        -- throws
+        --     if this library does not support this operation
+        function library.InsertFunction(iterable, func, ...)
+            return library.Insert(iterable, Curry(func, ...));
+        end;
+    end;
+
     -- Inserts the specified pair into the specified iterable.
     --
     -- This is an optional operation.

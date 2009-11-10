@@ -56,5 +56,22 @@ function Mixins.MutableIterationTests(Suite, library)
         assert(not library.ContainsValue(iterable, "Bar"), "InsertPair returns remover that undoes insertion");
     end;
 
+    function Suite:TestInsertFunction()
+        if not rawget(library, "InsertFunction") then
+            return true;
+        end;
+        local function Do(a, b)
+            return a + b;
+        end;
+        local iterable = Suite:EmptyIterable();
+        local remover = library.InsertFunction(iterable, Do, 1);
+        Assert.Equals(1, library.Size(iterable), "One function was inserted into the iterable");
+        for k, v in library.Iterator(iterable) do
+            Assert.Equals(3, v(2), "Inserted function is callable and was curried");
+        end;
+        remover();
+        assert(library.IsEmpty(iterable), "Remover removes inserted function");
+    end;
+
     return Suite;
 end;
