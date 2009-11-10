@@ -112,6 +112,16 @@ function Suite:TestObserveIsCalledBeforeWrapped()
     ObservedFunc();
 end;
 
+function Suite:TestChain()
+    local value = Tests.Value(1);
+    local chained = Functions.Chain(value.Set, function(providedValue)
+        value.Assert(2, "Chain first passes value to wrapped function");
+        Assert.Equals(1, providedValue, "Chain sends received value to receiver");
+        return 3;
+    end);
+    Assert.Equals(3, chained(2), "Chain ultimately returns value returned from receiver");
+end;
+
 function Suite:TestActivatorInitialState()
     local initializerFlag = Tests.Flag();
     local uninitializerFlag = Tests.Flag();

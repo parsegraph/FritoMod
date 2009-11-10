@@ -38,6 +38,30 @@ function Functions.Values(...)
     return ForcedSeal(unpack, {...});
 end;
 
+-- Chains the specified wrapped function to the specified receiver function, emulating
+-- the following idiom:
+--
+-- receiver(wrapped());
+--
+-- This enables the receiver to modify the returned values of the wrapped function.
+--
+-- wrapped:callable
+--     the function that is called first, given the arguments passed into the returned
+--     function
+-- receiverFunc, ...
+--     receives the returned values from wrapped. Its returned values are returned to
+--     the caller of the returned function
+-- returns:function
+--     a function that should be passed arguments that the wrapped function expects, and
+--     will return the values returned by the receiver function
+function Functions.Chain(wrapped, receiverFunc, ...)
+    assert(IsCallable(wrapped), "wrapped must be a callable. Type: " .. type(wrapped));
+    receiverFunc = Curry(receiverFunc, ...);
+    return function(...)
+        return receiverFunc(wrapped(...));
+    end;
+end;
+
 -- Cycles between the specified functions. Each invocation of the returned function
 -- will invoke the next function. The cycle will loop once the last function is invoked.
 --
