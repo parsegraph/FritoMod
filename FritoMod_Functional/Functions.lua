@@ -9,6 +9,24 @@ if nil == Functions then
 end;
 local Functions = Functions;
 
+-- Returns a function that returns the specified values as-is.
+--
+-- ...:*
+--     values that should be returned when the returned function is called
+-- returns
+--     a function that returns the given values
+-- throws
+--     if no values are given. Use Noop if you want a function that returns nothing
+--     if any value is nil
+function Functions.Return(...)
+    local numArgs = select("#", ...);
+    assert(numArgs > 0, "Return must be passed at least one argument");
+    for i=1, numArgs do
+        assert(select(i, ...) ~= nil, "Return must not be given nil arguments");
+    end;
+    return ForcedSeal(unpack, {...});
+end;
+
 -- Cycles between the specified functions. Each invocation of the returned function
 -- will invoke the next function. The cycle will loop once the last function is invoked.
 --
