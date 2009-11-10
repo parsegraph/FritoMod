@@ -27,9 +27,12 @@ function Suite:TestValuesSealsItsReturnedFunction()
     Assert.Exception("Values rejects passed arguments", returner, {1,2});
 end;
 
-function AGlobalFunctionNoOneShouldEverUse(stuff)
-    Assert.Equals(4, stuff, "Internal global receives externally received value");
-    return stuff;
+-- Creates a single global for use with testing.
+function Suite:TestSetupHookTests()
+    AGlobalFunctionNoOneShouldEverUse = function(stuff)
+        Assert.Equals(4, stuff, "Internal global receives externally received value");
+        return stuff;
+    end;
 end;
 
 function Suite:TestHookGlobal()
@@ -78,6 +81,11 @@ function Suite:TestSpyGlobalFailsWhenIntermediatelyModified()
     Assert.Exception("SpyGlobal fails when global is modified between calls", remover);
     AGlobalFunctionNoOneShouldEverUse = original;
     remover();
+end;
+
+-- Cleans up the global we used in the previous tests.
+function Suite:TestClearGlobal()
+    AGlobalFunctionNoOneShouldEverUse = nil;
 end;
 
 function Suite:TestOnlyOnce()
