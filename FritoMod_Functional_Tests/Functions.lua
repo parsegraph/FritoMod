@@ -27,6 +27,20 @@ function Suite:TestValuesSealsItsReturnedFunction()
     Assert.Exception("Values rejects passed arguments", returner, {1,2});
 end;
 
+function Suite:TestToggle()
+    local value = Tests.Value(false);
+    local function Perform(newValue)
+        return Curry(value.Set, value.Set(newValue));
+    end;
+    local toggle = Functions.Toggle(Perform, true);
+    toggle();
+    value.Assert(true);
+    toggle();
+    value.Assert(false);
+    toggle();
+    value.Assert(true);
+end;
+
 -- Creates a single global for use with testing.
 function Suite:TestSetupHookTests()
     AGlobalFunctionNoOneShouldEverUse = function(stuff)

@@ -78,29 +78,29 @@ function Functions.Cycle(...)
     end;
 end;
 
--- Provides undo/redo functionality for the specified function that supports it. When first
--- invoked, the returned function will call the specified function. The specified function
--- is expected to return a callable that, when invoked, will "undo" the specified function's
--- operation. The next invocation will invoke that "undo" function.
+-- Toggles between calling the specified function and the function returned by it (henceforth referred
+-- to as the second function). The first function's returned value always replaces the second function.
+-- The second function's return values, however, are ignored. 
 --
--- This function is essentially a special kind of Cycle: it cycles between performing an operation,
--- and undoing that operation. It may be also used for more complicated schemes that don't
--- necessarily "undo" anything, but rather progress through some dynamic chain of functions.
+-- Typically, the second function should undo some action performed by the specified first function, though 
+-- this is not required.
 --
 -- func, ...
 --     the function that is the undoable operation for this function. It must return a callable that,
 --     when invoked, will "undo" the original operation
 -- returns
 --     a function that performs, or undoes, the specified function's operation
-function Functions.Undoable(func, ...)
+function Functions.Toggle(func, ...)
     func = Curry(func, ...);
-    local remover = nil;
+    local second;
     return function(...)
-        if remover then
-            remover(...);
+        if nil == second then
+            second = func(...);
+            assert(IsCallable(second), "Returned value is not a callable. Value: " .. tostring(second));
+        else
+            second(...);
+            second = nil;
         end;
-        remover = func(...);
-        assert(IsCallable(remover), "remover is not a callable");
     end;
 end;
 
