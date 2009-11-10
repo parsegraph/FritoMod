@@ -104,7 +104,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
     --     a function that, when invoked, removes the specified value
     -- throws
     --     if this library does not support this operation
-    if library.Insert ~= nil then
+    if library.Insert == nil then
         -- This function must be explicitly implemented by clients.
     end;
 
@@ -124,9 +124,9 @@ function Mixins.MutableIteration(library, iteratorFunc)
     --     a function that, when invoked, removes the specified value
     -- throws
     --     if this library does not support this operation
-    if library.InsertPair ~= nil then
+    if library.InsertPair == nil then
         function library.InsertPair(iterable, key, value)
-            return libray.Insert(iterable, value);
+            return library.Insert(iterable, value);
         end;
     end;
 
