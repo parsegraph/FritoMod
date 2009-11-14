@@ -301,6 +301,11 @@ function Tests.Flag(isSet)
     flag.Assert = ForcedFunction(flag, function(...)
         assert(flag.IsSet(), ...);
     end);
+
+    flag.AssertUnset = ForcedFunction(flag, function(...)
+        assert(not flag.IsSet(), ...);
+    end);
+
     return flag;
 end
 
