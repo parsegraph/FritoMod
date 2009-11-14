@@ -173,6 +173,36 @@ function Suite:TestObserveIsCalledBeforeWrapped()
     ObservedFunc();
 end;
 
+function Suite:TestObserveUndoable()
+    local value = Tests.Value(false);
+    local list = {};
+    local undoable = Functions.ObserveUndoable(Lists.Insert, function(passedList, insertedValue)
+        Assert.Equals(list, passedList, "Observer is properly given shared curried arguments");
+        return Curry(value.Set, value.Set(insertedValue));
+    end, list);
+    local remover = undoable(true);
+    Assert.Equals({true}, list, "Undoable's wrapped function is properly curried and called");
+    value.Assert(true, "Observer is properly curried and called");
+    remover();
+    Assert.Equals({}, list, "Observed undoable's remover is properly called");
+    value.Assert(false, "Observer's returned remover is properly curried and called");
+end;
+
+function Suite:TestObserveUndoablePerformsAfterRepeatedInvocations()
+    local value = Tests.Value(false);
+    local list = {};
+    local undoable = Functions.ObserveUndoable(Lists.Insert, function(list, insertedValue)
+        return Curry(value.Set, value.Set(insertedValue));
+    end, list);
+    undoable(true)();
+    local remover = undoable(true);
+    Assert.Equals({true}, list, "Undoable's wrapped function is properly curried and called");
+    value.Assert(true, "Observer is properly curried and called");
+    remover();
+    Assert.Equals({}, list, "Observed undoable's remover is properly called");
+    value.Assert(false, "Observer's returned remover is properly curried and called");
+end;
+
 function Suite:TestChain()
     local value = Tests.Value(1);
     local chained = Functions.Chain(value.Set, function(providedValue)

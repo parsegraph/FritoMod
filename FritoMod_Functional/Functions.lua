@@ -227,6 +227,32 @@ function Functions.Observe(observedFunc, observer, ...)
     end;
 end;
 
+-- Observes the specified undoable function. A function is returned that, when called, invokes the spy before
+-- invoking the specified undoable. The undoable's remover is wrapped such that the spy's remover is also called.
+-- In this way, the undoable is observed at both stages of its lifecycle.
+--
+-- undoable:undoable callable
+--     the observed function
+-- spyFunc, ... :undoable callable
+--     the spy that observes the undoable. It should return a remover function, but is not given any arguments
+--     to its performer or its remover.
+-- returns:undoable callable
+--     mimics the behavior performed by the specified undoable, but also invokes the spy whenenver the undoable
+--     would be invoked.
+function Functions.ObserveUndoable(undoable, spyFunc, ...)
+    assert(IsCallable(undoable), "undoable function is not callable. Type: " .. type(wrapped));
+    undoable = Curry(undoable, ...);
+    spyFunc = Curry(spyFunc, ...);
+    return function(...)
+        local spyFuncRemover = spyFunc(...) or Noop;
+        local undoableRemover = undoable(...) or Noop;
+        return Functions.OnlyOnce(function()
+            undoableRemover();
+            spyFuncRemover();
+        end);
+    end;
+end;
+
 -- Returns a function that wraps the specified function. Before the specified function is
 -- invoked, the activator is called. Subsequent calls to the returned function will directly
 -- call the specified function.
