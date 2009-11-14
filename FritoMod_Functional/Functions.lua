@@ -159,10 +159,6 @@ function Functions.SpyGlobal(name, spyFunc, ...)
     end;
 end;
 
-function Functions.Initialized(activator, ...)
-    return Functions.Lazy(Noop, activator, ...);
-end;
-
 -- Ensures that the specified function is only called once, despite multiple invocations of the
 -- returned function.
 --
