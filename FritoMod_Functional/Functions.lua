@@ -132,6 +132,31 @@ function Functions.HookGlobal(name, hookFunc, ...)
     end;
 end;
 
+-- Combines the two specified functions. The performer should do something, and the undoFunc should undo
+-- that action. 
+--
+-- Both functions receive the varargs passed here. This is different than most other operations.
+--
+-- performer:function
+--     performs some action. It is given the arguments passed into Undoable, as well as arguments passed 
+--     to the returned function. Its return value is ignored.
+-- undoFunc:function
+--     undoes the action performed by performer. It is given the arguments passed into Undoable, as well 
+--     as arguments passed to the returned function. Its return value is ignored.
+-- ...:*
+--     arguments that are curried to both the performer and the undoFunc
+-- returns:undoable function
+--     a function that, when called, invokes performer. It returns a function that, when invoked, will
+--     call undoFunc.
+function Functions.Undoable(performer, undoFunc, ...)
+    performer = Curry(performer, ...);
+    undoFunc = Curry(undoFunc, ...);
+    return function(...)
+        performer(...);
+        return Functions.OnlyOnce(undoFunc);
+    end;
+end;
+
 -- Decorates the global function of the specified name, calling the specified function whenever the
 -- global is called. The spy function merely observes calls to the global; it does not affect them.
 --

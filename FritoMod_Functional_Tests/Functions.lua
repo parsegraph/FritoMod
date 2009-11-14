@@ -41,6 +41,45 @@ function Suite:TestToggle()
     value.Assert(true);
 end;
 
+function Suite:TestUndoable()
+    local flag = Tests.Flag();
+    local undoable = Functions.Undoable(flag.Raise, flag.Clear);
+    local remover = undoable();
+    flag.Assert("Undoable initially calls performer");
+    remover();
+    flag.AssertUnset("Undoable's returned remover undoes performed action");
+end;
+
+function Suite:TestUndoablesNonStandardCurryingRules()
+    local list = {};
+    local undoable = Functions.Undoable(table.insert, table.remove, list);
+    local remover = undoable("Foo");
+    Assert.Equals({"Foo"}, list, "Undoable passes curried arguments to performer");
+    remover(1);
+    Assert.Equals({}, list, "Undoable also passes curried arguments to remover");
+end;
+
+function Suite:TestUndoableDoesntCorruptAfterMultipleRuns()
+    local flag = Tests.Flag();
+    local undoable = Functions.Undoable(flag.Raise, flag.Clear);
+    undoable()();
+    local remover = undoable();
+    flag.Assert("Undoable still performs after multiple invocations");
+    remover();
+    flag.AssertUnset("Undoable's remover functions after first invocations");
+end;
+
+function Suite:TestUndoablesRemoverFiresOnlyOnce()
+    local flag = Tests.Flag();
+    local undoable = Functions.Undoable(flag.Raise, flag.Clear);
+    local remover = undoable();
+    remover();
+    flag.AssertUnset("Flag is unset after first remover invocation");
+    flag.Raise();
+    remover();
+    flag.Assert("Remover is a no-op after first invocation");
+end;
+
 -- Creates a single global for use with testing.
 function Suite:TestSetupHookTests()
     AGlobalFunctionNoOneShouldEverUse = function(stuff)
