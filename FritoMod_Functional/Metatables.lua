@@ -143,32 +143,3 @@ Metatables.ConstructedValue = function(target, constructorFunc, ...)
         end
     });
 end;
-
--- A metatable that provides on-demand FunctionPopulators on all missing keys in the specified target.
--- The registered functions are added, using the given key, to the specified registry.
---
--- target
---     the table that is the target of this operation. Its metatable will be overridden by
---     this operation's created metatable
--- registry
---     the table that will be populated by the FunctionPopulators created by this metatable. 
--- returns
---     target, registry
-function Metatables.FunctionRegistry(target, registry)
-    assert(type(target) == "table", "target is not a table");
-    assert(type(registry) == "table", "registry is not a table");
-    setmetatable(target, {
-        __index = function(self, name)
-            local listeners = {};
-            self[name] = Functions.Lazy(Functions.FunctionPopulator(listeners), function()
-                registry[name] = listeners;
-                return function()
-                    registry[name] = nil;
-                    target[name] = nil;
-                end;
-            end);
-            return rawget(self, key);
-        end
-    });
-    return target, registry;
-end;
