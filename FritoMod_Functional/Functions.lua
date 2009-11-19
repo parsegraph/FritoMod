@@ -276,28 +276,10 @@ end;
 --     the function that is invoked before every "new" series of invocations of the wrapped method.
 --     In practice
 function Functions.Lazy(wrapped, activator, ...)
-    assert(IsCallable(wrapped), "wrapped function is not callable. Type: " .. type(wrapped));
-    activator = Curry(activator, ...);
-    local deactivator = nil;
-    local count = 0;
-    return function(...)
-        if count == 0 then
-            deactivator = activator() or Noop;
-        end;
-        count = count + 1;
-        local sanitizer = wrapped(...) or Noop;
-        return function()
-            if not sanitizer then
-                return;
-            end;
-            sanitizer();
-            sanitizer = nil;
-            count = count - 1;
-            if count == 0 then
-                deactivator();
-            end;
-        end;
-    end;
+    return Functions.ObserveUndoable(
+        wrapped,
+        Functions.Install(activator, ...)
+    );
 end;
 
 -- Manages invocation of one-time setup and tear-down functionality. The setup function is called during the 
