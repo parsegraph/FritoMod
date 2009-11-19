@@ -302,3 +302,28 @@ function Suite:TestLazyRenews()
     stoppedCounter.Assert(2);
 end;
 
+function Suite:TestInstall()
+    local counter = Tests.Counter();
+    local installer = Functions.Install(Functions.Undoable(
+        counter.Hit,
+        counter.Clear
+    ));
+    local remover = installer();
+    counter.Assert(1, "Install fires installer on first invocation");
+    remover();
+    counter.Assert(0, "Install fires uninstaller on last removal");
+end;
+
+function Suite:TestInstallWithLotsOfIntermediateRemovals()
+    local counter = Tests.Counter();
+    local installer = Functions.Install(Functions.Undoable(
+        counter.Hit,
+        counter.Clear
+    ));
+    local remover = installer();
+    counter.Assert(1, "Install fires installer on first invocation");
+    installer()();
+    installer()();
+    remover();
+    counter.Assert(0, "Install fires uninstaller on last removal");
+end;

@@ -300,3 +300,38 @@ function Functions.Lazy(wrapped, activator, ...)
     end;
 end;
 
+-- Manages invocation of one-time setup and tear-down functionality. The setup function is called during the 
+-- first invocation of the returned function, returning a function that tears down any initialization. 
+--
+-- The activator's returned function should undo any action performed by the activator. This function is 
+-- called when all tear-down functions have been called.
+--
+-- The benefit is that this operation keeps track of how many set-up and tear-down invocations have been made. The
+-- activator is called on the first set-up call, but subsequent set-up calls do nothing. Tear-down calls also do
+-- nothing until the final tear-down call is made. At this point, the returned deactivator is called and the 
+-- activator should return to its initial state.
+--
+-- setUp, ...
+--     a callable that, when invokes, performs some one-time initialization or set-up. It must return a function
+--     that tears down any initialization previously performed.
+-- returns:function
+--     a function that, when called, could perform set-up functionality. It returns a function that, 
+--     when called, could perform tear-down functionality. What action is actually performed is determined by 
+--     the specified activator.
+function Functions.Install(setUp, ...)
+    setUp = Curry(setUp, ...);
+    local tearDown = nil;
+    local count = 0;
+    return function()
+        if count == 0 then
+            tearDown = setUp();
+        end;
+        count = count + 1;
+        return Functions.OnlyOnce(function()
+            count = count - 1;
+            if count == 0 then
+                tearDown();
+            end;
+        end);
+    end;
+end;
