@@ -8,10 +8,9 @@ end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Events.EventSource");
 
-function Suite:TestEventSource()
-    local value = Tests.Value();
+function Suite:TestEventSourceAddListener()
     local source = EventSource:New();
-    local remover = source:AddListener("Foo", value.Set);
+    local remover = source:AddListener("Foo", Noop);
     Assert.Type("function", remover, "AddListener returns a callable");
-    Assert.Exception("AddListener accepts only string event names", source.AddListener, source, 1, value.Set);
+    Assert.Exception("AddListener accepts only string event names", source.AddListener, source, 1, Noop);
 end;
