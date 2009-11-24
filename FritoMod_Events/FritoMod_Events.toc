@@ -5,4 +5,5 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Collections
 
+EventSource.lua
 Events.lua
