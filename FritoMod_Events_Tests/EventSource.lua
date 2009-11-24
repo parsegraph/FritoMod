@@ -25,6 +25,7 @@ function Suite:TestEventSourceDispatch()
     value.Set(false);
     source:Dispatch("Foo", true);
     value.Assert(false, "Listener is removed once function is called");
+    Assert.Nil(source:Dispatch("Foo"), "Dispatch returns nothing");
 end;
 
 function Suite:TestEventSourceAddListenerHasIdempotentRemover()
