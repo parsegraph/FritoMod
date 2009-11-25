@@ -8,11 +8,11 @@ if nil ~= require then
     require "FritoMod_Collections/Tables";
 end;
 
--- EventSource automatically manages the lifecycle of events and their registered listeners.
-EventSource = OOP.Class();
-local EventSource = EventSource;
+-- EventRegistry automatically manages the lifecycle of events and their registered listeners.
+EventRegistry = OOP.Class();
+local EventRegistry = EventRegistry;
 
-function EventSource:Constructor()
+function EventRegistry:Constructor()
     self.registry = {};
     Metatables.ConstructedValue(self.registry, Tables.New);
 end;
@@ -25,7 +25,7 @@ end;
 --     receives events for the specified event 
 -- returns:one-time function
 --     a function that removes the specified listener
-function EventSource:AddListener(eventName, listenerFunc, ...)
+function EventRegistry:AddListener(eventName, listenerFunc, ...)
     assert(type(eventName) == "string", "eventName must be a string");
     listenerFunc = Curry(listenerFunc, ...);
     local listeners = self.registry[eventName];
@@ -38,7 +38,7 @@ end;
 --     the name of the dispatched event
 -- ...:*
 --     event parameters
-function EventSource:Dispatch(eventName, ...)
+function EventRegistry:Dispatch(eventName, ...)
     local listeners = self.registry[eventName];
     Lists.CallEach(listeners, ...);
 end;
