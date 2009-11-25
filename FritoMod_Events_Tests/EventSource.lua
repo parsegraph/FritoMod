@@ -14,3 +14,26 @@ function Suite:TestEventSourceAddListener()
     Assert.Type("function", remover, "AddListener returns a callable");
     Assert.Exception("AddListener accepts only string event names", source.AddListener, source, 1, Noop);
 end;
+
+function Suite:TestEventSourceDispatch()
+    local value = Tests.Value(false);
+    local source = EventSource:New();
+    local remover = source:AddListener("Foo", value.Set);
+    source:Dispatch("Foo", true);
+    value.Assert(true, "Event is dispatched to listeners");
+    remover();
+    value.Set(false);
+    source:Dispatch("Foo", true);
+    value.Assert(false, "Listener is removed once function is called");
+end;
+
+function Suite:TestEventSourceAddListenerHasIdempotentRemover()
+    local value = Tests.Value(false);
+    local source = EventSource:New();
+    local remover = source:AddListener("Foo", value.Set);
+    remover();
+    source:AddListener("Foo", value.Set);
+    remover();
+    source:Dispatch("Foo", true);
+    value.Assert(false, "Removing function is idempotent");
+end;

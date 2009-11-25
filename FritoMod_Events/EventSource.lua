@@ -31,3 +31,14 @@ function EventSource:AddListener(eventName, listenerFunc, ...)
     local listeners = self.registry[eventName];
     return Lists.Insert(listeners, listenerFunc);
 end;
+
+-- Dispatches an event to all listeners that are expecting that event.
+--
+-- eventName:string
+--     the name of the dispatched event
+-- ...:*
+--     event parameters
+function EventSource:Dispatch(eventName, ...)
+    local listeners = self.registry[eventName];
+    Lists.CallEach(listeners, ...);
+end;
