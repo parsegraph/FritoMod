@@ -38,3 +38,11 @@ function Suite:TestEventRegistryAddListenerHasIdempotentRemover()
     source:Dispatch("Foo", true);
     value.Assert(false, "Removing function is idempotent");
 end;
+
+function Suite:TestEventRegistryAddsDriver()
+    local source = EventRegistry:New();
+    local driver = Metatables.Noop({
+    });
+    local remover = source:AddDriver(driver);
+    remover();
+end;

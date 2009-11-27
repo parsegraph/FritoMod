@@ -13,8 +13,13 @@ EventRegistry = OOP.Class();
 local EventRegistry = EventRegistry;
 
 function EventRegistry:Constructor()
+    self.driver = Metatables.Multicast();
     self.registry = {};
     Metatables.ConstructedValue(self.registry, Tables.New);
+end;
+
+function EventRegistry:AddDriver(driver, ...)
+    return self.driver:Add(driver, ...);
 end;
 
 -- Registers the specified listener to receive events with the specified event name.
