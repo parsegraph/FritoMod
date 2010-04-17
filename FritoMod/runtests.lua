@@ -1,8 +1,9 @@
-require "ex";
+#!/usr/bin/lua
+require "lfs"
 --require "FritoMod_Testing/AllTests";
 
-if os.currentdir():find("FritoMod$") then
-    os.chdir("..");
+if lfs.currentdir():find("FritoMod$") then
+    lfs.chdir("..");
 end;
 
 local function ParseAddonToC(tocFileName, dirName)
@@ -18,12 +19,13 @@ local function ParseAddonToC(tocFileName, dirName)
     io.input();
 end;
 
-for entry in os.dir() do 
-    if entry.type == "directory" and entry.name:find("Tests?$") then
-        local tocFileName = ("./%s/%s.toc"):format(entry.name, entry.name);
-        local tocFileEntry = os.dirent(tocFileName);
-        if tocFileEntry and tocFileEntry.type == "file" then
-            ParseAddonToC(tocFileName, entry.name);
+for dirname in lfs.dir(".") do 
+    local entry = lfs.attributes(dirname);
+    if entry.mode == "directory" and dirname:find("Tests?$") then
+        local tocFileName = ("./%s/%s.toc"):format(dirname, dirname);
+        local tocFileEntry = lfs.attributes(tocFileName);
+        if tocFileEntry and tocFileEntry.mode == "file" then
+            ParseAddonToC(tocFileName, dirname);
         end;
     end;
 end;
