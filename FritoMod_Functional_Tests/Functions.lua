@@ -41,6 +41,45 @@ function Suite:TestToggle()
     value.Assert(true);
 end;
 
+function Suite:TestUndoable()
+    local flag = Tests.Flag();
+    local undoable = Functions.Undoable(flag.Raise, flag.Clear);
+    local remover = undoable();
+    flag.Assert("Undoable initially calls performer");
+    remover();
+    flag.AssertUnset("Undoable's returned remover undoes performed action");
+end;
+
+function Suite:TestUndoablesNonStandardCurryingRules()
+    local list = {};
+    local undoable = Functions.Undoable(table.insert, table.remove, list);
+    local remover = undoable("Foo");
+    Assert.Equals({"Foo"}, list, "Undoable passes curried arguments to performer");
+    remover(1);
+    Assert.Equals({}, list, "Undoable also passes curried arguments to remover");
+end;
+
+function Suite:TestUndoableDoesntCorruptAfterMultipleRuns()
+    local flag = Tests.Flag();
+    local undoable = Functions.Undoable(flag.Raise, flag.Clear);
+    undoable()();
+    local remover = undoable();
+    flag.Assert("Undoable still performs after multiple invocations");
+    remover();
+    flag.AssertUnset("Undoable's remover functions after first invocations");
+end;
+
+function Suite:TestUndoablesRemoverFiresOnlyOnce()
+    local flag = Tests.Flag();
+    local undoable = Functions.Undoable(flag.Raise, flag.Clear);
+    local remover = undoable();
+    remover();
+    flag.AssertUnset("Flag is unset after first remover invocation");
+    flag.Raise();
+    remover();
+    flag.Assert("Remover is a no-op after first invocation");
+end;
+
 -- Creates a single global for use with testing.
 function Suite:TestSetupHookTests()
     AGlobalFunctionNoOneShouldEverUse = function(stuff)
@@ -134,6 +173,36 @@ function Suite:TestObserveIsCalledBeforeWrapped()
     ObservedFunc();
 end;
 
+function Suite:TestObserveUndoable()
+    local value = Tests.Value(false);
+    local list = {};
+    local undoable = Functions.ObserveUndoable(Lists.Insert, function(passedList, insertedValue)
+        Assert.Equals(list, passedList, "Observer is properly given shared curried arguments");
+        return Curry(value.Set, value.Set(insertedValue));
+    end, list);
+    local remover = undoable(true);
+    Assert.Equals({true}, list, "Undoable's wrapped function is properly curried and called");
+    value.Assert(true, "Observer is properly curried and called");
+    remover();
+    Assert.Equals({}, list, "Observed undoable's remover is properly called");
+    value.Assert(false, "Observer's returned remover is properly curried and called");
+end;
+
+function Suite:TestObserveUndoablePerformsAfterRepeatedInvocations()
+    local value = Tests.Value(false);
+    local list = {};
+    local undoable = Functions.ObserveUndoable(Lists.Insert, function(list, insertedValue)
+        return Curry(value.Set, value.Set(insertedValue));
+    end, list);
+    undoable(true)();
+    local remover = undoable(true);
+    Assert.Equals({true}, list, "Undoable's wrapped function is properly curried and called");
+    value.Assert(true, "Observer is properly curried and called");
+    remover();
+    Assert.Equals({}, list, "Observed undoable's remover is properly called");
+    value.Assert(false, "Observer's returned remover is properly curried and called");
+end;
+
 function Suite:TestChain()
     local value = Tests.Value(1);
     local chained = Functions.Chain(value.Set, function(providedValue)
@@ -163,7 +232,7 @@ function Suite:TestNiftyChainExample()
     Assert.Size(1, queue, "Chain and OnlyOnce allow idempotent functions");
 end;
 
-function Suite:TestActivatorInitialState()
+function Suite:TestLazyInitialState()
     local initializerFlag = Tests.Flag();
     local uninitializerFlag = Tests.Flag();
     local value = nil;
@@ -172,7 +241,7 @@ function Suite:TestActivatorInitialState()
         Assert.Equals(true, element, "Correct value was passed to wrapped function");
         value = element;
     end;
-    local func = Functions.Activator(Wrapped, function()
+    local func = Functions.Lazy(Wrapped, function()
         assert(not initializerFlag.IsSet(), "Initializer is never called redundantly");
         initializerFlag.Raise();
         return function()
@@ -189,11 +258,11 @@ function Suite:TestActivatorInitialState()
     assert(uninitializerFlag.IsSet(), "Initialization is undone after remover is called");
 end;
 
-function Suite:TestActivatorWithNesting()
+function Suite:TestLazyWithNesting()
     local items = {};
     local counter = Tests.Counter();
     local uninitializerFlag = Tests.Flag();
-    local func = Functions.Activator(Curry(Lists.Insert, items), function()
+    local func = Functions.Lazy(Curry(Lists.Insert, items), function()
         counter.Hit();
         return uninitializerFlag.Raise;
     end);
@@ -209,11 +278,11 @@ function Suite:TestActivatorWithNesting()
     Assert.Equals({}, items, "Items contains nothing");
 end;
 
-function Suite:TestActivatorRenews()
+function Suite:TestLazyRenews()
     local items = {};
     local startedCounter = Tests.Counter();
     local stoppedCounter = Tests.Counter();
-    local func = Functions.Activator(Curry(Lists.Insert, items), function()
+    local func = Functions.Lazy(Curry(Lists.Insert, items), function()
         startedCounter.Hit();
         return stoppedCounter.Hit;
     end);
@@ -233,3 +302,28 @@ function Suite:TestActivatorRenews()
     stoppedCounter.Assert(2);
 end;
 
+function Suite:TestInstall()
+    local counter = Tests.Counter();
+    local installer = Functions.Install(Functions.Undoable(
+        counter.Hit,
+        counter.Clear
+    ));
+    local remover = installer();
+    counter.Assert(1, "Install fires installer on first invocation");
+    remover();
+    counter.Assert(0, "Install fires uninstaller on last removal");
+end;
+
+function Suite:TestInstallWithLotsOfIntermediateRemovals()
+    local counter = Tests.Counter();
+    local installer = Functions.Install(Functions.Undoable(
+        counter.Hit,
+        counter.Clear
+    ));
+    local remover = installer();
+    counter.Assert(1, "Install fires installer on first invocation");
+    installer()();
+    installer()();
+    remover();
+    counter.Assert(0, "Install fires uninstaller on last removal");
+end;

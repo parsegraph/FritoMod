@@ -44,7 +44,7 @@ local eventListeners;
 
 -- Called to create the frame and register a listener to it. This is invoked every time the very first
 -- event is registered. The removing function is called once all listeners have been removed.
-local initialize = Functions.Activator(Noop, function()
+local initialize = Functions.Lazy(Noop, function()
     local eventsFrame = CreateFrame("Frame");
     eventListeners = {};
     -- Invoked on all registered events, calling all listeners for the event. Only event 
@@ -66,7 +66,7 @@ setmetatable(Events, {
     -- registries for new events on-demand. There are no errors emitted if an event name is not valid.
     __index = function(self, key)
         local listeners = {};
-        self[key] = Functions.Activator(Functions.FunctionPopulator(listeners), function()
+        self[key] = Functions.Lazy(Functions.FunctionPopulator(listeners), function()
             local remover = initialize();
             eventListeners[key] = listeners;
             return function()

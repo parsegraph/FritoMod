@@ -75,6 +75,13 @@ function Suite:TestFlagAsserts()
     flag.Assert();
 end;
 
+function Suite:TestFlagAssertUnset()
+    local flag = Tests.Flag();
+    Assert.Succeeds("Flag asserts unset on initial state", flag.AssertUnset);
+    flag.Raise();
+    Assert.Exception("Flag fails unset-assertion when flag is raised", flag.AssertUnset);
+end;
+
 function Suite:TestFlagAssertCanFail()
     local flag = Tests.Flag();
     assert(not pcall(flag.Assert), "Assert fails on unset flag");

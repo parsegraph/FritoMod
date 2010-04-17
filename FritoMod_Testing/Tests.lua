@@ -12,7 +12,7 @@ local Tests = Tests;
 
 do
     local listeners = {};
-    Tests.AddErrorListener = Functions.Activator(Functions.FunctionPopulator(listeners), function()
+    Tests.AddErrorListener = Functions.Lazy(Functions.FunctionPopulator(listeners), function()
         local oldHandler = geterrorhandler() or Noop;
         local function OurHandler(errorMessage, frame, stack, etype, ...)
             seterrorhandler(oldHandler);
@@ -287,20 +287,53 @@ end;
 --     optional. the isSet state of the false. Defaults to false
 function Tests.Flag(isSet)
     local isSet = Bool(isSet);
-    local flag = {
+
+    -- Encapsulates a boolean value.
+    local flag;
+    flag = Metatables.ForceFunctions({
+
+        -- Raises the flag.
         Raise = function()
             isSet = true;
         end,
+
+        -- Returns whether the flag is raised.
+        --
+        -- returns:boolean
+        --     true if the flag is raised, otherwise false
         IsSet = function()
             return isSet;
         end,
+
+        -- Resets the flag to an unraised state.
         Clear = function()
             isSet = false;
+        end,
+
+        -- Asserts that the flag is raised.
+        --
+        -- assertion:string
+        --     specifies why the flag should be raised or describes the significance of the raised
+        --     flag
+        Assert = function(assertion)
+            assert(flag.IsSet(), assertion);
+        end,
+
+        -- Asserts that the flag is not raised.
+        --
+        -- assertion:string
+        --     specifies why the flag should not be raised or describes the significance of the 
+        --     unraised flag
+        AssertUnset = function(...)
+            assert(not flag.IsSet(), ...);
         end
-    };
-    flag.Assert = ForcedFunction(flag, function(...)
-        assert(flag.IsSet(), ...);
-    end);
+    });
+
+    -- Aliases
+    flag.Unset = flag.Clear;
+
+    flag.AssertSet = flag.Assert;
+
     return flag;
 end
 

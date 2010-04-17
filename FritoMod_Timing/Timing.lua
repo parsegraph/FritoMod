@@ -24,7 +24,7 @@ local timingFrame = CreateFrame("Frame", nil, UIParent);
 --     the function that is fired every update
 -- returns
 --     a function that removes the specified listener
-Timing.AddUpdateListener = Functions.Activator(Functions.FunctionPopulator(updateListeners), function()
+Timing.AddUpdateListener = Functions.Lazy(Functions.FunctionPopulator(updateListeners), function()
     timingFrame:SetScript("OnUpdate", function(frame, elapsed) 
        Lists.CallEach(updateListeners, elapsed);
     end);

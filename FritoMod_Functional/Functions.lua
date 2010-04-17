@@ -132,6 +132,31 @@ function Functions.HookGlobal(name, hookFunc, ...)
     end;
 end;
 
+-- Combines the two specified functions. The performer should do something, and the undoFunc should undo
+-- that action. 
+--
+-- Both functions receive the varargs passed here. This is different than most other operations.
+--
+-- performer:function
+--     performs some action. It is given the arguments passed into Undoable, as well as arguments passed 
+--     to the returned function. Its return value is ignored.
+-- undoFunc:function
+--     undoes the action performed by performer. It is given the arguments passed into Undoable, as well 
+--     as arguments passed to the returned function. Its return value is ignored.
+-- ...:*
+--     arguments that are curried to both the performer and the undoFunc
+-- returns:undoable function
+--     a function that, when called, invokes performer. It returns a function that, when invoked, will
+--     call undoFunc.
+function Functions.Undoable(performer, undoFunc, ...)
+    performer = Curry(performer, ...);
+    undoFunc = Curry(undoFunc, ...);
+    return function(...)
+        performer(...);
+        return Functions.OnlyOnce(undoFunc);
+    end;
+end;
+
 -- Decorates the global function of the specified name, calling the specified function whenever the
 -- global is called. The spy function merely observes calls to the global; it does not affect them.
 --
@@ -159,10 +184,6 @@ function Functions.SpyGlobal(name, spyFunc, ...)
     end;
 end;
 
-function Functions.Initialized(activator, ...)
-    return Functions.Activator(Noop, activator, ...);
-end;
-
 -- Ensures that the specified function is only called once, despite multiple invocations of the
 -- returned function.
 --
@@ -173,13 +194,14 @@ end;
 --     return nothing
 function Functions.OnlyOnce(func, ...)
     func = Curry(func, ...);
-    local called = false;
     return function(...)
-        if called then
+        if not func then
             return;
         end;
-        called = true;
-        return func(...);
+        -- Assign func to a temporary variable to let it fall out of scope.
+        local called = func;
+        func = nil;
+        return called(...);
     end;
 end;
 
@@ -205,6 +227,32 @@ function Functions.Observe(observedFunc, observer, ...)
     end;
 end;
 
+-- Observes the specified undoable function. A function is returned that, when called, invokes the spy before
+-- invoking the specified undoable. The undoable's remover is wrapped such that the spy's remover is also called.
+-- In this way, the undoable is observed at both stages of its lifecycle.
+--
+-- undoable:undoable callable
+--     the observed function
+-- spyFunc, ... :undoable callable
+--     the spy that observes the undoable. It should return a remover function, but is not given any arguments
+--     to its performer or its remover.
+-- returns:undoable callable
+--     mimics the behavior performed by the specified undoable, but also invokes the spy whenenver the undoable
+--     would be invoked.
+function Functions.ObserveUndoable(undoable, spyFunc, ...)
+    assert(IsCallable(undoable), "undoable function is not callable. Type: " .. type(wrapped));
+    undoable = Curry(undoable, ...);
+    spyFunc = Curry(spyFunc, ...);
+    return function(...)
+        local spyFuncRemover = spyFunc(...) or Noop;
+        local undoableRemover = undoable(...) or Noop;
+        return Functions.OnlyOnce(function()
+            undoableRemover();
+            spyFuncRemover();
+        end);
+    end;
+end;
+
 -- Returns a function that wraps the specified function. Before the specified function is
 -- invoked, the activator is called. Subsequent calls to the returned function will directly
 -- call the specified function.
@@ -220,35 +268,52 @@ end;
 --     frame:RegisterEvent("SOMETHING");
 --     return Curry(frame, "UnregisterEvent", "SOMETHING");
 -- end;
--- local AddListener = Functions.Activator(inserter, activator);
+-- local AddListener = Functions.Lazy(inserter, activator);
 --
 -- wrapped
 --     the internal function that is called for every invocation of the returned method
 -- activator, ...
 --     the function that is invoked before every "new" series of invocations of the wrapped method.
 --     In practice
-function Functions.Activator(wrapped, activator, ...)
-    assert(IsCallable(wrapped), "wrapped function is not callable. Type: " .. type(wrapped));
-    activator = Curry(activator, ...);
-    local deactivator = nil;
-    local count = 0;
-    return function(...)
-        if count == 0 then
-            deactivator = activator() or Noop;
-        end;
-        count = count + 1;
-        local sanitizer = wrapped(...) or Noop;
-        return function()
-            if not sanitizer then
-                return;
-            end;
-            sanitizer();
-            sanitizer = nil;
-            count = count - 1;
-            if count == 0 then
-                deactivator();
-            end;
-        end;
-    end;
+function Functions.Lazy(wrapped, activator, ...)
+    return Functions.ObserveUndoable(
+        wrapped,
+        Functions.Install(activator, ...)
+    );
 end;
 
+-- Manages invocation of one-time setup and tear-down functionality. The setup function is called during the 
+-- first invocation of the returned function, returning a function that tears down any initialization. 
+--
+-- The activator's returned function should undo any action performed by the activator. This function is 
+-- called when all tear-down functions have been called.
+--
+-- The benefit is that this operation keeps track of how many set-up and tear-down invocations have been made. The
+-- activator is called on the first set-up call, but subsequent set-up calls do nothing. Tear-down calls also do
+-- nothing until the final tear-down call is made. At this point, the returned deactivator is called and the 
+-- activator should return to its initial state.
+--
+-- setUp, ...
+--     a callable that, when invokes, performs some one-time initialization or set-up. It must return a function
+--     that tears down any initialization previously performed.
+-- returns:function
+--     a function that, when called, could perform set-up functionality. It returns a function that, 
+--     when called, could perform tear-down functionality. What action is actually performed is determined by 
+--     the specified activator.
+function Functions.Install(setUp, ...)
+    setUp = Curry(setUp, ...);
+    local tearDown = nil;
+    local count = 0;
+    return function()
+        if count == 0 then
+            tearDown = setUp();
+        end;
+        count = count + 1;
+        return Functions.OnlyOnce(function()
+            count = count - 1;
+            if count == 0 then
+                tearDown();
+            end;
+        end);
+    end;
+end;
