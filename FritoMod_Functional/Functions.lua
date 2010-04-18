@@ -192,19 +192,11 @@ end;
 --     a remover function that, when invoked, restores the global to its value before the global was
 --     hooked. The remover will throw if the global has been changed since this function was called.
 function Functions.SpyGlobal(name, spyFunc, ...)
-    spyFunc = Curry(spyFunc, ...);
-    local spiedGlobal = _G[name];
-    local function Spy(...)
-        spyFunc(...);
-        if spiedGlobal then
-            return spiedGlobal(...);
-        end;
-    end;
-    _G[name] = Spy; 
-    return function()
-        assert(_G[name] == Spy, "Global has been modified, so spy cannot be safely removed. Name: " .. name);
-        _G[name] = spiedGlobal;
-    end;
+	spyFunc = Curry(spyFunc, ...);
+	return Functions.HookGlobal(name, function(...)
+		spyFunc(...);
+		return ...;
+	end);
 end;
 
 -- Ensures that the specified function is only called once, despite multiple invocations of the
