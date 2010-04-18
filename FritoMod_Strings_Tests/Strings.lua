@@ -208,8 +208,8 @@ function StringsTests:TestConvertToBase()
     Assert.Equals("FF", c(16, 255), "255, base 16");
 end;
 
-function StringsTests:TestConcat()
-    local c = Strings.Concat;
+function StringsTests:TestJoinValues()
+    local c = Curry(Strings.JoinValues, " ");
     Assert.Equals("a", c("a"), "No-op case");
     Assert.Equals("a b", c("a", "b"), "Two words");
     Assert.Equals("a b c", c("a", "b", "c"), "Multiple words");
