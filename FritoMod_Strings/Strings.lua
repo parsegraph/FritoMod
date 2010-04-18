@@ -213,10 +213,10 @@ function Strings.SplitByCase(target)
     local words = {};
     local index = 0;
 
-    -- These are forward declared to avoid problems later on. This may not be necessary.
-    local Capturing, PotentialAcronym, Acronym;
+    -- These are forward declared to avoid bad references in our closures.
+    local InitialState, Capturing, PotentialAcronym, Acronym;
 
-    local function Capturing(letter)
+    Capturing = function(letter)
         if not Strings.IsUpper(letter) then
             return;
         end;
@@ -235,7 +235,7 @@ function Strings.SplitByCase(target)
         return PotentialAcronym;
     end;
 
-    local function Acronym(letter)
+    Acronym = function(letter)
         if not Strings.IsLower(letter) then
             return;
         end;
@@ -253,14 +253,14 @@ function Strings.SplitByCase(target)
         return Capturing;
     end;
 
-    local function PotentialAcronym(letter)
+    PotentialAcronym = function(letter)
         if Strings.IsUpper(letter) then
             return Acronym;
         end;
         return Capturing;
     end;
 
-    local function InitialState(letter)
+    InitialState = function(letter)
         if Strings.IsUpper(letter) then
             return PotentialAcronym;
         end;
@@ -271,7 +271,8 @@ function Strings.SplitByCase(target)
     while index <= #target do
         index = index + 1;
         local letter = Strings.CharAt(target, index);
-        state = state(letter) or state;
+		local newState = state(letter);
+		state = newState or state;
     end;
     if #target > 0 then
         table.insert(words, target);
