@@ -132,8 +132,8 @@ function Functions.HookGlobal(name, hookFunc, ...)
     end;
 end;
 
--- Combines the two specified functions. The performer should do something, and the undoFunc should undo
--- that action. 
+-- Combines the two specified functions, creating an undoable. The performer should do something, and the 
+-- undoFunc should undo that action. 
 --
 -- Both functions receive the varargs passed here. This is different than most other operations.
 --
