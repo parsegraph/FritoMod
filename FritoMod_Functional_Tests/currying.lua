@@ -8,6 +8,20 @@ end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Functional.currying");
 
+local function Sum(...)
+    local sum = 0;
+    for i=1, select("#", ...) do
+        sum = sum + (select(i, ...) or 0);
+    end;
+    return sum;
+end;
+
+function Suite:TestCurryFunction()
+    Assert.Equals(3, CurryFunction(Sum, 1, 2)(), "Curry adds both arguments to the function");
+    Assert.Equals(3, CurryFunction(Sum)(1, 2), "Curry handles no arguments properly");
+    Assert.Equals(3, CurryFunction(Sum, 1)(2), "Curry handles split arguments properly");
+end;
+
 function Suite:TestCurry()
     local function Do(x, y)
         return x + y;
@@ -29,14 +43,6 @@ function Suite:TestCurryRejectsCurriedNilValues()
         return x + y;
     end;
     Assert.Exception("Curry rejects curried nil values", Curry, Do, nil, 2);
-end;
-
-local function Sum(...)
-    local sum = 0;
-    for i=1, select("#", ...) do
-        sum = sum + (select(i, ...) or 0);
-    end;
-    return sum;
 end;
 
 function Suite:TestCurryRejectsPassedNilValues()
