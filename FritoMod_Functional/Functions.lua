@@ -104,6 +104,29 @@ function Functions.Toggle(func, ...)
     end;
 end;
 
+-- Group two functions together. When called, the returned function will call both functions.
+-- 
+-- Return values are ignored, unless both return values are callable. If they are callable, they are
+-- called in reverse-order.
+--
+-- This function is fairly primitive. It's useful for simplifying areas where undoables need to be
+-- grouped. It's similar
+function Functions.Group(firstFunc, secondFunc, ...)
+	firstFunc = Curry(firstFunc, ...);
+	secondFunc = Curry(secondFunc, ...);
+	return function(...)
+		local firstRV = firstFunc(...);
+		local secondRV = secondFunc(...);
+		if IsCallable(firstRV) and IsCallable(secondRV) then
+			-- It looks like an undoable, so let's behave like one.
+			return Functions.OnlyOnce(function()
+				secondRV();
+				firstRV();
+			end);
+		end;
+	end;
+end;
+
 -- Hooks the global function with the specified name, calling the specified function before the global
 -- is called. The hook function should return the arguments passed to it, as these arguments will then
 -- be passed to the original global, like the following:
@@ -205,55 +228,37 @@ function Functions.OnlyOnce(func, ...)
     end;
 end;
 
--- Allows the specified observer to spectate calls to wrapped, without affecting wrapped.
+-- Spies on the specified function, observing it without affecting its behavior.
 --
--- This returns a function that, when called, will invoke the observer with the given arguments, 
--- and then call the observed function.
+-- This function is very similar to Group, but Spy is more specialized in how its functions should behave. 
+-- Spy also always uses the observed function's return values, instead of ignoring them.
+--
+-- If the spy and the observed function are undoables, the spy's undoable will be called after the observed's.
 --
 -- observedFunc:callable
---     the actual function that is called after the observer.
--- observer, ...
---     the observer that receives arguments that will be passed to the observedFunc. The observer
---     cannot affect primitive values, though it has access to the arguments so non-primitive values
---     may be affected by the observer.
+--     the original function that is the target of this function.
+-- spy, ...
+--	   a callable that observes invocations to the original function. It should not affect the behavior
+--	   of the observed function. Its return values are ignored.
 -- returns:function
 --     a function that wraps the observed function, invoking the observer first.
-function Functions.Observe(observedFunc, observer, ...)
+function Functions.Spy(observedFunc, spy, ...)
     assert(IsCallable(observedFunc), "observedFunc function is not callable. Type: " .. type(observedFunc));
-    observer = Curry(observer, ...);
+    spy = Curry(spy, ...);
     return function(...)
-        observer(...);
-        return observedFunc(...);
+        local spyRV = spy(...);
+        local observedRV = observedFunc(...);
+		if IsCallable(observedRV) and IsCallable(spyRV) then
+			return Functions.OnlyOnce(function()
+				observedRV();
+				spyRV();
+			end);
+		end;
+		return observedRV;
     end;
 end;
 
--- Observes the specified undoable function. A function is returned that, when called, invokes the spy before
--- invoking the specified undoable. The undoable's remover is wrapped such that the spy's remover is also called.
--- In this way, the undoable is observed at both stages of its lifecycle.
---
--- undoable:undoable callable
---     the observed function
--- spyFunc, ... :undoable callable
---     the spy that observes the undoable. It should return a remover function, but is not given any arguments
---     to its performer or its remover.
--- returns:undoable callable
---     mimics the behavior performed by the specified undoable, but also invokes the spy whenenver the undoable
---     would be invoked.
-function Functions.ObserveUndoable(undoable, spyFunc, ...)
-    assert(IsCallable(undoable), "undoable function is not callable. Type: " .. type(wrapped));
-    undoable = Curry(undoable, ...);
-    spyFunc = Curry(spyFunc, ...);
-    return function(...)
-        local spyFuncRemover = spyFunc(...) or Noop;
-        local undoableRemover = undoable(...) or Noop;
-        return Functions.OnlyOnce(function()
-            undoableRemover();
-            spyFuncRemover();
-        end);
-    end;
-end;
-
--- Returns a function that wraps the specified function. Before the specified function is
+-- 	Returns a function that wraps the specified function. Before the specified function is
 -- invoked, the activator is called. Subsequent calls to the returned function will directly
 -- call the specified function.
 --
@@ -276,7 +281,7 @@ end;
 --     the function that is invoked before every "new" series of invocations of the wrapped method.
 --     In practice
 function Functions.Lazy(wrapped, activator, ...)
-    return Functions.ObserveUndoable(
+    return Functions.Spy(
         wrapped,
         Functions.Install(activator, ...)
     );
