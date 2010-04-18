@@ -9,6 +9,26 @@ if nil == Functions then
 end;
 local Functions = Functions;
 
+local function GetCombinedRV(firstRV, secondRV)
+	if IsCallable(firstRV) and IsCallable(secondRV) then
+		-- Both are undoables, so group them
+		return Functions.OnlyOnce(function()
+			secondRV();
+			firstRV();
+		end);
+	end;
+	if firstRV == nil and IsCallable(secondRV) then
+		return secondRV;
+	end;
+	if secondRV == nil and IsCallable(firstRV) then
+		return firstRV;
+	end;
+	if firstRV == nil and secondRV == nil then
+		return nil;
+	end;
+	error("Ambiguous return values: " .. type(firstRV) .. ", " .. type(secondRV));
+end;
+
 -- Blindly returns the given arguments. This implements a very primitive operation and
 -- is ideal to be used in currying situations.
 --
@@ -115,15 +135,7 @@ function Functions.Group(firstFunc, secondFunc, ...)
 	firstFunc = Curry(firstFunc, ...);
 	secondFunc = Curry(secondFunc, ...);
 	return function(...)
-		local firstRV = firstFunc(...);
-		local secondRV = secondFunc(...);
-		if IsCallable(firstRV) and IsCallable(secondRV) then
-			-- It looks like an undoable, so let's behave like one.
-			return Functions.OnlyOnce(function()
-				secondRV();
-				firstRV();
-			end);
-		end;
+		return GetCombinedRV(firstFunc(...), secondFunc(...));
 	end;
 end;
 
@@ -235,18 +247,16 @@ end;
 -- returns:function
 --     a function that wraps the observed function, invoking the observer first.
 function Functions.Spy(observedFunc, spy, ...)
-    assert(IsCallable(observedFunc), "observedFunc function is not callable. Type: " .. type(observedFunc));
+	observedFunc = Curry(observedFunc, ...);
     spy = Curry(spy, ...);
     return function(...)
         local spyRV = spy(...);
         local observedRV = observedFunc(...);
-		if IsCallable(observedRV) and IsCallable(spyRV) then
-			return Functions.OnlyOnce(function()
-				observedRV();
-				spyRV();
-			end);
+		if spyRV == nil and observedRV ~= nil then
+			-- This special case ensures we don't crash if the spy is silent.
+			return observedRV;
 		end;
-		return observedRV;
+		return GetCombinedRV(spyRV, observedRV);
     end;
 end;
 
