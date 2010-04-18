@@ -318,12 +318,12 @@ end;
 
 -- Converts a_proper_case to AProperCase
 function Strings.SnakeToProperCase(snakeString)
-    return Strings.JoinProperCase(Strings.SplitByDelimiter(snakeString));
+    return Strings.JoinProperCase(Strings.SplitByDelimiter("_", snakeString));
 end;
 
 -- Converts a_proper_case to aProperCase
 function Strings.SnakeToCamelCase(snakeString)
-    return Strings.JoinCamelCase(Strings.SplitByDelimiter(snakeString));
+    return Strings.JoinCamelCase(Strings.SplitByDelimiter("_", snakeString));
 end;
 
 function Strings.ProperNounize(word)
