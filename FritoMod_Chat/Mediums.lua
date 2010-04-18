@@ -54,7 +54,7 @@ Mediums = {};
 local Mediums = Mediums;
 
 local function SendMessage(medium, message, ...)
-    message = Strings.Concat(message, ...);
+    message = Strings.JoinValues(message, ...);
     SendChatMessage(message, medium);
 end;
 
