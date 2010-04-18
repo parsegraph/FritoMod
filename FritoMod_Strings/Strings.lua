@@ -165,15 +165,15 @@ end
 -- returns:list
 --     a list of strings, split by the specified delimiter
 function Strings.SplitByDelimiter(delimiter, originalString, limit)
+	assert(delimiter ~= nil, "delimiter must be provided");
+	assert(delimiter ~= "", "delimiter must not be an empty string");
     delimiter = tostring(delimiter);
-    local items = {};
+	assert(originalString ~= nil, "originalString must be provided");
     local remainder = tostring(originalString);
+    local items = {};
     while limit == nil or #items + 1 < limit do
         local startMatch, endMatch = remainder:find(delimiter);
         if not startMatch then
-            if #remainder > 0 then
-                Lists.Insert(items, remainder);
-            end;
             break;
         end;
         if startMatch > 1 then
