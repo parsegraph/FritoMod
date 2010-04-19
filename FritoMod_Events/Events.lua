@@ -39,26 +39,28 @@ end;
 
 
 Events = {};
-local Events = Events;
-local eventListeners;
+local eventListeners = {};
+Events.__eventListeners = eventListeners;
 
--- Called to create the frame and register a listener to it. This is invoked every time the very first
--- event is registered. The removing function is called once all listeners have been removed.
-local initialize = Functions.Lazy(Noop, function()
-    local eventsFrame = CreateFrame("Frame");
-    eventListeners = {};
-    -- Invoked on all registered events, calling all listeners for the event. Only event 
-    -- arguments are passed; event names and the frame are omitted.
-    eventsFrame:SetScript("OnEvent", function(frame, event, ...)
-        local listeners = eventListeners[event];
-        if listeners then
-            Lists.CallEach(listeners, ...);
-        end;
-    end);
-    return function()
-        eventsFrame:SetScript("OnEvent", nil);
-        eventListeners = nil;
-    end;
+Events.__call = function(event, ...)
+	local listeners = eventListeners[event];
+	if listeners then
+		Lists.CallEach(listeners, ...);
+	end;
+end;
+
+local eventsFrame;
+if nil ~= CreateFrame then
+	eventsFrame = CreateFrame("Frame");
+else
+	eventsFrame = Metatables.Defensive({
+		RegisterEvent = Noop,
+		UnregisterEvent = Noop
+	});
+end;
+
+eventsFrame:SetScript("OnEvent", function(frame, event, ...)
+	Events.__call(event, ...);
 end);
 
 setmetatable(Events, {
@@ -66,15 +68,14 @@ setmetatable(Events, {
     -- registries for new events on-demand. There are no errors emitted if an event name is not valid.
     __index = function(self, key)
         local listeners = {};
-        self[key] = Functions.Lazy(Functions.FunctionPopulator(listeners), function()
-            local remover = initialize();
-            eventListeners[key] = listeners;
-            return function()
-                eventListeners[key] = nil;
-                Events[key] = nil;
-                remover();
-            end;
-        end);
+        self[key] = Functions.Spy(
+			Functions.FunctionPopulator(listeners), 
+			Functions.Install(function()
+				eventListeners[key] = listeners;
+				eventsFrame:RegisterEvent(key);
+				return CurryMethod(eventsFrame, "UnregisterEvent", key);
+			end)
+		);
         return rawget(self, key);
     end
 });
