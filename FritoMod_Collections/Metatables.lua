@@ -65,9 +65,7 @@ end;
 -- 
 -- Now, in foo, when we wish to dispatch Bar events, we simply call "Bar":
 --
--- function foo:Dispatch()
---     self:Bar();
--- end;
+-- foo:Bar();
 --
 -- When this is done, listener:Bar() is invoked.
 --
