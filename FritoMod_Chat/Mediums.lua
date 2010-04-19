@@ -96,7 +96,7 @@ local ALIASES = Tables.Expand({
 });
 
 setmetatable(Mediums, {
-    __index = function(self, key)
+    __index = function(self, medium)
         if type(medium) == "function" then
             return Mediums[medium()];
         end;
@@ -132,5 +132,6 @@ setmetatable(Mediums, {
             end;
             return CurryFunction(Mediums.Whisper, medium);
         end;
+		error("medium must be a string, table, or function. Type: " .. type(medium));
     end
 });
