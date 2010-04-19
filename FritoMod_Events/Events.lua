@@ -37,7 +37,6 @@ if nil ~= require then
     require "FritoMod_Collections/Functions";
 end;
 
-
 Events = {};
 local eventListeners = {};
 Events.__eventListeners = eventListeners;
