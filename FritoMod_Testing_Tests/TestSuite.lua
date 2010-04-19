@@ -28,6 +28,7 @@ function Suite:TestErrorStackTraceOutputsProperly()
             assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
                 "First line of stace trace is relevant. Trace: " .. trace);
         end,
+        TestFinished = Noop,
         FinishAllTests = Noop,
     }));
     suite:Run();
@@ -51,6 +52,7 @@ function Suite:TestAssertStackTraceOutputsProperly()
             assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
                 "First line of stace trace is relevant. Trace: " .. trace);
         end,
+        TestFinished = Noop,
         FinishAllTests = Noop,
     }));
     suite:Run();
@@ -95,6 +97,7 @@ function Suite:TestListenersDuringSuccess()
         "StartAllTests", 
         "TestStarted",
         "TestSuccessful",
+        "TestFinished",
         "FinishAllTests"
     };
     suite:Run();
@@ -114,6 +117,7 @@ function Suite:TestListenersDuringFailure()
         "StartAllTests", 
         "TestStarted",
         "TestFailed",
+        "TestFinished",
         "FinishAllTests"
     };
     suite:Run();

@@ -137,6 +137,7 @@ local function RunTest(self, test, testName)
     unhookError();
     testRunner = WrapTestRunner(testRunner);
     self.listener["Test" .. testState](self.listener, self, testName, testRunner, reason);
+	self.listener:TestFinished(self, testName, testRunner, testState, reason);
     return testState;
 end;
 
