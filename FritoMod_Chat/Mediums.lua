@@ -75,14 +75,19 @@ function Mediums.Channel(target, message)
    if type(target) == "string" then
       target = GetChannelName(target);
    end;
-   SendChatMessage(message, "channel", nil, target);
+	assert(message ~= nil, "message must be provided");
+   SendChatMessage(message, "CHANNEL", GetDefaultLanguage("PLAYER"), target);
 end;
 
 function Mediums.Whisper(target, message)
-   SendChatMessage(message, "whisper", nil, target);
+	assert(type(target) == "string", "target must be a string");
+	assert(message ~= nil, "message must be provided");
+	SendChatMessage(message, "WHISPER", GetDefaultLanguage("PLAYER"), target:lower());
 end;
 
 local ALIASES = Tables.Expand({
+      c = Mediums.Channel,
+      w = Mediums.Whisper,
       d = "Debug",
       g = "Guild",
       [{"p", "par", "party"}] = "Party",
@@ -104,7 +109,7 @@ setmetatable(Mediums, {
             return function(...)
                 for i=1, #medium do 
                     childMedium = medium[i];
-                    return Mediums[childMedium](...);
+                    Mediums[childMedium](...);
                 end;
             end;
         end;
@@ -124,10 +129,13 @@ setmetatable(Mediums, {
             end;
             medium = medium:lower();
             if ALIASES[medium] then
+				if IsCallable(ALIASES[medium]) then
+					return ALIASES[medium];
+				end;
                 return Mediums[ALIASES[medium]];
             end;
             local channelIndex = GetChannelName(medium);
-            if channelIndex then
+            if channelIndex > 0 then
                 return CurryFunction(Mediums.Channel, channelIndex);
             end;
             return CurryFunction(Mediums.Whisper, medium);
