@@ -21,6 +21,7 @@ function ReflectiveTestSuite:Constructor(name)
            return type(key) == "string" and key:sub(1, 4) == "Test";
         end);
         iterator = Iterators.DecorateIterator(iterator, function(key, value)
+            value = ForcedMethod(self, value);
             if name then
                 return ("%s.%s"):format(name, key), value;
             end;
