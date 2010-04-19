@@ -39,9 +39,9 @@ end;
 
 Events = {};
 local eventListeners = {};
-Events.__eventListeners = eventListeners;
+Events._eventListeners = eventListeners;
 
-Events.__call = function(event, ...)
+Events._call = function(event, ...)
 	local listeners = eventListeners[event];
 	if listeners then
 		Lists.CallEach(listeners, ...);
@@ -59,18 +59,17 @@ else
 end;
 
 eventsFrame:SetScript("OnEvent", function(frame, event, ...)
-	Events.__call(event, ...);
+	Events._call(event, ...);
 end);
 
 setmetatable(Events, {
     -- A metatable that allows the succinct Events.EVENT_NAME(eventListener) syntax. This creates new
     -- registries for new events on-demand. There are no errors emitted if an event name is not valid.
     __index = function(self, key)
-        local listeners = {};
+		eventListeners[key] = {};
         self[key] = Functions.Spy(
-			Functions.FunctionPopulator(listeners), 
+			Functions.FunctionPopulator(eventListeners[key]),
 			Functions.Install(function()
-				eventListeners[key] = listeners;
 				eventsFrame:RegisterEvent(key);
 				return CurryMethod(eventsFrame, "UnregisterEvent", key);
 			end)
