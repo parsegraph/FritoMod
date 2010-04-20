@@ -84,7 +84,7 @@ function Invalidating.ValidateSize(invalidating)
     if invalidating.invalidatedSize ~= false then
         -- This Invalidating's size needs to be validated, so do so.
         invalidating.invalidatedSize = false;
-        debug("Invalidating: Validating size: " .. tostring(invalidating));
+        print("Invalidating: Validating size: " .. tostring(invalidating));
         local oldMeasuredHeight, oldMeasuredWidth = invalidating:GetMeasuredHeight(), invalidating:GetMeasuredWidth()
         invalidating:Measure();
         local measuredHeight, measuredWidth = invalidating:GetMeasuredHeight(), invalidating:GetMeasuredWidth()
@@ -103,7 +103,7 @@ function Invalidating.ValidateLayout(invalidating)
     if invalidating.invalidatedLayout ~= false then
         -- This invalidating needs to be validated, so do so.
         invalidating.invalidatedLayout = false;
-        debug("Invalidating: Validating layout: " .. tostring(invalidating));
+        print("Invalidating: Validating layout: " .. tostring(invalidating));
         invalidating:UpdateLayout();
     end;
     -- If it has children of some sort, validate them now.
