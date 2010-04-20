@@ -11,7 +11,7 @@ local Stage = Stage;
 
 function Stage:GetStage()
 	if not Stage.stage then
-		Stage.stage = Stage();
+		Stage.stage = Stage:New();
 	end;
 	return Stage.stage;
 end;
