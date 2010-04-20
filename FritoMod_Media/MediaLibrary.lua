@@ -48,7 +48,7 @@ function MediaLibrary:Constructor()
 
 	local function ConvertToTable(alpha, ...)
         if select("#", ...) == 0 then
-            return { ConvertColorToParts(alpha) };
+            return { Colors.UnpackHex(alpha) };
         end;
         local red, green, blue = 0, 0, 0;
         if select("#", ...) == 2 then
