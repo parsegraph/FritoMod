@@ -81,7 +81,7 @@ function TextField:Measure()
 		scratch:SetWidth(self:GetExplicitWidth());
 	end;
     self.measuredHeight = scratch:GetStringHeight()
-    self.measuredWidth = scratch:GetStringWidth()
+    self.measuredWidth = scratch:GetStringWidth() +1 
 end;
 
 function TextField:UpdateLayout()
