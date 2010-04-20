@@ -21,7 +21,6 @@ DisplayObject.defaultValues = {
 DisplayObject.mediaKeyNames = {};
 
 function DisplayObject:Constructor()
-	DisplayObject.super.Constructor(self);
 	self:ConstructChildren();
 end;
 
@@ -49,6 +48,7 @@ end;
 function DisplayObject:UpdateLayout()
 	local frame = self.frame;
 
+	assert(self:GetParentFrame() ~= nil, "Parent frame must not be nil");
 	frame:SetParent(self:GetParentFrame());
 
     frame:SetHeight(self:GetHeight());
