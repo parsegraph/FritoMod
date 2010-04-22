@@ -81,7 +81,10 @@ Metatables.Multicast = MetatableAttacher({
         return function(self, ...)
             for i=1, #self do
                 local observer = self[i];
-                observer[key](observer, ...);
+                local f = observer[key];
+				if f then
+					f(observer, ...);
+				end;
             end;
         end;
     end

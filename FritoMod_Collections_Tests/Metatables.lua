@@ -26,6 +26,12 @@ function Suite:TestMulticast()
     y:Assert("X and Y have been raised");
 end;
 
+function Suite:TestMulticastHandlesMissingFunctions()
+	local m = Metatables.Multicast();
+	m:Add({});
+	m:Bar();
+end;
+
 function Suite:TestOrderedMap()
     local map = Metatables.OrderedMap();
     -- Intentionally called twice to get the first value.
