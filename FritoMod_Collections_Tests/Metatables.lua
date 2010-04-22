@@ -29,7 +29,7 @@ end;
 function Suite:TestMulticastHandlesMissingFunctions()
 	local m = Metatables.Multicast();
 	m:Add({});
-	m:Bar();
+	m:Missing();
 end;
 
 function Suite:TestOrderedMap()
