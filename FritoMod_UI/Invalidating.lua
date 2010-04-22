@@ -81,20 +81,21 @@ function Invalidating.ValidateSize(invalidating)
             Invalidating.ValidateSize(child);
         end;
     end;
-    if invalidating.invalidatedSize ~= false then
-        -- This Invalidating's size needs to be validated, so do so.
-        invalidating.invalidatedSize = false;
-        print("Invalidating: Validating size: " .. tostring(invalidating));
-        local oldMeasuredHeight, oldMeasuredWidth = invalidating:GetMeasuredHeight(), invalidating:GetMeasuredWidth()
-        invalidating:Measure();
-        local measuredHeight, measuredWidth = invalidating:GetMeasuredHeight(), invalidating:GetMeasuredWidth()
-        if oldMeasuredWidth ~= measuredWidth or oldMeasuredHeight ~= measuredHeight then
-            if invalidating:GetParent() then
-                invalidating:GetParent():InvalidateSize();
-            end;
-            invalidating:InvalidateLayout();
-        end;
-    end;
+    if invalidating.invalidatedSize == false then
+		return;
+	end;
+	-- This Invalidating's size needs to be validated, so do so.
+	invalidating.invalidatedSize = false;
+	print("Invalidating: Validating size: " .. tostring(invalidating));
+	local oldMeasuredHeight, oldMeasuredWidth = invalidating:GetMeasuredHeight(), invalidating:GetMeasuredWidth()
+	invalidating:Measure();
+	local measuredHeight, measuredWidth = invalidating:GetMeasuredHeight(), invalidating:GetMeasuredWidth()
+	if oldMeasuredWidth ~= measuredWidth or oldMeasuredHeight ~= measuredHeight then
+		if invalidating:GetParent() then
+			invalidating:GetParent():InvalidateSize();
+		end;
+		invalidating:InvalidateLayout();
+	end;
 end;
 
 -- Given an Invalidating, validate the layout of it and all its children. This will
