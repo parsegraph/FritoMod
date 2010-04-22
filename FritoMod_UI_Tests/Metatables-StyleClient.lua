@@ -7,7 +7,7 @@ if nil ~= require then
 end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_UI.Metatables-StyleClient");
-local sc = nil;
+sc = nil;
 
 Suite:AddListener(Metatables.Noop({
 	TestStarted = function()
@@ -207,4 +207,18 @@ end;
 function Suite:TestInitialStyleLoading()
 	sc=Metatables.StyleClient({color=2});
 	Assert.Equals(2, sc.color);
+end;
+
+function Suite:TestInheritingAChangedNakedTable()
+	local a = {color=2};
+	sc.Inherits(a);
+	local f = Tests.Flag();
+	sc.AddListener(function(k,v)
+		f.AssertUnset();
+		f.Raise();
+		Assert.Equals(3, v);
+	end);
+	a.color=3;
+	f.Assert();
+	Assert.Equals(3,sc.color);
 end;

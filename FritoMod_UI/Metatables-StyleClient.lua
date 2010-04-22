@@ -33,9 +33,7 @@ function Metatables.StyleClient(t)
 		for k,v in pairs(t) do
 			local name = StyleName(k);
 			styles[name] = v;
-			if name ~= k then
-				table.insert(trash,k);
-			end;
+			table.insert(trash,k);
 		end;
 		for i=1,#trash do
 			t[trash[i]] = nil;
