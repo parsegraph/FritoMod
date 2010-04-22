@@ -9,19 +9,6 @@ end;
 Stage = OOP.Class(DisplayObjectContainer, Mixins.Singleton);
 local Stage = Stage;
 
-function Stage:GetStage()
-	if not Stage.stage then
-		Stage.stage = Stage:New();
-	end;
-	return Stage.stage;
-end;
-
--------------------------------------------------------------------------------
---
---  Overridden Methods: DisplayObject
---
--------------------------------------------------------------------------------
-
 function Stage:GetParentFrame()
 	return UIParent;
 end;
@@ -40,12 +27,6 @@ function Stage:ComputeValue(valueName)
 	end;
 end;
 
--------------------------------------------------------------------------------
---
---  Overridden Methods: DisplayObjectContainer
---
--------------------------------------------------------------------------------
-
 function Stage:DoAdd(child)
 	Stage.super.DoAdd(self, child);
 	local childFrame = child:GetFrame();
@@ -61,12 +42,6 @@ function Stage:DoRemove(child)
 	Stage.super.DoRemove(self, child);
 	child:GetFrame():ClearAllPoints();
 end;
-
--------------------------------------------------------------------------------
---
---  Nullified Methods: DisplayObject
---
--------------------------------------------------------------------------------
 
 function Stage:SetParent(parent)
 	error("The Stage cannot have a parent.");
