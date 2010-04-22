@@ -27,8 +27,21 @@ function Metatables.StyleClient(t)
 		t = {};
 	end;
 	assert(type(t) == "table", "t must be a table. Type: " .. type(t));
-
 	local styles = {};
+	do 
+		local trash={};
+		for k,v in pairs(t) do
+			local name = StyleName(k);
+			styles[name] = v;
+			if name ~= k then
+				table.insert(trash,k);
+			end;
+		end;
+		for i=1,#trash do
+			t[trash[i]] = nil;
+		end;
+	end;
+
 	t._styles = styles;
 
 	local processors = {};
@@ -57,15 +70,15 @@ function Metatables.StyleClient(t)
 		local old = t:Compute();
 		local remover = Lists.Insert(parents, parent);
 		local lremover = Noop;
-		if parent.Inherits then
-			-- It looks like a style client, so listen to it
-			local lremover = parent:AddListener(function(key, value)
-				if styles[key] == nil then
-					-- Cascade! Our effective style has changed.
-					Lists.CallEach(listeners, key, value);
-				end;
-			end);
+		if not parent.Inherits then
+			Metatables.StyleClient(parent);
 		end;
+		local lremover = parent:AddListener(function(key, value)
+			if styles[key] == nil then
+				-- Cascade! Our effective style has changed.
+				Lists.CallEach(listeners, key, value);
+			end;
+		end);
 		Update(old);
 		return Functions.OnlyOnce(function()
 			local old=t:Compute();
@@ -80,8 +93,6 @@ function Metatables.StyleClient(t)
 		for i=1,#parents do
 			if parents[i].Compute then
 				parents[i]:Compute(rv);
-			else
-				Tables.Update(rv, parents[i]);
 			end;
 		end;
 		Tables.Update(rv, styles);

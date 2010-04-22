@@ -196,3 +196,15 @@ function Suite:TestIndirectUpdate()
 	p.color=nil;
 	Assert.Equals(3, p.color);
 end;
+
+function Suite:TestPoorlyCapitalizedTable()
+	sc.Inherits({
+		Color=2
+	});
+	Assert.Equals(2,sc.color);
+end;
+
+function Suite:TestInitialStyleLoading()
+	sc=Metatables.StyleClient({color=2});
+	Assert.Equals(2, sc.color);
+end;
