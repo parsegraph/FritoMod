@@ -222,3 +222,8 @@ function Suite:TestInheritingAChangedNakedTable()
 	f.Assert();
 	Assert.Equals(3,sc.color);
 end;
+
+function Suite:TestPleaseDontEraseMyMistakenlyGivenClass()
+	Assert.Exception(sc.Inherits,OOP.Class():New());
+	Assert.Exception(Metatables.StyleClient, OOP.Class():New());
+end;
