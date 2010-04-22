@@ -6,27 +6,27 @@ if nil ~= require then
     require "FritoMod_Collections/Metatables";
 end;
 
-local MetatableTests = ReflectiveTestSuite:New("FritoMod_Collections.Metatables");
+local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Metatables");
 
-function MetatableTests:TestMulticast()
+function Suite:TestMulticast()
     local comp = Metatables.Multicast();
-
+	
     local x = Tests.Flag();
     local y = Tests.Flag();
-
+	
     comp:Add(x);
     comp:Raise();
-
+	
     x:Assert("X has been raised");
-
+	
     comp:Add(y);
     comp:Raise();
-
+	
     x:Assert("X and Y have been raised");
     y:Assert("X and Y have been raised");
 end;
 
-function MetatableTests:TestOrderedMap()
+function Suite:TestOrderedMap()
     local map = Metatables.OrderedMap();
     -- Intentionally called twice to get the first value.
     local key, value = map:Iterator()();
