@@ -20,6 +20,11 @@ function Suite:TestStyleClient()
 	Assert.Equals("blue", sc.color, "Client returns correct color");
 end;
 
+function Suite:TestStyleClientIgnoresCapitalization()
+	sc.color = 1;
+	Assert.Equals(1, sc.COLOR, "Client returns value for color in spite of capital letters");
+end;
+
 function Suite:TestStyleClientOnNil()
 	Assert.Equals(nil, sc.color, "Client returns nil on missing value");
 end;
@@ -35,9 +40,8 @@ function Suite:TestStyleClientHandlesRetrievingNilKeys()
 end;
 
 function Suite:TestStyleClientUsesComputedStyle()
-	sc.ComputedStyle("color", function(k, self)
+	sc.ComputedStyle("color", function(k)
 		Assert.Equals("color", k, "StyleClient passes style name to computers");
-		Assert.Equals(sc, self, "StyleClient passes itself to computers");
 		return 2;
 	end);
 	Assert.Equals(2, sc.color, "StyleClient returns computed value");
@@ -74,4 +78,43 @@ function Suite:TestProcessedValues()
 	sc.ProcessedStyle("color", Functions.Return, 1);
 	sc.color = true;
 	Assert.Equals(1, sc.color);
+end;
+
+function Suite:TestSilentProcessorDoesntModifyStyle()
+	sc.ProcessedStyle("color", function(v)
+		Assert.Equals(1, v, "Processor receives style");
+	end);
+	sc.color = 1;
+	Assert.Equals(1, sc.color);
+end;
+
+function Suite:TestStyleClientInheritors()
+	sc.Inherits({
+		color = 1
+	});
+	Assert.Equals(1, sc.color);
+end;
+
+function Suite:TestStyleClientInheritsStyleClient()
+	local parent = Metatables.StyleClient();
+	parent.color = 2;
+	sc.Inherits(parent);
+	Assert.Equals(2, sc.color);
+end;
+
+function Suite:TestStyleClientInheritsDeepStyleClient()
+	local p = Metatables.StyleClient();
+	local gp = Metatables.StyleClient();
+	gp.ComputedStyle("color", Functions.Return, 1);
+	p.Inherits(gp);
+	sc.Inherits(p);
+	Assert.Equals(1, sc.color);
+end;
+
+function Suite:TestRemoveInherited()
+	local r = sc.Inherits({
+		color = 1
+	});
+	r();
+	Assert.Equals(nil, sc.color);
 end;

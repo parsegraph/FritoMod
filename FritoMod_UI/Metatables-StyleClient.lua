@@ -27,7 +27,7 @@ function Metatables.StyleClient(t)
 		t = {};
 	end;
 	assert(type(t) == "table", "t must be a table. Type: " .. type(t));
-	t.Inherit = ForcedFunction(t, Lists.Insert, t);
+	t.Inherits = ForcedFunction(t, Lists.Insert, t);
 
 	local computedStyles = {};
 	t.ComputedStyle = FunctionTable(t, computedStyles);
@@ -51,7 +51,7 @@ function Metatables.StyleClient(t)
 			local v = explicitStyles[key];
 			if v == nil then
 				local c = computedStyles[key] or Noop;
-				v = c(key, self);
+				v = c(key);
 				if v == nil then
 					for i=#self,1,-1 do
 						v = self[i][key];
