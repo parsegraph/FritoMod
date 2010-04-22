@@ -39,6 +39,19 @@ function Tables.InsertPair(targetTable, key, value)
     return CurryNamedFunction(Tables, "Delete", targetTable, key);
 end;
 
+function Tables.Update(dest, src, func, ...)
+	if func == nil and select("#", ...) == 0 then
+		for k,v in pairs(src) do
+			dest[k] = v;
+		end;
+	else
+		func = Curry(func, ...);
+		for k,v in pairs(src) do
+			func(dest,k,v);
+		end;
+	end;
+end;
+
 -- Expands the keys in the specified table. Any key that is a table will be iterated,
 -- and its children will be used as new keys in the specified table. Their values will
 -- be that of the original table-key. The original table-keys will be removed.
