@@ -39,41 +39,6 @@ function Suite:TestStyleClientHandlesRetrievingNilKeys()
 	Assert.Equals(nil, sc[nil], "StyleClient returns nil for nil key");
 end;
 
-function Suite:TestStyleClientUsesComputedStyle()
-	sc.ComputedStyle("color", function(k)
-		Assert.Equals("color", k, "StyleClient passes style name to computers");
-		return 2;
-	end);
-	Assert.Equals(2, sc.color, "StyleClient returns computed value");
-end;
-
-function Suite:TestStyleClientPrefersExplictOverComputed()
-	sc.ComputedStyle("color", Functions.Return, 2);
-	sc.color = 3;
-	Assert.Equals(3, sc.color);
-end;
-
-function Suite:TestStyleClientDoesntSuppressFalseExplicitValues()
-	sc.color = false;
-	Assert.Equals(false, sc.color, "Explicit style can return false");
-end;
-
-function Suite:TestStyleClientDoesntSuppressFalseComputed()
-	sc.ComputedStyle("color", Functions.Return, false);
-	Assert.Equals(false, sc.color, "Computed style can return false");
-end;
-
-function Suite:TestTranslateOverridesStyle()
-	sc.TranslatedStyle("color", Functions.Return, 1);
-	sc.color = 2;
-	Assert.Equals(1, sc.color, "Style is overridden by translator");
-end;
-
-function Suite:TestTranslateOverridesMissingStyles()
-	sc.TranslatedStyle("color", Functions.Return, 1);
-	Assert.Equals(1, sc.color, "Missing styles are always translated");
-end;
-
 function Suite:TestProcessedValues()
 	sc.ProcessedStyle("color", Functions.Return, 1);
 	sc.color = true;
@@ -105,7 +70,7 @@ end;
 function Suite:TestStyleClientInheritsDeepStyleClient()
 	local p = Metatables.StyleClient();
 	local gp = Metatables.StyleClient();
-	gp.ComputedStyle("color", Functions.Return, 1);
+	gp.color = 1;
 	p.Inherits(gp);
 	sc.Inherits(p);
 	Assert.Equals(1, sc.color);
@@ -117,4 +82,117 @@ function Suite:TestRemoveInherited()
 	});
 	r();
 	Assert.Equals(nil, sc.color);
+end;
+
+function Suite:TestListener()
+	local f = Tests.Flag();
+	local r = sc:AddListener(function(key, value)
+		f.AssertFalse("Listener is only called once");
+		f.Raise();
+		Assert.Equals("color", key);
+		Assert.Equals(2, value);
+	end);
+	sc.color = 2;
+	f.Assert("Listener is invoked on new style");
+end;
+
+function Suite:TestListenerWithParent()
+	local f = Tests.Flag();
+	sc:AddListener(function(key, value)
+		f.AssertFalse("Listener is only called once");
+		f.Raise();
+		Assert.Equals("color", key);
+		Assert.Equals(2, value);
+	end);
+	local p = Metatables.StyleClient();
+	sc.Inherits(p);
+	p.color = 2;
+	f.Assert("Listener is invoked on new style");
+end;
+
+function Suite:TestListenerDoesntFireOnShadowedChanges()
+	sc.color = "green";
+	sc:AddListener(function(key, value)
+		error("Shadowed changes do not generate events");
+	end);
+	local p = Metatables.StyleClient();
+	sc.Inherits(p);
+	p.color = "blue";
+end;
+
+function Suite:TestShadowedChangesCanBeRevealed()
+	local f = Tests.Flag();
+	sc.color = "child";
+	local p = Metatables.StyleClient();
+	p.color = "parent";
+	sc:AddListener(function(key, value)
+		f.AssertUnset();
+		f.Raise();
+		Assert.Equals("color", key);
+		Assert.Equals("parent", value);
+	end);
+	sc.Inherits(p);
+	sc.color = nil;
+	f.Assert();
+end;
+
+function Suite:TestNewParentsImmediatelyAffectStyles()
+	local f = Tests.Flag();
+	local p = Metatables.StyleClient();
+	p.color = "parent";
+	sc:AddListener(function(key, value)
+		f.AssertUnset();
+		f.Raise();
+		Assert.Equals("color", key);
+		Assert.Equals("parent", value);
+	end);
+	sc.Inherits(p);
+	f.Assert("Parent causes listener to fire");
+end
+
+function Suite:TestRemovedParentsImmediatelyAffectStyles()
+	local f = Tests.Flag();
+	local p = Metatables.StyleClient();
+	p.color = "parent";
+	local r = sc.Inherits(p);
+	sc:AddListener(function(key, value)
+		f.AssertUnset();
+		f.Raise();
+		Assert.Equals("color", key);
+		Assert.Equals(nil, value);
+	end);
+	r();
+	f.Assert("Removing parent causes listener to fire");
+end;
+
+function Suite:TestRemovingDeeplyNestedParent()
+	local f = Tests.Flag();
+	local p = Metatables.StyleClient();
+	local gp = Metatables.StyleClient();
+	sc.color = 1;
+	p.color = 2;
+	gp.color = 3;
+	sc.Inherits(p);
+	p.Inherits(gp);
+	Assert.Equals(1, sc.color);
+	sc.AddListener(function(key, value)
+		error("Listeners dont fire on shadowed removals");
+	end);
+	p.color=nil;
+	Assert.Equals(3, p.color);
+end;
+
+function Suite:TestIndirectUpdate()
+	local f = Tests.Flag();
+	local p = Metatables.StyleClient();
+	local gp = Metatables.StyleClient();
+	sc.color = 1;
+	gp.color = 3;
+	sc.Inherits(p);
+	p.Inherits(gp);
+	sc.AddListener(function(key, value)
+		error("Listeners dont fire on shadowed removals");
+	end);
+	p.color=nil;
+	Assert.Equals(3, p.color);
 end;
