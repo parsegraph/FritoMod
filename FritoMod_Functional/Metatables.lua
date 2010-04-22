@@ -109,7 +109,7 @@ Metatables.ForceMethods = ForcedMetatable(ForcedMethod);
 -- throws
 --     if target is nil
 --     if defaultValue is nil
-Metatables.DefaultValue = function(target, defaultValue)
+Metatables.Default = function(target, defaultValue)
     assert(type(target) == "table", "target is not a table. Type: " .. type(target));
     assert(defaultValue ~= nil, "Nil defaultValue does not make sense");
     setmetatable(target, {

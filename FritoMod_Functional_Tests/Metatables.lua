@@ -8,26 +8,26 @@ end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Functional.Metatables");
 
-function Suite:TestDefaultValue()
+function Suite:TestDefault()
     local t = {};
-    Metatables.DefaultValue(t, true);
+    Metatables.Default(t, true);
     Assert.Equals(true, t.missing, "t returns the specified default value");
-    Metatables.DefaultValue(t, false);
+    Metatables.Default(t, false);
     Assert.Equals(false, t.missing, "t returns the new default value");
 end;
 
-function Suite:TestDefaultValueNeverActuallyAssignsTheDefaultValue()
+function Suite:TestDefaultNeverActuallyAssignsTheDefault()
     local t = {};
-    Metatables.DefaultValue(t, true);
+    Metatables.Default(t, true);
     Assert.Equals(true, t.missing, "t returns the specified default value");
     Assert.Nil(rawget(t, "missing"), "t is never actually assigned the default value");
 end;
 
-function Suite:TestDefaultValueIsPickyAboutNilValues()
+function Suite:TestDefaultIsPickyAboutNilValues()
     local t = {};
-    Assert.Exception("DefaultValue throws when given nil table", Metatables.DefaultValue, nil, true);
-    Assert.Exception("DefaultValue throws when given nil defaultValue", Metatables.DefaultValue, t, nil);
-    Assert.Nil(Metatables.DefaultValue(t, 1), "DefaultValue does not return anything");
+    Assert.Exception("Default throws when given nil table", Metatables.Default, nil, true);
+    Assert.Exception("Default throws when given nil defaultValue", Metatables.Default, t, nil);
+    Assert.Nil(Metatables.Default(t, 1), "Default does not return anything");
 end;
 
 function Suite:TestConstructedValue()
