@@ -74,42 +74,42 @@ end;
 -- Given a Invalidating, validate the size of it and all of its children who
 -- need to be validated. This will validate the deepest-levels of children first,
 -- working its way back up.
-function Invalidating.ValidateSize(invalidating)
+function Invalidating.ValidateSize(target)
     -- If the object has children of some sort, we want to validate those first.
-    if invalidating.Iter then
-        for child in invalidating:Iter() do
+    if target.Iter then
+        for child in target:Iter() do
             Invalidating.ValidateSize(child);
         end;
     end;
-    if invalidating.invalidatedSize == false then
+    if target.invalidatedSize == false then
 		return;
 	end;
 	-- This Invalidating's size needs to be validated, so do so.
-	invalidating.invalidatedSize = false;
-	print("Invalidating: Validating size: " .. tostring(invalidating));
-	local oldMeasuredHeight, oldMeasuredWidth = invalidating:GetMeasuredHeight(), invalidating:GetMeasuredWidth()
-	invalidating:Measure();
-	local measuredHeight, measuredWidth = invalidating:GetMeasuredHeight(), invalidating:GetMeasuredWidth()
+	target.invalidatedSize = false;
+	print("Invalidating: Validating size: " .. tostring(target));
+	local oldMeasuredHeight, oldMeasuredWidth = target:GetMeasuredHeight(), target:GetMeasuredWidth()
+	target:Measure();
+	local measuredHeight, measuredWidth = target:GetMeasuredHeight(), target:GetMeasuredWidth()
 	if oldMeasuredWidth ~= measuredWidth or oldMeasuredHeight ~= measuredHeight then
-		if invalidating:GetParent() then
-			invalidating:GetParent():InvalidateSize();
+		if target:GetParent() then
+			target:GetParent():InvalidateSize();
 		end;
-		invalidating:InvalidateLayout();
+		target:InvalidateLayout();
 	end;
 end;
 
 -- Given an Invalidating, validate the layout of it and all its children. This will
 -- operate on the given object first, then its children.
-function Invalidating.ValidateLayout(invalidating)
-    if invalidating.invalidatedLayout ~= false then
-        -- This invalidating needs to be validated, so do so.
-        invalidating.invalidatedLayout = false;
-        print("Invalidating: Validating layout: " .. tostring(invalidating));
-        invalidating:UpdateLayout();
+function Invalidating.ValidateLayout(target)
+    if target.invalidatedLayout ~= false then
+        -- This target needs to be validated, so do so.
+        target.invalidatedLayout = false;
+        print("Invalidating: Validating layout: " .. tostring(target));
+        target:UpdateLayout();
     end;
     -- If it has children of some sort, validate them now.
-    if invalidating.Iter then
-        for child in invalidating:Iter() do
+    if target.Iter then
+        for child in target:Iter() do
             Invalidating.ValidateLayout(child);
         end;
     end;
