@@ -153,11 +153,11 @@ function StyleClient:SetExplicit(valueName, value, changeType)
 end;
 
 function StyleClient:DoStyleChange(valueName, newValue, oldValue)
-    if oldValue and type(oldValue) == "table" and FritoLib.OOP.inherits(oldValue, InvalidatingForwarder) then
+    if oldValue and oldValue.InvalidateLayout then
         oldValue:RemoveInvalidating(self);
     end;
     self.explicitValues[valueName] = newValue;
-    if newValue and type(newValue) == "table" and FritoLib.OOP.inherits(newValue, InvalidatingForwarder) then
+    if newValue and newValue.InvalidateLayout then
         newValue:AddInvalidating(self);
     end;
 end;
