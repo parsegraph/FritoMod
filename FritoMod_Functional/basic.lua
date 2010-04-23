@@ -105,7 +105,7 @@ function Reference(target)
         -- Temporarily detach the metatable so we can access the raw tostring function
         local metatable = getmetatable(target);
         setmetatable(target, nil);
-        local str = tostring(target);
+        str = tostring(target);
         setmetatable(target, metatable);
     elseif type(target) == "function" then
         str = tostring(target);
