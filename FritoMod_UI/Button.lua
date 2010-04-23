@@ -1,8 +1,8 @@
 Button = OOP.Class(DisplayObject);
 
 function Button:Measure()
-	self.measuredWidth = 200;
-	self.measuredHeight = 200;
+	self.measuredWidth = 64
+	self.measuredHeight = 64
 end;
 
 function Button:Constructor()
