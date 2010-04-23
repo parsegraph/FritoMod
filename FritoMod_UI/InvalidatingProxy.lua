@@ -7,23 +7,23 @@ local InvalidatingProxy = InvalidatingProxy;
 
 function InvalidatingProxy:AddInvalidating(invalidating)
 	if not self.forwarding then
-		self.forwarding = List();
+		self.forwarding = {};
 	end;
-	return self.forwarding:Add(invalidating);
+	return table.insert(self.forwarding, invalidating);
 end;
 
 function InvalidatingProxy:RemoveInvalidating(invalidating)
 	if not self.forwarding then
 		return;
 	end;
-	return self.forwarding:Remove(invalidating);
+	Lists.Remove(self.forwarding, invalidating);
 end;
 
 function InvalidatingProxy:InvalidateSize()
 	if not self.forwarding then
 		return;
 	end;
-	for invalidating in self.forwarding:Iter() do
+	for _, invalidating in pairs(self.forwarding) do
 		invalidating:InvalidateSize();
 	end;
 end;
@@ -32,7 +32,7 @@ function InvalidatingProxy:InvalidateLayout()
 	if not self.forwarding then
 		return;
 	end;
-	for invalidating in self.forwarding:Iter() do
+	for _, invalidating in pairs(self.forwarding) do
 		invalidating:InvalidateLayout();
 	end;
 end;
