@@ -9,11 +9,12 @@ end;
 Texture = OOP.Class(StyleClient, InvalidatingProxy);
 local Texture = Texture;
 
-Texture.defaultValues = {
+Texture.defaults = {
 	BorderSize = 10,
 	Inset = 3,
 	Background = "Blizzard Tooltip",
-	Border = "Blizzard Tooltip"
+	Border = "Blizzard Tooltip",
+	BackgroundColor = "Black",
 }
 
 Texture.mediaKeyNames = {
@@ -49,7 +50,8 @@ function Texture:ApplyTo(frame)
 			bottom = inset
 		}
 	};
-	frame:SetBackdropColor(unpack(self:GetBackgroundColor()));
+	local a,r,g,b=self:GetBackgroundColor();
+	frame:SetBackdropColor(r,g,b,a);
 end;
 
 -------------------------------------------------------------------------------
@@ -71,7 +73,7 @@ StyleClient.AddComputedValue(Texture, "BackgroundColor", StyleClient.CHANGE_LAYO
 -------------------------------------------------------------------------------
 
 function Texture:FetchDefaultFromTable(valueName)
-	return Texture.defaultValues[valueName];
+	return Texture.defaults[valueName];
 end;
 
 function Texture:GetMediaKeyName(valueName)
