@@ -27,15 +27,17 @@ function Button:ConstructChildren()
 		Lists.CallEach(self.listeners);
 	end);
 	self.frame=b;
+	b:SetHighlightTexture("Interface/Buttons/ButtonHilight-Square");
+	b:SetPushedTexture("Interface/Buttons/UI-Quickslot-Depress");
 end;
 
 function Button:UpdateLayout()
 	local b=self.frame;
 	Button.super.UpdateLayout(self);
 	if self.texture then
-		b:SetNormalTexture(self.texture);
-		b:SetHighlightTexture("Interface/Buttons/ButtonHilight-Square");
-		b:SetPushedTexture("Interface/Buttons/UI-Quickslot-Depress");
+		b:SetBackdrop({
+			bgFile = self.texture
+		});
 	end;
 	if self.spell then
 		b:SetAttribute("type", "macro");
