@@ -15,6 +15,9 @@ Metatables.Defensive(Lists);
 function Lists.Iterator(iterable)
     assert(type(iterable) == "table", "iterable is not a table");
     local index = 0;
+	if #iterable == 0 then
+		return Noop;
+	end;
     return function()
         index = index + 1;
         if index > #iterable then
