@@ -10,9 +10,14 @@ local Suite = ReflectiveTestSuite:New("FritoMod_UI.TextField");
 local s;
 local keep;
 
-Suite:AddListener(Metatables.Noop({
+Suite:AddListener({
 	TestStarted = function()
 		s=Stage:GetInstance();
+	end
+});
+
+Suite:AddListener(Metatables.Noop({
+	TestStarted = function()
 		s.frame = CreateFrame("Frame",nil,UIParent);
 	end,
 	TestFinished = function(self, suite)
