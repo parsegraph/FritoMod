@@ -7,6 +7,7 @@
 
 LayoutUtil.lua
 Metatables-StyleClient.lua
+Mixins-Validating.lua
 
 StyleClient.lua
 Invalidating.lua
