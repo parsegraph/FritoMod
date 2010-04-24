@@ -153,11 +153,11 @@ function StyleClient:SetExplicit(valueName, value, changeType)
 end;
 
 function StyleClient:DoStyleChange(valueName, newValue, oldValue)
-    if oldValue and oldValue.InvalidateLayout then
+    if oldValue and type(oldValue) == "table" and oldValue.InvalidateSize then
         oldValue:RemoveInvalidating(self);
     end;
     self.explicitValues[valueName] = newValue;
-    if newValue and newValue.InvalidateLayout then
+    if newValue and type(newValue) == "table" and newValue.InvalidateSize then
         newValue:AddInvalidating(self);
     end;
 end;
