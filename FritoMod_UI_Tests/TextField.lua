@@ -28,6 +28,15 @@ Suite:AddListener(Metatables.Noop({
 	end
 }));
 
+function Suite:TestBar()
+	local b=Bar:New();
+	b:SetWidth(200);
+	b:SetHeight(200);
+	b:SetTexture("Interface/Icons/Ability_Ambush");
+	s:AddChild(b);
+	s:ValidateNow();
+end;
+
 function Suite:TestTextField()
 	s:AddChild(TextField:New("Basekateer"));
 	s:ValidateNow();
