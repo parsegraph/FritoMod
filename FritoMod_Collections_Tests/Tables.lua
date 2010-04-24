@@ -20,6 +20,22 @@ function Suite:NewIterable()
     };
 end;
 
+function Suite:MinValue()
+	return 1;
+end;
+
+function Suite:AverageValue()
+	return 2;
+end;
+
+function Suite:MaxValue()
+	return 3;
+end;
+
+function Suite:SumValue()
+	return 1+2+3;
+end;
+
 function Suite:GetKeys()
     return {"A", "BB", "CCC"};
 end;

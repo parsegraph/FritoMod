@@ -16,11 +16,17 @@ end;
 --
 -- * FalsyIterable requires a one-element iterable with false for its key
 -- and false for its value
--- * NewIterable requires a three-element iterable, with keys and values 
--- that are all unique. (No key can also be a value, and vice versa)
+-- * NewIterable returns an iterable of three unique, unsorted, comparable elements.
 -- * EmptyIterable requires a zero-element iterable
+-- * SumValue returns the sum of NewIterable
+-- * MaxValue returns the min of NewIterable
+-- * MinValue returns the max of NewIterable
+-- * AverageValue returns the average of NewIterable
 --
--- Each of these functions must creates a new iterable, but that iterable 
+-- If applicable, also include:
+-- * SortedIterable returns NewIterable, sorted.
+--
+-- Each of these functions must create a new iterable, but that iterable 
 -- must contain the same elements as any other iterable returned by that
 -- function.
 --
@@ -45,6 +51,24 @@ function Mixins.IterationTests(Suite, library)
         assert(library.ContainsPair(Suite:NewIterable(), key, value), 
             ("Iterable contains pair (%s, %s)"):format(tostring(key), tostring(value)));
     end;
+
+	function Suite:TestSuiteHasMinMaxAverage()
+        assert(type(Suite.SumValue) == "function", "Suite has a SumValue function");
+        assert(type(Suite.AverageValue) == "function", "Suite has a AverageValue function");
+        assert(type(Suite.MaxValue) == "function", "Suite has a MaxValue function");
+        assert(type(Suite.MinValue) == "function", "Suite has a MinValue function");
+	end;
+
+	function Suite:TestSortedIterable()
+        if not Suite.SortedIterable then
+			return;
+		end;
+        assert(type(Suite.SortedIterable) == "function", "Suite has a SortedIterable function");
+        local iterable = Suite:SortedIterable();
+		Assert.Equals(3, library.Size(iterable), "SortedIterable returns a 3-element iterable");
+		assert(not library.Equals(iterable, Suite:NewIterable()), "Iterables must not be equal");
+		assert(library.ContainsAllValues(iterable, Suite:NewIterable()), "Sorted iterable contains all values from unsorted");
+	end;
 
     function Suite:TestFalsyIterable()
         assert(type(Suite.FalsyIterable) == "function", "Suite has a FalsyIterable function");
@@ -208,6 +232,22 @@ function Mixins.IterationTests(Suite, library)
             iterator:Previous();
         end;
     end;
+
+	function Suite:TestSum()
+		Assert.Equals(Suite:SumValue(), library.Sum(Suite:NewIterable()));
+	end;
+
+	function Suite:TestMin()
+		Assert.Equals(Suite:MinValue(), library.Min(Suite:NewIterable()));
+	end;
+
+	function Suite:TestMax()
+		Assert.Equals(Suite:MaxValue(), library.Max(Suite:NewIterable()));
+	end;
+
+	function Suite:TestAverage()
+		Assert.Equals(Suite:AverageValue(), library.Average(Suite:NewIterable()));
+	end;
 
     return Suite;
 end;

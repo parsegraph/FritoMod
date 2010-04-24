@@ -235,22 +235,30 @@ function Mixins.MutableIteration(library, iteratorFunc)
 
     if library.Remove == nil then
         -- Removes the first matching value from the specified iterable, according to the specified
-        -- comparator and specified target value.
+        -- test and specified target value.
         --
         -- iterable
         --     an iterable usable by this library.
         -- targetValue
         --     the searched value
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
+        -- testFunc, ...
+        --     optional. The test that performs the search for the specified value
         -- returns
         --     the removed key, or nil if no value was removed
-        function library.Remove(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = library.NewComparator(comparatorFunc, ...);
+        function library.Remove(iterable, targetValue, testFunc, ...)
+			if testFunc then
+				testFunc = library.NewEqualsTest(testFunc, ...);
+			end;
             for key, candidate in library.Iterator(iterable) do
-                if comparatorFunc(candidate, targetValue) then
-                    return library.Delete(iterable, key);
-                end;
+				if testFunc then 
+					if testFunc(candidate, targetValue) then
+						return library.Delete(iterable, key);
+					end;
+				else
+					if candidate == targetValue then
+						return library.Delete(iterable, key);
+					end
+				end;
             end;
         end;
     end;
@@ -265,7 +273,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
 
     if library.RemoveAll == nil then
         -- Removes all matching values from the specified iterable, according to the specified
-        -- comparator and specified value.
+        -- test and specified value.
         --
         -- This function does not modify the iterable until every item has been iterated. While
         -- this minimizes the chance of corrupted iteration, it is also potentially more 
@@ -275,16 +283,24 @@ function Mixins.MutableIteration(library, iteratorFunc)
         --     an iterable usable by this library.
         -- targetValue
         --     the searched value
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
+        -- testFunc, ...
+        --     optional. The test that performs the search for the specified value
         -- returns
         --     the number of removed elements
-        function library.RemoveAll(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = library.NewComparator(comparatorFunc, ...);
+        function library.RemoveAll(iterable, targetValue, testFunc, ...)
+            if testFunc then
+				testFunc = library.NewEqualsTest(testFunc, ...);
+			end;
             local removedKeys = {};
             for key, candidate in library.Iterator(iterable) do
-                if comparatorFunc(candidate, targetValue) then
-                    table.insert(removedKeys, key);
+                if testFunc then
+					if testFunc(candidate, targetValue) then
+						table.insert(removedKeys, key);
+					end
+				else
+					if candidate == targetValue then
+						table.insert(removedKeys, key);
+					end;
                 end;
             end;
             for i=#removedKeys, 1, -1 do
@@ -296,20 +312,20 @@ function Mixins.MutableIteration(library, iteratorFunc)
 
     if library.RemoveLast == nil then
         -- Removes the last matching value from the specified iterable, according to the specified
-        -- comparator and specified value.
+        -- test and specified value.
         --
         -- iterable
         --     an iterable usable by this library.
         -- targetValue
         --     the searched value
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
+        -- testFunc, ...
+        --     optional. The test that performs the search for the specified value
         -- returns
         --     the removed key, or nil if no value was removed
-        function library.RemoveLast(iterable, targetValue, comparatorFunc, ...)
-            comparatorFunc = library.NewComparator(comparatorFunc, ...);
+        function library.RemoveLast(iterable, targetValue, testFunc, ...)
+            testFunc = library.NewEqualsTest(testFunc, ...);
             for key, candidate in library.ReverseIterator(iterable) do
-                if comparatorFunc(candidate, targetValue) then
+                if testFunc(candidate, targetValue) then
                     library.Delete(iterable, key);
                     return key;
                 end;
@@ -319,7 +335,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
 
     if library.RemoveAt == nil then
         -- Removes the first matching key from the specified iterable, according to the specified
-        -- comparator and specified target key.
+        -- test and specified target key.
         --
         -- This is an optional operation.
         --
@@ -327,14 +343,14 @@ function Mixins.MutableIteration(library, iteratorFunc)
         --     an iterable usable by this library.
         -- targetKey
         --     the searched key
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
+        -- testFunc, ...
+        --     optional. The test that performs the search for the specified value
         -- returns
         --     the removed value, or nil if no key was removed
-        function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
-            comparatorFunc = library.NewComparator(comparatorFunc, ...);
+        function library.RemoveAt(iterable, targetKey, testFunc, ...)
+            testFunc = library.NewEqualsTest(testFunc, ...);
             for candidate, value in library.Iterator(iterable) do
-                if comparatorFunc(candidate, targetKey) then
+                if testFunc(candidate, targetKey) then
                     library.Delete(iterable, key);
                     return value;
                 end;
@@ -344,7 +360,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
 
     if library.RemoveAllAt == nil then
         -- Removes all matching keys from the specified iterable, according to the specified
-        -- comparator and specified target key.
+        -- test and specified target key.
         --
         -- This function does not modify the iterable until every item has been iterated. While
         -- this minimizes the chance of corrupted iteration, it is also potentially more 
@@ -356,15 +372,15 @@ function Mixins.MutableIteration(library, iteratorFunc)
         --     an iterable usable by this library.
         -- targetKey
         --     the searched key
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
+        -- testFunc, ...
+        --     optional. The test that performs the search for the specified value
         -- returns
         --     the number of removed elements
-        function library.RemoveAllAt(iterable, targetKey, comparatorFunc, ...)
-            comparatorFunc = library.NewComparator(comparatorFunc, ...);
+        function library.RemoveAllAt(iterable, targetKey, testFunc, ...)
+            testFunc = library.NewEqualsTest(testFunc, ...);
             local removedKeys = {};
             for candidate, value in library.Iterator(iterable) do
-                if comparatorFunc(candidate, targetKey) then
+                if testFunc(candidate, targetKey) then
                     table.insert(removedKeys, key);
                 end;
             end;
@@ -377,7 +393,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
 
     if library.RemoveLastAt == nil then
         -- Removes the last matching key from the specified iterable, according to the specified
-        -- comparator and specified target key.
+        -- test and specified target key.
         --
         -- This is an optional operation.
         -- 
@@ -385,14 +401,14 @@ function Mixins.MutableIteration(library, iteratorFunc)
         --     an iterable usable by this library.
         -- targetKey
         --     the searched key
-        -- comparatorFunc, ...
-        --     optional. The comparator that performs the search for the specified value
+        -- testFunc, ...
+        --     optional. The test that performs the search for the specified value
         -- returns
         --     the removed value, or nil if no key was removed
-        function library.RemoveAt(iterable, targetKey, comparatorFunc, ...)
-            comparatorFunc = library.NewComparator(comparatorFunc, ...);
+        function library.RemoveAt(iterable, targetKey, testFunc, ...)
+            testFunc = library.NewEqualsTest(testFunc, ...);
             for candidate, value in library.ReverseIterator(iterable) do
-                if comparatorFunc(candidate, targetKey) then
+                if testFunc(candidate, targetKey) then
                     library.Delete(iterable, key);
                     return value;
                 end;
