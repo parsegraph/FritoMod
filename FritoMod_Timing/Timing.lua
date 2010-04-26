@@ -113,7 +113,7 @@ function Timing.Throttle(cooldownTime, func, ...)
     func = Curry(func, ...);
     local lastCall = 0;
     return function(...)
-        local current = time();
+        local current = GetTime();
         if lastCall + cooldownTime > current then
             return;
         end;
