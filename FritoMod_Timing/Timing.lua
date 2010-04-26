@@ -57,7 +57,7 @@ end;
 -- though, this behavior is tolerable, if not expected.
 --
 -- period
---     the length in between calls, in milliseconds
+--     the length in between calls, in seconds
 -- func, ...
 --     the function that is invoked periodically
 -- returns
