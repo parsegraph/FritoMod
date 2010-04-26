@@ -31,7 +31,7 @@ Timing.OnUpdate = Functions.Spy(
 	Functions.Install(function()
 		timingFrame:SetScript("OnUpdate", function(frame, elapsed) 
 			for i=1, #updateListeners do
-				updateListeners(elapsed);
+				updateListeners[i](elapsed);
 			end;
 		end);
 		return Curry(timingFrame, "SetScript", "OnUpdate");
