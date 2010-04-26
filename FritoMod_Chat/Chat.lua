@@ -1,44 +1,44 @@
--- Mediums is a registry of mediums to which to send messages. To use, simply do:
+-- Chat is a registry of mediums to which to send messages. To use, simply do:
 --
--- Mediums.Say("Hello!");
--- Mediums.RaidWarning("Sup raid :)");
+-- Chat.Say("Hello!");
+-- Chat.RaidWarning("Sup raid :)");
 --
 -- You don't have to necessarily use proper capitalization:
 --
--- Mediums.YELL("I AM YELLING!");
--- Mediums.RaidWARNING("Hello again, raid members!");
+-- Chat.YELL("I AM YELLING!");
+-- Chat.RaidWARNING("Hello again, raid members!");
 --
 -- Matter of fact, there's a healthy amount of aliases for these standard channels:
 --
--- Mediums.g("Sup guild!");
--- Mediums.RW("This is a raid warning");
+-- Chat.g("Sup guild!");
+-- Chat.RW("This is a raid warning");
 --
 -- Spaces and underscores are also ignored:
 --
--- Mediums.RAID_WARNING("Raid warning!");
+-- Chat.RAID_WARNING("Raid warning!");
 --
 -- If given a non-standard name, it will first check if it's a channel name...
 --
--- Mediums.Notime("This is sent to the NOTIME channel, if you're in it.");
+-- Chat.Notime("This is sent to the NOTIME channel, if you're in it.");
 --
 -- As a last resort, it will whisper a player by that name:
 --
--- Mediums.Threep("This is a whisper to Threep");
+-- Chat.Threep("This is a whisper to Threep");
 --
 -- You can be explicit and send directly to a channel:
 --
--- Mediums.Channel("Threep", "This is always sent to the 'threep' channel");
+-- Chat.Channel("Threep", "This is always sent to the 'threep' channel");
 --
 -- You can even batch-send a message to many mediums:
 -- 
--- Mediums[{"g", "p"}]("Hello to my party and my guild");
+-- Chat[{"g", "p"}]("Hello to my party and my guild");
 --
 -- If necessary, you can even use functions as keys:
 --
 -- local r = Iterators.Repeat({"guild", "party"});
--- Mediums[r]("This is sent to the guild");
--- Mediums[r]("This is sent to the party");
--- Mediums[r]("This is sent to the guild again");
+-- Chat[r]("This is sent to the guild");
+-- Chat[r]("This is sent to the party");
+-- Chat[r]("This is sent to the guild again");
 
 if nil ~= require then
     -- This file uses WoW-specific functionality
@@ -50,28 +50,29 @@ if nil ~= require then
     require "FritoMod_Strings/Strings";
 end;
 
-Mediums = {};
-local Mediums = Mediums;
+Chat = {};
+Chat = Chat;
+local Chat = Chat;
 
 local function SendMessage(medium, message, ...)
     message = Strings.JoinValues(" ", message, ...);
     SendChatMessage(message, medium);
 end;
 
-Mediums.Say = CurryFunction(SendMessage, "SAY");
-Mediums.Emote = CurryFunction(SendMessage, "EMOTE");
-Mediums.Yell = CurryFunction(SendMessage, "YELL");
-Mediums.Raid = CurryFunction(SendMessage, "RAID");
-Mediums.Party = CurryFunction(SendMessage, "PARTY");
-Mediums.RaidWarning = CurryFunction(SendMessage, "RAID_WARNING");
-Mediums.Battleground = CurryFunction(SendMessage, "BATTLEGROUND");
-Mediums.Guild = CurryFunction(SendMessage, "GUILD");
-Mediums.Party = CurryFunction(SendMessage, "PARTY");
-Mediums.Officer = CurryFunction(SendMessage, "OFFICER");
-Mediums.Null = Noop;
-Mediums.Debug = print;
+Chat.Say = CurryFunction(SendMessage, "SAY");
+Chat.Emote = CurryFunction(SendMessage, "EMOTE");
+Chat.Yell = CurryFunction(SendMessage, "YELL");
+Chat.Raid = CurryFunction(SendMessage, "RAID");
+Chat.Party = CurryFunction(SendMessage, "PARTY");
+Chat.RaidWarning = CurryFunction(SendMessage, "RAID_WARNING");
+Chat.Battleground = CurryFunction(SendMessage, "BATTLEGROUND");
+Chat.Guild = CurryFunction(SendMessage, "GUILD");
+Chat.Party = CurryFunction(SendMessage, "PARTY");
+Chat.Officer = CurryFunction(SendMessage, "OFFICER");
+Chat.Null = Noop;
+Chat.Debug = print;
 
-function Mediums.Channel(target, message)
+function Chat.Channel(target, message)
    if type(target) == "string" then
       target = GetChannelName(target);
    end;
@@ -79,15 +80,15 @@ function Mediums.Channel(target, message)
    SendChatMessage(message, "CHANNEL", GetDefaultLanguage("PLAYER"), target);
 end;
 
-function Mediums.Whisper(target, message)
+function Chat.Whisper(target, message)
 	assert(type(target) == "string", "target must be a string");
 	assert(message ~= nil, "message must be provided");
 	SendChatMessage(message, "WHISPER", GetDefaultLanguage("PLAYER"), target:lower());
 end;
 
 local ALIASES = Tables.Expand({
-      c = Mediums.Channel,
-      w = Mediums.Whisper,
+      c = Chat.Channel,
+      w = Chat.Whisper,
       d = "Debug",
       g = "Guild",
       [{"p", "par", "party"}] = "Party",
@@ -100,16 +101,16 @@ local ALIASES = Tables.Expand({
       [{"bg", "battlegroup"}] = "Battleground"
 });
 
-setmetatable(Mediums, {
+setmetatable(Chat, {
     __index = function(self, medium)
         if type(medium) == "function" then
-            return Mediums[medium()];
+            return Chat[medium()];
         end;
         if type(medium) == "table" and #medium > 0 then
             return function(...)
                 for i=1, #medium do 
                     childMedium = medium[i];
-                    Mediums[childMedium](...);
+                    Chat[childMedium](...);
                 end;
             end;
         end;
@@ -123,7 +124,7 @@ setmetatable(Mediums, {
             elseif medium:lower() == medium or medium:upper() == medium then
                 medium = Strings.ProperNounize(medium);
             end;
-            local requestedMedium = rawget(Mediums, medium);
+            local requestedMedium = rawget(Chat, medium);
             if requestedMedium then
                 return requestedMedium;
             end;
@@ -132,13 +133,13 @@ setmetatable(Mediums, {
 				if IsCallable(ALIASES[medium]) then
 					return ALIASES[medium];
 				end;
-                return Mediums[ALIASES[medium]];
+                return Chat[ALIASES[medium]];
             end;
             local channelIndex = GetChannelName(medium);
             if channelIndex > 0 then
-                return CurryFunction(Mediums.Channel, channelIndex);
+                return CurryFunction(Chat.Channel, channelIndex);
             end;
-            return CurryFunction(Mediums.Whisper, medium);
+            return CurryFunction(Chat.Whisper, medium);
         end;
 		error("medium must be a string, table, or function. Type: " .. type(medium));
     end

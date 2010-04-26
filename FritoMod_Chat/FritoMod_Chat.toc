@@ -6,4 +6,4 @@
 ## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Collections, FritoMod_Strings, FritoMod_Media
 
 Colors.lua
-Mediums.lua
+Chat.lua

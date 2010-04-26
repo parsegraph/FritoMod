@@ -3,10 +3,10 @@ if nil ~= require then
     require "FritoMod_Testing/Assert";
     require "FritoMod_Testing/Tests";
 
-    require "FritoMod_Chat/Mediums";
+    require "FritoMod_Chat/Chat";
 end;
 
-local Suite = ReflectiveTestSuite:New("FritoMod_Chat.Mediums");
+local Suite = ReflectiveTestSuite:New("FritoMod_Chat.Chat");
 
 Suite:AddListener(Metatables.Noop({
 	TestStarted = function(self, suite)
@@ -61,34 +61,34 @@ Suite:AddListener(Metatables.Noop({
 	end
 }));
 
-function Suite:TestMediumsSay()
-	Mediums.Say("test");
+function Suite:TestChatSay()
+	Chat.Say("test");
 	Assert.Equals({"test", "SAY"}, table.remove(self.messages));
 end;
 
-function Suite:TestMediumsChannel()
-	Mediums.General("Hello, general!");
+function Suite:TestChatChannel()
+	Chat.General("Hello, general!");
 	Assert.Equals({"Hello, general!", "CHANNEL", "Common", 1}, table.remove(self.messages));
 end;
 
 function Suite:TestWhisper()
-	Mediums.Threep("Hello, Threep!");
+	Chat.Threep("Hello, Threep!");
 	Assert.Equals({"Hello, Threep!", "WHISPER", "Common", "threep"}, table.remove(self.messages));
 end;
 
-function Suite:TestMediumsAlias()
-	Mediums.g("Hello, guild!");
+function Suite:TestChatAlias()
+	Chat.g("Hello, guild!");
 	Assert.Equals({"Hello, guild!", "GUILD"}, table.remove(self.messages));
 end;
 
-function Suite:TestMediumsWhisper()
-	Mediums.w("Threep", "Hello, Threep!");
+function Suite:TestChatWhisper()
+	Chat.w("Threep", "Hello, Threep!");
 	Assert.Equals({"Hello, Threep!", "WHISPER", "Common", "threep"}, table.remove(self.messages));
 end;
 
-function Suite:TestMediumsBatchDispatch()
+function Suite:TestChatBatchDispatch()
 	local s = "Hello, guild and party!";
-	Mediums[{"g","p"}](s);
+	Chat[{"g","p"}](s);
 	Assert.Equals({s, "PARTY"}, table.remove(self.messages));
 	Assert.Equals({s, "GUILD"}, table.remove(self.messages));
 end;

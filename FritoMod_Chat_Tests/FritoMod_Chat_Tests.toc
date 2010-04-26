@@ -4,4 +4,4 @@
 ## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Testing, FritoMod_Chat
 
-Mediums.lua
+Chat.lua
