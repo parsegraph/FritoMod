@@ -6,9 +6,6 @@ if nil ~= require then
     require "FritoMod_Functional/Functions";
 
     require "FritoMod_Collections/Lists";
-    require "FritoMod_Collections/Functions";
-
-    require "FritoMod_Strings/Parsers";
 end;
 
 Timing = {};
