@@ -120,3 +120,17 @@ function Timing.Throttle(cooldownTime, func, ...)
         return func(...);
     end;
 end;
+
+function Timing.After(seconds, func, ...)
+	func=Curry(func,...);
+	local elapsed=0;
+	local r;
+	r=Timing.OnUpdate(function(delta)
+		elapsed=elapsed+delta;
+		if elapsed > seconds then
+			r();
+			func();
+		end;
+	end);
+	return r;
+end;
