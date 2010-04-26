@@ -73,5 +73,19 @@ function Mixins.MutableIterationTests(Suite, library)
         assert(library.IsEmpty(iterable), "Remover removes inserted function");
     end;
 
+	function Suite:TestInsertRemovalIsIdempotent()
+		if not rawget(library, "Insert") then
+			return;
+		end;
+        local iterable = Suite:NewIterable();
+		local r=library.Insert(iterable, 1);
+		library.Insert(iterable, 1);
+		Assert.Equals(5, library.Size(iterable), "Size increases after adding two elements");
+		r();
+		Assert.Equals(4, library.Size(iterable), "Remover removed element");
+		r();
+		Assert.Equals(4, library.Size(iterable), "Second call to remover doesn't do anything");
+	end;
+
     return Suite;
 end;
