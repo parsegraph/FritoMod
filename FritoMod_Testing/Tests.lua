@@ -4,7 +4,6 @@ if nil ~= require then
     require "FritoMod_Functional/Functions";
 
     require "FritoMod_Collections/Lists";
-    require "FritoMod_Collections/Functions";
 end;
 
 Tests = {};
@@ -12,18 +11,23 @@ local Tests = Tests;
 
 do
     local listeners = {};
-    Tests.AddErrorListener = Functions.Lazy(Functions.FunctionPopulator(listeners), function()
-        local oldHandler = geterrorhandler() or Noop;
-        local function OurHandler(errorMessage, frame, stack, etype, ...)
-            seterrorhandler(oldHandler);
-            -- We unhook our handler in case one of *our* handlers fails.
-            pcall(Lists.CallEach, listeners, errorMessage, etype, stack, ...);
-            seterrorhandler(OurHandler);
-            oldHandler();
-        end;
-        seterrorhandler(OurHandler);
-        return Curry(seterrorhandler, oldHandler);
-    end);
+    Tests.AddErrorListener = Functions.Spy(
+		function(func, ...)
+			return Lists.Insert(listeners, Curry(func, ...));
+		end,
+		function()
+			local oldHandler = geterrorhandler() or Noop;
+			local function OurHandler(errorMessage, frame, stack, etype, ...)
+				seterrorhandler(oldHandler);
+				-- We unhook our handler in case one of *our* handlers fails.
+				pcall(Lists.CallEach, listeners, errorMessage, etype, stack, ...);
+				seterrorhandler(OurHandler);
+				oldHandler();
+			end;
+			seterrorhandler(OurHandler);
+			return Curry(seterrorhandler, oldHandler);
+		end
+	);
 end;
 
 -- Returns the full stack trace, or up to MAX_STACK_TRACE levels of stack trace information. Each

@@ -34,7 +34,6 @@ if nil ~= require then
     require "FritoMod_Functional/Functions";
 
     require "FritoMod_Collections/Lists";
-    require "FritoMod_Collections/Functions";
 end;
 
 Events = {};
@@ -68,7 +67,9 @@ setmetatable(Events, {
     __index = function(self, key)
 		eventListeners[key] = {};
         self[key] = Functions.Spy(
-			Functions.FunctionPopulator(eventListeners[key]),
+			function(func, ...)
+				return Lists.Insert(eventListeners[key], Curry(func, ...));
+			end,
 			Functions.Install(function()
 				eventsFrame:RegisterEvent(key);
 				return CurryMethod(eventsFrame, "UnregisterEvent", key);

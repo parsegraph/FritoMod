@@ -16,7 +16,9 @@ setmetatable(CombatEvents, {
 	__index = function(self, key)
 		eventListeners[key] = {};
 		self[key] = Functions.Spy(
-			Functions.FunctionPopulator(eventListeners[key]),
+			function(func, ...)
+				return Lists.Insert(eventListeners[key], Curry(func, ...));
+			end,
 			setUp
 		);
         return rawget(self, key);
