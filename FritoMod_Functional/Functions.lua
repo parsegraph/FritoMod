@@ -97,6 +97,7 @@ function Functions.Cycle(...)
         return functions[cycle + 1](...);
     end;
 end;
+Functions.Rotate=Functions.Cycle;
 
 -- Toggles between calling the specified function and the function returned by it (henceforth referred
 -- to as the second function). The first function's returned value always replaces the second function.
@@ -123,7 +124,6 @@ function Functions.Toggle(func, ...)
         end;
     end;
 end;
-Functions.Rotate=Functions.Toggle;
 
 -- Group two functions together. When called, the returned function will call both functions.
 -- 
