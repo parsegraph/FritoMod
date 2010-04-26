@@ -123,6 +123,7 @@ function Functions.Toggle(func, ...)
         end;
     end;
 end;
+Functions.Rotate=Functions.Toggle;
 
 -- Group two functions together. When called, the returned function will call both functions.
 -- 
