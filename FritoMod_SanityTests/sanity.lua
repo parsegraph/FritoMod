@@ -20,6 +20,35 @@ local function Count(...)
     return total, nonNils;
 end;
 
+function Suite:TestMaxn()
+	local t = {};
+	table.insert(t, true);
+	table.insert(t, true);
+	table.insert(t, true);
+	Assert.Equals(3, table.maxn(t));
+	t[2] = nil;
+	Assert.Equals(3, table.maxn(t));
+	t[4] = true;
+	table.remove(t,4);
+	Assert.Equals(3, table.maxn(t));
+end;
+
+function Suite:TestNewProxy()
+	local p=newproxy(true);
+	local mt=getmetatable(p);
+	mt. __newindex = function(self, key, value)
+		print(key);
+	end
+	mt.__len = function()
+		return 3;
+	end;
+	local c={};
+	for i=1,#p do
+		table.insert(i);
+	end;
+	Assert.Equals({1,2,3},c);
+end
+
 function Suite:TestSparseArray()
     local list = {nil, nil, nil};
     list[3] = true;
