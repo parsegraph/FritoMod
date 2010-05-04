@@ -18,8 +18,16 @@ function Tables.Iterator(iterable)
     assert(type(iterable) == "table", "iterable is not a table. Iterable: " .. tostring(iterable));
     local key = nil;
     return function()
+		if iterable == nil then
+			-- This iterable is dead.
+			return;
+		end;
         local value;
         key, value = next(iterable, key);
+		if key == nil then
+			-- Kill this iterable.
+			iterable=nil;
+		end;
         return key, value;
     end;
 end;

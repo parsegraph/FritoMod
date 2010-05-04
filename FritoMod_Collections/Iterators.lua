@@ -65,8 +65,16 @@ function Iterators.IterateMap(map)
     assert(type(map) == "table", "map is not a table. Type: " .. type(map));
     local index = nil;
     return function()
+		if map == nil then
+			-- This iterable is dead, so return nothing.
+			return;
+		end;
         local value;
         index, value = next(map, index);
+		if index == nil then
+			-- Kill this iterable.
+			map = nil;
+		end;
         return index, value;
     end;
 end;
