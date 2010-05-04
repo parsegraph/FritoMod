@@ -8,48 +8,24 @@ if nil ~= require then
     require "FritoMod_Collections_Tests/Mixins-MutableIteration";
 end;
 
+local arraySuite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators (arrays)");
+Mixins.ArrayTests(arraySuite, Iterators);
+function arraySuite:Array(...)
+    return Iterators.IterateList({...});
+end;
+
+local tableSuite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators (tables)");
+Mixins.TableTests(tableSuite, Iterators);
+function tableSuite:Table(t)
+	if t == nil then
+		return function()
+			-- We don't use Noop since that wouldn't be a unique value
+		end;
+	end;
+    return Iterators.IterateMap(t);
+end;
+
 local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators");
-Mixins.IterationTests(Suite, Iterators);
-
-function Suite:NewIterable()
-    return Iterators.IterateMap({
-        A = 1, 
-        BB = 2,
-        CCC = 3,
-    });
-end;
-
-function Suite:SumValue()
-	return 1+2+3;
-end;
-
-function Suite:MinValue()
-	return 1;
-end;
-
-function Suite:AverageValue()
-	return 2;
-end;
-
-function Suite:MaxValue()
-	return 3;
-end;
-
-function Suite:FalsyIterable()
-    return Iterators.IterateMap({ [false] = false });
-end;
-
-function Suite:EmptyIterable()
-    return Iterators.IterateMap({});
-end;
-
-function Suite:GetKeys()
-    return {"A", "BB", "CCC"};
-end;
-
-function Suite:GetValues()
-    return {1, 2, 3};
-end;
 
 function Suite:TestVisibleFields()
     local foo = {

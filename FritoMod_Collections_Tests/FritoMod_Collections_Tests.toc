@@ -5,8 +5,12 @@
 ## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Testing
 
 Metatables.lua
-Mixins-Iteration.lua
-Mixins-MutableIteration.lua
+Mixins-ArrayTests.lua
+Mixins-TableTests.lua
+
+Mixins-MutableArrayTests.lua
+Mixins-MutableTableTests.lua
+
 Iterators.lua
 Lists.lua
 Tables.lua
