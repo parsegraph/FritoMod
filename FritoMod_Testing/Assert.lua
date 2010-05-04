@@ -23,8 +23,15 @@ end;
 --     the reason why the function should raise an exception
 -- func, ...
 --     the function that is tested
-function Assert.Exception(assertion, func, ...)
-    assert(not pcall(func, ...), ("Function must raise an exception%s"):format(FormatName(assertion)));
+function Assert.Exception(assertion, ...)
+	local r;
+	if type(assertion) ~= "string" then
+		r = not pcall(assertion, ...);
+		assertion=nil;
+	else
+		r = not pcall(...);
+	end;
+	assert(r, ("Function must raise an exception%s"):format(FormatName(assertion)));
 end;
 
 Assert.Failure = Assert.Exception;

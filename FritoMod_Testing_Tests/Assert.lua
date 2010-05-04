@@ -11,6 +11,10 @@ function Suite:TestAssertException()
     assert(pcall(Assert.Exception, "Throw!", error), "Assert.Exception succeeds on bad test");
 end;
 
+function Suite:TestAssertExceptionWithNoReason()
+	assert(pcall(Assert.Exception, error), "Exception is not thrown when error is expected");
+end;
+
 function Suite:TestAssertSucceeds()
     assert(pcall(Assert.Succeeds, "Don't Throw", Noop), "Assert.Succeeds succeeds on successful test");
     assert(not pcall(Assert.Succeeds, "Throw!", error), "Assert.Succeeds throws on bad test");
