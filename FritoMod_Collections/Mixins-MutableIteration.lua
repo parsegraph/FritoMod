@@ -233,6 +233,27 @@ function Mixins.MutableIteration(library, iteratorFunc)
         end;
     end;
 
+	if library.SwapKeys == nil then
+		function library.SwapKeys(iterable, a, b)
+			local temp=library.Get(iterable, a);
+			library.Set(iterable, a, library.Get(iterable, b));
+			library.Set(iterable, b, temp);
+		end;
+	end;
+
+	if library.SwapValues == nil then
+		function library.SwapValues(iterable, a, b)
+			return library.SwapKeys(iterable,
+				library.KeyFor(iterable, a),
+				library.KeyFor(iterable, b)
+			);
+		end;
+	end;
+
+	if library.Swap == nil then
+		library.Swap = CurryNamedFunction(library, "SwapValues");
+	end;
+	
     if library.Remove == nil then
         -- Removes the first matching value from the specified iterable, according to the specified
         -- test and specified target value.
