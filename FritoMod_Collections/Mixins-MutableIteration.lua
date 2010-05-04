@@ -251,7 +251,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
 	end;
 
 	if library.Swap == nil then
-		library.Swap = CurryNamedFunction(library, "SwapValues");
+		library.Swap = CurryNamedFunction(library, "SwapKeys");
 	end;
 	
     if library.Remove == nil then
