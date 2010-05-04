@@ -20,6 +20,15 @@ local function Count(...)
     return total, nonNils;
 end;
 
+function Suite:PairsIteratesEverything()
+	local a={true,false,true};
+	local c={};
+	for k,v in pairs(a) do
+		c[k]=v;
+	end;
+	Assert.Equals(a,c);
+end;
+
 function Suite:TestMaxn()
 	local t = {};
 	table.insert(t, true);
