@@ -51,7 +51,6 @@ function Box:Measure()
 end;
 
 function Box:UpdateLayout()
-    print("Box:UpdateLayout")
     LayoutUtil:Chain(
         self,
         self.children,

@@ -86,7 +86,7 @@ function Invalidating.ValidateSize(target)
 	end;
 	-- This Invalidating's size needs to be validated, so do so.
 	target.invalidatedSize = false;
-	print("Invalidating: Validating size: " .. tostring(target));
+	--print("Invalidating: Validating size: " .. tostring(target));
 	local oldMeasuredHeight, oldMeasuredWidth = target:GetMeasuredHeight(), target:GetMeasuredWidth()
 	target:Measure();
 	local measuredHeight, measuredWidth = target:GetMeasuredHeight(), target:GetMeasuredWidth()
@@ -104,7 +104,7 @@ function Invalidating.ValidateLayout(target)
     if target.invalidatedLayout ~= false then
         -- This target needs to be validated, so do so.
         target.invalidatedLayout = false;
-        print("Invalidating: Validating layout: " .. tostring(target));
+        --print("Invalidating: Validating layout: " .. tostring(target));
         target:UpdateLayout();
     end;
     -- If it has children of some sort, validate them now.
