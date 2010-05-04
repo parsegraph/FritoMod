@@ -228,16 +228,17 @@ function Mixins.Iteration(library)
     Mixins.KeyValuePairOperation(library, "Bidi%sIterator", function(chooser, iterable)
         local index = 0;
         local Get;
+		local keys;
         if rawget(library, "Get") ~= nil then
-            local keys = library.Keys(iterable);
+            keys = library.Keys(iterable);
             Get = function()
                 local key = keys[index];
-                return chooser(key, library.Get(iterable, key));
+                return key, library.Get(iterable, key);
             end;
         else
             local iterator = library.Iterator(iterable);
             local copy = {};
-            local keys = {};
+            keys = {};
             Get = function()
                 local key, value;
                 if index > #keys then
@@ -265,7 +266,7 @@ function Mixins.Iteration(library)
                 index = index + 1;
                 local key, value = Get();
                 if key == nil then
-                    reachedEnd = false;
+                    reachedEnd = true;
                     return;
                 end;
                 return chooser(key, value);
@@ -275,6 +276,7 @@ function Mixins.Iteration(library)
                     return;
                 end;
                 index = index - 1;
+				reachedEnd=false;
                 return chooser(Get());
             end
         };
@@ -1012,11 +1014,14 @@ function Mixins.Iteration(library)
 	Mixins.KeyValueOperation(library, "Min%s", function(iterator, iterable, comparatorFunc, ...)
         comparatorFunc = library.NewComparator(comparatorFunc, ...);
 		local smallest = nil;
+		local iterated=false;
 		for v in iterator(iterable) do
+			iterated=true;
 			if smallest == nil or comparatorFunc(smallest, v) > 0 then
 				smallest=v;
 			end;
 		end;
+		assert(iterated, "Iterable must not be empty");
 		return smallest;
 	end);
 
@@ -1024,10 +1029,19 @@ function Mixins.Iteration(library)
 		library.Min = CurryNamedFunction(library, "MinValue");
 	end;
 
-	Mixins.KeyValuePairOperationByName(library, "Average%s", function(name, iterable, convertFunc, ...)
-		return library["Sum"..name.."s"](iterable, convertFunc, ...) / library.Size(iterable);
+	Mixins.KeyValueOperation(library, "Average%s", function(iterator, iterable, convertFunc, ...)
+		-- We don't use Sum since some iterables are only valid for one iteration, so we need to do everythin
+		-- in one go.
+		convertFunc = convertFunc or Functions.Return;
+		local sum=0;
+		local s=0;
+        for v in iterator(iterable) do
+			s=s+1;
+			sum=sum+convertFunc(v);
+		end;
+		assert(s>0, "Iterable must not be empty");
+		return sum/s;
 	end);
-	library.AveragePair=nil;
 
 	if library.Average == nil then
 		library.Average = CurryNamedFunction(library, "AverageValue");
