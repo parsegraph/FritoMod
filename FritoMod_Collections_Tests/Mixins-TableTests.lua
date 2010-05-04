@@ -20,6 +20,10 @@ function Mixins.TableTests(Suite, library)
 		assert(Suite:Table() ~= Suite:Table(), "Table returns unique iterables");
 	end;
 
+	function Suite:TableCreator(t)
+		return Curry(Suite, "Table", t);
+	end;
+
 	function Suite:TestEquals()
 		assert(library.Equals(Suite:Table(), Suite:Table()),
 			"Equals returns true for empty tables");
@@ -32,6 +36,16 @@ function Mixins.TableTests(Suite, library)
 		assert(not library.Equals(Suite:Table({a=1}), Suite:Table({a=1, b=1})),
 			"Equals returns false for unequal subset");
     end;
+
+	function Suite:TestAssertEquals()
+		local a=Suite:TableCreator({a=1,b=2});
+		local b=Suite:TableCreator({a=1,b=2});
+		library.AssertEqual(a(),b());
+		Assert.Exception(library.AssertEqual, a(), Suite:Table({a=1}));
+		Assert.Exception(library.AssertEqual, a(), Suite:Table({a=1,b=2,c=3}));
+		Assert.Exception(library.AssertEqual, Suite:Table({a=1,b=2,c=3}), a());
+		Assert.Exception(library.AssertEqual, Suite:Table({a=1}), a());
+	end;
 
     function Suite:TestSize()
         Assert.Equals(0, library.Size(Suite:Table()), "Size reports zero for empty table");

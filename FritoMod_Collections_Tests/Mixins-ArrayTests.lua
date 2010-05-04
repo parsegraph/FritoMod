@@ -14,7 +14,7 @@ function Mixins.ArrayTests(Suite, library)
 	assert(not rawget(Suite, "Table"), "ArrayTests is not compatible with TableTests");
 
 	function Suite:ArrayCreator(...)
-		return Curry(Suite, "Array", {...});
+		return Curry(Suite, "Array", ...);
 	end;
 
     function Suite:TestSuiteHasArray()
@@ -22,6 +22,14 @@ function Mixins.ArrayTests(Suite, library)
 		assert(Suite:Array(), "Array handles empty arguments");
 		assert(Suite:Array(1,2,3), "Array returns a truthy value");
 		assert(Suite:Array() ~= Suite:Array(), "Array returns unique iterables");
+	end;
+
+	function Suite:TestAssertEquals()
+		local a=Suite:ArrayCreator("a","b");
+		local b=Suite:ArrayCreator("a","b");
+		library.AssertEqual(a(),b());
+		Assert.Exception("B superset of A", library.AssertEqual, a(), Suite:Array("a","b","c"));
+		Assert.Exception("A superset of B", library.AssertEqual, Suite:Array("a","b","c"), a());
 	end;
 
 	function Suite:TestKeyIterator()

@@ -189,6 +189,23 @@ function Mixins.Iteration(library)
         library.Equals = CurryNamedFunction(library, "PairsEqual");
     end;
 
+	if library.AssertEqual == nil then
+		function library.AssertEqual(iterable, otherIterable)
+			local i=library.Iterator(iterable);
+			local j=library.Iterator(otherIterable);
+			while true do
+				local k1,v1=i();
+				local k2,v2=j();
+				assert(k1==k2, "Keys are not equal. k1: " .. tostring(k1) .. ", k2: " .. tostring(k2));
+				assert(v1==v2, "Values are not equal. v1: " .. tostring(v1) .. ", v2: " .. tostring(v2));
+				if k1 == nil then
+					return;
+				end;
+			end;
+		end;
+	end;
+	library.AssertEquals=CurryNamedFunction(library, "AssertEqual");
+
     if library.KeyIterator == nil then
         -- Returns an iterator that iterates over the keys in iterable.
         --
