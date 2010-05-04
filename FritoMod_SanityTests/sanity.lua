@@ -44,7 +44,7 @@ function Suite:TestNewProxy()
 	end;
 	local c={};
 	for i=1,#p do
-		table.insert(i);
+		table.insert(c, i);
 	end;
 	Assert.Equals({1,2,3},c);
 end
