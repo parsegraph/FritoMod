@@ -1,0 +1,9 @@
+## Interface: 30200
+## Title: FritoMod: UI - Tests
+## Author: Frito
+## Version: Unreleased
+## Dependencies: FritoMod, FritoMod_Testing, FritoMod_UI
+
+Metatables-StyleClient.lua
+
+TextField.lua

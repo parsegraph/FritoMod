@@ -165,15 +165,15 @@ end
 -- returns:list
 --     a list of strings, split by the specified delimiter
 function Strings.SplitByDelimiter(delimiter, originalString, limit)
+	assert(delimiter ~= nil, "delimiter must be provided");
+	assert(delimiter ~= "", "delimiter must not be an empty string");
     delimiter = tostring(delimiter);
-    local items = {};
+	assert(originalString ~= nil, "originalString must be provided");
     local remainder = tostring(originalString);
+    local items = {};
     while limit == nil or #items + 1 < limit do
         local startMatch, endMatch = remainder:find(delimiter);
         if not startMatch then
-            if #remainder > 0 then
-                Lists.Insert(items, remainder);
-            end;
             break;
         end;
         if startMatch > 1 then
@@ -213,10 +213,10 @@ function Strings.SplitByCase(target)
     local words = {};
     local index = 0;
 
-    -- These are forward declared to avoid problems later on. This may not be necessary.
-    local Capturing, PotentialAcronym, Acronym;
+    -- These are forward declared to avoid bad references in our closures.
+    local InitialState, Capturing, PotentialAcronym, Acronym;
 
-    local function Capturing(letter)
+    Capturing = function(letter)
         if not Strings.IsUpper(letter) then
             return;
         end;
@@ -235,7 +235,7 @@ function Strings.SplitByCase(target)
         return PotentialAcronym;
     end;
 
-    local function Acronym(letter)
+    Acronym = function(letter)
         if not Strings.IsLower(letter) then
             return;
         end;
@@ -253,14 +253,14 @@ function Strings.SplitByCase(target)
         return Capturing;
     end;
 
-    local function PotentialAcronym(letter)
+    PotentialAcronym = function(letter)
         if Strings.IsUpper(letter) then
             return Acronym;
         end;
         return Capturing;
     end;
 
-    local function InitialState(letter)
+    InitialState = function(letter)
         if Strings.IsUpper(letter) then
             return PotentialAcronym;
         end;
@@ -271,7 +271,8 @@ function Strings.SplitByCase(target)
     while index <= #target do
         index = index + 1;
         local letter = Strings.CharAt(target, index);
-        state = state(letter) or state;
+		local newState = state(letter);
+		state = newState or state;
     end;
     if #target > 0 then
         table.insert(words, target);
@@ -317,12 +318,12 @@ end;
 
 -- Converts a_proper_case to AProperCase
 function Strings.SnakeToProperCase(snakeString)
-    return Strings.JoinProperCase(Strings.SplitByDelimiter(snakeString));
+    return Strings.JoinProperCase(Strings.SplitByDelimiter("_", snakeString));
 end;
 
 -- Converts a_proper_case to aProperCase
 function Strings.SnakeToCamelCase(snakeString)
-    return Strings.JoinCamelCase(Strings.SplitByDelimiter(snakeString));
+    return Strings.JoinCamelCase(Strings.SplitByDelimiter("_", snakeString));
 end;
 
 function Strings.ProperNounize(word)

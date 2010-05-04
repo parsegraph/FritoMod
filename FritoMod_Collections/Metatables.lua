@@ -65,9 +65,7 @@ end;
 -- 
 -- Now, in foo, when we wish to dispatch Bar events, we simply call "Bar":
 --
--- function foo:Dispatch()
---     self:Bar();
--- end;
+-- foo:Bar();
 --
 -- When this is done, listener:Bar() is invoked.
 --
@@ -83,7 +81,10 @@ Metatables.Multicast = MetatableAttacher({
         return function(self, ...)
             for i=1, #self do
                 local observer = self[i];
-                observer[key](observer, ...);
+                local f = observer[key];
+				if f then
+					f(observer, ...);
+				end;
             end;
         end;
     end

@@ -36,6 +36,9 @@ MediaLibrary.DEFAULT = "default";
 --]]
 
 function MediaLibrary:Constructor()
+	if self.mediaTable then
+		return;
+	end;
     self.mediaTable = {};
     self.proxyLibraries = {};
 
@@ -48,7 +51,7 @@ function MediaLibrary:Constructor()
 
 	local function ConvertToTable(alpha, ...)
         if select("#", ...) == 0 then
-            return { ConvertColorToParts(alpha) };
+            return { Colors.UnpackHex(alpha) };
         end;
         local red, green, blue = 0, 0, 0;
         if select("#", ...) == 2 then
@@ -138,6 +141,7 @@ end;
 -------------------------------------------------------------------------------
 
 function MediaLibrary:Add(mediaType, mediaName, media)
+	self:Constructor();
 	local mediaTable = self:RetrieveTable(mediaType);
 	local existingMedia = mediaTable[mediaName];
 	if existingMedia ~= nil then
@@ -155,6 +159,7 @@ function MediaLibrary:Add(mediaType, mediaName, media)
 end;
 
 function MediaLibrary:Get(mediaType, mediaName, errorOnMiss)
+	self:Constructor();
 	local media = self:GetExplicit(mediaType, mediaName);
 	if media ~= nil then
 		return media;
@@ -173,6 +178,7 @@ function MediaLibrary:Get(mediaType, mediaName, errorOnMiss)
 end;
 
 function MediaLibrary:RegisterType(mediaType)
+	self:Constructor();
 	if self.mediaTable[mediaType] then
 		-- The type is already registered, so simply return.
 		return false;
@@ -204,6 +210,7 @@ end;
 
 function MediaLibrary:RegisterProxyLibrary(libraryFunc, ...)
     -- rawdebug("MediaLibrary - Registered Proxy Library!");
+	self:Constructor();
     libraryFunc = Curry(libraryFunc, ...)
     table.insert(self.proxyLibraries, libraryFunc)
     return function()
@@ -218,6 +225,7 @@ end;
 -------------------------------------------------------------------------------
 
 function MediaLibrary:RetrieveTable(mediaType)
+	self:Constructor();
 	if type(mediaType) ~= "string" then
 		error("MediaLibrary: mediaType must be a string.");
 	end;
@@ -226,11 +234,13 @@ function MediaLibrary:RetrieveTable(mediaType)
 end;
 
 function MediaLibrary:IterType(mediaType)
+	self:Constructor();
 	return next, self:RetrieveTable(mediaType), nil;
 end;
 
 function MediaLibrary:GetExplicit(mediaType, mediaName)
 	--rawdebug("MediaLibrary: Retrieving Explicit. (Type:", mediaType, ", Name:", mediaName, ")");
+	self:Constructor();
 	local media = self:RetrieveTable(mediaType)[mediaName];
 	if media == nil then
         for _, proxyLibraryGetter in ipairs(self.proxyLibraries) do
@@ -245,10 +255,12 @@ end;
 
 function MediaLibrary:GetDefault(mediaType)
 	--debug("MediaLibrary: Retrieving Default. (Type:", mediaType, ")");
+	self:Constructor();
     return self:GetExplicit(mediaType, MediaLibrary.DEFAULT);
 end;
 
 function MediaLibrary:BulkAdd(mediaType, mediaTable)
+	self:Constructor();
 	for mediaName, media in pairs(mediaTable) do
 		self:Add(mediaType, mediaName, media);
 	end;

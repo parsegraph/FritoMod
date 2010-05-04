@@ -6,6 +6,7 @@
 ## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Collections, FritoMod_OOP
 
 LayoutUtil.lua
+Metatables-StyleClient.lua
 
 StyleClient.lua
 Invalidating.lua

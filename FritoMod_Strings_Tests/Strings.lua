@@ -85,18 +85,46 @@ function StringsTests:TestSplitByCaseHandlesEmptyString()
 end;
 
 function StringsTests:TestSplitByDelimiter()
-    local s = Strings.SplitByDelimiter;
+    local s = Curry(Strings.SplitByDelimiter, "_");
+    Assert.Equals({"Foo", "Time"}, s("Foo_Time"), "Simple delimiters");
+end;
+
+function StringsTests:TestSplitByDelimiterNoopCase()
+    local s = Curry(Strings.SplitByDelimiter, " ");
     Assert.Equals({""}, s(""), "Empty string");
+end;
+
+function StringsTests:TestSplitByDelimiterWithEmptyStringDelimiter()
+	Assert.Exception("SplitByDelimiter gracefully fails on empty string delimiter", Strings.SplitByDelimiter, "", "test");
+end;
+
+function StringsTests:TestSplitByDelimiterHandlesEmptyString()
+	Assert.Equals({""}, Strings.SplitByDelimiter(" ", ""));
+end;
+
+function StringsTests:TestSplitByDelimiterWithoutDelimiters()
+    local s = Curry(Strings.SplitByDelimiter, " ");
     Assert.Equals({"foo"}, s("foo"), "No delimiters");
     Assert.Equals({"Foo"}, s("Foo"), "No delimiters, mixed capitalization");
-    Assert.Equals({"Foo", "Time"}, s("Foo_Time"), "Simple delimiters");
-    Assert.Equals({"Foo", "Time", "Base", "Bar"}, s("Foo_Time_Base_Bar"), "Complex delimiter");
-    Assert.Equals({"Foo", "Time"}, s("Foo___Time"), "Wide delimiter");
+end;
+
+function StringsTests:TestSplitByDelimiterFailsOnNil()
+    Assert.Exception("SplitByDelimiter fails on nil arguments", Strings.SplitByDelimiter, nil);
+    Assert.Exception("SplitByDelimiter fails on nil arguments", Strings.SplitByDelimiter, " ", nil);
+end;
+
+function StringsTests:TestSplitByDelimiterWithEdgeCaseDelimiters()
+    local s = Curry(Strings.SplitByDelimiter, "_");
     Assert.Equals({""}, s("___"), "Only delimiter");
     Assert.Equals({"Foo"}, s("___Foo"), "Leading delimiter");
     Assert.Equals({"Foo"}, s("Foo___"), "Trailing delimiter");
-    Assert.Equals({"No", "Time"}, s(" ", "No Time"), "Custom delimiter");
-    Assert.Exception("SplitByDelimiter fails on nil arguments", Strings.SplitByDelimiter, nil);
+end;
+
+function StringsTests:TestSplitByDelimiterComplexCases()
+    local s = Curry(Strings.SplitByDelimiter, "_");
+    Assert.Equals({"Foo", "Time", "Base", "Bar"}, s("Foo_Time_Base_Bar"), "Complex delimiter");
+    Assert.Equals({"Foo", "Time"}, s("Foo___Time"), "Wide delimiter");
+    Assert.Equals({"No", "Time"}, Strings.SplitByDelimiter(" ", "No Time"), "Custom delimiter");
 end;
 
 function StringsTests:TestSplitByDelimiterCoercesValues()
@@ -208,8 +236,8 @@ function StringsTests:TestConvertToBase()
     Assert.Equals("FF", c(16, 255), "255, base 16");
 end;
 
-function StringsTests:TestConcat()
-    local c = Strings.Concat;
+function StringsTests:TestJoinValues()
+    local c = Curry(Strings.JoinValues, " ");
     Assert.Equals("a", c("a"), "No-op case");
     Assert.Equals("a b", c("a", "b"), "Two words");
     Assert.Equals("a b c", c("a", "b", "c"), "Multiple words");

@@ -333,6 +333,8 @@ function Tests.Flag(isSet)
     flag.Unset = flag.Clear;
 
     flag.AssertSet = flag.Assert;
+    flag.AssertFalse = flag.AssertUnset;
+    flag.AssertTrue = flag.Assert;
 
     return flag;
 end

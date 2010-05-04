@@ -12,8 +12,8 @@ TextField = OOP.Class(DisplayObject);
 local TextField = TextField;
 
 TextField.defaultValues = {
-	FontSize = 11,
-	FontColor = "Warlock"
+	FontSize = 30,
+	FontColor = "Hunter"
 };
 
 TextField.mediaKeyNames = {
@@ -22,7 +22,7 @@ TextField.mediaKeyNames = {
 };
 
 function TextField.CreateFontFrame()
-	return Stage.GetStage():GetFrame():CreateFontString(nil, "OVERLAY");
+	return UIParent:CreateFontString(nil, "OVERLAY");
 end;
 
 function TextField.GetScratchFont()
@@ -81,7 +81,7 @@ function TextField:Measure()
 		scratch:SetWidth(self:GetExplicitWidth());
 	end;
     self.measuredHeight = scratch:GetStringHeight()
-    self.measuredWidth = scratch:GetStringWidth()
+    self.measuredWidth = scratch:GetStringWidth() +1 
 end;
 
 function TextField:UpdateLayout()
@@ -115,7 +115,7 @@ function TextField:SetupFont(frame)
 	frame = frame or self:GetFrame();
 	frame:SetFontObject(GameFontNormal);
 	frame:SetFont(self:GetFont(), self:GetFontSize());
-	frame:SetTextColor(unpack(self:GetFontColor()));
-	
+	local a,r,g,b = unpack(self:GetFontColor());
+	frame:SetTextColor(r,g,b);
 	frame:SetText(self:GetText());
 end;

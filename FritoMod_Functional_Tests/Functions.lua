@@ -150,33 +150,33 @@ function Suite:TestOnlyOnce()
     counter.Assert(1, "Subsequent calls do not invoke the wrapped function");
 end;
 
-function Suite:TestObserve()
+function Suite:TestSpy()
     local function Sum(a, b)
         return a + b;
     end;
     local observedValue = nil
-    local ObservedSum = Functions.Observe(Sum, function(a, b)
+    local ObservedSum = Functions.Spy(Sum, function(a, b)
         observedValue = b;
     end);
     Assert.Equals(3, ObservedSum(1, 2), "Wrapped function returns appropriate value");
     Assert.Equals(2, observedValue, "Observer is called with arguments");
 end;
 
-function Suite:TestObserveIsCalledBeforeWrapped()
+function Suite:TestSpyIsCalledBeforeWrapped()
     local observerFlag = Tests.Flag();
     local function Wrapped()
         assert(observerFlag.IsSet(), "Observer is fired before wrapped");
     end;
-    local ObservedFunc = Functions.Observe(Wrapped, function()
+    local ObservedFunc = Functions.Spy(Wrapped, function()
         observerFlag.Raise();
     end);
     ObservedFunc();
 end;
 
-function Suite:TestObserveUndoable()
+function Suite:TestSpyWithUndoable()
     local value = Tests.Value(false);
     local list = {};
-    local undoable = Functions.ObserveUndoable(Lists.Insert, function(passedList, insertedValue)
+    local undoable = Functions.Spy(Lists.Insert, function(passedList, insertedValue)
         Assert.Equals(list, passedList, "Observer is properly given shared curried arguments");
         return Curry(value.Set, value.Set(insertedValue));
     end, list);
@@ -188,10 +188,10 @@ function Suite:TestObserveUndoable()
     value.Assert(false, "Observer's returned remover is properly curried and called");
 end;
 
-function Suite:TestObserveUndoablePerformsAfterRepeatedInvocations()
+function Suite:TestSpyUndoablePerformsAfterRepeatedInvocations()
     local value = Tests.Value(false);
     local list = {};
-    local undoable = Functions.ObserveUndoable(Lists.Insert, function(list, insertedValue)
+    local undoable = Functions.Spy(Lists.Insert, function(list, insertedValue)
         return Curry(value.Set, value.Set(insertedValue));
     end, list);
     undoable(true)();
@@ -272,7 +272,7 @@ function Suite:TestLazyWithNesting()
     counter.Assert(1, "Initializer is only called once");
     remover();
     Assert.Equals({"B"}, items, "Items contains one call");
-    assert(not uninitializerFlag.IsSet(), "Uninitializer is not been called during intermediate removals");
+    assert(not uninitializerFlag.IsSet(), "Uninitializer has not been called during intermediate removals");
     otherRemover();
     assert(uninitializerFlag.IsSet(), "Uninitializer is called after all elements removed");
     Assert.Equals({}, items, "Items contains nothing");

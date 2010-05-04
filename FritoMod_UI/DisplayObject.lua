@@ -10,7 +10,7 @@ end;
 DisplayObject = OOP.Class(StyleClient, Invalidating);
 local DisplayObject = DisplayObject;
 
-DisplayObject.defaultValues = {
+DisplayObject.defaults = {
 	Width = 200,
 	Height = 200,
 	Alpha = 1.0,
@@ -18,28 +18,13 @@ DisplayObject.defaultValues = {
 	Texture = false
 };
 
-DisplayObject.mediaKeyNames = {};
-
 function DisplayObject:Constructor()
-	DisplayObject.super.Constructor(self);
 	self:ConstructChildren();
 end;
-
--------------------------------------------------------------------------------
---
---  Overridable Methods: DisplayObject
---
--------------------------------------------------------------------------------
 
 function DisplayObject:ConstructChildren()
 	self.frame = CreateFrame("Frame");
 end;
-
--------------------------------------------------------------------------------
---
---  Overridden Methods: Invalidating
---
--------------------------------------------------------------------------------
 
 function DisplayObject:Measure()
 	self.measuredHeight = 0;
@@ -49,6 +34,7 @@ end;
 function DisplayObject:UpdateLayout()
 	local frame = self.frame;
 
+	assert(self:GetParentFrame() ~= nil, "Parent frame must not be nil");
 	frame:SetParent(self:GetParentFrame());
 
     frame:SetHeight(self:GetHeight());
@@ -70,21 +56,11 @@ function DisplayObject:UpdateLayout()
 	end;
 end;
 
--------------------------------------------------------------------------------
---
---  Getters and Setters
---
--------------------------------------------------------------------------------
-
 StyleClient.AddComputedValue(DisplayObject, "Height", StyleClient.CHANGE_SIZE);
 StyleClient.AddComputedValue(DisplayObject, "Width", StyleClient.CHANGE_SIZE);
 StyleClient.AddComputedValue(DisplayObject, "Alpha", StyleClient.CHANGE_LAYOUT);
 StyleClient.AddComputedValue(DisplayObject, "Visibility", StyleClient.CHANGE_LAYOUT);
 StyleClient.AddComputedValue(DisplayObject, "Texture", StyleClient.CHANGE_LAYOUT);
-
-------------------------------------------
---  Parent
-------------------------------------------
 
 function DisplayObject:GetParent()
 	return self.parent;
@@ -106,29 +82,15 @@ function DisplayObject:SetParent(parent)
 	self:InvalidateSize();
 end;
 
-------------------------------------------
---  Parent Frame
-------------------------------------------
-
 function DisplayObject:GetParentFrame()
 	if self:GetParent() then
 		return self:GetParent():GetFrame();
 	end;
 end;
 
-------------------------------------------
---  Frame
-------------------------------------------
-
 function DisplayObject:GetFrame()
 	return self.frame;
 end;
-
--------------------------------------------------------------------------------
---
---  Layout Convenience Functions
---
--------------------------------------------------------------------------------
 
 function DisplayObject:Hide()
 	self:SetExplicitVisibility(false);
@@ -137,12 +99,6 @@ end;
 function DisplayObject:Show()
 	self:SetExplicitVisibility(true);
 end;
-
--------------------------------------------------------------------------------
---
---  Overridden Methods: StyleClient
---
--------------------------------------------------------------------------------
 
 function DisplayObject:ComputeValue(valueName)
 	if valueName == "Width" then
@@ -154,9 +110,9 @@ function DisplayObject:ComputeValue(valueName)
 end;
 
 function DisplayObject:FetchDefaultFromTable(valueName)
-	return DisplayObject.defaultValues[valueName];
+	return DisplayObject.defaults[valueName];
 end;
 
 function DisplayObject:GetMediaKeyName(valueName)
-	return DisplayObject.mediaKeyNames[valueName];
+	return nil;
 end;

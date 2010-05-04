@@ -10,7 +10,6 @@ Assert = Metatables.Defensive();
 local Assert = Assert;
 
 local function FormatName(assertion)
-    assert(type(assertion) == "string", "Assertion string is not a string. Type: " .. type(assertion));
     if not assertion then
         return "";
     end;

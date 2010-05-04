@@ -6,3 +6,4 @@
 ## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Collections
 
 Events.lua
+CombatEvents.lua

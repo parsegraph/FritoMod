@@ -98,3 +98,25 @@ function Suite:TestAbsurdArrayLengthWithPrimedLengthTable()
     end;
     assert(#inconsistencies > 0, "Array length is still not consistent");
 end;
+
+function Suite:TestMetatableIsNotCalledOnTableInsertion()
+	local t = {};
+	local f = Tests.Flag();
+	setmetatable(t, {
+		__newindex = function(self, k, v)
+			f:Raise();
+		end
+	});
+	table.insert(t, "notime");
+	f.AssertFalse("Metatable is not used for insertion");
+	Assert.Equals(1, #t, "Value is inserted into table");
+end;
+
+function Suite:TestCountdown()
+	local t = {1,2,3,4};
+	local c = {};
+	for i=#t,1,-1 do
+		table.insert(c, t[i]);
+	end;
+	Assert.Equals({4,3,2,1},c);
+end;
