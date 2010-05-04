@@ -5,10 +5,6 @@ if nil ~= require then
     require "FritoMod_OOP/OOP";
 end;
 
-local SUPER_NAME = "super";
-local CLASS_NAME = "class";
-local CONSTRUCTOR_NAME = "Constructor";
-
 local CLASS_METATABLE = {
     GetMethodIterator = function(self) 
     end,
@@ -73,35 +69,35 @@ local CLASS_METATABLE = {
 
     ToString = function(self)
         local reference = Reference(self);
-        if self[CLASS_NAME] then
+        if self.class then
             return "Instance@" .. reference;
         end;
         return "Class@" .. reference;
-    end,
-
-    -- Creates a new instance of this class.
-    New = function(self, ...)
-        local instance = { 
-            __index = self,
-            __tostring = function(self)
-                return self:ToString()
-            end
-        };
-        instance[CLASS_NAME] = self;
-        setmetatable(instance, instance);
-
-        local function Initialize(class)
-            if class[SUPER_NAME] then
-                Initialize(class[SUPER_NAME]);
-            end;
-            class:ConstructObject(instance);
-        end;
-        Initialize(self);
-
-        instance:Constructor(...);
-        return instance;
     end
 }
+
+-- Creates a new instance of this class.
+local function New(self, ...)
+	local instance = { 
+		__index = self,
+		__tostring = function(self)
+			return self:ToString()
+		end,
+		class=self
+	};
+	setmetatable(instance, instance);
+
+	local function Initialize(class)
+		if class.super then
+			Initialize(class.super);
+		end;
+		class:ConstructObject(instance);
+	end;
+	Initialize(self);
+
+	instance:Constructor(...);
+	return instance;
+end
 
 -- Creates a callable table that creates instances of itself when invoked. This is analogous
 -- to classes: a super-class may be provided in the arguments, and that class will act as the
@@ -117,8 +113,12 @@ local CLASS_METATABLE = {
 --     if any provided argument is not either a mixin or a class
 --     if more than one super-class is provided (multiple inheritance in this manner is not supported)
 OOP.Class = function(...)
-    local class = { constructors = {}};
-    class.__index = CLASS_METATABLE;
+	assert(IsCallable(New));
+    local class = { 
+		__index = CLASS_METATABLE,
+		constructors = {},
+		New=New
+	};
     setmetatable(class, class);
 
     for n = 1, select('#', ...) do
@@ -128,11 +128,11 @@ OOP.Class = function(...)
         end;
         if OOP.IsClass(mixinOrClass) then
             --  It's a class, so make it our super class.
-            if class[SUPER_NAME] then
+            if class.super then
                 error("Class cannot have more than one super class");
             end;
-            class[SUPER_NAME] = mixinOrClass;
-            class.__index = class[SUPER_NAME];
+            class.super = mixinOrClass;
+            class.__index = class.super;
         elseif IsCallable(mixinOrClass) then
             local constructor = mixinOrClass(class);
             if IsCallable(constructor) then

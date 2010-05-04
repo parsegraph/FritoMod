@@ -34,10 +34,19 @@ function OOP.InstanceOf(class, instance)
 end;
 
 function OOP.IsInstance(candidate)
-    return candidate and type(candidate) == "table" and OOP.IsClass(candidate.class);
+	if type(candidate) ~= "table" then
+		return false;
+	end;
+    return OOP.IsClass(rawget(candidate, "class"));
 end;
 
 function OOP.IsClass(candidate)
-    return candidate and type(candidate) == "table" and IsCallable(candidate.New) and not candidate.class;
+	if type(candidate) ~= "table" then
+		return false;
+	end;
+	if rawget(candidate, "class") then
+		return false;
+	end;
+	return IsCallable(rawget(candidate,"New"));
 end;
 

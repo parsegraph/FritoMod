@@ -51,3 +51,21 @@ function Suite:TestInstanceOfThrowsOnBadClass()
     assert(not OOP.InstanceOf(Base, "No time"), "InstanceOf gracefully handles invalid objects");
     assert(not OOP.InstanceOf(Base, OOP.Class()), "InstanceOf gracefully handles class objects");
 end;
+
+function Suite:TestIsInstanceHandlesDefensiveTables()
+	local t=setmetatable({}, {
+		__index=function()
+			error("I'm defensive!");
+		end
+	});
+	OOP.IsClass(t);
+end;
+
+function Suite:TestIsClassHandlesDefensiveTables()
+	local t=setmetatable({}, {
+		__index=function()
+			error("I'm defensive!");
+		end
+	});
+	OOP.IsInstance(candidate);
+end;
