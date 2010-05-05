@@ -66,7 +66,7 @@ do
         TestFailed = function(self, suite, name, runner, reason)
             numFailed = numFailed + 1;
             local testIndex = #tests + 1;
-            print(("[FAIL] %d. %s\n%s"):format(testIndex, name, reason));
+            print(("[FAIL] %d. %s\n  %s"):format(testIndex, name, reason:gsub("\n", "\n    ")));
             Lists.Insert(tests, runner);
         end,
 
