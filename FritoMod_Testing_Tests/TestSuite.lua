@@ -26,7 +26,7 @@ function Suite:TestErrorStackTraceOutputsProperly()
             local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
             Assert.Equals("Assertion failed: \"Intentional error\"", reason);
             assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
-                "First line of stace trace is relevant. Trace: " .. trace);
+                "First line of stack trace is relevant. Trace: " .. trace);
         end,
         TestFinished = Noop,
         FinishAllTests = Noop,
@@ -50,7 +50,7 @@ function Suite:TestAssertStackTraceOutputsProperly()
             local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
             Assert.Equals("Assertion failed: \"Intentional false assertion\"", reason);
             assert(trace:match("FritoMod_Testing_Tests\\TestSuite\.lua:[0-9]+"), 
-                "First line of stace trace is relevant. Trace: " .. trace);
+                "First line of stack trace is relevant. Trace: " .. trace);
         end,
         TestFinished = Noop,
         FinishAllTests = Noop,
