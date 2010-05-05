@@ -4,6 +4,9 @@ if nil ~= require then
     require "FritoMod_Testing/Tests";
 
     require "FritoMod_UI/TextField";
+    require "FritoMod_UI/Bar";
+    require "FritoMod_UI/Box";
+    require "FritoMod_UI/Button";
 end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_UI.TextField");

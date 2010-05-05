@@ -1,5 +1,6 @@
 if nil ~= require then
     require "wowbench/api";
+    require "wowbench/widgets";
 
     require "FritoMod_OOP/OOP-Class";
 
