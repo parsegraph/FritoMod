@@ -10,6 +10,7 @@ end;
 
 DisplayObject = OOP.Class(StyleClient, Invalidating);
 local DisplayObject = DisplayObject;
+DO = DisplayObject;
 
 DisplayObject.defaults = {
 	Width = 200,
@@ -20,6 +21,10 @@ DisplayObject.defaults = {
 };
 
 function DisplayObject:Constructor()
+	if not DisplayObject[self.class] then
+		DisplayObject[self.class] = {};
+	end;
+	table.insert(DisplayObject[self.class], self);
 	self:ConstructChildren();
 end;
 
