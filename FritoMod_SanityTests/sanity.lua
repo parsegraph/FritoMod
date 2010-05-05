@@ -29,6 +29,15 @@ function Suite:PairsIteratesEverything()
 	Assert.Equals(a,c);
 end;
 
+function Suite:TestOneToOneForLoopIteratesOnce()
+	local f=Tests.Flag();
+	for i=1,1 do
+		f:AssertUnset("Loop only loops once");
+		f:Raise();
+	end;
+	f:Assert("Flag was raised");
+end;
+
 function Suite:TestMaxn()
 	local t = {};
 	table.insert(t, true);
