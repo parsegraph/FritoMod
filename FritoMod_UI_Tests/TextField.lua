@@ -9,10 +9,14 @@ if nil ~= require then
     require "FritoMod_UI/Button";
 end;
 
-local Suite = ReflectiveTestSuite:New("FritoMod_UI.TextField");
-local s;
-local keep;
+if WBClass then
+	-- Wowbench is loaded, so none of these tests will work yet. Return!
+	return;
+end;
 
+local Suite = ReflectiveTestSuite:New("FritoMod_UI.TextField");
+
+local s;
 Suite:AddListener({
 	TestStarted = function()
 		s=Stage:GetInstance();
@@ -24,10 +28,7 @@ Suite:AddListener(Metatables.Noop({
 		s.frame = CreateFrame("Frame",nil,UIParent);
 	end,
 	TestFinished = function(self, suite)
-		if not keep then
-			s.frame:SetParent(nil);
-		end;
-		keep=nil;
+		s.frame:SetParent(nil);
 	end
 }));
 
@@ -81,7 +82,6 @@ function Suite:TestNeatSpellbook()
 end;
 
 function Suite:TestBuffs()
-	keep=true;
 	local vbox = Box:New();
 	vbox:SetDirection("vertical");
 	local i=1;
