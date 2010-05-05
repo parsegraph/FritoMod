@@ -11,9 +11,7 @@ local function ParseAddonToC(tocFileName, dirName)
     for line in io.lines() do
         if not line:find("^#") and line:find("\.lua$") then
             local filename = ("./%s/%s"):format(dirName, line);
-            local loadedFile = loadfile(filename);
-            assert(loadedFile, "File was not loaded. Name: " .. filename);
-            loadedFile();
+            dofile(filename);
         end;
     end;
     io.input();
