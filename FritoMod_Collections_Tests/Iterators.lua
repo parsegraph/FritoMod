@@ -1,13 +1,9 @@
 if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Collections/Iterators";
-
     require "FritoMod_Collections_Tests/Mixins-ArrayTests";
     require "FritoMod_Collections_Tests/Mixins-TableTests";
 end;
+
+local Suite=CreateTestSuite("FritoMod_Collections/Iterators");
 
 local arraySuite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators (arrays)");
 Mixins.ArrayTests(arraySuite, Iterators);
@@ -25,8 +21,6 @@ function tableSuite:Table(t)
 	end;
     return Iterators.IterateMap(t);
 end;
-
-local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators");
 
 function Suite:TestVisibleFields()
     local foo = {

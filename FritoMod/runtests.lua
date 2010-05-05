@@ -1,5 +1,6 @@
 #!/usr/bin/lua
 require "lfs"
+require "FritoMod/CreateTestSuite";
 --require "FritoMod_Testing/AllTests";
 
 if lfs.currentdir():find("FritoMod$") then

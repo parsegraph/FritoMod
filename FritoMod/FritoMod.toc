@@ -9,4 +9,6 @@
 ## icons.lua
 ## mapscales.lua
 
+CreateTestSuite.lua
+
 TestingSlashCommand.lua
