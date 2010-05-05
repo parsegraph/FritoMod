@@ -29,6 +29,10 @@ function Suite:PairsIteratesEverything()
 	Assert.Equals(a,c);
 end;
 
+function Suite:TestZeroIsTruthy()
+	assert(0 or false);
+end;
+
 function Suite:TestOneToOneForLoopIteratesOnce()
 	local f=Tests.Flag();
 	for i=1,1 do
