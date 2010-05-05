@@ -101,6 +101,19 @@ function Suite:TestCounterAsserts()
     counter:Assert(1, "Counter asserts that it's at one");
 end;
 
+function Suite:TestDebugStackHandlesHeadProperly()
+	if not debug then
+		return;
+	end;
+	local h,t=Tests.PartialStackTrace(1,2,0);
+	Assert.Size(2, h, "Head contains two elements");
+	Assert.Size(0, t, "Tail is empty");
+	local s=Tests.FullStackTrace(0,100,0);
+	local h,t=Tests.PartialStackTrace(0,100,0);
+	Assert.Size(s, h, "Head contains equal number of elements as full stack trace");
+	Assert.Nil(t, "Tail is not defined");
+end;
+
 function Suite:TestFullStackTrace()
     if not debug then
         return;
@@ -121,6 +134,32 @@ function Suite:TestPartialStackTrace()
 		"First stack level is the site of the stack-trace call. Level was: " .. stackTrace[1].name);
 end;
 
+function Suite:TestDebugStackWithoutCallingBuiltInFunction()
+    if debug and debugstack then
+		local strace=debugstack();
+		local D=debugstack;
+		debugstack=nil;
+		local r,v=pcall(Tests.FormattedPartialStackTrace);
+		debugstack=D;
+		assert(r, v);
+		local pcallFirst,v=unpack(Strings.SplitByDelimiter("\n", v,2));
+		assert(pcallFirst:find("pcall"), "First line refers to the pcall");
+		local debugstackLevels=Strings.SplitByDelimiter("\n", strace);
+		local createdLevels=Strings.SplitByDelimiter("\n", v);
+		for i=1, #debugstackLevels do
+			assert(#createdLevels >= i, "Created levels must have same number of levels as debugstack");
+			if i==1 then
+				local l1=debugstackLevels[i]:gsub("[0-9]+","###");
+				local l2=createdLevels[i]:gsub("[0-9]+","###");
+				Assert.Equals(l1,l2, "First stack levels are equal, ignoring numbers");
+			else
+				Assert.Equals(debugstackLevels[i], createdLevels[i], "Stack level must be identical. Level: " .. i);
+			end;
+		end;
+		Assert.Size(debugstackLevels,createdLevels,"Created levels must have same number of levels as debugstack");
+	end;
+end;
+
 function Suite:TestFormattedPartialStackTraceIsEqualToDebugStack()
 	if not debugstack then
 		return;
@@ -133,7 +172,7 @@ function Suite:TestDebugStack()
 		return;
 	end;
 	local l=unpack(Strings.SplitByDelimiter("\n", debugstack(),2));
-	assert(l:match(TEST_FILE), "debugstack's first level is the test case");
+	assert(l:match(TEST_FILE), "debugstack's first level is the test case: " .. l);
 end;
 
 function Suite:TestFormattedPartialStackTrace()

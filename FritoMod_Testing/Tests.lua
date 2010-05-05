@@ -101,6 +101,9 @@ function Tests.PartialStackTrace(skip, numHead, numTail)
     for i=1, skip do
         table.remove(stackTrace, 1);
     end;
+    if numHead + numTail >= #stackTrace then
+		return stackTrace;
+	end;
     local headStackTrace = {};
     for i=1, math.min(#stackTrace, numHead) do
         table.insert(headStackTrace, stackTrace[i]);
@@ -171,6 +174,7 @@ end;
 -- The arguments provided are immediately passed to Tests.PartialStackTrace.
 function Tests.FormattedPartialStackTrace(skip, numHead, numTail)
 	skip=skip or 1;
+	assert(skip >= 0, "skip must be at least zero");
     if debugstack then
         if numHead == nil then
             numHead = 10;
@@ -178,9 +182,9 @@ function Tests.FormattedPartialStackTrace(skip, numHead, numTail)
         if numTail == nil then
             numTail = 10;
         end;
-        return debugstack(skip, numHead, numTail);
+        return debugstack(skip+1, numHead, numTail);
     end;
-    return Tests.FormatStackTrace(Tests.PartialStackTrace(math.max(1, 1+skip), numHead, numTail));
+    return Tests.FormatStackTrace(Tests.PartialStackTrace(skip+1, numHead, numTail));
 end;
 
 function Tests.Choke(choke)
