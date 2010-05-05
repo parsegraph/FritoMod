@@ -106,27 +106,40 @@ function Suite:TestFullStackTrace()
         return;
     end;
     local stackTrace = Tests.FullStackTrace();
-    assert(stackTrace[1].name:match("^<[.a-zA-Z_/\\]+[/\\]FritoMod_Testing_Tests[/\\]Tests\.lua:[0-9]+>$"),
-        "First stack level is invoked function. Level was: " .. Strings.PrettyPrint(stackTrace[1].name));
+    assert(stackTrace[1].name:match("FullStackTrace"),
+        "First stack level is FullStackTrace. Level was: " .. Strings.PrettyPrint(stackTrace[1].name));
 end;
 
-function Suite:TestFormattedStackTrace()
+local TEST_FILE="FritoMod_Testing_Tests[/\\]Tests\.lua";
+
+function Suite:TestPartialStackTrace()
     if not debug then
         return;
     end;
-    local stackTrace = Tests.FormattedStackTrace();
-    local firstLine, _ = unpack(Strings.SplitByDelimiter("\n", stackTrace, 2));
-    assert(firstLine:match("FritoMod_Testing_Tests[/\\]Tests\.lua:[0-9]+: in [a-zA-Z]+ " ..
-        "<[.a-zA-Z_/\\]+[/\\]FritoMod_Testing_Tests[/\\]Tests\.lua"),
-        "First line of default stack trace refers to the site of the stack-trace call. Line was: " ..
-        Strings.PrettyPrint(firstLine));
+    local stackTrace = Tests.PartialStackTrace();
+	assert(stackTrace[1].name:match(TEST_FILE),
+		"First stack level is the site of the stack-trace call. Level was: " .. stackTrace[1].name);
+end;
+
+function Suite:TestFormattedPartialStackTraceIsEqualToDebugStack()
+	if not debugstack then
+		return;
+	end;
+	Assert.Equals(debugstack(), Tests.FormattedPartialStackTrace());
+end;
+
+function Suite:TestDebugStack()
+	if not debugstack then
+		return;
+	end;
+	local l=unpack(Strings.SplitByDelimiter("\n", debugstack(),2));
+	assert(l:match(TEST_FILE), "debugstack's first level is the test case");
 end;
 
 function Suite:TestFormattedPartialStackTrace()
     local stackTrace = Tests.FormattedPartialStackTrace();
     local firstLine, _ = unpack(Strings.SplitByDelimiter("\n", stackTrace, 2));
-    assert(firstLine:match("FritoMod_Testing_Tests[/\\]Tests\.lua:[0-9]+: in [a-zA-Z]+ " ..
-        "<[.a-zA-Z_/\\]+[/\\]FritoMod_Testing_Tests[/\\]Tests\.lua"),
+    assert(firstLine:match(TEST_FILE),
         "First line of default stack trace refers to the site of the stack-trace call. Line was: " ..
         Strings.PrettyPrint(firstLine));
 end;

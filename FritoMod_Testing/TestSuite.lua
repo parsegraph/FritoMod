@@ -126,7 +126,7 @@ local function RunTest(self, test, testName)
     self.listener:TestStarted(self, testName, testRunner);
     local unhookAssert = Functions.SpyGlobal("assert", function(expression, message, ...)
         if not expression then
-            table.insert(stackTraces, Tests.FormattedPartialStackTrace(3, 10, 0));
+            table.insert(stackTraces, Tests.FormattedPartialStackTrace(4, 10, 0));
         end;
     end);
     local unhookError = Functions.SpyGlobal("error", function()

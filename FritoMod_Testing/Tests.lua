@@ -41,9 +41,7 @@ local MAX_STACK_TRACE = 999;
 function Tests.FullStackTrace()
     assert(debug, "FullStackTrace is not available without debug");
     local stackTrace = {};
-    -- We start at 2 instead of 1 since we don't wish to include the FullStackTrace call
-    -- in the stack trace.
-	for i=2, MAX_STACK_TRACE do
+	for i=1, MAX_STACK_TRACE do
         local stackLevel = debug.getinfo(i);
         if not stackLevel then
             break;
@@ -99,7 +97,8 @@ function Tests.PartialStackTrace(skip, numHead, numTail)
 	numHead = numHead or 10;
 	numTail = numTail or 10;
     local stackTrace = Tests.FullStackTrace();
-    for i=1, math.max(1, skip) do
+	table.remove(stackTrace, 1);
+    for i=1, skip do
         table.remove(stackTrace, 1);
     end;
     local headStackTrace = {};
@@ -164,13 +163,6 @@ function Tests.FormatStackTrace(stackTrace, tailStackTrace)
     return stackString;
 end;
 
--- Alias for formatting a full stack trace.
-function Tests.FormattedStackTrace()
-    local stackTrace = Tests.FullStackTrace();
-    table.remove(stackTrace, 1);
-    return Tests.FormatStackTrace(stackTrace);
-end;
-
 -- Alias for formatting a partial stack trace. The arguments 
 --
 -- This function is identical in functionality to debugstack. In fact, if debugstack is available
@@ -178,10 +170,7 @@ end;
 --
 -- The arguments provided are immediately passed to Tests.PartialStackTrace.
 function Tests.FormattedPartialStackTrace(skip, numHead, numTail)
-    if nil == skip then
-        skip = 0;
-    end;
-    skip = math.max(2, skip + 2);
+	skip=skip or 1;
     if debugstack then
         if numHead == nil then
             numHead = 10;
@@ -191,7 +180,7 @@ function Tests.FormattedPartialStackTrace(skip, numHead, numTail)
         end;
         return debugstack(skip, numHead, numTail);
     end;
-    return Tests.FormatStackTrace(Tests.PartialStackTrace(skip, numHead, numTail));
+    return Tests.FormatStackTrace(Tests.PartialStackTrace(math.max(1, 1+skip), numHead, numTail));
 end;
 
 function Tests.Choke(choke)
