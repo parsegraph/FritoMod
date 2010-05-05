@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "FritoMod_Functional/Mixins";
+    require "FritoMod_OOP/Mixins";
 
     require "FritoMod_OOP/OOP-Class";
 

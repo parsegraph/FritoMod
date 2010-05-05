@@ -1,5 +1,5 @@
 if nil ~= require then
-    -- This file uses WoW-specific functionality
+    require "wowbench/api";
 
     require "FritoMod_OOP/OOP-Class";
 

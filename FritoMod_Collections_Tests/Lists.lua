@@ -5,7 +5,8 @@ if nil ~= require then
 
     require "FritoMod_Collections/Lists";
 
-    require "FritoMod_Collections_Tests/Mixins-MutableIteration";
+    require "FritoMod_Collections_Tests/Mixins-ArrayTests";
+    require "FritoMod_Collections_Tests/Mixins-MutableArrayTests";
 end;
 
 local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Lists");

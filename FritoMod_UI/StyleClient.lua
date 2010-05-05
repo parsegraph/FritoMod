@@ -1,7 +1,7 @@
 if nil ~= require then
-    require "FritoMod_Functional/Mixins";
+    require "FritoMod_OOP/Mixins";
 
-    require "FritoMod_UI/InvalidatingForwarder";
+    require "FritoMod_UI/InvalidatingProxy";
 end;
 
 StyleClient = Mixins.Library();
