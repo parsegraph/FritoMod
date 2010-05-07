@@ -1,3 +1,8 @@
+if nil ~= require then
+	require "FritoMod_OOP/OOP-Class";
+	require "FritoMod_UI/DisplayObject";
+end;
+
 Bar = OOP.Class(DisplayObject);
 
 function Bar:ConstructChildren()

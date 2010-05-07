@@ -1,3 +1,10 @@
+if nil ~= require then
+	require "FritoMod_OOP/OOP-Class";
+	require "FritoMod_Collections/Lists";
+
+	require "FritoMod_UI/DisplayObject";
+end;
+
 Button = OOP.Class(DisplayObject);
 
 function Button:Measure()

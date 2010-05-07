@@ -1,5 +1,6 @@
 if nil ~= require then
-    -- This file uses WoW-specific functionality
+    require "wowbench/api";
+    require "wowbench/widgets";
 
     require "FritoMod_Functional/basic";
     require "FritoMod_Functional/currying";
