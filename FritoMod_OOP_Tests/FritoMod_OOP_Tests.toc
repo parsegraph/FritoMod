@@ -1,9 +1,7 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: OOP - Tests
-## Author: Frito
-## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_OOP, FritoMod_Testing
-
+## Author: Aaron Faanes
+## Version: 1.3
+## Dependencies: FritoMod, FritoMod_Testing, FritoMod_OOP
 OOP.lua
 OOP-Class.lua
-

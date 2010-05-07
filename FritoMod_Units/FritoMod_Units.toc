@@ -1,10 +1,9 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: Units
+## Author: Aaron Faanes
+## Version: 1.3
 ## Notes: Unit Framework
-## Author: Frito
-## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_OOP
-
-Units.lua
-Unit.lua
 UnitManager.lua
+Unit.lua
+Units.lua

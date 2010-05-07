@@ -1,14 +1,9 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod
+## Author: Aaron Faanes
+## Version: 1.3
 ## Notes: Disabling this addon will disable all FritoMod-dependent addons.
-## Author: Frito
-## Version: Obsolete
-
-## channel.lua
-## environment.lua
-## icons.lua
-## mapscales.lua
-
+## Dependencies: FritoMod
 CreateTestSuite.lua
-
 TestingSlashCommand.lua
+global.lua

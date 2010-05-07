@@ -1,10 +1,9 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: Testing - Tests
-## Author: Frito
-## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Testing
-
-Assert.lua
+## Author: Aaron Faanes
+## Version: 1.3
+## Dependencies: FritoMod, FritoMod_Testing, FritoMod_Strings
 Tests.lua
 TestSuite.lua
 ReflectiveTestSuite.lua
+Assert.lua

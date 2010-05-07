@@ -1,22 +1,20 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: UI
+## Author: Aaron Faanes
+## Version: 1.3
 ## Notes: An OOP-based UI framework.
-## Author: Frito
-## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Collections, FritoMod_OOP
-
-LayoutUtil.lua
-Metatables-StyleClient.lua
-Mixins-Validating.lua
-
-StyleClient.lua
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_OOP, FritoMod_Functional
 Invalidating.lua
 InvalidatingProxy.lua
+StyleClient.lua
 DisplayObject.lua
+LayoutUtil.lua
 DisplayObjectContainer.lua
-TextField.lua
-Stage.lua
-Texture.lua
 Box.lua
-Button.lua
+Texture.lua
+Stage.lua
+TextField.lua
 Bar.lua
+Mixins-Validating.lua
+Metatables-StyleClient.lua
+Button.lua

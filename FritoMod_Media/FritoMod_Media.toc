@@ -1,9 +1,7 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: Media
+## Author: Aaron Faanes
+## Version: 1.3
 ## Notes: Media library and some sample sounds.
-## Author: Frito
-## Version: Unreleased
-## RequiredDeps: FritoMod, FritoMod_Functional, FritoMod_Collections, FritoMod_OOP, FritoMod_Strings
-## OptionalDeps: LibSharedMedia-3.0
-
+## Dependencies: FritoMod, FritoMod_OOP, FritoMod_Functional, FritoMod_Strings
 MediaLibrary.lua

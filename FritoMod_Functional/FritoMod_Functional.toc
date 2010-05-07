@@ -1,13 +1,11 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: Functional
+## Author: Aaron Faanes
+## Version: 1.3
 ## Notes: A collection of some helpful functional idioms
-## Author: Frito
-## Version: Unreleased
 ## Dependencies: FritoMod
-
-basic.lua
 currying.lua
-
-Operator.lua
 Metatables.lua
+basic.lua
+Operator.lua
 Functions.lua

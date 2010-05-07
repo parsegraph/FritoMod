@@ -1,9 +1,8 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: Events
+## Author: Aaron Faanes
+## Version: 1.3
 ## Notes: Event utilities
-## Author: Frito
-## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Collections
-
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional
 Events.lua
 CombatEvents.lua

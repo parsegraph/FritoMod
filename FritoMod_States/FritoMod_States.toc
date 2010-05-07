@@ -1,9 +1,8 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: States
-## Notes: State Framework.
-## Author: Frito
-## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP
-
+## Author: Aaron Faanes
+## Version: 1.3
+## Notes: State framework
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_OOP
 States.lua
 StateMachine.lua

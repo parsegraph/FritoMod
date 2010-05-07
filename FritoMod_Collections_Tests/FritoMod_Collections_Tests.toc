@@ -1,16 +1,13 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: Collections - Tests
-## Author: Frito
-## Version: Unreleased
+## Author: Aaron Faanes
+## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Testing
-
-Metatables.lua
-Mixins-ArrayTests.lua
-Mixins-TableTests.lua
-
-Mixins-MutableArrayTests.lua
 Mixins-MutableTableTests.lua
-
-Iterators.lua
-Lists.lua
+Mixins-TableTests.lua
 Tables.lua
+Mixins-MutableArrayTests.lua
+Mixins-ArrayTests.lua
+Lists.lua
+Iterators.lua
+Metatables.lua

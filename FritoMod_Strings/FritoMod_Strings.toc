@@ -1,11 +1,9 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: Strings
+## Author: Aaron Faanes
+## Version: 1.3
 ## Notes: A suite of string utility functions.
-## Author: Frito
-## Version: Unreleased
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_OOP, FritoMod_Collections, FritoMod_States
-
+## Dependencies: FritoMod, FritoMod_States, FritoMod_Collections, FritoMod_Functional, FritoMod_OOP
 Strings.lua
-
 NumberBuilder.lua
 Parsers.lua

@@ -1,15 +1,13 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: FritoMod: Collections
+## Author: Aaron Faanes
+## Version: 1.3
 ## Notes: Iteration, metatables, and collections.
-## Author: Frito
-## Version: Unreleased
 ## Dependencies: FritoMod, FritoMod_Functional
-
+Mixins-MutableIteration.lua
+Lists.lua
 Mixins.lua
 Mixins-Iteration.lua
-Mixins-MutableIteration.lua
-
 Iterators.lua
-Metatables.lua
-Lists.lua
 Tables.lua
+Metatables.lua
