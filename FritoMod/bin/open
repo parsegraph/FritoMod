@@ -18,7 +18,11 @@ elif [ -f $1.lua ]; then
 	name=$1.lua
 elif [ -f $1.xml ]; then
 	name=$1.xml
-elif [ ! "$FORCE" ]; then
+elif [ "$FORCE" ]; then
+	if ! `echo $1 | grep -q '\.lua'`; then
+		name=$1.lua
+	fi
+else
 	error "file not found or is not a file: $1"
 fi;
 
