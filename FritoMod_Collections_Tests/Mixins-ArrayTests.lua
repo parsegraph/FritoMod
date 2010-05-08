@@ -11,6 +11,7 @@ if Mixins == nil then
 end;
 
 function Mixins.ArrayTests(Suite, library)
+	local lib=library;
 	assert(not rawget(Suite, "Table"), "ArrayTests is not compatible with TableTests");
 
 	function Suite:ArrayCreator(...)
@@ -92,6 +93,20 @@ function Mixins.ArrayTests(Suite, library)
         Assert.Equals(3, library.Size(Suite:Array(1,2,3)), "Size reports three for three-element iterable");
         Assert.Equals(1, library.Size(Suite:Array(false)), "Size reports one for iterable with one false element");
     end;
+
+	function Suite:TestToTable()
+		local a=Suite:Array(2,3,4);
+		Assert.Equals({2,3,4}, library.ToTable(a));
+		assert(a ~= library.ToTable(a), "ToTable must return a copy, not the original");
+	end;
+
+	function Suite:TestRandom()
+		local a=Suite:Array(true);
+		Assert.Equals(1, lib.Random(a));
+		local r=lib.Random(Suite:Array(true,true,true));
+		assert(r>=1 and r<=3, "r is a valid, randomly chosen value");
+		Assert.Exception("Random throws on empty array",lib.Random, Suite:Array());
+	end;
 
 	function Suite:TestSum()
         Assert.Equals(2+4+6, library.Sum(Suite:Array(2,4,6)), "Sum returns correct value");

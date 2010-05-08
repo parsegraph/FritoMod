@@ -901,6 +901,24 @@ function Mixins.Iteration(library)
         end;
     end;
 
+	if library.ToTable == nil then
+		function library.ToTable(iterable)
+			local arr={};
+            for v in library.ValueIterator(iterable) do
+				table.insert(arr, v);
+			end;
+			return arr;
+		end;
+	end;
+
+	if library.Random == nil then
+		function library.Random(iterable)
+			assert(not library.IsEmpty(iterable), "iterable must have at least one element");
+			local keys=library.Keys(iterable);
+			return keys[math.ceil(math.random() * #keys)];
+		end;
+	end;
+
     -- Returns a new iterable that contains any items that are contained in both iterable
     -- and otherIterable, according to the specified testFunc.
     --

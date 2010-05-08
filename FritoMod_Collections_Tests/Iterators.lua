@@ -11,6 +11,10 @@ function arraySuite:Array(...)
     return Iterators.IterateList({...});
 end;
 
+function arraySuite:TestRandom()
+	return nil;
+end;
+
 local tableSuite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators (tables)");
 Mixins.TableTests(tableSuite, Iterators);
 function tableSuite:Table(t)
