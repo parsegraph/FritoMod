@@ -1,7 +1,7 @@
 #!/bin/bash
 PATH=/bin:/usr/bin:$HOME/bin
 
-source ~/bin/fm/fm-library.sh
+source fm-library.sh
 make_root
 
 name=$1
