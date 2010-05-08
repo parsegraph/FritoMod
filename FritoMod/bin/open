@@ -4,6 +4,13 @@ PATH=/bin:/usr/bin:$HOME/bin:$FM_ROOT
 source fm-library.sh
 make_root
 
+case $1 in
+	-f)
+		FORCE=true
+		shift
+	;;
+esac;
+
 name=$1
 if [ -f $1 ]; then
 	name=$1
@@ -11,7 +18,7 @@ elif [ -f $1.lua ]; then
 	name=$1.lua
 elif [ -f $1.xml ]; then
 	name=$1.xml
-else
+elif [ ! "$FORCE" ]; then
 	error "file not found or is not a file: $1"
 fi;
 
@@ -21,9 +28,11 @@ path=`readlink -f $name | trim $l`
 comp=${path%%/*}
 comp_path=${path#*/}
 
-tests="$root/$comp""_Tests/$comp_path"
-if [ -f "$root/$comp""_Tests/$comp_path" ]; then
-	$EDITOR $name $tests
-else 
-	$EDITOR $name
+test_path="$root/$comp""_Tests"
+tests="$test_path/$comp_path"
+if `echo $comp_path | grep -q '/'`; then
+	mkdir -p $test_path/${comp_path%/*}
+else
+	mkdir -p $test_path
 fi
+$EDITOR $name $tests
