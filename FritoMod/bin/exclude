@@ -1,0 +1,4 @@
+#!/bin/bash
+PATH=/bin:/usr/bin
+
+find * -maxdepth 0 -type d ! -name "FritoMod*" >.git/info/exclude

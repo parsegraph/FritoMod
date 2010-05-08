@@ -1,0 +1,29 @@
+#!/bin/bash
+PATH=/bin:/usr/bin:$HOME/bin
+
+source ~/bin/fm/fm-library.sh
+make_root
+
+name=$1
+if [ -f $1 ]; then
+	name=$1
+elif [ -f $1.lua ]; then
+	name=$1.lua
+elif [ -f $1.xml ]; then
+	name=$1.xml
+else
+	error "file not found or is not a file: $1"
+fi;
+
+l=`readlink -f $root | wc -m`
+let l++
+path=`readlink -f $name | trim $l`
+comp=${path%%/*}
+comp_path=${path#*/}
+
+tests="$root/$comp""_Tests/$comp_path"
+if [ -f "$root/$comp""_Tests/$comp_path" ]; then
+	$EDITOR $name $tests
+else 
+	$EDITOR $name
+fi
