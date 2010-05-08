@@ -1,5 +1,5 @@
 #!/bin/bash
-PATH=/bin:/usr/bin:$HOME/bin
+PATH=/bin:/usr/bin:$HOME/bin:$FM_ROOT
 
 source fm-library.sh
 make_root
