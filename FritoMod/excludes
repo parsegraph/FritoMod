@@ -5,4 +5,4 @@ environment.lua
 Frame.lua
 icons.lua
 mapscales.lua
-bin/test.lua
+runtests.lua
