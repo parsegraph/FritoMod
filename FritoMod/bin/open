@@ -35,4 +35,13 @@ if `echo $comp_path | grep -q '/'`; then
 else
 	mkdir -p $test_path
 fi
+if [ ! -e $tests ]; then
+	cat >$tests <<EOF
+local Suite=CreateTestSuite("${path%.*}");
+
+function Suite:TestFoo()
+	-- TODO: Write this test.
+end;
+EOF
+fi
 $EDITOR $name $tests
