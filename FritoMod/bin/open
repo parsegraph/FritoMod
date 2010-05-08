@@ -32,22 +32,30 @@ path=`readlink -f $name | trim $l`
 
 echo $path | grep -q '/' || error "opening a root file does not make sense"
 
-comp=${path%%/*}
-comp_path=${path#*/}
-test_path="$root/$comp""_Tests"
-tests="$test_path/$comp_path"
-if `echo $comp_path | grep -q '/'`; then
-	mkdir -p $test_path/${comp_path%/*}
-else
-	mkdir -p $test_path
-fi
-if [ ! -e $tests ]; then
-	cat >$tests <<EOF
+this=${path%%/*}
+shared_path=${path#*/}
+
+function write_test_suite {
+	cat >$1 <<EOF
 local Suite=CreateTestSuite("${path%.*}");
 
 function Suite:TestFoo()
 	-- TODO: Write this test.
 end;
 EOF
+}
+
+if echo $this | grep -q '_Tests$'; then
+	other_path="$root/${this%_*}"
+	[ -e $name ] || write_test_suite $name
+else
+	other_path="$root/$this""_Tests"
+	tests="$other_path/$shared_path"
+	[ -e $tests ] || write_test_suite $tests
 fi
-$EDITOR $name $tests
+if `echo $shared_path | grep -q '/'`; then
+	mkdir -p $other_path/${shared_path%/*}
+else
+	mkdir -p $other_path
+fi
+$EDITOR $name $other_path/$shared_path
