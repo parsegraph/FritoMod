@@ -25,9 +25,11 @@ fi;
 l=`readlink -f $root | wc -m`
 let l++
 path=`readlink -f $name | trim $l`
+
+echo $path | grep -q '/' || error "opening a root file does not make sense"
+
 comp=${path%%/*}
 comp_path=${path#*/}
-
 test_path="$root/$comp""_Tests"
 tests="$test_path/$comp_path"
 if `echo $comp_path | grep -q '/'`; then
