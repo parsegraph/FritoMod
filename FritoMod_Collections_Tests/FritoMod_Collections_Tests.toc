@@ -3,11 +3,12 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Testing
-Mixins-MutableTableTests.lua
-Mixins-TableTests.lua
-Tables.lua
 Mixins-MutableArrayTests.lua
+Metatables.lua
+Mixins-TableTests.lua
 Mixins-ArrayTests.lua
+Mixins-MutableTableTests.lua
+Mixins-ComparableIteration.lua
 Lists.lua
 Iterators.lua
-Metatables.lua
+Tables.lua
