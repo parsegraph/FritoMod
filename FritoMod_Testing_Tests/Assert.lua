@@ -20,6 +20,16 @@ function Suite:TestAssertSucceeds()
     assert(not pcall(Assert.Succeeds, "Throw!", error), "Assert.Succeeds throws on bad test");
 end;
 
+function Suite:TestNotEquals()
+	Assert.Unequal(true, false, "Unequal values are unequal");
+	Assert.Unequal(nil, "Foo", "nil on lhs is unequal");
+	Assert.Unequal("Foo", nil, "nil on rhs is still unequal");
+    Assert.Unequal(Noop, nil, "Noop function is not nil");
+    assert(not pcall(Assert.Unequal, nil, nil), "nil==nil");
+    assert(not pcall(Assert.Unequal, "", ""), "empty strings are equal");
+    assert(not pcall(Assert.Unequals, Noop, Noop), "Functions are equal");
+end;
+
 function Suite:TestEquals()
     Assert.Equals("Foo", "Foo", "Foo is foo");
     Assert.Equals("", "", "Empty string is empty string");

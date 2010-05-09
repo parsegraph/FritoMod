@@ -203,9 +203,20 @@ function Assert.Equals(expected, actual, assertion)
         -- Short-circuit for the common case.
         return;
     end;
-    if type(expected) == "table" and (not getmetatable(expected) or getmetatable(expected).__eq == nil) then
+    if type(expected) == "table" then
         Assert.TablesEqual(expected, actual, assertion);
         return;
     end;
     Assert.Identical(expected, actual, assertion);
 end;
+Assert.Same=Assert.Equals
+Assert.Equal=Assert.Equals
+
+function Assert.NotEquals(control,variable,assertion)
+	assert(not pcall(Assert.Equals, control, variable), 
+		("Values must not be equal '%s'%s"):format(s(control), FormatName(assertion)));
+end;
+Assert.NotEqual=Assert.NotEquals
+Assert.Unequal=Assert.NotEquals
+Assert.Unequals=Assert.NotEquals
+Assert.Different=Assert.NotEquals
