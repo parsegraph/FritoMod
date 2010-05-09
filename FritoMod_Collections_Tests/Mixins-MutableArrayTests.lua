@@ -11,6 +11,7 @@ if Mixins == nil then
 end;
 
 function Mixins.MutableArrayTests(Suite, library)
+	local lib=library;
 	Assert.Type("table", library, "Library must be a table");
 
     function Suite:TestDelete()
@@ -54,10 +55,42 @@ function Mixins.MutableArrayTests(Suite, library)
         assert(library.IsEmpty(iterable), "Remover removes inserted function");
     end;
 
+	function Suite:TestShuffle()
+		local a=Suite:Array(1,2,3,4,5,6,7,8,9);
+		lib.Shuffle(a);
+		Assert.NotEquals(Suite:Array(1,2,3,4,5,6,7,8,9), a, "Shuffle should practically never produce an identical list");
+	end;
+
 	function Suite:TestSwap()
 		local arr=Suite:Array("A","B");
 		library.Swap(arr,1,2);
 		assert(library.Equals(Suite:Array("B","A"), arr));
+	end;
+
+	local function DoSort(...)
+		local u=Suite:Array(...);
+		lib.Sort(u);
+		return lib.ToTable(u);
+	end;
+
+	function Suite:TestSort()
+		Assert.Equals({2}, DoSort(2), "One-element sort is easy");
+	end;
+
+	function Suite:TestSortWithTwoElements()
+		Assert.Equals({1,2}, DoSort(1,2), "Presorted two-element");
+		Assert.Equals({1,2}, DoSort(2,1), "Unsorted two-element");
+	end;
+
+	function Suite:TestSortWithThreeElements()
+		Assert.Equals({1,2,3}, DoSort(1,2,3), "Presorted three-element");
+		Assert.Equals({1,2,3}, DoSort(3,2,1), "Reverse order three-element");
+		Assert.Equals({1,2,3}, DoSort(1,3,2));
+		Assert.Equals({1,2,3}, DoSort(3,1,2));
+	end;
+
+	function Suite:TestSortWithLotsOfElements()
+		Assert.Equals({1,2,3,4,5,6,7,8,9}, DoSort(1, 4, 5, 6, 7, 9, 3, 8, 2));
 	end;
 
 	return Suite;

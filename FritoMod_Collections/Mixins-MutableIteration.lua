@@ -37,6 +37,7 @@ end;
 -- see
 --     Mixins.Iteration. This mixin is also used on the specified library
 function Mixins.MutableIteration(library, iteratorFunc)
+	local lib=library;
 
     Mixins.Iteration(library, iteratorFunc);
 
@@ -465,6 +466,50 @@ function Mixins.MutableIteration(library, iteratorFunc)
             return cloned;
         end;
     end;
+
+	if lib.Shuffle == nil then
+		function lib.Shuffle(iterable)
+			for i=1,lib.Size(iterable) do
+				lib.Swap(iterable, lib.Random(iterable), lib.Random(iterable));
+			end;
+		end;
+	end;
+
+	if library.Sort == nil then
+		local function Partition(iter, compare, left, right)
+			local m=lib.Get(iter, left+math.floor((right-left)/2));
+			local i,j=left,right;
+			repeat
+				while compare(lib.Get(iter,i), m) < 0 do
+					i=i+1;
+				end;
+				while compare(lib.Get(iter,j), m) > 0 do
+					j=j-1;
+				end;
+				if i <= j then
+					lib.Swap(iter,i,j);
+					i=i+1;
+					j=j-1;
+				end
+			until i > j;
+			if left < j then
+				Partition(iter, compare, left, j);
+			end;
+			if i < right then
+				Partition(iter, compare, i, right);
+			end;
+		end;
+
+		function library.Sort(iterable, compareFunc, ...)
+			compareFunc=library.NewComparator(compareFunc, ...);
+			local s=library.Size(iterable);
+			if s < 2 then
+				return;
+			end;
+			assert(s);
+			Partition(iterable, compareFunc, 1, s);
+		end;
+	end;
 
     if library.Update == nil then
         -- Updates targetIterable such that updatingIterable is copied over it.
