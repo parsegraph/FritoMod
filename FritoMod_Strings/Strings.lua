@@ -146,7 +146,7 @@ end;
 
 function Strings.PrettyPrintString(value)
     value = tostring(value);
-    return ('"%s"'):format(value);
+    return ('%q'):format(value);
 end;
 
 function Strings.Join(delimiter, items)
