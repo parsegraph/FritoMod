@@ -2,9 +2,13 @@
 PATH=/bin:/usr/bin:$HOME/bin:$FM_ROOT
 
 source fm-library.sh
+make_root
 
 name=$1
-if [ -f $1 ]; then
+if [ ! $1 ]; then
+	cd $root
+	lua -l "FritoMod/global"
+elif [ -f $1 ]; then
 	name=$1
 elif [ -f $1.lua ]; then
 	name=$1
@@ -15,7 +19,6 @@ fi;
 case $name in
 	*.lua) name=`echo $name | trim -4` ;;
 esac
-make_root
 make_path_from_root
 echo $path_from_root
 
