@@ -163,6 +163,7 @@ function Strings.Join(delimiter, items)
         return word;
     end);
 end
+Strings.Concat=Strings.Join;
 
 function Strings.JoinValues(delimiter, ...)
     return Strings.Join(delimiter, { ... });
