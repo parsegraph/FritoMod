@@ -62,10 +62,16 @@ Assert.RaisesException = Assert.Exception;
 --     the reason why the function should run successfully
 -- func, ...
 --     the function that is tested
-function Assert.Success(assertion, func, ...)
-    local result, message = pcall(func, ...);
-    assert(result, ("Function must be successful%s, but failed with result: %s"):format(
-        FormatName(assertion), tostring(message or "")));
+function Assert.Success(assertion, ...)
+	local r,m;
+	if type(assertion) ~= "string" then
+		r,m=DoCall(assertion, ...);
+		assertion=nil;
+	else
+		r,m=DoCall(...);
+	end;
+    assert(r, ("Function must be successful%s, but failed with result %q"):format(
+        FormatName(assertion), tostring(m)));
 end;
 
 Assert.Successful = Assert.Success;
