@@ -66,7 +66,7 @@ function Strings.EndsWith(match, str)
 	return match==str:sub(#str-#match+1);
 end;
 
-function Strings.PrettyPrint(value)
+function Strings.Pretty(value)
     if value == nil then
         return "<nil>";
     end;
@@ -79,22 +79,21 @@ function Strings.PrettyPrint(value)
             return value:ToString();
         end;
         if #value > 0 then
-            return Strings.PrettyPrintList(value);
+            return Strings.PrettyList(value);
         end
-        return Strings.PrettyPrintMap(value);
+        return Strings.PrettyMap(value);
     end;
-    local prettyPrinter = Strings["PrettyPrint" .. valueType];
+    local prettyPrinter = Strings["Pretty" .. valueType];
     assert(prettyPrinter, "prettyPrinter not available for type. Type: " .. valueType);
     return prettyPrinter(value);
 end;
-Strings.Pretty=Strings.PrettyPrint;
 
 function Strings.Print(...)
 	Strings.__print(Strings.Join(" ", Lists.Map({...}, Strings.Pretty)));
 end;
 Strings.p=Strings.Print;
 
-function Strings.PrettyPrintFunction(value)
+function Strings.PrettyFunction(value)
     assert(type(value) == "function", "value is not a function. Type: " .. type(value));
     local name = Tables.KeyFor(_G, value);
     if not name then
@@ -103,44 +102,44 @@ function Strings.PrettyPrintFunction(value)
     return ("Function@%s"):format(name);
 end;
 
-function Strings.PrettyPrintNamedNumber(number, itemName, pluralName)
+function Strings.PrettyNamedNumber(number, itemName, pluralName)
     if not pluralName then
         pluralName = itemName .. "s";
     elseif not Strings.StartsWith(pluralName, itemName) then
         pluralName = itemName + pluralName;
     end;
-    local numberString = Strings.PrettyPrintNumber(number);
+    local numberString = Strings.PrettyNumber(number);
     if number == 1 then
         return ("%s %s"):format(numberString, itemName);
     end;
     return ("%s %s"):format(numberString, pluralName);
 end;
 
-function Strings.PrettyPrintList(value)
+function Strings.PrettyList(value)
     assert(type(value) == "table", "value is not a table. Type: " .. type(value));
     local size = #value;
     if size == 0 then
         return "[<empty>]";
     end;
-    local size = Strings.PrettyPrintNamedNumber(Strings.PrettyPrintNumber(size), "item");
-    local contents = Lists.Map(value, Strings.PrettyPrint);
+    local size = Strings.PrettyNamedNumber(Strings.PrettyNumber(size), "item");
+    local contents = Lists.Map(value, Strings.Pretty);
     return ("[<%s> %s]"):format(size, Strings.Join(", ", contents));
 end;
 
-function Strings.PrettyPrintMap(value)
+function Strings.PrettyMap(value)
     assert(type(value) == "table", "value is not a table. Type: " .. type(value));
     local size = Tables.Size(value);
     if size == 0 then
         return "{<empty>}";
     end;
-    size = Strings.PrettyPrintNamedNumber(Strings.PrettyPrintNumber(size), "item");
+    size = Strings.PrettyNamedNumber(Strings.PrettyNumber(size), "item");
     local contents = Tables.MapPairs(value, function(key, value)
-        return ("%s = %s"):format(Strings.PrettyPrint(key), Strings.PrettyPrint(value));
+        return ("%s = %s"):format(Strings.Pretty(key), Strings.Pretty(value));
     end);
     return ("[<%s> %s]"):format(size, Strings.Join(", ", contents));
 end;
 
-function Strings.PrettyPrintNumber(value)
+function Strings.PrettyNumber(value)
     local number = tonumber(value);
     if not number then
         return "<NaN>";
@@ -149,11 +148,11 @@ function Strings.PrettyPrintNumber(value)
     return tostring(number);
 end;
 
-function Strings.PrettyPrintBoolean(value)
+function Strings.PrettyBoolean(value)
     return Strings.ProperNounize(Bool(value));
 end;
 
-function Strings.PrettyPrintString(value)
+function Strings.PrettyString(value)
     value = tostring(value);
     return ('%q'):format(value);
 end;

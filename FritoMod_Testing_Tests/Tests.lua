@@ -120,7 +120,7 @@ function Suite:TestFullStackTrace()
     end;
     local stackTrace = Tests.FullStackTrace();
     assert(stackTrace[1].name:match("FullStackTrace"),
-        "First stack level is FullStackTrace. Level was: " .. Strings.PrettyPrint(stackTrace[1].name));
+        "First stack level is FullStackTrace. Level was: " .. Strings.Pretty(stackTrace[1].name));
 end;
 
 local TEST_FILE="FritoMod_Testing_Tests[/\\]Tests\.lua";
@@ -192,5 +192,5 @@ function Suite:TestFormattedPartialStackTrace()
     local firstLine, _ = unpack(Strings.SplitByDelimiter("\n", stackTrace, 2));
     assert(firstLine:match(TEST_FILE),
         "First line of default stack trace refers to the site of the stack-trace call. Line was: " ..
-        Strings.PrettyPrint(firstLine));
+        Strings.Pretty(firstLine));
 end;

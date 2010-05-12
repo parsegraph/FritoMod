@@ -4,7 +4,7 @@ if nil ~= require then
     require "FritoMod_Strings/Strings";
 end;
 
-local s = Strings.PrettyPrint;
+local s = Strings.Pretty;
 
 Assert = Metatables.Defensive();
 local Assert = Assert;

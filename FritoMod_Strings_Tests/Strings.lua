@@ -27,8 +27,8 @@ function Suite:TestJoin()
     Assert.Equals("2 3 4", j({2,3,4}), "Simple group");
 end;
 
-function Suite:TestPrettyPrint()
-    local p = Strings.PrettyPrint;
+function Suite:TestPretty()
+    local p = Strings.Pretty;
     Assert.Equals('"Foo"', p("Foo"), "Printing a string");
     Assert.Equals('""', p(""), "Empty string");
     Assert.Equals("42", p(42), "Printing a number");
@@ -38,8 +38,8 @@ function Suite:TestPrettyPrint()
     Assert.Equals("{<empty>}", p({}), "Empty list");
 end;
 
-function Suite:TestPrettyPrintWithGlobalFunction()
-    local p = Strings.PrettyPrint;
+function Suite:TestPrettyWithGlobalFunction()
+    local p = Strings.Pretty;
     Assert.Equals("Function@Noop", p(Noop), "Global functions are named");
 end;
 
