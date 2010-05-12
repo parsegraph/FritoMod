@@ -70,6 +70,8 @@ function Assert.Truthy(actual, assertion)
     assertion = FormatName(assertion);
     assert(actual, ("Value was not truthy%s, value was %s"):format(assertion, s(actual)));
 end;
+Assert.True=Assert.Truthy;
+Assert.Yes=Assert.Truthy;
 
 -- Asserts that the specified value is falsy. Specifically, it asserts that the specified
 -- value is either nil or false.
@@ -82,6 +84,9 @@ function Assert.Falsy(actual, assertion)
     assertion = FormatName(assertion);
     assert(not actual, ("Value was not falsy%s, value was %s"):format(assertion, s(actual)));
 end;
+Assert.False=Assert.Falsy;
+Assert.No=Assert.Falsy;
+Assert.Not=Assert.Falsy;
 
 -- Asserts that the specified value is nil.
 --
