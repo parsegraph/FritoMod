@@ -13,6 +13,9 @@ local function FormatName(assertion)
     if not assertion then
         return "";
     end;
+	if Strings.StartsWith(" for assertion '", assertion) then
+		return assertion;
+	end;
     return (" for assertion '%s'"):format(tostring(assertion));
 end;
 
