@@ -151,6 +151,12 @@ Assert.Sizes = Assert.SizesEqual;
 Assert.EqualSizes = Assert.SizesEqual;
 Assert.EqualSize = Assert.SizesEqual;
 
+function Assert.Empty(actual, assertion)
+    assertion = FormatName(assertion);
+    Assert.Type("table", actual, assertion);
+    assert(0 == #actual, ("Table must be empty%s"):format(assertion));
+end;
+
 -- Asserts that the two tables contain equal values for each key.
 --
 -- Tables are equal if:
