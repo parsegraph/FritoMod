@@ -164,8 +164,8 @@ function Suite:TestFormattedPartialStackTraceIsEqualToDebugStack()
 	if not debugstack then
 		return;
 	end;
-	local dstack={debugstack():split("\n")};
-	local strace={Tests.FormattedPartialStackTrace():split("\n")};
+	local dstack=Strings.SplitByDelimiter("\n", debugstack());
+	local strace=Strings.SplitByDelimiter("\n", Tests.FormattedPartialStackTrace());
 	for i=1, #dstack do
 		assert(#strace >= i, "Created levels must have same number of levels as debugstack");
 		if i==1 then
