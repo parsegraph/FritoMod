@@ -1,5 +1,6 @@
 if nil ~= require then
     require "FritoMod_Functional/basic";
+    require "FritoMod_Functional/Metatables";
 
     require "FritoMod_Collections/Lists";
     require "FritoMod_Collections/Tables";
@@ -7,7 +8,9 @@ if nil ~= require then
     require "FritoMod_OOP/OOP";
 end;
 
-Strings = {};
+Strings = Metatables.Defensive({
+	__print=print
+});
 local Strings = Strings;
 
 Strings.DIGITS = "0123456789"
@@ -87,7 +90,7 @@ end;
 Strings.Pretty=Strings.PrettyPrint;
 
 function Strings.Print(...)
-	print(Strings.Join(" ", Lists.Map({...}, Strings.Pretty)));
+	Strings.__print(Strings.Join(" ", Lists.Map({...}, Strings.Pretty)));
 end;
 Strings.p=Strings.Print;
 
