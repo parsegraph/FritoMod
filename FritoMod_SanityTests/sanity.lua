@@ -20,7 +20,11 @@ local function Count(...)
     return total, nonNils;
 end;
 
-function Suite:PairsIteratesEverything()
+function Suite:TestStringSub()
+	Assert.Equals("BC", ("ABC"):sub(2));
+end;
+
+function Suite:TestPairsIteratesEverything()
 	local a={true,false,true};
 	local c={};
 	for k,v in pairs(a) do
