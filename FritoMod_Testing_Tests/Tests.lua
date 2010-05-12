@@ -164,7 +164,19 @@ function Suite:TestFormattedPartialStackTraceIsEqualToDebugStack()
 	if not debugstack then
 		return;
 	end;
-	Assert.Equals(debugstack(), Tests.FormattedPartialStackTrace());
+	local dstack={debugstack():split("\n")};
+	local strace={Tests.FormattedPartialStackTrace():split("\n")};
+	for i=1, #dstack do
+		assert(#strace >= i, "Created levels must have same number of levels as debugstack");
+		if i==1 then
+			local l1=dstack[i]:gsub("[0-9]+","###");
+			local l2=strace[i]:gsub("[0-9]+","###");
+			Assert.Equals(l1,l2, "First stack levels are equal, ignoring numbers");
+		else
+			Assert.Equals(dstack[i], strace[i], "Stack level must be identical. Level: " .. i);
+		end;
+	end;
+	Assert.Size(#dstack,strace,"Created levels must have same number of levels as debugstack");
 end;
 
 function Suite:TestDebugStack()
