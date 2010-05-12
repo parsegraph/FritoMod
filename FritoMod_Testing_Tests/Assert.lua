@@ -15,6 +15,15 @@ function Suite:TestAssertExceptionWithNoReason()
 	assert(pcall(Assert.Exception, error), "Exception is not thrown when error is expected");
 end;
 
+function Suite:TestAssertExceptionDoesNotUseCurrying()
+	local f=Tests.Flag();
+	local o={};
+	function o:Call()
+		f.Raise();
+	end;
+	assert(not pcall(Assert.Exception, o, "Call"), "Assert.Exception must accept curried methods");
+end;
+
 function Suite:TestAssertSucceeds()
     assert(pcall(Assert.Succeeds, "Don't Throw", Noop), "Assert.Succeeds succeeds on successful test");
     assert(not pcall(Assert.Succeeds, "Throw!", error), "Assert.Succeeds throws on bad test");

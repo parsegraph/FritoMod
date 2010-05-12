@@ -19,6 +19,18 @@ local function FormatName(assertion)
     return (" for assertion '%s'"):format(tostring(assertion));
 end;
 
+local function DoCall(objOrFunc, ...)
+	if IsCallable(objOrFunc) then
+		return pcall(objOrFunc, ...);
+	else
+		assert(type(objOrFunc)=="table", "Exception must be passed a callable, or a table");
+		local f=objOrFunc[select(1,...)];
+		assert(IsCallable(f), 
+			"Exception's passed object must contain a callable value for key: " .. tostring(select(1, ...)));
+		return pcall(f, objOrFunc, select(2, ...));
+	end;
+end;
+
 -- Asserts that the specified function fails. The return value or exception message
 -- is ignored.
 --
@@ -29,12 +41,12 @@ end;
 function Assert.Exception(assertion, ...)
 	local r;
 	if type(assertion) ~= "string" then
-		r = not pcall(assertion, ...);
+		r=DoCall(assertion, ...);
 		assertion=nil;
 	else
-		r = not pcall(...);
+		r=DoCall(...);
 	end;
-	assert(r, ("Function must raise an exception%s"):format(FormatName(assertion)));
+	assert(not r, ("Function must raise an exception%s"):format(FormatName(assertion)));
 end;
 
 Assert.Failure = Assert.Exception;
