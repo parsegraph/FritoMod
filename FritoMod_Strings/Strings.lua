@@ -51,6 +51,18 @@ function Strings.CharAt(str, index)
     return str:sub(index, index);
 end;
 
+function Strings.StartsWith(match, str)
+	assert(type(match) == "string", "match must be a string");
+	assert(#match > 0, "match must contain at least one character");
+	return match==str:sub(1, #match);
+end;
+
+function Strings.EndsWith(match, str)
+	assert(type(match) == "string", "match must be a string");
+	assert(#match > 0, "match must contain at least one character");
+	return match==str:sub(#str-#match+1);
+end;
+
 function Strings.PrettyPrint(value)
     if value == nil then
         return "<nil>";
