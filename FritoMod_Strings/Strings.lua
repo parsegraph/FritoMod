@@ -210,7 +210,7 @@ function Strings.SplitByDelimiter(delimiter, originalString, limit)
     end;
     return items;
 end;
-
+Strings.Split=Strings.SplitByDelimiter;
 
 -- Removes leading and trailing whitespace from the specified string.
 --
