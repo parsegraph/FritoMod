@@ -313,7 +313,7 @@ function Tests.Flag(isSet)
         --     specifies why the flag should be raised or describes the significance of the raised
         --     flag
         Assert = function(assertion)
-            assert(flag.IsSet(), assertion);
+            assert(flag.IsSet(), assertion or "Flag must be set");
         end,
 
         -- Asserts that the flag is not raised.
