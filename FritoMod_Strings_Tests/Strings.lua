@@ -1,16 +1,10 @@
 if nil ~= require then
     require "FritoMod_Functional/currying";
-
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Strings/Strings";
 end;
 
-local StringsTests = ReflectiveTestSuite:New("FritoMod_Strings.Strings");
+local Suite=CreateTestSuite("FritoMod_Strings/Strings");
 
-function StringsTests:TestStartsWith()
+function Suite:TestStartsWith()
 	Assert.True(Strings.StartsWith("A", "ABC"), "Strings that start with the given value must match");
 	Assert.True(Strings.StartsWith("A", "A"), "Whole match must still match");
 	Assert.False(Strings.StartsWith("A", "B"), "Things that don't match return false");
@@ -19,7 +13,7 @@ function StringsTests:TestStartsWith()
 	Assert.Exception("Empty matching string must violently crash", Strings.StartsWith, "", "A");
 end;
 
-function StringsTests:TestEndsWith()
+function Suite:TestEndsWith()
 	Assert.True(Strings.EndsWith("C", "ABC"), "Strings that end with the given value must match");
 	Assert.True(Strings.EndsWith("A", "A"), "Whole match must still match");
 	Assert.False(Strings.EndsWith("A", "B"), "Things that don't match return false");
@@ -28,12 +22,12 @@ function StringsTests:TestEndsWith()
 	Assert.Exception("Empty matching string must violently crash", Strings.EndsWith, "", "A");
 end;
 
-function StringsTests:TestJoin()
+function Suite:TestJoin()
     local j = Curry(Strings.Join, " ");
     Assert.Equals("2 3 4", j({2,3,4}), "Simple group");
 end;
 
-function StringsTests:TestPrettyPrint()
+function Suite:TestPrettyPrint()
     local p = Strings.PrettyPrint;
     Assert.Equals('"Foo"', p("Foo"), "Printing a string");
     Assert.Equals('""', p(""), "Empty string");
@@ -44,32 +38,32 @@ function StringsTests:TestPrettyPrint()
     Assert.Equals("{<empty>}", p({}), "Empty list");
 end;
 
-function StringsTests:TestPrettyPrintWithGlobalFunction()
+function Suite:TestPrettyPrintWithGlobalFunction()
     local p = Strings.PrettyPrint;
     Assert.Equals("Function@Noop", p(Noop), "Global functions are named");
 end;
 
-function StringsTests:TestSplitByCaseTrivialCases()
+function Suite:TestSplitByCaseTrivialCases()
     local s = Strings.SplitByCase;
     Assert.Equals({"caps"}, s("caps"), "Short java-case");
     Assert.Equals({"Caps"}, s("Caps"), "Short Camel-case");
     Assert.Equals({"CAPS"}, s("CAPS"), "Short Upper-case");
 end;
 
-function StringsTests:TestSplitByCase()
+function Suite:TestSplitByCase()
     local s = Strings.SplitByCase;
     Assert.Equals({"The", "Simple", "Test"}, s("TheSimpleTest"), "Simple proper-case");
     Assert.Equals({"the", "Simple", "Test"}, s("theSimpleTest"), "Simple camel-case");
 end;
 
-function StringsTests:TestSplitByCaseWithAcronyms()
+function Suite:TestSplitByCaseWithAcronyms()
     local s = Strings.SplitByCase;
     Assert.Equals({"FOO", "Simple", "Test"}, s("FOOSimpleTest"), "Leading acronym");
     Assert.Equals({"a", "FOO", "Simple", "Test"}, s("aFOOSimpleTest"), "Sandwiched acronym");
     Assert.Equals({"the", "Simple", "FOO"}, s("theSimpleFOO"), "Trailing acronym");
 end;
 
-function StringsTests:TestSplitByCaseIgnoresWhitespace()
+function Suite:TestSplitByCaseIgnoresWhitespace()
     local s = Strings.SplitByCase;
     Assert.Equals({"  caps  "}, s("  caps  "), "Both leading and trailing whitespace");
     Assert.Equals({"  caps"}, s("  caps"), "Leading whitespace");
@@ -79,7 +73,7 @@ function StringsTests:TestSplitByCaseIgnoresWhitespace()
     Assert.Equals({spaces}, s(spaces), "Only whitespace");
 end;
 
-function StringsTests:TestSplitByCasePersistsSpecialValues()
+function Suite:TestSplitByCasePersistsSpecialValues()
     local s = Strings.SplitByCase;
     Assert.Equals({"foo1234", "Bar"}, s("foo1234Bar"), "Lower-cased special values");
     Assert.Equals({"black", "FOO42", "Red"}, s("blackFOO42Red"), "Sandwiched upper-case symbols");
@@ -87,72 +81,72 @@ function StringsTests:TestSplitByCasePersistsSpecialValues()
     Assert.Equals({"black", "Foo42"}, s("blackFoo42"), "Trailing lower-case symbols");
 end;
 
-function StringsTests:TestSplitByCaseCoercesValues()
+function Suite:TestSplitByCaseCoercesValues()
     local s = Strings.SplitByCase;
     Assert.Equals({"42"}, s(42), "Number value");
     Assert.Equals({"false"}, s(false), "Boolean value");
 end;
 
-function StringsTests:TestSplitByCaseFailsOnNil()
+function Suite:TestSplitByCaseFailsOnNil()
     Assert.Exception("SplitByCase throws on nil", Strings.SplitByCase, nil);
 end;
 
-function StringsTests:TestSplitByCaseHandlesEmptyString()
+function Suite:TestSplitByCaseHandlesEmptyString()
     local s = Strings.SplitByCase;
     Assert.Equals({}, s(""), "Empty string");
 end;
 
-function StringsTests:TestSplitByDelimiter()
+function Suite:TestSplitByDelimiter()
     local s = Curry(Strings.SplitByDelimiter, "_");
     Assert.Equals({"Foo", "Time"}, s("Foo_Time"), "Simple delimiters");
 end;
 
-function StringsTests:TestSplitByDelimiterNoopCase()
+function Suite:TestSplitByDelimiterNoopCase()
     local s = Curry(Strings.SplitByDelimiter, " ");
     Assert.Equals({""}, s(""), "Empty string");
 end;
 
-function StringsTests:TestSplitByDelimiterWithEmptyStringDelimiter()
+function Suite:TestSplitByDelimiterWithEmptyStringDelimiter()
 	Assert.Exception("SplitByDelimiter gracefully fails on empty string delimiter", Strings.SplitByDelimiter, "", "test");
 end;
 
-function StringsTests:TestSplitByDelimiterHandlesEmptyString()
+function Suite:TestSplitByDelimiterHandlesEmptyString()
 	Assert.Equals({""}, Strings.SplitByDelimiter(" ", ""));
 end;
 
-function StringsTests:TestSplitByDelimiterWithoutDelimiters()
+function Suite:TestSplitByDelimiterWithoutDelimiters()
     local s = Curry(Strings.SplitByDelimiter, " ");
     Assert.Equals({"foo"}, s("foo"), "No delimiters");
     Assert.Equals({"Foo"}, s("Foo"), "No delimiters, mixed capitalization");
 end;
 
-function StringsTests:TestSplitByDelimiterFailsOnNil()
+function Suite:TestSplitByDelimiterFailsOnNil()
     Assert.Exception("SplitByDelimiter fails on nil arguments", Strings.SplitByDelimiter, nil);
     Assert.Exception("SplitByDelimiter fails on nil arguments", Strings.SplitByDelimiter, " ", nil);
 end;
 
-function StringsTests:TestSplitByDelimiterWithEdgeCaseDelimiters()
+function Suite:TestSplitByDelimiterWithEdgeCaseDelimiters()
     local s = Curry(Strings.SplitByDelimiter, "_");
     Assert.Equals({""}, s("___"), "Only delimiter");
     Assert.Equals({"Foo"}, s("___Foo"), "Leading delimiter");
     Assert.Equals({"Foo"}, s("Foo___"), "Trailing delimiter");
 end;
 
-function StringsTests:TestSplitByDelimiterComplexCases()
+function Suite:TestSplitByDelimiterComplexCases()
     local s = Curry(Strings.SplitByDelimiter, "_");
     Assert.Equals({"Foo", "Time", "Base", "Bar"}, s("Foo_Time_Base_Bar"), "Complex delimiter");
     Assert.Equals({"Foo", "Time"}, s("Foo___Time"), "Wide delimiter");
     Assert.Equals({"No", "Time"}, Strings.SplitByDelimiter(" ", "No Time"), "Custom delimiter");
 end;
 
-function StringsTests:TestSplitByDelimiterCoercesValues()
+function Suite:TestSplitByDelimiterCoercesValues()
     local s = Strings.SplitByDelimiter;
     Assert.Equals({"222", "444"}, s(3, "2223444"), "Coerced delimiter");
     Assert.Equals({"222", "444"}, s("3", 2223444), "Coerced string");
     Assert.Equals({"true", "true"}, s(false, "truefalsetrue"), "False as delimiter");
 end;
 
-function StringsTests:TestJoinProperCaseTrivalCases()
+function Suite:TestJoinProperCaseTrivalCases()
     local s = Strings.JoinProperCase;
     Assert.Equals("Foo", s({"Foo"}), "Proper case");
     Assert.Equals("Foo", s({"FOO"}), "Upper case");
@@ -163,7 +157,7 @@ function StringsTests:TestJoinProperCaseTrivalCases()
     Assert.Equals("", s({}), "Empty list");
 end;
 
-function StringsTests:TestJoinProperCaseComplexCases()
+function Suite:TestJoinProperCaseComplexCases()
     local s = Strings.JoinProperCase;
     Assert.Equals("TheGreatExample", s({"The", "Great", "Example"}), "No-op case");
     Assert.Equals("TheGreatExample", s({"ThE", "GREAT", "example"}), "Mixed cases");
@@ -172,7 +166,7 @@ function StringsTests:TestJoinProperCaseComplexCases()
     Assert.Equals("GreatExample", s({"", "great", "", "example", ""}), "Spurious empty strings");
 end;
 
-function StringsTests:TestJoinCamelCaseTrivalCases()
+function Suite:TestJoinCamelCaseTrivalCases()
     local s = Strings.JoinCamelCase;
     Assert.Equals("foo", s({"Foo"}), "Proper case");
     Assert.Equals("foo", s({"FOO"}), "Upper case");
@@ -183,7 +177,7 @@ function StringsTests:TestJoinCamelCaseTrivalCases()
     Assert.Equals("", s({}), "Empty list");
 end;
 
-function StringsTests:TestJoinCamelCaseComplexCases()
+function Suite:TestJoinCamelCaseComplexCases()
     local s = Strings.JoinCamelCase;
     Assert.Equals("theGreatExample", s({"The", "Great", "Example"}), "No-op case");
     Assert.Equals("theGreatExample", s({"ThE", "GREAT", "example"}), "Mixed cases");
@@ -193,7 +187,7 @@ function StringsTests:TestJoinCamelCaseComplexCases()
     Assert.Equals("great_Example", s({"great", "_", "example"}), "Suspicious delimiter");
 end;
 
-function StringsTests:TestJoinSnakeCaseTrivalCases()
+function Suite:TestJoinSnakeCaseTrivalCases()
     local s = Strings.JoinSnakeCase;
     Assert.Equals("foo", s({"Foo"}), "Proper case");
     Assert.Equals("foo", s({"FOO"}), "Upper case");
@@ -205,7 +199,7 @@ function StringsTests:TestJoinSnakeCaseTrivalCases()
     Assert.Equals("_", s({"_"}), "Only delimiter");
 end;
 
-function StringsTests:TestJoinSnakeCaseComplexCases()
+function Suite:TestJoinSnakeCaseComplexCases()
     local s = Strings.JoinSnakeCase;
     Assert.Equals("the_great_example", s({"The", "Great", "Example"}), "No-op case");
     Assert.Equals("the_great_example", s({"ThE", "GREAT", "example"}), "Mixed cases");
@@ -215,22 +209,22 @@ function StringsTests:TestJoinSnakeCaseComplexCases()
     Assert.Equals("great___example", s({"great", "_", "example", ""}), "Spurious delimiters");
 end;
 
-function StringsTests:TestConvertersToSnakeCase()
+function Suite:TestConvertersToSnakeCase()
     Assert.Equals("the_great_example", Strings.ProperToSnakeCase("TheGreatExample"), "Proper to Snake");
     Assert.Equals("the_great_example", Strings.CamelToSnakeCase("theGreatExample"), "Camel to Snake");
 end;
 
-function StringsTests:TestConvertersToCamelCase()
+function Suite:TestConvertersToCamelCase()
     Assert.Equals("theGreatExample", Strings.ProperToCamelCase("TheGreatExample"), "Proper to Camel");
     Assert.Equals("theGreatExample", Strings.SnakeToCamelCase("the_great_example"), "Snake to Camel");
 end;
 
-function StringsTests:TestConvertersToProperCase()
+function Suite:TestConvertersToProperCase()
     Assert.Equals("TheGreatExample", Strings.CamelToProperCase("theGreatExample"), "Camel to Proper");
     Assert.Equals("TheGreatExample", Strings.SnakeToProperCase("the_great_example"), "Snake to Proper");
 end;
 
-function StringsTests:TestProperNounize()
+function Suite:TestProperNounize()
     local p = Strings.ProperNounize;
     Assert.Equals("Proper", p("Proper"), "No-op case");
     Assert.Equals("Proper", p("proper"), "Lower case");
@@ -244,7 +238,7 @@ function StringsTests:TestProperNounize()
     Assert.Equals("_foo", p("_FOO"), "Symbol with words");
 end;
 
-function StringsTests:TestConvertToBase()
+function Suite:TestConvertToBase()
     local c = Strings.ConvertToBase;
     Assert.Equals("2345", c(10, 2345), "2345, base 10");
     Assert.Equals("10000", c(2, 16), "16, base 2");
@@ -254,7 +248,7 @@ function StringsTests:TestConvertToBase()
     Assert.Equals("FF", c(16, 255), "255, base 16");
 end;
 
-function StringsTests:TestJoinValues()
+function Suite:TestJoinValues()
     local c = Curry(Strings.JoinValues, " ");
     Assert.Equals("a", c("a"), "No-op case");
     Assert.Equals("a b", c("a", "b"), "Two words");
