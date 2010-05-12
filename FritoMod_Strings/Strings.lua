@@ -84,6 +84,12 @@ function Strings.PrettyPrint(value)
     assert(prettyPrinter, "prettyPrinter not available for type. Type: " .. valueType);
     return prettyPrinter(value);
 end;
+Strings.Pretty=Strings.PrettyPrint;
+
+function Strings.Print(...)
+	print(Strings.Join(" ", Lists.Map({...}, Strings.Pretty)));
+end;
+Strings.p=Strings.Print;
 
 function Strings.PrettyPrintFunction(value)
     assert(type(value) == "function", "value is not a function. Type: " .. type(value));
