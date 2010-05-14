@@ -169,16 +169,16 @@ function TestSuite:Run(...)
         local result = RunTest(self, test, testName);
         testResults[result].Hit();
     end;
-    local successful = testResults.All:Count() == testResults.Successful:Count();
+    local successful = testResults.All:Get() == testResults.Successful:Get();
     local report;
     if successful then
-        report = ("All %d tests ran successfully."):format(testResults.All:Count());
+        report = ("All %d tests ran successfully."):format(testResults.All:Get());
     else
         report = ("%d of %d tests ran successfully, %d failed, %d crashed"):format(
-            testResults.Successful:Count(), 
-            testResults.All:Count(),
-            testResults.Failed:Count(),
-            testResults.Crashed:Count());
+            testResults.Successful:Get(), 
+            testResults.All:Get(),
+            testResults.Failed:Get(),
+            testResults.Crashed:Get());
     end;
     self.listener:FinishAllTests(self, successful, report);
     return successful, report;

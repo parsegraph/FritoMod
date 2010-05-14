@@ -40,7 +40,7 @@ end;
 
 function Suite:TestCounterCanBeSetOnConstruction()
     local counter = Tests.Counter(2);
-    Assert.Equals(2, counter.Count(), "Counter accepts an optional initial value");
+    Assert.Equals(2, counter.Get(), "Counter accepts an optional initial value");
     Assert.Exception("Counter rejects non-numeric initial values", Tests.Counter, true);
 end;
 
@@ -89,14 +89,14 @@ end;
 
 function Suite:TestSimpleCounter()
     local counter = Tests.Counter();
-    Assert.Equals(0, counter:Count(), "Counter starts at zero");
+    Assert.Equals(0, counter:Get(), "Counter starts at zero");
     counter:Hit();
-    Assert.Equals(1, counter:Count(), "Counter increments to one");
+    Assert.Equals(1, counter:Get(), "Counter increments to one");
 end;
 
 function Suite:TestCounterAsserts()
     local counter = Tests.Counter();
-    Assert.Equals(0, counter:Count(), "Counter starts at zero");
+    Assert.Equals(0, counter:Get(), "Counter starts at zero");
     counter:Hit();
     counter:Assert(1, "Counter asserts that it's at one");
 end;

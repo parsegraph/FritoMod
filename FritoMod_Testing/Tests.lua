@@ -348,7 +348,7 @@ function Tests.Counter(count)
         Hit = function()
             count = count + 1;
         end,
-        Count = function()
+        Get = function()
             return count;
         end,
         Clear = function()
@@ -370,6 +370,8 @@ function Tests.Counter(count)
             assert(count <= num, ("Count was %d, but assertion requires at most %d"):format(count, num));
         end,
     });
+	counter.Tick=counter.Hit;
+	counter.Count=counter.Hit;
     counter.Assert = counter.AssertEquals;
     return counter;
 end;
