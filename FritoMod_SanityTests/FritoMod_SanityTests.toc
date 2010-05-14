@@ -5,3 +5,4 @@
 ## Dependencies: FritoMod, FritoMod_Testing
 portability.lua
 sanity.lua
+tutorial.lua
