@@ -1,0 +1,7 @@
+## Interface: 30300
+## Title: FritoMod: Thonik
+## Author: Aaron Faanes
+## Version: 1.3
+## Dependencies: FritoMod, FritoMod_Functional
+Slash.lua
+uchar.lua
