@@ -20,6 +20,22 @@ local function Count(...)
     return total, nonNils;
 end;
 
+function Suite:TestTableNewIndexFiresOnEveryNil()
+	local f=Tests.Flag();
+	local t=setmetatable({}, {
+		__newindex=function(self,k,v)
+			f.Raise();
+			rawset(self,k,v);
+		end
+	});
+	t.a=true;
+	f.Unset();
+	t.a=nil;
+	f.AssertUnset("newindex must not be fired on deleted indices");
+	t.a=true;
+	f.Assert("newindex is fired on setting nil indices, even if they're not completely new");
+end;
+
 function Suite:TestStringSub()
 	Assert.Equals("BC", ("ABC"):sub(2));
 end;
