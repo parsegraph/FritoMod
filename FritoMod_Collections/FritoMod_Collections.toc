@@ -6,8 +6,8 @@
 ## Dependencies: FritoMod, FritoMod_Functional
 Mixins.lua
 Mixins-Iteration.lua
+Iterators.lua
 Mixins-MutableIteration.lua
 Lists.lua
-Iterators.lua
-Tables.lua
 Metatables.lua
+Tables.lua

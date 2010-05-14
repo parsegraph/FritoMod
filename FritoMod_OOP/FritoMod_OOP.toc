@@ -5,5 +5,5 @@
 ## Notes: OOP Methods
 ## Dependencies: FritoMod, FritoMod_Functional
 OOP.lua
-OOP-Class.lua
 Mixins.lua
+OOP-Class.lua

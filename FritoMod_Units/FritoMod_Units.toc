@@ -4,6 +4,6 @@
 ## Version: 1.3
 ## Notes: Unit Framework
 ## Dependencies: FritoMod, FritoMod_OOP
-UnitManager.lua
 Unit.lua
+UnitManager.lua
 Units.lua

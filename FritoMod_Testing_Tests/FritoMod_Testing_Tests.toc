@@ -3,7 +3,7 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Testing, FritoMod_Strings
+Assert.lua
+ReflectiveTestSuite.lua
 Tests.lua
 TestSuite.lua
-ReflectiveTestSuite.lua
-Assert.lua

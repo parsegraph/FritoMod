@@ -3,7 +3,7 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Testing, FritoMod_Functional
-Metatables.lua
-Functions.lua
 basic.lua
 currying.lua
+Functions.lua
+Metatables.lua

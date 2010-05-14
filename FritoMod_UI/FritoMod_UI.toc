@@ -3,18 +3,18 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Notes: An OOP-based UI framework.
-## Dependencies: FritoMod, FritoMod_Collections, FritoMod_OOP, FritoMod_Functional
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_OOP
+LayoutUtil.lua
 Invalidating.lua
-InvalidatingProxy.lua
 StyleClient.lua
 DisplayObject.lua
-LayoutUtil.lua
+Bar.lua
 DisplayObjectContainer.lua
 Box.lua
-Texture.lua
+Button.lua
+InvalidatingProxy.lua
+Metatables-StyleClient.lua
+Mixins-Validating.lua
 Stage.lua
 TextField.lua
-Bar.lua
-Mixins-Validating.lua
-Metatables-StyleClient.lua
-Button.lua
+Texture.lua

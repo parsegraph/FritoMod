@@ -4,6 +4,6 @@
 ## Version: 1.3
 ## Notes: A suite of string utility functions.
 ## Dependencies: FritoMod, FritoMod_States, FritoMod_Collections, FritoMod_Functional, FritoMod_OOP
-Strings.lua
 NumberBuilder.lua
 Parsers.lua
+Strings.lua

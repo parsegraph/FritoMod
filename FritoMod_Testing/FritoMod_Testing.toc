@@ -7,6 +7,6 @@
 TestSuite.lua
 MappedTestSuite.lua
 AllTests.lua
+Assert.lua
 ReflectiveTestSuite.lua
 Tests.lua
-Assert.lua

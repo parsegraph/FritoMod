@@ -6,6 +6,6 @@
 ## Dependencies: FritoMod
 basic.lua
 currying.lua
+Functions.lua
 Metatables.lua
 Operator.lua
-Functions.lua

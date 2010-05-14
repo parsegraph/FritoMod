@@ -6,5 +6,5 @@
 ## Dependencies: FritoMod
 print.lua
 CreateTestSuite.lua
-TestingSlashCommand.lua
 global.lua
+TestingSlashCommand.lua

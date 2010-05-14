@@ -3,5 +3,5 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Testing
-sanity.lua
 portability.lua
+sanity.lua
