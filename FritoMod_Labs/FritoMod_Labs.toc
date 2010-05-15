@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: FritoMod: Labs
+## Author: Aaron Faanes
+## Version: 1.3
+## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Events
+Merchant.lua
+Slash.lua
+uchar.lua
