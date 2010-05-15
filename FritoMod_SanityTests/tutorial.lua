@@ -174,7 +174,6 @@ function Suite:TestMapIteration()
 	local c={};
 	-- "pairs" allows you to iterate over the values in a map. The keys are in an
 	-- undefined order.
-	print("Printing a map using a generic for-loop:");
 	for key, value in pairs(map) do
 		c[key]=value;
 	end;
