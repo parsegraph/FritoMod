@@ -4,7 +4,6 @@
 ## Version: 1.3
 ## Notes: Disabling this addon will disable all FritoMod-dependent addons.
 ## Dependencies: FritoMod
-print.lua
 CreateTestSuite.lua
 global.lua
 TestingSlashCommand.lua
