@@ -8,6 +8,10 @@ function Frame:SetScript(event, handler)
 	
 end;
 
+function Frame:HookScript(event, handler)
+
+end;
+
 function Frame:RegisterEvent(event)
 
 end;
