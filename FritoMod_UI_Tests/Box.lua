@@ -1,5 +1,9 @@
 if nil ~= require then
+	require "WoW_Player/Player";
+	require "WoW_Spells/Spell";
+
 	require "FritoMod_UI/Stage";
+	require "FritoMod_UI/TextField";
 end;
 
 local Suite=CreateTestSuite("FritoMod_UI/Box");

@@ -1,5 +1,6 @@
 if nil ~= require then
 	require "FritoMod_UI/Stage";
+	require "FritoMod_UI/Button";
 end;
 
 local Suite=CreateTestSuite("FritoMod_UI/Button");

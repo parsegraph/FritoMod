@@ -2,6 +2,8 @@ if nil ~= require then
 	require "FritoMod_OOP/OOP-Class";
 	require "FritoMod_Collections/Lists";
 
+	require "WoW_UI/Button";
+
 	require "FritoMod_UI/DisplayObject";
 end;
 
