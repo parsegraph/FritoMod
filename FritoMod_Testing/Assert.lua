@@ -76,6 +76,7 @@ end;
 
 Assert.Successful = Assert.Success;
 Assert.Succeeds = Assert.Success;
+Assert.Succeed = Assert.Success;
 
 -- Asserts that the specified value is truthy. Specifically, it asserts that the specified
 -- value is neither nil nor false.
