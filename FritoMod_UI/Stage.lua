@@ -1,6 +1,7 @@
 if nil ~= require then
-    require "FritoMod_OOP/Mixins";
+    require "WoW_UI/UIParent";
 
+    require "FritoMod_OOP/Mixins";
     require "FritoMod_OOP/OOP-Class";
 
     require "FritoMod_UI/DisplayObjectContainer";

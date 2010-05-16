@@ -1,4 +1,6 @@
 if nil ~= require then
+	require "WoW_UI/Frame-Animation";
+
 	require "FritoMod_OOP/OOP-Class";
 	require "FritoMod_UI/DisplayObject";
 end;
