@@ -12,12 +12,14 @@ case $1 in
 esac
 
 for name in `find * -maxdepth 0 -type d`; do
+	EXCLUDE=true
 	for project in `find .fm/* -maxdepth 0 -type d`; do
+		project=${project##*/}
 		if `echo $name | grep -q "^$project"`; then
-			unset $name
+			unset EXCLUDE;
 		fi
 	done;
-	if [ "$name" ]; then
-		echo $name | sed 's/[!*]/\\&/g'
+	if [ $EXCLUDE ]; then
+		echo $name"/" | sed 's/[!*]/\\&/g'
 	fi
 done >.git/info/exclude
