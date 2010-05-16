@@ -118,12 +118,14 @@ function MediaLibrary:Constructor()
 	--  Proxy Libraries
 	----------------------------------------
 
-    local sharedMedia = LibStub("LibSharedMedia-3.0");
-    if sharedMedia then
-        self:RegisterProxyLibrary(function(mediaType, mediaName, ...)
-            return sharedMedia:Fetch(string.lower(mediaType), mediaName);
-        end);
-    end;
+	if LibStub then
+		local sharedMedia = LibStub("LibSharedMedia-3.0");
+		if sharedMedia then
+			self:RegisterProxyLibrary(function(mediaType, mediaName, ...)
+				return sharedMedia:Fetch(string.lower(mediaType), mediaName);
+			end);
+		end;
+	end;
 
     self:RegisterType("Icon");
     self:RegisterProxyLibrary(
