@@ -1,32 +1,9 @@
 #!/usr/bin/lua
 require "lfs"
-require "FritoMod/CreateTestSuite";
---require "FritoMod_Testing/AllTests";
+require "FritoMod/global";
 
-if lfs.currentdir():find("FritoMod$") then
-    lfs.chdir("..");
-end;
-
-local function ParseAddonToC(tocFileName, dirName)
-    io.input(tocFileName);
-    for line in io.lines() do
-        if not line:find("^#") and line:find("\.lua$") then
-            local filename = ("./%s/%s"):format(dirName, line);
-            dofile(filename);
-        end;
-    end;
-    io.input();
-end;
-
-for dirname in lfs.dir(".") do 
-    local entry = lfs.attributes(dirname);
-    if entry.mode == "directory" and dirname:find("Tests?$") then
-        local tocFileName = ("./%s/%s.toc"):format(dirname, dirname);
-        local tocFileEntry = lfs.attributes(tocFileName);
-        if tocFileEntry and tocFileEntry.mode == "file" then
-            ParseAddonToC(tocFileName, dirname);
-        end;
-    end;
+for i=1,#arg do
+	dofile(arg[i]);
 end;
 
 do

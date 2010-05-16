@@ -2,6 +2,11 @@
 PATH=/bin:/usr/bin:$FM_ROOT
 source fm-load-settings.sh >/dev/null
 make_root
-
 cd $root
-lua $PROJECT/runtests.lua
+
+IFS='
+'
+for comp in `fm s -l -t -r`; do
+	path=`echo $comp | sed 's/	/_/g'`
+	fm toc $comp | grep -v '^##' | sed "s/^/$path\//g"
+done | xargs lua FritoMod/runtests.lua
