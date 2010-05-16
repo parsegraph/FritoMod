@@ -6,7 +6,7 @@ cd $root
 
 IFS='
 '
-for comp in `fm s -l -t -r`; do
+for comp in `fm-search.sh -l -t -r`; do
 	path=`echo $comp | sed 's/	/_/g'`
-	fm toc $comp | grep -v '^##' | sed "s/^/$path\//g"
+	fm-toc.sh $path | grep -v '^##' | sed "s/^/$path\//g"
 done | xargs lua FritoMod/runtests.lua
