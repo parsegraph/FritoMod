@@ -1,9 +1,10 @@
 #!/usr/bin/lua
 require "lfs"
-require "FritoMod/global";
 
 for i=1,#arg do
-	dofile(arg[i]);
+	local f=arg[i];
+	require(f:sub(1, f:find("_")-1).."/global");
+	dofile(f);
 end;
 
 do
