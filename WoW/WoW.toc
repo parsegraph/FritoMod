@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: WoW
+## Author: Aaron Faanes
+## Version: 1.3
+## Dependencies: FritoMod, WoW
+global.lua
