@@ -1,4 +1,23 @@
 #!/bin/bash
-PATH=/bin:/usr/bin
+PATH=/bin:/usr/bin:$HOME/bin:$FM_ROOT
+source fm-library.sh
 
-find * -maxdepth 0 -type d ! -name "FritoMod*" >.git/info/exclude
+make_root
+cd $root
+
+case $1 in 
+	-e) $EDITOR .git/info/exclude
+		exit
+	;;
+esac
+
+for name in `find * -maxdepth 0 -type d`; do
+	for project in `find .fm/* -maxdepth 0 -type d`; do
+		if `echo $name | grep -q "^$project"`; then
+			unset $name
+		fi
+	done;
+	if [ "$name" ]; then
+		echo $name | sed 's/[!*]/\\&/g'
+	fi
+done >.git/info/exclude
