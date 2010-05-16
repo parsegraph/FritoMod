@@ -1,5 +1,5 @@
 ## Interface: 30300
-## Title: FritoMod: Math - Tests
+## Title: FritoMod: Math Tests
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Testing, FritoMod_Math

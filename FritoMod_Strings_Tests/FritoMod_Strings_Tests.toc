@@ -1,5 +1,5 @@
 ## Interface: 30300
-## Title: FritoMod: Strings - Tests
+## Title: FritoMod: Strings Tests
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Testing, FritoMod_Strings

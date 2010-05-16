@@ -1,5 +1,5 @@
 ## Interface: 30300
-## Title: FritoMod: UI - Tests
+## Title: FritoMod: UI Tests
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Testing, FritoMod_UI

@@ -1,5 +1,5 @@
 ## Interface: 30300
-## Title: FritoMod: Collections - Tests
+## Title: FritoMod: Collections Tests
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Testing
