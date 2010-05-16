@@ -9,8 +9,6 @@ end;
 MediaLibrary = OOP.Class();
 local MediaLibrary = MediaLibrary;
 
-MediaLibrary.DEFAULT = "default";
-
 --[[
 	MediaLibrary allows media of any form to be registered to a given name, so that it may be
 	retrieved from a single, consistent source at a later time. If a name requested does not match
@@ -205,7 +203,7 @@ function MediaLibrary:RegisterType(mediaType)
 	end;
 	
 	self["SetDefault" .. mediaType] = function(self, media)
-		return self:Add(mediaType, MediaLibrary.DEFAULT, media);
+		return self:Add(mediaType, "default", media);
 	end;
 	
 	return true;
@@ -259,7 +257,7 @@ end;
 function MediaLibrary:GetDefault(mediaType)
 	--debug("MediaLibrary: Retrieving Default. (Type:", mediaType, ")");
 	self:Constructor();
-    return self:GetExplicit(mediaType, MediaLibrary.DEFAULT);
+    return self:GetExplicit(mediaType, "default");
 end;
 
 function MediaLibrary:BulkAdd(mediaType, mediaTable)
