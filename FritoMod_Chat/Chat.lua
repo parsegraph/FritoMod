@@ -41,8 +41,6 @@
 -- Chat[r]("This is sent to the guild again");
 
 if nil ~= require then
-    -- This file uses WoW-specific functionality
- 
     require "FritoMod_Functional/currying";
 
     require "FritoMod_Collections/Tables";
@@ -115,7 +113,7 @@ setmetatable(Chat, {
             end;
         end;
         if type(medium) == "string" then
-            medium = strtrim(medium);
+            medium = Strings.Trim(medium);
             if medium:find(" ") then
                 medium:gsub(" ", "_");
             end;
