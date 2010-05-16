@@ -95,6 +95,7 @@ function MediaLibrary:Constructor()
 	----------------------------------------
 
 	self:RegisterType("Font");
+	self:Add("Font", "default", "Fonts\\FRIZQT__.TTF");
 
 	----------------------------------------
 	--  Sounds
