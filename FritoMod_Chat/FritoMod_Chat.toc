@@ -3,6 +3,6 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Notes: Some chat abstractions that make communication easier.
-## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_Math, FritoMod_Media, FritoMod_Strings
+## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Strings, FritoMod_Collections, FritoMod_Media, FritoMod_Math
 Chat.lua
 Colors.lua
