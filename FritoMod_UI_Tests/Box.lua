@@ -4,10 +4,12 @@ if nil ~= require then
 
 	require "FritoMod_UI/Stage";
 	require "FritoMod_UI/TextField";
+
+	require "FritoMod_UI_Tests/CreateUITestSuite";
 end;
 
-local Suite=CreateTestSuite("FritoMod_UI/Box");
-local s=Stage:GetInstance();
+local Suite=CreateUITestSuite("FritoMod_UI/Box");
+local s=Stage.GetInstance();
 
 function Suite:TestNeatSpellbook()
 	local vbox = Box:New();

@@ -3,6 +3,7 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Testing, FritoMod_UI
+CreateUITestSuite.lua
 Bar.lua
 Box.lua
 Button.lua
