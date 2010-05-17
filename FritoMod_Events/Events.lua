@@ -28,8 +28,7 @@
 -- listening with them so unused events can be cleaned up.
 
 if nil ~= require then
-	require "wowbench/api";
-	require "wowbench/widgets";
+	require "WoW_UI/Frame-Events";
 
     require "FritoMod_Functional/basic";
     require "FritoMod_Functional/Functions";

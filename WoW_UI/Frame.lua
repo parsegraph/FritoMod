@@ -1,6 +1,10 @@
 if nil ~= require then
+	require "FritoMod_Functional/Metatables";
+
 	require "FritoMod_OOP/OOP-Class";
 end;
+
+WoW=WoW or Metatables.Defensive();
 
 WoW.FrameTypes={};
 function CreateFrame(fType, name, parent, inherited)

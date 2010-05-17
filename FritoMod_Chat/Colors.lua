@@ -1,15 +1,10 @@
 if nil ~= require then
-    -- This file requires WoW-specific functionality
+    require "bit"
 
     require "FritoMod_Functional/Metatables";
-
     require "FritoMod_Math/Math";
-
     require "FritoMod_Collections/Lists";
-
     require "FritoMod_Strings/Strings";
-
-    require "FritoMod_Media/MediaLibrary";
 end;
 
 Colors = Metatables.Defensive();
@@ -19,7 +14,7 @@ function Colors.ColorMessage(color, message)
     if color == nil then
         return message;
     end;
-    if type(color) == "string" then
+    if type(color) == "string" and MediaLibrary then
         local retrievedColor = MediaLibrary:GetExplicit("Color", color);
         if retrievedColor then
             color = retrievedColor;

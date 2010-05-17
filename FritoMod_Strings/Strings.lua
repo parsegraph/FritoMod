@@ -358,7 +358,7 @@ function Strings.ConvertToBase(base, number, digits)
         error("Invalid base: " .. base);
     end;
     local isNegative = number < 0;
-    number = abs(number);
+    number = math.abs(number);
     local converted = "";
     while number > 0 do
         local place = (number % base) + 1;

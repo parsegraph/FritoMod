@@ -1,6 +1,7 @@
 -- Automatic Item Selling
 if nil ~= require then
-	require "wowbench/BlizzardInterface/FrameXML/ContainerFrame";
+	require "WoW_Containers/Containers";
+	require "WoW_Items/Item";
 	
 	require "FritoMod_Functional/currying";
 	require "FritoMod_Events/Events";

@@ -1,15 +1,14 @@
 if nil ~= require then
     require "FritoMod_Functional/currying";
-
     require "FritoMod_OOP/OOP-Class";
-
     require "FritoMod_Strings/Strings";
+    require "FritoMod_Chat/Colors";
+
+    require "WoW/colors";
 end;
 
 MediaLibrary = OOP.Class();
 local MediaLibrary = MediaLibrary;
-
-MediaLibrary.DEFAULT = "default";
 
 --[[
 	MediaLibrary allows media of any form to be registered to a given name, so that it may be
@@ -95,6 +94,7 @@ function MediaLibrary:Constructor()
 	----------------------------------------
 
 	self:RegisterType("Font");
+	self:Add("Font", "default", "Fonts\\FRIZQT__.TTF");
 
 	----------------------------------------
 	--  Sounds
@@ -117,12 +117,14 @@ function MediaLibrary:Constructor()
 	--  Proxy Libraries
 	----------------------------------------
 
-    local sharedMedia = LibStub("LibSharedMedia-3.0");
-    if sharedMedia then
-        self:RegisterProxyLibrary(function(mediaType, mediaName, ...)
-            return sharedMedia:Fetch(string.lower(mediaType), mediaName);
-        end);
-    end;
+	if LibStub then
+		local sharedMedia = LibStub("LibSharedMedia-3.0");
+		if sharedMedia then
+			self:RegisterProxyLibrary(function(mediaType, mediaName, ...)
+				return sharedMedia:Fetch(string.lower(mediaType), mediaName);
+			end);
+		end;
+	end;
 
     self:RegisterType("Icon");
     self:RegisterProxyLibrary(
@@ -202,7 +204,7 @@ function MediaLibrary:RegisterType(mediaType)
 	end;
 	
 	self["SetDefault" .. mediaType] = function(self, media)
-		return self:Add(mediaType, MediaLibrary.DEFAULT, media);
+		return self:Add(mediaType, "default", media);
 	end;
 	
 	return true;
@@ -256,7 +258,7 @@ end;
 function MediaLibrary:GetDefault(mediaType)
 	--debug("MediaLibrary: Retrieving Default. (Type:", mediaType, ")");
 	self:Constructor();
-    return self:GetExplicit(mediaType, MediaLibrary.DEFAULT);
+    return self:GetExplicit(mediaType, "default");
 end;
 
 function MediaLibrary:BulkAdd(mediaType, mediaTable)

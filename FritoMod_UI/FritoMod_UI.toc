@@ -3,7 +3,7 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Notes: An OOP-based UI framework.
-## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_OOP
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_Media, FritoMod_OOP
 LayoutUtil.lua
 Invalidating.lua
 StyleClient.lua

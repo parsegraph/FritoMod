@@ -2,6 +2,7 @@ if nil ~= require then
     require "FritoMod_OOP/Mixins";
 
     require "FritoMod_UI/InvalidatingProxy";
+    require "FritoMod_Media/MediaLibrary";
 end;
 
 StyleClient = Mixins.Library();
