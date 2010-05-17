@@ -3,5 +3,5 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Notes: Media library and some sample sounds.
-## Dependencies: FritoMod, FritoMod_OOP, FritoMod_Functional, FritoMod_Strings
+## Dependencies: FritoMod, FritoMod_Chat, FritoMod_Functional, FritoMod_OOP, FritoMod_Strings
 MediaLibrary.lua
