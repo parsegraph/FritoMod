@@ -1,19 +1,12 @@
-if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
+local Suite = CreateTestSuite("FritoMod_UI/Metatables-StyleClient");
 
-    require "FritoMod_UI/Metatables-StyleClient";
-end;
-
-local Suite = ReflectiveTestSuite:New("FritoMod_UI.Metatables-StyleClient");
 sc = nil;
 
-Suite:AddListener(Metatables.Noop({
+Suite:AddListener({
 	TestStarted = function()
 		sc = Metatables.StyleClient();
 	end
-}));
+});
 
 function Suite:TestStyleClient()
 	sc.color = "blue";
