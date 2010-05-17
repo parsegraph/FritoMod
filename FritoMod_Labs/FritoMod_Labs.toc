@@ -2,7 +2,7 @@
 ## Title: FritoMod: Labs
 ## Author: Aaron Faanes
 ## Version: 1.3
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Events
+## Dependencies: FritoMod, FritoMod_Events, FritoMod_Functional
 Merchant.lua
 Slash.lua
 uchar.lua

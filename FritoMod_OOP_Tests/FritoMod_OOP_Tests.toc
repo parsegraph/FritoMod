@@ -2,6 +2,6 @@
 ## Title: FritoMod: OOP Tests
 ## Author: Aaron Faanes
 ## Version: 1.3
-## Dependencies: FritoMod, FritoMod_Testing, FritoMod_OOP
+## Dependencies: FritoMod, FritoMod_OOP, FritoMod_Testing
 OOP-Class.lua
 OOP.lua

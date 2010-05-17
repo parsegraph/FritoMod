@@ -2,5 +2,5 @@
 ## Title: FritoMod: States Tests
 ## Author: Aaron Faanes
 ## Version: 1.3
-## Dependencies: FritoMod, FritoMod_Testing, FritoMod_States
+## Dependencies: FritoMod, FritoMod_States, FritoMod_Testing
 States.lua
