@@ -10,6 +10,8 @@ if nil ~= require then
     require "FritoMod_Collections/Metatables";
     require "FritoMod_Collections/Lists";
     require "FritoMod_Collections/Iterators";
+
+    require "FritoMod_Testing/Tests";
 end;
 
 TestSuite = OOP.Class();

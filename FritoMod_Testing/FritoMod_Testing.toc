@@ -4,9 +4,9 @@
 ## Version: 1.3
 ## Notes: Testing suite and methods for testing.
 ## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_OOP, FritoMod_Strings
+Tests.lua
 TestSuite.lua
 MappedTestSuite.lua
 AllTests.lua
 Assert.lua
 ReflectiveTestSuite.lua
-Tests.lua
