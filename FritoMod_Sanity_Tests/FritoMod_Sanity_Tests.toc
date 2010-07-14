@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: FritoMod: Sanity Tests
+## Author: Aaron Faanes
+## Version: 1.3
+## Dependencies: FritoMod, FritoMod_Testing
+portability.lua
+sanity.lua
+tutorial.lua
