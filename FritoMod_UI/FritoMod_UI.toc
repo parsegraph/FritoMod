@@ -6,13 +6,13 @@
 ## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_Media, FritoMod_OOP
 LayoutUtil.lua
 Invalidating.lua
+InvalidatingProxy.lua
 StyleClient.lua
 DisplayObject.lua
 Bar.lua
 DisplayObjectContainer.lua
 Box.lua
 Button.lua
-InvalidatingProxy.lua
 Metatables-StyleClient.lua
 Mixins-Validating.lua
 Stage.lua
