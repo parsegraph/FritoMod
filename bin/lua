@@ -19,7 +19,7 @@ fi;
 case $name in
 	*.lua) name=`echo $name | trim -4` ;;
 esac
-make_path_from_root
+make_path_from_root $name
 echo $path_from_root
 
 cd $root
