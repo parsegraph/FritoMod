@@ -115,3 +115,12 @@ function Reference(target)
     local _, split = str:find(":[ ]+");
     return str:sub(split + 1);
 end;
+
+function RemoveValueFromTable(t, v)
+    for i=1,#t do
+        if t[i] == v then
+            table.remove(i);
+            return;
+        end;
+    end;
+end;

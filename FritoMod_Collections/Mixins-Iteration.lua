@@ -55,7 +55,7 @@ function Mixins.Iteration(library)
         end;
         assert(type(iterable) == "table", "Iterable is not a table");
         table.insert(iterable, value);
-        return CurryNamedFunction(library, "Remove", iterable, oldValue);
+        return CurryFunction(RemoveValueFromTable, iterable, value);
     end;
 
     if library.Bias == nil then
