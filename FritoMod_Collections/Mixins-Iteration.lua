@@ -51,7 +51,7 @@ function Mixins.Iteration(library)
             return CurryNamedFunction(library, "Delete", iterable, key);
         end;
         if rawget(library, "Insert") ~= nil then
-            return library.Insert(iterable, key, value);
+            return library.Insert(iterable, value);
         end;
         assert(type(iterable) == "table", "Iterable is not a table");
         table.insert(iterable, value);
