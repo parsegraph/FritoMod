@@ -12,7 +12,7 @@ case $1 in
 esac;
 
 make_name $*
-make_path_from_root
+make_path_from_root $name
 path=$path_from_root
 
 echo $path | grep -q '/' || error "opening a root file does not make sense"
