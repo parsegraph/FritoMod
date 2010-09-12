@@ -14,6 +14,10 @@ Metatables.Defensive(Tables);
 
 Tables.InsertFunction = nil;
 
+function Tables.Bias()
+    return "table";
+end;
+
 function Tables.Iterator(iterable)
     assert(type(iterable) == "table", "iterable is not a table. Iterable: " .. tostring(iterable));
     local key = nil;

@@ -38,7 +38,7 @@ function Mixins.Iteration(library)
     end;
 
     local function InsertInto(iterable, key, value)
-        if rawget(library, "InsertPair") ~= nil then
+        if library.Bias() == "table" then
             return library.InsertPair(iterable, key, value);
         end;
         if type(key) ~= "number" then
@@ -56,6 +56,24 @@ function Mixins.Iteration(library)
         assert(type(iterable) == "table", "Iterable is not a table");
         table.insert(iterable, value);
         return CurryNamedFunction(library, "Remove", iterable, oldValue);
+    end;
+
+    if library.Bias == nil then
+        -- Returns the bias of the library - whether the iterable is expected to behave like
+        -- an array or like a list. This will affect the behavior of some functions, so it's 
+        -- important to get this right. I think most libraries will be biased towards arrays.
+        --
+        -- Only use this function to disambiguate an otherwise unclear situation. For example,
+        -- non-numeric keys cannot typically be used by arrays, so the iterable should be treated
+        -- as a table, regardless of the bias. In other words, try to behave properly, instead
+        -- of punishing designers choosing for the wrong bias.
+        --
+        -- returns
+        --     "table" or "array"
+        function library.Bias()
+            -- The other option is "table"
+            return "array";
+        end;
     end;
 
 	--  Returns a function that tests for equality. The created function
