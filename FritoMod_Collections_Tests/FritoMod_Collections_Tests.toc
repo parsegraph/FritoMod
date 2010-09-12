@@ -2,7 +2,7 @@
 ## Title: FritoMod: Collections Tests
 ## Author: Aaron Faanes
 ## Version: 1.3
-## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Testing
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_Testing
 Mixins-ArrayTests.lua
 Mixins-TableTests.lua
 Iterators.lua
