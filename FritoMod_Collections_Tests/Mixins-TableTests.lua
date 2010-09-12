@@ -220,5 +220,28 @@ function Mixins.TableTests(Suite, library)
 		Assert.Equals("a", i(), "BidiIterator ignores redundant calls and keeps it place");
     end;
 
+    function Suite:TestFilterReturnsASubset()
+        local t=Suite:Table({
+            a=true,
+            b=true,
+            c=true,
+            d=true
+        });
+        library.AssertEquals(Suite:Table({c=true,d=true}), library.FilterKeys(t, function(v)
+            return v > "b";
+        end));
+    end;
+
+    function Suite:TestSliceIsAUsefulFilter()
+        local t=Suite:Table({
+            a=true,
+            b=true,
+            c=true,
+            d=true
+        });
+        local s=library.Slice(t,"b","c");
+        library.AssertEquals({b=true,c=true},s);
+    end;
+
     return Suite;
 end;

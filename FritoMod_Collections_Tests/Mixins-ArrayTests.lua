@@ -185,4 +185,16 @@ function Mixins.ArrayTests(Suite, library)
         Assert.Equals(4, library.Build(a, 1));
     end;
 
+    function Suite:TestFilterReturnsASubset()
+        local a=Suite:Array(1,2,3,4,5);
+        library.AssertEquals(Suite:Array(1,3,5), library.FilterValues(a, function(v)
+            return v % 2 == 1;
+        end));
+    end;
+
+    function Suite:TestSliceReturnsAPortionOfTheOriginal() 
+        local a=Suite:Array("a","b","c","d");
+        library.AssertEquals(Suite:Array("b","c"), library.Slice(a, 2, 3));
+    end;
+
 end;

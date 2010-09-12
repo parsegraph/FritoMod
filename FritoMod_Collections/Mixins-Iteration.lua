@@ -565,6 +565,40 @@ function Mixins.Iteration(library)
         library.Filter = CurryNamedFunction(library, "FilterValue");
     end;
 
+    if library.Slice == nil then
+        -- Returns a copy of the original iterable, containing only the items that were between
+        -- the first and last values, inclusive. This is useful for creating portions of an original
+        -- iterable. Since a comparator is used, first and last do not need to be numeric; they may
+        -- be any value that can be compared with any other value in the iterable.
+        --
+        -- This version of slice is more like Python slices than Java sublists. It does not
+        -- support negative indices. It also clones the original, so changes to the slice do not
+        -- affect the original iterable.
+        --
+        -- iterable
+        --     the iterable from which a slice is returned
+        -- first
+        --     the first or minimum value that is included, inclusive. If nil, all values below last
+        --     are included.
+        -- last
+        --     the last or maximum value that is included, inclusive. If nil, all values above first
+        --     are included.
+        -- compareFunc, ...
+        --     the comparator that is called for every value to compare with the indices.
+        function library.Slice(iterable, first, last, compareFunc, ...)
+            compareFunc=library.NewComparator(compareFunc, ...);
+            return library.FilterKeys(iterable, function(k)
+                if first ~= nil and compareFunc(k, first) < 0 then
+                    return false;
+                end;
+                if last ~= nil and compareFunc(k, last) > 0 then
+                    return false;
+                end;
+                return true;
+            end);
+        end;
+    end;
+
     if library.DefaultReduce == nil then
         -- A default reduce function that tries to do the right thing for various types.
         --
