@@ -3,6 +3,7 @@ if nil ~= require then
     require "FritoMod_Testing/Assert";
     require "FritoMod_Testing/Tests";
 
+    require "FritoMod_Functional/Operator";
     require "FritoMod_Collections/Mixins";
 end;
 
@@ -92,6 +93,17 @@ function Mixins.MutableArrayTests(Suite, library)
 	function Suite:TestSortWithLotsOfElements()
 		Assert.Equals({1,2,3,4,5,6,7,8,9}, DoSort(1, 4, 5, 6, 7, 9, 3, 8, 2));
 	end;
+
+    function Suite:TestBuildUsesIdenticalIterable()
+        local fxns = {
+            Curry(Operator.Add, 1),
+            Curry(Operator.Add, 2),
+        };
+        local a=Suite:Array(unpack(fxns));
+        Assert.Equals(4, library.Build(a, 1));
+        library.Insert(a, Curry(Operator.Multiply, 2));
+        Assert.Equals(8, library.Build(a, 1));
+    end;
 
 	return Suite;
 end;

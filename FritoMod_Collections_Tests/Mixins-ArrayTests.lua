@@ -3,6 +3,7 @@ if nil ~= require then
     require "FritoMod_Testing/Assert";
     require "FritoMod_Testing/Tests";
 
+    require "FritoMod_Functional/Operator";
     require "FritoMod_Collections/Mixins";
 end;
 
@@ -173,6 +174,15 @@ function Mixins.ArrayTests(Suite, library)
 		Assert.Equals(nil, i:Previous());
 		Assert.Equals(nil, i:Previous(), "BidiIterator is idempotent");
 		Assert.Equals("a", i(), "BidiIterator ignores redundant calls and keeps it place");
+    end;
+
+    function Suite:TestBuildBuildsAnObject()
+        local fxns = {
+            Curry(Operator.Add, 1),
+            Curry(Operator.Add, 2),
+        };
+        local a=Suite:Array(unpack(fxns));
+        Assert.Equals(4, library.Build(a, 1));
     end;
 
 end;

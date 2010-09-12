@@ -652,6 +652,40 @@ function Mixins.Iteration(library)
         library.Reduce = CurryNamedFunction(library, "ReduceValues");
     end;
 
+    if library.Build == nil then
+        -- Constructs some value by chaining the result through each function.
+        --
+        -- This function is useful for allowing a process to be constructed dynamically. Since the process
+        -- uses a plain iterable, it may be accessed freely. Since the initial value is passed in when this
+        -- method is called, it may be used to construct many objects. 
+        --
+        -- I believe the flexibility of this function makes it the preferred glue for builder functions,
+        -- greatly surpassing the object in ease-of-use and extensibility.
+        --
+        -- iterable
+        --     an iterable of callables. Each callable will receive the current value. It should modify
+        --     the value, and return the new value. Most often, this will be the same value. If nil is
+        --     returned, the original value is returned.
+        --
+        --     The iterable is not modified by this function
+        -- value
+        --     the initial value
+        -- returns
+        --     the constructed value
+        -- see also
+        --     Reduce, Curry
+        function library.Build(iterable, value)
+            return library.Reduce(iterable, value, function(v, fxn)
+                local rv = fxn(v);
+                if rv ~= nil then
+                    return rv;
+                else
+                    return v;
+                end;
+            end);
+        end;
+    end;
+
     if library.Keys == nil then
         -- Returns a list containing all keys in the specified iterable.
         --
@@ -1090,5 +1124,5 @@ function Mixins.Iteration(library)
 	if library.Mean == nil then
 		library.Mean = CurryNamedFunction(library, "Average");
 	end;
-
+    
 end;
