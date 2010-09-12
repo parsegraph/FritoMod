@@ -254,6 +254,7 @@ function CurryHeadlessMethod(func, ...)
     end;
     error("func is not callable and is not a string. Received type: %s", type(func));
 end
+Headless=CurryHeadlessMethod;
 
 -- Returns a method that ignores any arguments passed to it, only invoking the specified
 -- function with its curried arguments. In effect, this creates a sealed function that is
