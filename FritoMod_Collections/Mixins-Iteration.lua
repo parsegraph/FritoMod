@@ -117,6 +117,10 @@ function Mixins.Iteration(library)
 
     -- Returns an iterator that iterates over the pairs in iterable.
     --
+    -- If your library does not support creating new iterables, this should also
+    -- support iterating over an array. This lets functions that depend on subsets and
+    -- created iterables to still work.
+    --
     -- iterable
     --     a value that is iterable using this function
     -- returns

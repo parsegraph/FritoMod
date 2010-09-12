@@ -4,6 +4,7 @@ if nil ~= require then
     require "FritoMod_Functional/Metatables";
 
     require "FritoMod_Collections/Mixins-Iteration";
+    require "FritoMod_Collections/Lists";
 end;
 
 -- A collection of functions dealing with iterators. Iterators are functions that accept no arguments and
@@ -17,6 +18,9 @@ Mixins.Iteration(Iterators);
 Metatables.Defensive(Iterators);
 
 function Iterators.Iterator(iterator)
+    if type(iterator) == "table" then
+        return Lists.Iterator(iterator);
+    end;
     assert(IsCallable(iterator), "Iterator is not callable. Type: " .. type(iterator));
     return iterator;
 end;
