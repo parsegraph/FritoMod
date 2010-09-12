@@ -46,7 +46,6 @@ function Mixins.Iteration(library)
                 return library.Set(iterable, key, value);
             end;
             assert(type(iterable) == "table", "Iterable is not a table");
-            local oldValue = iterable[key];
             iterable[key] = value;
             return CurryNamedFunction(library, "Delete", iterable, key);
         end;
