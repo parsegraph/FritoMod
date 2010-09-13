@@ -1,5 +1,7 @@
 if nil ~= require then
     require "WoW_UI/Frame-Layout";
+
+    require "FritoMod_Media/color";
 end;
 
 -- Builders are simple methods for adding functionality to another object.
@@ -53,9 +55,9 @@ HeadlessBuilders=setmetatable({}, {
 
 function Builders.Colored(f,r,g,b,a)
     if type(r) == "string" and g == nil and b == nil and a == nil then
-        MediaLibrary:GetColor(r);
+        r,g,b,a=unpack(Media.color[r]);
     end;
-    f:SetTexture(r,g,b);
+    f:SetTexture(r,g,b,a);
 end;
 
 function Builders.Square(f, size)
