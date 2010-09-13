@@ -52,6 +52,9 @@ HeadlessBuilders=setmetatable({}, {
 });
 
 function Builders.Colored(f,r,g,b,a)
+    if type(r) == "string" and g == nil and b == nil and a == nil then
+        MediaLibrary:GetColor(r);
+    end;
     f:SetTexture(r,g,b);
 end;
 
