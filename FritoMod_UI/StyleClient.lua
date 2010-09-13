@@ -2,9 +2,11 @@ if nil ~= require then
     require "FritoMod_OOP/Mixins";
 
     require "FritoMod_UI/InvalidatingProxy";
-    require "FritoMod_Media/MediaLibrary";
+    require "FritoMod_Media/Media";
 end;
 
+-- StyleClient is obsolete. Metatables-StyleClient is its spiritual successor, but they're
+-- very differently designed. In the mean time, we're stuck with it.
 StyleClient = Mixins.Library();
 local StyleClient = StyleClient;
 
@@ -240,8 +242,8 @@ function StyleClient:FollowMediaLibraryKey(valueType, value, ignoreDefault)
     if not mediaType then
         return value;
     end;
-    if ignoreDefault then
-        return MediaLibrary:GetExplicit(mediaType, value);
-    end
-    return MediaLibrary:Get(mediaType, value, ignoreDefault);
+    local v=Media[mediaType][value];
+    if v ~= Media[mediaType].default then
+        return v;
+    end;
 end;
