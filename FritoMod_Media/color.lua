@@ -23,7 +23,7 @@ Media.color = setmetatable({}, {
 });
 
 local function BreakColorTable(table)
-    return {table.a or 1.0, table.r, table.g, table.b};
+    return {table.r, table.g, table.b, table.a or 1.0};
 end;
 
 local function ConvertToTable(alpha, ...)
@@ -38,17 +38,17 @@ local function ConvertToTable(alpha, ...)
     else
         red, green, blue = ...;
     end;
-    return { alpha, red, green, blue };
+    return {red, green, blue, alpha};
 end;
 
-Media.color.white={1.0, 1.0, 1.0, 1.0};
-Media.color.black={1.0, 0.0, 0.0, 0.0};
-Media.color.blue={1.0, 0.0, 0.0, 1.0};
-Media.color.yellow={1.0, 1.0, 1.0, 0.0};
+Media.color.white= {1.0, 1.0, 1.0, 1.0};
+Media.color.black= {0.0, 0.0, 0.0, 1.0};
+Media.color.blue=  {0.0, 0.0, 1.0, 1.0};
+Media.color.yellow={1.0, 1.0, 0.0, 1.0};
 
 Media.color.warning=ConvertToTable(0xFFFF6347);
-Media.color.error=ConvertToTable(0xFFB22222)
-Media.color.debug=ConvertToTable(0xFFCD5C5C);
+Media.color.error=  ConvertToTable(0xFFB22222)
+Media.color.debug=  ConvertToTable(0xFFCD5C5C);
 Media.color.message=ConvertToTable(0xFF6495ED);
 
 if RED_FONT_COLOR then
