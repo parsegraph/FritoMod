@@ -14,8 +14,8 @@ function Colors.ColorMessage(color, message)
     if color == nil then
         return message;
     end;
-    if type(color) == "string" and MediaLibrary then
-        local retrievedColor = MediaLibrary:GetExplicit("Color", color);
+    if type(color) == "string" and Media then
+        local retrievedColor = Media.color[color];
         if retrievedColor then
             color = retrievedColor;
         end;
