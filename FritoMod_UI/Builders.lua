@@ -76,3 +76,52 @@ function Builders.Alpha(f, alpha)
 end;
 Builders.Opacity=Builders.Alpha;
 Builders.Visibility=Builders.Alpha;
+
+do
+    -- Right now, this only does a subset of the possible positions. I think I might change how I decompose here, since
+    -- I don't like how ugly this ends up being.
+    --
+    -- Here's my thoughts on a better way:
+    --
+    -- * Flip anchors - two regions are arranged such that they are on opposite sides of some shared axis.
+    -- * Stack, or Shared,  anchors - two regions are arranged such that they share a common anchor.
+    -- * Center anchors - the working frame is arranged such that its center anchor is aligned to a reference point's anchor.
+    --
+    -- I think these are more descriptive, since they describe the common behavior, rather than being the currently
+    -- very ambiguous names we use now (left, right, etc.)
+    Builders.Left       =function(f,r,g) g=g or 0; if r then f:SetPoint("right",       r, "left",        -g,  0) end end;
+    Builders.Right      =function(f,r,g) g=g or 0; if r then f:SetPoint("left",        r, "right",        g,  0) end end;
+    Builders.Top        =function(f,r,g) g=g or 0; if r then f:SetPoint("bottom",      r, "top",          0,  g) end end;
+    Builders.Bottom     =function(f,r,g) g=g or 0; if r then f:SetPoint("top",         r, "bottom",       0, -g) end end;
+    Builders.TopLeft    =function(f,r,g) g=g or 0; if r then f:SetPoint("bottomright", r, "topleft",     -g,  g) end end;
+    Builders.TopRight   =function(f,r,g) g=g or 0; if r then f:SetPoint("bottomleft",  r, "topright",     g,  g) end end;
+    Builders.BottomLeft =function(f,r,g) g=g or 0; if r then f:SetPoint("topright",    r, "bottomleft",  -g, -g) end end;
+    Builders.BottomRight=function(f,r,g) g=g or 0; if r then f:SetPoint("topleft",     r, "bottomright",  g, -g) end end;
+
+    -- I really like aliases, but I dislike lots of repetition, so this code churns out a lot of aliases
+    -- for our various directions.
+    local cardinals={
+        Left       = "West",
+        Right      = "East",
+        Top        = "North",
+        Bottom     = "South",
+        TopLeft    = "Northwest",
+        TopRight   = "Northeast",
+        BottomLeft = "Southwest",
+        BottomRight= "Southeast"
+    };
+
+    for k,v in pairs(cardinals) do
+        Builders[v]=Builders[k];
+    end;
+    for _, pat in ipairs({"To%s", "%sOf", "Align%s", "%sAligned"}) do
+        for k,v in pairs(cardinals) do
+            Builders[pat:format(k)]=Builders[k];
+            Builders[pat:format(v)]=Builders[v];
+        end;
+    end;
+
+    Builders.Above=Builders.Top;
+    Builders.Beneath=Builders.Bottom;
+    Builders.Below=Builders.Bottom;
+end;
