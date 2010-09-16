@@ -59,6 +59,7 @@ function Builders.Colored(f,r,g,b,a)
     end;
     f:SetTexture(r,g,b,a);
 end;
+Builders.Color=Builders.Colored;
 
 function Builders.Square(f, size)
     f:SetHeight(size);
@@ -68,3 +69,10 @@ end;
 function Builders.Centered(f, relative)
     f:SetPoint("CENTER", relative);
 end;
+Builders.Center=Builders.Centered;
+
+function Builders.Alpha(f, alpha)
+    f:SetAlpha(alpha);
+end;
+Builders.Opacity=Builders.Alpha;
+Builders.Visibility=Builders.Alpha;
