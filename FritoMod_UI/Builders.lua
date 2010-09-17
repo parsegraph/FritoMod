@@ -67,7 +67,11 @@ function Builders.Square(f, size)
 end;
 
 function Builders.Centered(f, relative)
-    f:SetPoint("CENTER", relative);
+    if relative then
+        f:SetPoint("CENTER", relative);
+    else
+        f:SetPoint("CENTER");
+    end;
 end;
 Builders.Center=Builders.Centered;
 
