@@ -96,3 +96,14 @@ function Suite:TestVisibleFieldsCombinedWithFilteredIterator()
     Iterators.Each(iterator, counter.Hit);
     counter.Assert(2);
 end;
+
+function Suite:TestCounter()
+    Assert.Equals({1,2,3}, Iterators.Consume(Iterators.Counter(1,3)));
+    Assert.Equals({3,2,1}, Iterators.Consume(Iterators.Counter(3,1)));
+    Assert.Equals({1,2,3}, Iterators.Consume(Iterators.Counter(3)));
+    Assert.Equals({1,3,5}, Iterators.Consume(Iterators.Counter(1,5,2)));
+    local unbounded=Iterators.Counter();
+    Assert.Equals(1, unbounded());
+    Assert.Equals(2, unbounded());
+    Assert.Equals(3, unbounded());
+end;

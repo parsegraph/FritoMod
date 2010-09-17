@@ -152,16 +152,18 @@ function Iterators.Counter(startValue, endValue, step)
         startValue, endValue, step = 1, startValue, step;
     end;
     if step == nil then
-        if startValue < endValue then
+        if endValue == nil or startValue < endValue then
             step = 1;
         else
             step = -1;
         end;
     end;
-    assert(step ~= 0, "Step is zero");
-    assert((step > 0  and startValue < endValue) or (step < 0 and startValue > endValue), 
-        ("Step is not valid for the range. Start: %d, End: %d, Step: %d"):format(minValue, endValue, step)
-    );
+    assert(step ~= 0, "A step of zero does not make sense");
+    if endValue ~= nil then
+        assert((step > 0 and startValue < endValue) or (step < 0 and startValue > endValue), 
+            ("Step is not valid for the range. Start: %d, End: %d, Step: %d"):format(startValue, endValue, step)
+        );
+    end;
     local current = nil;
     return function()
         if current == nil then
@@ -169,7 +171,7 @@ function Iterators.Counter(startValue, endValue, step)
         else
             current = current + step;
         end
-        if (step > 0 and current > endValue) or (step < 0 and current < endValue) then
+        if endValue ~= nil and (step > 0 and current > endValue) or (step < 0 and current < endValue) then
             -- We've exceed our endValue, so return nil.
             return nil;
         end;
