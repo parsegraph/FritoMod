@@ -244,7 +244,10 @@ end;
 --     the original function that is the target of this function.
 -- spy, ...
 --	   a callable that observes invocations to the original function. It should not affect the behavior
---	   of the observed function. Its return values are ignored.
+--	   of the observed function. 
+--	   
+--	   If its return value is a callable, it will be treated as an undoable. Otherwise, the return value will be 
+--	   ignored.
 -- returns:function
 --     a function that wraps the observed function, invoking the observer first.
 function Functions.Spy(observedFunc, spy, ...)
@@ -254,7 +257,8 @@ function Functions.Spy(observedFunc, spy, ...)
         local spyRV = spy(...);
         local observedRV = observedFunc(...);
 		if spyRV == nil and observedRV ~= nil then
-			-- This special case ensures we don't crash if the spy is silent.
+			-- This special case ensures we don't crash if the spy is silent, which will be the case if spy
+            -- is not an undoable.
 			return observedRV;
 		end;
 		return GetCombinedRV(spyRV, observedRV);
