@@ -265,6 +265,19 @@ function Functions.Spy(observedFunc, spy, ...)
     end;
 end;
 
+-- Spies on the observed function's return value. This doesn't support undoable-like behavior, mainly because I
+-- can't think of a viable use-case. If one comes up, this function should behave similar to Functions.Spy.
+function Functions.ReturnSpy(observedFunc, spy, ...)
+	observedFunc = Curry(observedFunc, ...);
+    spy = Curry(spy, ...);
+    return function(...)
+        local observedRV = observedFunc(...);
+        spy(observedRV);
+		return observedRV;
+    end;
+end;
+Functions.SpyReturn=Functions.ReturnSpy;
+
 -- Manages invocation of one-time setup and tear-down functionality. The setup function is called during the 
 -- first invocation of the returned function, returning a function that tears down any initialization. 
 --

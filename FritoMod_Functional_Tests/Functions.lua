@@ -203,6 +203,13 @@ function Suite:TestSpyUndoablePerformsAfterRepeatedInvocations()
     value.Assert(false, "Observer's returned remover is properly curried and called");
 end;
 
+function Suite:TestReturnSpy()
+    local v=Tests.Value();
+    local f=Functions.ReturnSpy(Functions.Return, v.Set);
+    f(2);
+    v.Assert(2);
+end;
+
 function Suite:TestChain()
     local value = Tests.Value(1);
     local chained = Functions.Chain(value.Set, function(providedValue)
