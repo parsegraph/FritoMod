@@ -5,6 +5,7 @@
 ## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Testing
 Functions.lua
 Metatables.lua
+Objects.lua
 Operator.lua
 basic.lua
 currying.lua

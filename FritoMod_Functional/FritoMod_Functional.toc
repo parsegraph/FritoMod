@@ -8,4 +8,5 @@ basic.lua
 currying.lua
 Functions.lua
 Metatables.lua
+Objects.lua
 Operator.lua
