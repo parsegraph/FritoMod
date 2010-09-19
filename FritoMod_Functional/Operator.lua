@@ -34,7 +34,7 @@ Operator = setmetatable({
     Not = function(value) return not value end,
     Truth = function(value) return Bool(value) end
 }, {
-	__index = function(k,v)
+	__index = function(self, k,v)
 		error("Operation not supported: " .. tostring(k));
 	end
 });
