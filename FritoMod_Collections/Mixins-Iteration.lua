@@ -740,6 +740,12 @@ function Mixins.Iteration(library)
         end;
     end;
 
+    if library.Builder == nil then
+        function library.Builder(iterable)
+            return Curry(library.Build, iterable);
+        end;
+    end;
+
     if library.Keys == nil then
         -- Returns a list containing all keys in the specified iterable.
         --
