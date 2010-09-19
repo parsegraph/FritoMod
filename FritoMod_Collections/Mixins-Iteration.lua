@@ -729,15 +729,14 @@ function Mixins.Iteration(library)
         --     the constructed value
         -- see also
         --     Reduce, Curry
-        function library.Build(iterable, value)
-            return library.Reduce(iterable, value, function(v, fxn)
+        function library.Build(iterable, v)
+            for fxn in library.ValueIterator(iterable) do
                 local rv = fxn(v);
                 if rv ~= nil then
-                    return rv;
-                else
-                    return v;
+                    v=rv;
                 end;
-            end);
+            end;
+            return v;
         end;
     end;
 
