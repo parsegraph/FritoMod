@@ -197,4 +197,8 @@ function Mixins.ArrayTests(Suite, library)
         library.AssertEquals(Suite:Array("b","c"), library.Slice(a, 2, 3));
     end;
 
+    function Suite:TestReduce()
+        Assert.Equals(3, library.Reduce(Suite:Array(1,1,1), 0, Operator.Add));
+    end;
+
 end;
