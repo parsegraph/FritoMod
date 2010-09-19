@@ -91,7 +91,16 @@ do
             for i=1, #argumentGroup do
                 cumulative = cumulative + 1;
                 local value = argumentGroup[i]; 
-                assert(value ~= nil, ("Value is nil at index %d in table %d"):format(i, groupIndex));
+                if value == nil then
+                    local msg="";
+                    for j=1,#collectedValues do
+                        if msg~="" then
+                            msg=msg.."\n";
+                        end;
+                        msg=msg.."Argument #"..j..": "..tostring(collectedValues[j]);
+                    end;
+                    error(("Argument #%d is nil. Argument group: %d, index in group: %d\n"..msg):format(cumulative, groupIndex, i));
+                end;
                 collectedValues[cumulative] = value;
             end
         end
