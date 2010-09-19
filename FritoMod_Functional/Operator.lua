@@ -72,11 +72,16 @@ Operator.GreaterThanOrEquals=Operator.GreaterThanOrEqual;
 Operator.IsGreaterThanOrEquals=Operator.GreaterThanOrEqual;
 
 Operator.Plus=Operator.Add;
+Operator.Addition=Operator.Add;
 
 Operator.Less=Operator.Subtract;
 Operator.Minus=Operator.Subtract;
+Operator.Subtraction=Operator.Subtract;
 
 Operator.Times=Operator.Multiply;
+Operator.Multiplication=Operator.Multiply;
+
+Operator.Division=Operator.Divide;
 
 for k,v in pairs(Operator) do
     Operator[k:lower()]=v;
