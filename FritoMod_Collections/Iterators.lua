@@ -202,3 +202,24 @@ function Iterators.IterateVisibleFields(object)
     end;
     return DoIteration;
 end;
+
+-- It's a Fibonacci sequence, starting at zero.
+-- 0,1,1,2,3,5,8
+function Iterators.Fibonacci()
+    local a,b;
+    return function()
+        if b~=nil then
+            a,b=b,a+b;
+            return b;
+        elseif a~=nil then
+            b=1;
+            return 1;
+        else
+            a=0;
+            return 0;
+        end;
+    end;
+end;
+Iterators.Fibbonaci =Iterators.Fibonacci;
+Iterators.Fibbonacci=Iterators.Fibonacci;
+Iterators.Fibonaci  =Iterators.Fibonacci;
