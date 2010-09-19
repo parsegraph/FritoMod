@@ -5,5 +5,5 @@
 ## Notes: Disabling this addon will disable all FritoMod-dependent addons.
 ## Dependencies: FritoMod
 CreateTestSuite.lua
-global.lua
 TestingSlashCommand.lua
+global.lua

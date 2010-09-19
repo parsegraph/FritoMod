@@ -3,7 +3,8 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Testing
-basic.lua
-currying.lua
 Functions.lua
 Metatables.lua
+Operator.lua
+basic.lua
+currying.lua

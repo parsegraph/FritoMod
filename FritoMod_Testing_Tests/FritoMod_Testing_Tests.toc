@@ -5,5 +5,5 @@
 ## Dependencies: FritoMod, FritoMod_Strings, FritoMod_Testing
 Assert.lua
 ReflectiveTestSuite.lua
-Tests.lua
 TestSuite.lua
+Tests.lua
