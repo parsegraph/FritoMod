@@ -373,8 +373,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
             testFunc = library.NewEqualsTest(testFunc, ...);
             for candidate, value in library.Iterator(iterable) do
                 if testFunc(candidate, targetKey) then
-                    library.Delete(iterable, key);
-                    return value;
+                    return library.Delete(iterable, targetKey);
                 end;
             end;
         end;
