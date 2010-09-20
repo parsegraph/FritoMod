@@ -105,5 +105,37 @@ function Mixins.MutableArrayTests(Suite, library)
         Assert.Equals(8, library.Build(a, 1));
     end;
 
+    function Suite:TestRemoveAtRemovesAValueAtALocation()
+        local a=Suite:Array(1,2,3);
+        Assert.Equals(2, library.RemoveAt(a, 2));
+        library.AssertEqual(Suite:Array(1,3), a);
+    end;
+
+    function Suite:TestShiftRemovesAFewElementsFromAnArray()
+        local a=Suite:Array(1,2,3);
+        library.AssertEqual(Suite:Array(1), library.Shift(a));
+        library.AssertEqual(Suite:Array(2,3), library.Shift(a, 2));
+        library.AssertEqual(Suite:Array(), library.Shift(a));
+    end;
+
+    function Suite:TestShiftTrimLimitsTheSizeOfAnArray()
+        local a=Suite:Array(1,2,3);
+        library.AssertEqual(Suite:Array(1), library.ShiftTrim(a, 2));
+        library.AssertEqual(Suite:Array(2,3), a);
+    end;
+
+    function Suite:TestPopRemovesAFewElementsFromAnArray()
+        local a=Suite:Array(1,2,3);
+        library.AssertEqual(Suite:Array(3), library.Pop(a));
+        library.AssertEqual(Suite:Array(2,1), library.Pop(a, 2));
+        library.AssertEqual(Suite:Array(), library.Pop(a));
+    end;
+
+    function Suite:TestPopTrimLimitsTheSizeOfAnArray()
+        local a=Suite:Array(1,2,3);
+        library.AssertEqual(Suite:Array(3), library.PopTrim(a, 2));
+        library.AssertEqual(Suite:Array(1,2), a);
+    end;
+
 	return Suite;
 end;

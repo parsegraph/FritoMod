@@ -437,6 +437,35 @@ function Mixins.MutableIteration(library, iteratorFunc)
         end;
     end;
 
+    if library.Pop==nil then
+        function library.Pop(iterable, count)
+            count=count or 1;
+            local s=library.Size(iterable);
+            count=math.min(s,count);
+            local final=s-count;
+            local removed=library.New();
+            while s>final do
+                library.Insert(removed, library.RemoveAt(iterable, s));
+                s=s-1;
+            end;
+            return removed;
+        end;
+    end;
+
+    if library.Shift==nil then
+        function library.Shift(iterable, count)
+            count=count or 1;
+            local s=library.Size(iterable);
+            count=math.min(s,count);
+            local removed=library.New();
+            while count>0 do
+                library.Insert(removed, library.RemoveAt(iterable,1));
+                count=count-1;
+            end;
+            return removed;
+        end;
+    end;
+
     if library.Clear == nil then
         -- Removes every element from the specified iterable.
         --
@@ -546,5 +575,19 @@ function Mixins.MutableIteration(library, iteratorFunc)
             return reversed;
         end;
     end;
+
+    local function trim(remover, iterable, limit)
+        return remover(iterable, library.Size(iterable)-limit);
+    end;
+
+    if library.ShiftTrim == nil then
+        library.ShiftTrim=CurryFunction(trim, CurryNamedFunction(library, "Shift"));
+    end;
+    library.QueueTrim = CurryNamedFunction(library, "ShiftTrim");
+
+    if library.PopTrim == nil then
+        library.PopTrim=CurryFunction(trim, CurryNamedFunction(library, "Pop"));
+    end;
+    library.StackTrim = CurryNamedFunction(library, "PopTrim");
 
 end;
