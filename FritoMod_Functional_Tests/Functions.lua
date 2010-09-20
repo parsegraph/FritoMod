@@ -80,6 +80,22 @@ function Suite:TestUndoablesRemoverFiresOnlyOnce()
     flag.Assert("Remover is a no-op after first invocation");
 end;
 
+function Suite:TestReturnHookOverridesAReturnValue()
+    local t=Tests.Value(1);
+    local flag=Tests.Flag();
+    local f=Functions.ReturnHook(
+        function(v)
+            flag.AssertUnset();
+            flag.Raise();
+            return v;
+        end,
+        t.Set
+    );
+    Assert.Equals(1, f(2));
+    flag.Assert();
+    t.Assert(2);
+end;
+
 -- Creates a single global for use with testing.
 function Suite:TestSetupHookTests()
     AGlobalFunctionNoOneShouldEverUse = function(stuff)

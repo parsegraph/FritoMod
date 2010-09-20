@@ -212,6 +212,24 @@ function Functions.SpyGlobal(name, spyFunc, ...)
 	end);
 end;
 
+-- Overrides the return value of the hooked function. hook will receive the new value and is
+-- responsible for returning the new return value.
+--
+-- This is one of those functions that isn't very useful on its own, but it can greatly
+-- enhance the readability if hooked and hook are themselves higher order functions.
+--
+-- see
+--    Functions.ReturnSpy
+function Functions.ReturnHook(hooked, hook, ...)
+   hook=Curry(hook, ...);
+   return function(...)
+      return hook(hooked(...));
+   end;
+end;
+Functions.HookReturn=Functions.ReturnHook;
+Functions.HookedReturn=Functions.ReturnHook;
+Functions.ReturnHooked=Functions.ReturnHook;
+
 -- Ensures that the specified function is only called once, despite multiple invocations of the
 -- returned function.
 --
