@@ -426,7 +426,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         --     optional. The test that performs the search for the specified value
         -- returns
         --     the removed value, or nil if no key was removed
-        function library.RemoveAt(iterable, targetKey, testFunc, ...)
+        function library.RemoveLastAt(iterable, targetKey, testFunc, ...)
             testFunc = library.NewEqualsTest(testFunc, ...);
             for candidate, value in library.ReverseIterator(iterable) do
                 if testFunc(candidate, targetKey) then
