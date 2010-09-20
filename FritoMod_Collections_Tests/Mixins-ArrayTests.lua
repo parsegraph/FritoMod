@@ -176,6 +176,15 @@ function Mixins.ArrayTests(Suite, library)
 		Assert.Equals("a", i(), "BidiIterator ignores redundant calls and keeps it place");
     end;
 
+    function Suite:TestReverseIteratorReturnsValuesBackwards()
+        local a=Suite:Array(3,2,1);
+        local i=library.ReverseIterator(a);
+        Assert.Equals({3,1}, {i()});
+        Assert.Equals({2,2}, {i()});
+        Assert.Equals({1,3}, {i()});
+        Assert.Equals({}, {i()});
+    end;
+
     function Suite:TestBuildBuildsAnObject()
         local fxns = {
             Curry(Operator.Add, 1),

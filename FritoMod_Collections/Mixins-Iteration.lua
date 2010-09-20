@@ -398,7 +398,7 @@ function Mixins.Iteration(library)
         function library.ReverseIterator(iterable)
             local copy = {};
             local keys = {};
-            library.Each(copy, function(key, value)
+            library.EachPair(iterable, function(key, value)
                 copy[key] = value;
                 table.insert(keys, 1, key);
             end);
