@@ -4,6 +4,7 @@
 ## Version: 1.3
 ## Notes: A collection of some helpful functional idioms
 ## Dependencies: FritoMod
+Callbacks.lua
 basic.lua
 currying.lua
 Functions.lua
