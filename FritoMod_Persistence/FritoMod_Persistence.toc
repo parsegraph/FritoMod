@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: FritoMod: Persistence
+## Author: Aaron Faanes
+## Version: 1.3
+## Notes: Persistence for FritoMod.
+## SavedVariables: _Persistence
+## Dependencies: FritoMod, FritoMod_Events, FritoMod_Functional
+Persistence.lua
