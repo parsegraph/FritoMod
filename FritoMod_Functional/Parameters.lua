@@ -1,32 +1,30 @@
 -- Parameters are higher-order functions that behave similar to curried functions. The difference is that
--- while currying attaches constant references or values, parametrics defer to functions. These parametric
--- functions are succinct building blocks for complicated procedures.
+-- while currying attaches constant references or values, parametrics defer to functions.
+--
+-- While I liked the idea of parameters, these haven't lived up to their purpose yet. The examples that I 
+-- came up with to demonstrate them ended up being more confusing than their primitive-only equivalents.
 --
 -- For example, here's an example of the Fibonacci sequence, using parametrics:
 -- local t={0,1};
 -- local fib=Functions.HookReturn(
---    Parameters.Unpacked(Operators.Add, t),
---    Curry(Lists.ShiftTrim, t, 2)
+--     Parameters.Unpacked(Operators.Add, t),
+--     function(v)
+--         table.insert(t, v);
+--         return table.remove(t, 1);
+--     end
 -- );
--- for i=1,5 do print(fib()) end;
 --
--- I've found that for most problems, I'm using a combination of a few different tools to achieve my
--- result. This case was no different. I feel like the above example is a good back-of-the-book solution;
--- namely, it demonstrates the utility of this mod, but in practice, I might inline some of these functions.
+-- And here's the primitive approach:
 --
--- Don't be afraid to use primitives or regular functions. If your solution works for you, go with it. There's
--- no rule that you should prefer this mod's tools over others, or over your own work. Many of the functions
--- that exist here are due to writing a problem in a naive fashion, then refactoring until the decomposition
--- works for me.
+-- local a,b=0,1;
+-- local fib=function()
+--     local rv,sum=a,a+b;
+--     a,b=b,sum;
+--     return rv;
+-- end;
 --
--- Parametrics are somewhat unique to this mod, which is heavily biased towards a functional approach to
--- problems. They may appear confusing, not unlike how currying appears confusing at first glance. I found
--- their expressiveness to be an asset. They let me assemble different kinds of processes very quickly. They
--- also greatly increase reuse and refactor potential, since they decompose problems along functional, rather
--- than object-oriented boundaries.
---
--- It should be noted that parametrics are not designed with efficiency as a primary goal. If you have performance
--- intensive code, inlining your functions may help. "Measure, refactor, repeat" is my recommended approach here.
+-- While the former seems more "precise", the latter makes a whole lot more sense. I'm going to leave this
+-- code in, since I think there's some potential value. However, I haven't found it yet.
 
 if nil ~= require then
     require "FritoMod_Functional/currying";
