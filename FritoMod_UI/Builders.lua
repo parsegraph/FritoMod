@@ -57,6 +57,11 @@ function Builders.Colored(f,r,g,b,a)
     if type(r) == "string" and g == nil and b == nil and a == nil then
         r,g,b,a=unpack(Media.color[r]);
     end;
+    if not f.SetTexture then
+        local t=f:CreateTexture();
+        t:SetAllPoints();
+        f=t;
+    end;
     f:SetTexture(r,g,b,a);
 end;
 Builders.Color=Builders.Colored;
