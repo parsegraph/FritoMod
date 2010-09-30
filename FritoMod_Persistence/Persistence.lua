@@ -4,6 +4,7 @@ if nil~=require then
     require "FritoMod_Functional/Callbacks";
     require "FritoMod_Collections/Lists";
     require "FritoMod_Events/Events";
+    require "FritoMod_Timing/Callbacks";
 end;
 
 local function AssertPersistence()
@@ -26,13 +27,24 @@ Persistence=setmetatable({}, {
 
 local listeners={};
 local removers;
-Callbacks.Persistence=Curry(Lists.InsertFunction, listeners);
+local loaded;
+function Callbacks.Persistence(func, ...)
+    func=Curry(func, ...);
+    if loaded then
+        Callbacks.Later(func);
+    end;
+    return Lists.Insert(listeners, func);
+end;
 
 Events.ADDON_LOADED(function(addon)
-    if addon=="FritoMod_Persistence" then
-        _Persistence=_Persistence or {};
+    if addon~="FritoMod_Persistence" then
+        return;
     end;
+    loaded=true;
+    _Persistence=_Persistence or {};
     removers=Lists.MapCall(listeners);
 end);
 
-Events.PLAYER_LOGOUT(Lists.CallEach, removers);
+Events.PLAYER_LOGOUT(function(addon)
+    Lists.CallEach(removers);
+end);
