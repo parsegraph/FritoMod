@@ -45,6 +45,11 @@ function Anchors.Share(frame, ref, anchor, gap)
     frame:SetPoint(anchor, ref, anchor, touchGaps[anchor](gap));
 end;
 
+function Anchors.Center(frame, ref, anchor)
+    anchor=anchor or "center";
+    frame:SetPoint(anchor, ref, "center");
+end;
+
 do
     local anchors;
     local function CreateAnchor(name)
@@ -52,29 +57,58 @@ do
         anchors[name]=f;
         f:SetWidth(10);
         f:SetHeight(10);
+        f:SetMovable(true);
+        local t=f:CreateTexture();
+        t:SetTexture(1,1,1);
+        t:SetAllPoints();
         anchors[name]=f;
         return f;
     end;
+
+    local function CheckLocation(location)
+        if not location or type(location) ~= "table" then
+            return false;
+        end;
+        if type(location.x) ~= "number" or type(location.y) ~= "number" then
+            return false;
+        end;
+        if type(location.point) ~= "string" then
+            return false;
+        end;
+        return true;
+    end;
     local savedKey="FritoMod.Anchors";
-    Callbacks.Persistence(function()
+
+    function Anchors.Load()
         anchors={};
-        if Persistent[savedKey] then
-            for name,location in pairs(Persistent[savedKey]) do
+        if Persistence[savedKey] then
+            for name,location in pairs(Persistence[savedKey]) do
                 local f=CreateAnchor(name);
-                f:SetPoint(unpack(location));
-            end;
-        end;
-        return function()
-            Persistent[savedKey]={};
-            for name,f in pairs(anchors) do
-                local location={f:GetPoint(1)};
-                if location[2]==nil then
-                    location[2]="UIParent";
+                if CheckLocation(location) then
+                    f:SetPoint(location.anchor, UIParent, location.anchor, location.x, location.y);
                 end;
-                Persistent[savedKey][name]=location;
             end;
         end;
-    end);
+        return Anchors.Save;
+    end;
+
+    function Anchors.Save()
+        Persistence[savedKey]={};
+        for name,f in pairs(anchors) do
+            local location={};
+            local anchor,_,_,x,y=f:GetPoint(1);
+            location.anchor=anchor;
+            location.x=x;
+            location.y=y;
+            Persistence[savedKey][name]=location;
+            if CheckLocation(location) then
+                Persistence[savedKey][name]=location;
+            end;
+        end;
+        return Anchors.Load;
+    end;
+
+    Callbacks.Persistence(Anchors.Load);
     function Anchors.Named(name)
         assert(anchors, "Anchors has not yet been loaded");
         if not anchors[name] then
@@ -82,5 +116,26 @@ do
             f:SetPoint("center");
         end;
         return anchors[name];
+    end;
+
+    function Anchors.Unlock()
+        for k,anchor in pairs(anchors) do
+            anchor:RegisterForDrag("LeftButton");
+            anchor:SetScript("OnDragStart", anchor.StartMoving);
+            anchor:SetScript("OnDragStop", anchor.StopMovingOrSizing);
+        end;
+        return Anchors.Lock;
+    end;
+
+
+    function Anchors.Lock()
+        for k,anchor in pairs(anchors) do
+            anchor:RegisterForDrag();
+            anchor:StopMovingOrSizing();
+            anchor:SetScript("OnDragStart", nil);
+            anchor:SetScript("OnDragStop", nil);
+            anchor:Hide();
+        end;
+        return Anchors.Unlock;
     end;
 end;
