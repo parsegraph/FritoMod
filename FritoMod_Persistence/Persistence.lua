@@ -31,7 +31,12 @@ local loaded;
 function Callbacks.Persistence(func, ...)
     func=Curry(func, ...);
     if loaded then
-        Callbacks.Later(func);
+        Callbacks.Later(function()
+            local r=func();
+            if r then
+                table.insert(removers, r);
+            end;
+        end);
     end;
     return Lists.Insert(listeners, func);
 end;
