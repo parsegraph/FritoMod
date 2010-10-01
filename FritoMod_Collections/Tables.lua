@@ -40,6 +40,13 @@ function Tables.Get(iterable, key)
     return iterable[key];
 end;
 
+function Tables.Value(t, k, v)
+    if v then
+        t[k]=v;
+    end;
+    return t[k];
+end;
+
 function Tables.Delete(targetTable, key)
     local oldValue = targetTable[key];
     targetTable[key] = nil;
