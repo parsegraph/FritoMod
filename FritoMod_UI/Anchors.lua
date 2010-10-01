@@ -6,6 +6,7 @@
 if nil ~= require then
     require "FritoMod_Functional/Callbacks";
     require "FritoMod_Persistence/Persistence";
+    require "WoW_UI/Frame-Layout";
 end;
 
 Anchors={};

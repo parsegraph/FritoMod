@@ -4,6 +4,10 @@ end;
 
 local Frame=WoW.Frame;
 
+function Frame:SetAllPoints()
+
+end;
+
 function Frame:SetPoint()
 
 end;
@@ -33,6 +37,10 @@ function Frame:Show()
 end;
 
 function Frame:SetAlpha()
+
+end;
+
+function Frame:SetFrameStrata()
 
 end;
 
