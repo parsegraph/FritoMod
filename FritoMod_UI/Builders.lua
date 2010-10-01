@@ -54,8 +54,12 @@ HeadlessBuilders=setmetatable({}, {
 });
 
 function Builders.Colored(f,r,g,b,a)
-    if type(r) == "string" and g == nil and b == nil and a == nil then
+    if tonumber(r) == nil then
+        local possibleAlpha=g;
         r,g,b,a=unpack(Media.color[r]);
+        if possibleAlpha then
+            a=possibleAlpha;
+        end;
     end;
     if not f.SetTexture then
         local t=f:CreateTexture();
