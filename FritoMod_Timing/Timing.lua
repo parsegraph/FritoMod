@@ -11,31 +11,47 @@ end;
 Timing = {};
 local Timing = Timing;
 
-local updateListeners = {};
-local timingFrame = CreateFrame("Frame", nil, UIParent);
+do
+    local updateListeners = {};
+    local deadListeners = {};
+    local timingFrame = CreateFrame("Frame", nil, UIParent);
 
--- Adds a function that is fired every update. This is the highest-precision timing
--- function though its precision is dependent on framerate.
---
--- listener, ...
---     the function that is fired every update
--- returns
---     a function that removes the specified listener
-Timing.OnUpdate = Functions.Spy(
-	function(func, ...)
-		return Lists.Insert(updateListeners, Curry(func, ...));
-	end,
-	Functions.Install(function()
-		timingFrame:SetScript("OnUpdate", function(frame, elapsed) 
-			for i=1, #updateListeners do
-				updateListeners[i](elapsed);
-			end;
-		end);
-		return function()
-			timingFrame:SetScript("OnUpdate", nil);
-		end;
-	end)
-);
+    -- Adds a function that is fired every update. This is the highest-precision timing
+    -- function though its precision is dependent on framerate.
+    --
+    -- listener, ...
+    --     the function that is fired every update
+    -- returns
+    --     a function that removes the specified listener
+    Timing.OnUpdate = Functions.Spy(
+        function(func, ...)
+            -- We can't just remove a listener at any given time because we may be 
+            -- iterating over our list. Instead, any listeners that are removed must be
+            -- saved, so they can be removed at a safe time later on.
+            func=Curry(func, ...);
+            table.insert(updateListeners, func);
+            return Functions.OnlyOnce(function()
+                table.insert(deadListeners, func);
+            end);
+        end,
+        Functions.Install(function()
+            timingFrame:SetScript("OnUpdate", function(frame, elapsed) 
+                for i=1, #updateListeners do
+                    local listener=updateListeners[i];
+                    if not #deadListeners or not Lists.Contains(deadListeners, listener) then
+                        listener(elapsed);
+                    end;
+                end;
+                while #deadListeners > 0 do
+                    Lists.Remove(updateListeners, table.remove(deadListeners));
+                end;
+            end);
+            return function()
+                timingFrame:SetScript("OnUpdate", nil);
+            end;
+        end)
+    );
+end;
 
 -- Helper function to construct timers. tickFuncs are called every update, and should
 -- return what they want elapsed to be. This allows tickFuncs to reset or adjust their
