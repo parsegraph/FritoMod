@@ -66,6 +66,16 @@ setmetatable(Events, {
     -- A metatable that allows the succinct Events.EVENT_NAME(eventListener) syntax. This creates new
     -- registries for new events on-demand. There are no errors emitted if an event name is not valid.
     __index = function(self, key)
+        if type(key)=="table" and #key>0 then
+            return function(func, ...)
+                func=Curry(func, ...);
+                local removers={};
+                for _, v in ipairs(key) do
+                    table.insert(removers, Events[v](func));
+                end;
+                return Functions.OnlyOnce(Lists.CallEach, removers);
+            end;
+        end;
 		eventListeners[key] = {};
         self[key] = Functions.Spy(
 			function(func, ...)
