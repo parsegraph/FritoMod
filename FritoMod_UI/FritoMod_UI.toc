@@ -6,4 +6,5 @@
 ## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_Media, FritoMod_Persistence
 Anchors.lua
 Builders.lua
+Callbacks.lua
 Metatables-StyleClient.lua
