@@ -36,7 +36,7 @@ local function ToggledEvent(onEvent, offEvent, installer, ...)
                     end;
                     listeners.deadListeners=nil;
                 end;
-                if #f.mouseEnters == 0 then
+                if #listeners.onListeners == 0 then
                     f:SetScript(onEvent, nil);
                     f:SetScript(offEvent, nil);
                     uninstaller(f);
@@ -83,7 +83,7 @@ local function ToggledEvent(onEvent, offEvent, installer, ...)
     end;
 end;
 
-local function enableMouse()
+local function enableMouse(f)
     f:EnableMouse(true);
     return Seal(f, "EnableMouse", false);
 end;
