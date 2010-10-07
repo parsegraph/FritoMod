@@ -84,8 +84,15 @@ local function ToggledEvent(onEvent, offEvent, installer, ...)
 end;
 
 local function enableMouse(f)
+    f.mouseListenerTypes=f.mouseListenerTypes or 0;
+    f.mouseListenerTypes=f.mouseListenerTypes+1;
     f:EnableMouse(true);
-    return Seal(f, "EnableMouse", false);
+    return Functions.OnlyOnce(function()
+        f.mouseListenerTypes=f.mouseListenerTypes-1;
+        if f.mouseListenerTypes <= 0 then
+            f:EnableMouse(false);
+        end;
+    end)
 end;
 
 Callbacks.MouseDown=ToggledEvent("OnMouseDown", "OnMouseUp", enableMouse);
