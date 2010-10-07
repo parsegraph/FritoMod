@@ -3,7 +3,9 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Events, FritoMod_Functional, FritoMod_UI
+Labs.lua
 FirstAid.lua
 Merchant.lua
 Slash.lua
+SpellCount.lua
 uchar.lua

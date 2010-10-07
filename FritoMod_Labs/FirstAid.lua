@@ -5,9 +5,10 @@ if nil ~= require then
     require "FritoMod_Collections/Lists";
     require "FritoMod_UI/Builders";
     require "FritoMod_Events/Events";
+
+    require "FritoMod_Labs/Labs";
 end;
 
-Labs=Labs or {};
 function Labs.FirstAid()
     local frame=CreateFrame("Frame", nil, UIParent);
 
