@@ -37,6 +37,18 @@ function Mixins.Iteration(library)
         return {};
     end;
 
+    local function CloneIterable(iterable)
+        if rawget(library, "Clone") then
+            return library.Clone(iterable);
+        else
+            local t=NewIterable();
+            for v in library.ValueIterator(iterable) do
+                InsertInto(t, v);
+            end;
+            return t;
+        end;
+    end;
+            
     local function InsertInto(iterable, key, value)
         if library.Bias() == "table" then
             return library.InsertPair(iterable, key, value);
@@ -512,6 +524,21 @@ function Mixins.Iteration(library)
         end;
     end;
 
+    if library.SafeCallEach == nil then
+        -- Calls every function in the specified iterable. The iteration is done over a clone,
+        -- rather than the original iterable.
+        -- 
+        -- iterable
+        --     a value that is iterable using library.Iterator
+        -- ...
+        --     arguments that are passed to each function in iterable
+        -- throws
+        --     if any value in iterable is not callable
+        function library.SafeCallEach(iterable, ...)
+            return library.CallEach(CloneIterable(iterable), ...);
+        end;
+    end;
+
     if library.MapCall == nil then
         -- Runs every function in the specified iterable, returning the results of each.
         -- 
@@ -529,6 +556,23 @@ function Mixins.Iteration(library)
                 assert(IsCallable(func), "func is not callable. Type: " .. type(func));
                 return func(unpack(args));
             end);
+        end;
+    end;
+
+    if library.SafeMapCall == nil then
+        -- Runs every function in the specified iterable, returning the results of each. The
+        -- iterable used is a clone, so removals are safe.
+        -- 
+        -- iterable
+        --     a value that is iterable using library.Iterator
+        -- ...
+        --     arguments that are passed to each function in iterable
+        -- returns
+        --     all non-nil results from the called functions
+        -- throws
+        --     if any value in iterable is not callable
+        function library.SafeMapCall(iterable, ...)
+            return library.MapCall(CloneIterable(iterable), ...);
         end;
     end;
 
