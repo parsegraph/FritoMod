@@ -3,6 +3,17 @@ if nil ~= require then
     require "FritoMod_Functional/Callbacks";
 end;
 
+local function Bury(listeners, deadListener)
+    Lists.Remove(listeners.onListeners, deadListener);
+    if listeners.offListeners then
+        for k,v in pairs(listeners.offListeners) do
+            if type(k)=="function" and v==deadListener then
+                listeners.offListeners[k]=nil;
+            end;
+        end;
+    end;
+end;
+
 local function ToggledEvent(onEvent, offEvent, installer, ...)
     if installer then
         installer=Curry(installer, ...);
@@ -16,23 +27,19 @@ local function ToggledEvent(onEvent, offEvent, installer, ...)
             assert(f[eventListenerName],
             "Callbacks refuses to overwrite an existing listener");
         end;
-        if not f[eventListenerName] then
-            local listeners={
+        local listeners;
+        if f[eventListenerName] then
+            listeners=f[eventListenerName];
+        else
+            listeners={
                 onListeners={},
             };
             f[eventListenerName]=listeners;
             local uninstaller=installer(f) or Noop;
             local function CheckForDeath()
-                if listeners.deadListeners and #listeners.deadListeners > 0 then
+                if listeners.deadListeners then
                     for _,deadListener in ipairs(listeners.deadListeners) do
-                        Lists.Remove(listeners.onListeners, deadListener);
-                        if listeners.offListeners then
-                            for k,v in pairs(listeners.offListeners) do
-                                if type(k)=="function" and v==deadListener then
-                                    listeners.offListeners[k]=false;
-                                end;
-                            end;
-                        end;
+                        Bury(listeners, deadListener);
                     end;
                     listeners.deadListeners=nil;
                 end;
@@ -45,12 +52,13 @@ local function ToggledEvent(onEvent, offEvent, installer, ...)
                 end;
                 return false;
             end;
+            listeners.CheckForDeath=CheckForDeath;
             f:SetScript(onEvent, function()
                     if CheckForDeath() then
                         return;
                     end;
-                    local cloned=Lists.Clone(listeners.onListeners);
-                    for _,onListener in ipairs(cloned) do
+                    listeners.iterating=true;
+                    for _,onListener in ipairs(listeners.onListeners) do
                         local offListener=onListener();
                         if offListener ~= nil then
                             listeners.offListeners=listeners.offListeners or {};
@@ -58,6 +66,7 @@ local function ToggledEvent(onEvent, offEvent, installer, ...)
                             table.insert(listeners.offListeners, offListener);
                         end;
                     end;
+                    listeners.iterating=false;
                     CheckForDeath();
             end);
             f:SetScript(offEvent, function()
@@ -70,15 +79,20 @@ local function ToggledEvent(onEvent, offEvent, installer, ...)
                                 offListener();
                             end;
                         end;
+                        listeners.offListeners=nil;
                         CheckForDeath();
                     end;
             end);
         end;
-        local listeners=f[eventListenerName];
         table.insert(listeners.onListeners, func);
         return Functions.OnlyOnce(function()
+            if not listeners.iterating then
+                Bury(listeners, func);
+                listeners.CheckForDeath();
+            else
                 listeners.deadListeners=listeners.deadListeners or {};
                 table.insert(listeners.deadListeners, func);
+            end;
         end);
     end;
 end;
