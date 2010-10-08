@@ -2,6 +2,7 @@ if nil ~= require then
     require "FritoMod_Functional/currying";
     require "FritoMod_Functional/Functions";
 
+    require "FritoMod_OOP/OOP-Class";
     require "FritoMod_Collections/Lists";
 end;
 
