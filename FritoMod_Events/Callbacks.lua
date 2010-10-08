@@ -7,7 +7,7 @@ if nil ~= require then
 end;
 
 do
-    local dispatcher=ToggleDispatcher();
+    local dispatcher=ToggleDispatcher:New();
     function dispatcher:Install()
         return Events.PLAYER_ENTERING_WORLD(function()
             local _, instanceType = IsInInstance();
@@ -19,4 +19,7 @@ do
         end);
     end;
     Callbacks.EnterArena=Curry(dispatcher, "Add");
+    Callbacks.Arena=Callbacks.EnterArena;
+    Callbacks.EnteredArena=Callbacks.EnterArena;
+    Callbacks.EnteringArena=Callbacks.EnterArena;
 end;
