@@ -23,3 +23,19 @@ do
     Callbacks.EnteredArena=Callbacks.EnterArena;
     Callbacks.EnteringArena=Callbacks.EnterArena;
 end;
+
+do
+    local dispatcher=ToggleDispatcher:New();
+    function dispatcher:Install()
+        return Events.PLAYER_UPDATE_RESTING(function()
+            if IsResting() then
+                dispatcher:Fire();
+            else
+                dispatcher:Reset();
+            end;
+        end);
+    end;
+    Callbacks.Resting=Curry(dispatcher, "Add");
+    Callbacks.Rest=Callbacks.Resting;
+    Callbacks.RestState=Callbacks.Resting;
+end;
