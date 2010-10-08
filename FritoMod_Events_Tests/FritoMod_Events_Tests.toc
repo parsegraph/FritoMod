@@ -4,3 +4,4 @@
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Events, FritoMod_Testing
 Events.lua
+ToggleDispatcher.lua

@@ -3,6 +3,8 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Notes: Event utilities
-## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_OOP
+ToggleDispatcher.lua
+Callbacks.lua
 Events.lua
 CombatEvents.lua
