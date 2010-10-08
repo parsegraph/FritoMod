@@ -3,97 +3,39 @@ if nil ~= require then
     require "FritoMod_Functional/Callbacks";
 end;
 
-local function Bury(listeners, deadListener)
-    Lists.Remove(listeners.onListeners, deadListener);
-    if listeners.offListeners then
-        for k,v in pairs(listeners.offListeners) do
-            if type(k)=="function" and v==deadListener then
-                listeners.offListeners[k]=nil;
-            end;
-        end;
-    end;
-end;
-
-local function ToggledEvent(onEvent, offEvent, installer, ...)
-    if installer then
-        installer=Curry(installer, ...);
-    else
-        installer=Noop;
-    end;
+local function ToggledEvent(onEvent, offEvent, installer)
+    local uninstaller;
     local eventListenerName=onEvent.."Listeners";
-    return function(f, func, ...)
+    return function(frame, func, ...)
         func=Curry(func, ...);
         if f:GetScript(onEvent) then
-            assert(f[eventListenerName],
+            assert(frame[eventListenerName],
             "Callbacks refuses to overwrite an existing listener");
         end;
-        local listeners;
-        if f[eventListenerName] then
-            listeners=f[eventListenerName];
+        local dispatcher;
+        if frame[eventListenerName] then
+            dispatcher=frame[eventListenerName];
         else
-            listeners={
-                onListeners={},
-            };
-            f[eventListenerName]=listeners;
-            local uninstaller=installer(f) or Noop;
-            local function CheckForDeath()
-                if listeners.deadListeners then
-                    for _,deadListener in ipairs(listeners.deadListeners) do
-                        Bury(listeners, deadListener);
-                    end;
-                    listeners.deadListeners=nil;
+            dispatcher=ToggleDispatcher:New();
+            function dispatcher:Install()
+                frame:SetScript(onEvent, dispatcher, "Fire");
+                frame:SetScript(offEvent, dispatcher, "Reset");
+                frame[eventListenerName]=dispatcher;
+                if installer then
+                    uninstaller=installer;
                 end;
-                if #listeners.onListeners == 0 then
-                    f:SetScript(onEvent, nil);
-                    f:SetScript(offEvent, nil);
-                    uninstaller(f);
-                    f[eventListenerName]=nil;
-                    return true;
-                end;
-                return false;
             end;
-            listeners.CheckForDeath=CheckForDeath;
-            f:SetScript(onEvent, function()
-                    if CheckForDeath() then
-                        return;
-                    end;
-                    listeners.iterating=true;
-                    for _,onListener in ipairs(listeners.onListeners) do
-                        local offListener=onListener();
-                        if offListener ~= nil then
-                            listeners.offListeners=listeners.offListeners or {};
-                            listeners.offListeners[offListener]=onListener;
-                            table.insert(listeners.offListeners, offListener);
-                        end;
-                    end;
-                    listeners.iterating=false;
-                    CheckForDeath();
-            end);
-            f:SetScript(offEvent, function()
-                    if CheckForDeath() then
-                        return;
-                    end;
-                    if listeners.offListeners then
-                        for _, offListener in ipairs(listeners.offListeners) do
-                            if listeners.offListeners[offListener] then
-                                offListener();
-                            end;
-                        end;
-                        listeners.offListeners=nil;
-                        CheckForDeath();
-                    end;
-            end);
+            function dispatcher:Uninstall()
+                if uninstaller then
+                    uninstaller();
+                    uninstaller=nil
+                end;
+                frame:SetScript(onEvent, nil);
+                frame:SetScript(offEvent, nil);
+                frame[eventListenerName]=nil;
+            end;
         end;
-        table.insert(listeners.onListeners, func);
-        return Functions.OnlyOnce(function()
-            if not listeners.iterating then
-                Bury(listeners, func);
-                listeners.CheckForDeath();
-            else
-                listeners.deadListeners=listeners.deadListeners or {};
-                table.insert(listeners.deadListeners, func);
-            end;
-        end);
+        return dispatcher:Add(func);
     end;
 end;
 
