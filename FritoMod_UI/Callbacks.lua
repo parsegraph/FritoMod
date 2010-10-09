@@ -18,11 +18,15 @@ local function ToggledEvent(onEvent, offEvent, installer)
         else
             dispatcher=ToggleDispatcher:New();
             function dispatcher:Install()
-                frame:SetScript(onEvent, Curry(dispatcher, "Fire"));
-                frame:SetScript(offEvent, Curry(dispatcher, "Reset"));
+                frame:SetScript(onEvent, function(_, ...)
+                    dispatcher:Fire(...);
+                end);
+                frame:SetScript(offEvent, function(_, ...)
+                    dispatcher:Reset(...);
+                end);
                 frame[eventListenerName]=dispatcher;
                 if installer then
-                    uninstaller=installer();
+                    uninstaller=installer(frame);
                 end;
             end;
             function dispatcher:Uninstall()
