@@ -3,7 +3,8 @@ if nil ~= require then
     require "WoW_UI/Frame-Layout";
 
     require "FritoMod_Collections/Lists";
-    require "FritoMod_UI/Builders";
+    --XXX: Builders has been, mostly, renamed to Frames.
+    --require "FritoMod_UI/Builders";
     require "FritoMod_Events/Events";
 
     require "FritoMod_Labs/Labs";

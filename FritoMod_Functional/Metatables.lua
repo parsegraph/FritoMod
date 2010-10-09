@@ -143,3 +143,14 @@ Metatables.ConstructedValue = function(target, constructorFunc, ...)
         end
     });
 end;
+
+Metatables.Headless=MetatableAttacher({
+    __newindex=function(self,k,v)
+        self[k]=v;
+    end,
+    __index=function(self,k)
+        return function(...)
+            return Headless(self[k], ...);
+        end
+    end
+});
