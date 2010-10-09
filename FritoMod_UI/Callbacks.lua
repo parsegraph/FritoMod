@@ -22,7 +22,7 @@ local function ToggledEvent(onEvent, offEvent, installer)
                 frame:SetScript(offEvent, Curry(dispatcher, "Reset"));
                 frame[eventListenerName]=dispatcher;
                 if installer then
-                    uninstaller=installer;
+                    uninstaller=installer();
                 end;
             end;
             function dispatcher:Uninstall()
