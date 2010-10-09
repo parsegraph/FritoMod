@@ -27,9 +27,17 @@ Frames.SolidColor=Frames.Color;
 
 
 function Frames.Square(f, size)
-    f:SetHeight(size);
-    f:SetWidth(size);
+    return Frames.Rectangle(f, size, size);
 end;
+Frames.Squared=Frames.Square;
+
+function Frames.Rectangle(f, w, h)
+    f:SetWidth(w);
+    f:SetHeight(h);
+end;
+Frames.Rect=Frames.Rectangle;
+Frames.Rectangular=Frames.Rectangle;
+Frames.Size=Frames.Rectangle;
 
 function Frames.Alpha(f, alpha)
     f:SetAlpha(alpha);
