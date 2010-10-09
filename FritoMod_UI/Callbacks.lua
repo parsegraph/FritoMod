@@ -59,3 +59,17 @@ Callbacks.DragFrame=ToggledEvent("OnDragStart", "OnDragStop", enableMouse);
 Callbacks.MouseDown=ToggledEvent("OnMouseDown", "OnMouseUp", enableMouse);
 Callbacks.EnterFrame=ToggledEvent("OnEnter", "OnLeave", enableMouse);
 Callbacks.ShowFrame=ToggledEvent("OnShow", "OnHide");
+
+local CLICK_TOLERANCE=.5;
+function Callbacks.Click(f, func, ...)
+    func=Curry(func, ...);
+    Callbacks.MouseDown(f, function(btn)
+        local downTime=GetTime();
+        return function()
+            local upTime=GetTime();
+            if upTime-downTime < CLICK_TOLERANCE then
+                func(btn);
+            end;
+        end;
+    end);
+end;
