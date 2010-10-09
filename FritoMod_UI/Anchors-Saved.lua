@@ -23,6 +23,7 @@ anchorFrame:SetFrameStrata("HIGH");
 function Anchors.Named(name)
     if not anchors[name] then
         anchors[name]=PersistentAnchor:New(anchorFrame);
+        anchors[name].frame:SetPoint("center");
     end;
     return anchors[name].frame;
 end;
@@ -35,9 +36,9 @@ Anchors.Persisting=Anchors.Named;
 Anchors.Persisted=Anchors.Named;
 Anchors.Persist=Anchors.Named;
 
-Anchors.Hide=Curry(Lists.Each, anchors, "Hide");
+Anchors.Hide=Curry(Tables.EachValue, anchors, "Hide");
 Anchors.Lock=Anchors.Hide;
-Anchors.Show=Curry(Lists.Each, anchors, "Show");
+Anchors.Show=Curry(Tables.EachValue, anchors, "Show");
 Anchors.Unlock=Anchors.Show;
 
 local showing=false;
@@ -50,28 +51,37 @@ function Anchors.Toggle()
     showing=not showing;
 end;
 
+local function CheckForError(name, location)
+    if location and type(location)=="table" and location.error then
+        print(("Save error found during loading %s: %s"):format(name, err));
+        location.error=nil;
+    end;
+end;
+
 Callbacks.Persistence(function()
     if Persistence[savedKey] then
         for name,a in pairs(anchors) do
             if a.frame:GetNumPoints() > 0 then
                 -- Clear this entry to prevent it from being loaded, since we've had an 
                 -- update since the last save.
+                CheckForError(name, Persistence[savedKey][name]);
                 Persistence[savedKey][name]=nil;
             else
                 a.frame:SetPoint("center");
             end;
         end;
         for name,location in pairs(Persistence[savedKey]) do
-            local a=Anchors.Named(name);
-            if type(location)=="string" then
-                print(("Saving error found while loading %s: %s"):format(name, location));
-            else
-                local rv, err=pcall(a.Load, a, location);
-                if not rv then
-                    -- This works for now, but it'd be nice if we could be more obvious
-                    -- when this stuff fails.
-                    print(("Error while loading %s: %s"):format(name, err));
-                end;
+            CheckForError(name, location);
+            if not anchors[name] then
+                -- This sets anchors[name] to a new PersistentAnchor, as needed.
+                Anchors.Named(name);
+            end;
+            local a=anchors[name];
+            local rv, err=pcall(a.Load, a, location);
+            if not rv then
+                -- This works for now, but it'd be nice if we could be more obvious
+                -- when this stuff fails.
+                print(("Error while loading %s: %s"):format(name, err));
             end;
         end;
     else
@@ -84,10 +94,16 @@ Callbacks.Persistence(function()
     return function()
         for name,a in pairs(anchors) do
             Persistence[savedKey]=Persistence[savedKey] or {};
-            local _, location=pcall(a.Load, a, location);
-            -- This will work whether the location is a table or a error message, since
-            -- we check for this during the loading process.
-            Persistence[savedKey][name]=location;
+            local rv, location=pcall(a.Save, a);
+            if rv then
+                Persistence[savedKey][name]=location;
+            elseif Persistence[savedKey][name] then
+                -- Keep the old one, and save the error.
+                Persistence[savedKey][name].error=location;
+            else
+                -- Couldn't keep the old one, so make a fake one.
+                Persistence[savedKey][name]={anchor="center", error=location};
+            end;
         end;
     end;
 end);

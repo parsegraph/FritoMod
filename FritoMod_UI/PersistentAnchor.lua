@@ -21,6 +21,9 @@ function PersistentAnchor:Constructor(parentFrame)
 end;
 
 function PersistentAnchor:Show()
+    if self.frame:GetNumPoints()==0 then
+        self.frame:SetPoint("center");
+    end;
     self.frame:Show();
     Frames.Draggable(self.frame);
     return Functions.OnlyOnce(self, "Hide");
@@ -29,15 +32,17 @@ end;
 function PersistentAnchor:Hide()
     self.frame:Hide();
     Frames.Draggable(self.frame, false);
-    return Functions.OnlyOnce(self, "Show");
 end;
 
 local function AssertLocationFormat(location)
     assert(location, "location must not be nil");
     assert(type(location) == "table", "location must be a table. Type: "..type(location));
-    assert(tonumber(location.x), "location.x must be a number, but it was: "..tostring(location.x));
-    assert(tonumber(location.y), "location.y must be a number, but it was: "..tostring(location.y));
-    assert(tonumber(location.anchor), "location.anchor must be a string, but it was: "..tostring(location.y));
+    assert(type(location.anchor)=="string", 
+        "location.anchor must be a string, but it was: "..tostring(location.anchor));
+    assert(tonumber(location.x) or location.x==nil, 
+        "location.x looks invalid (not a number or nil): "..tostring(location.x));
+    assert(tonumber(location.y) or location.y==nil, 
+        "location.y looks invalid (not a number or nil): "..tostring(location.y));
 end
 
 function PersistentAnchor:Load(location)
