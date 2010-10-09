@@ -14,6 +14,7 @@ local savedKey="FritoMod.Anchors";
 
 -- A mapping of anchor names to PersistentAnchor objects.
 local anchors={};
+Anchors.anchors=anchors;
 
 -- The parent for every anchor created using this process.
 local anchorFrame;
@@ -21,12 +22,44 @@ anchorFrame=CreateFrame("Frame", nil, UIParent);
 anchorFrame:SetAllPoints();
 anchorFrame:SetFrameStrata("HIGH");
 
-function Anchors.Named(name)
-    if not anchors[name] then
-        anchors[name]=PersistentAnchor:New(anchorFrame);
-        anchors[name].frame:SetPoint("center");
+local anchorNameFrame=anchorFrame:CreateFontString();
+anchorNameFrame:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE");
+
+local removers={};
+local showing=false;
+local function ShowAnchor(name, anchor)
+    if not showing then
+        return;
     end;
-    return anchors[name].frame;
+    Lists.InsertAll(removers, 
+        anchor:Show(),
+        Callbacks.EnterFrame(anchor.frame, function()
+            if not anchor.frame:IsDragging() then
+                anchorNameFrame:Show();
+                anchorNameFrame:ClearAllPoints();
+                Anchors.Over(anchorNameFrame, anchor.frame, "top", 4);
+                anchorNameFrame:SetText(name);
+            end;
+            return Curry(anchorNameFrame, "Hide");
+        end),
+        Callbacks.DragFrame(anchor.frame, function()
+            anchorNameFrame:Hide();
+            return Curry(anchorNameFrame, "Show");
+        end)
+    );
+end;
+
+function Anchors.Named(name)
+    local anchor;
+    if anchors[name] then
+        anchor=anchors[name];
+    else
+        anchor=PersistentAnchor:New(anchorFrame);
+        anchor.frame:SetPoint("center");
+        anchors[name]=anchor;
+        ShowAnchor(name, anchor)
+    end;
+    return anchor.frame;
 end;
 Anchors.Saved=Anchors.Named;
 Anchors.Save=Anchors.Named;
@@ -37,19 +70,33 @@ Anchors.Persisting=Anchors.Named;
 Anchors.Persisted=Anchors.Named;
 Anchors.Persist=Anchors.Named;
 
-Anchors.Hide=Curry(Tables.EachValue, anchors, "Hide");
-Anchors.Lock=Anchors.Hide;
-Anchors.Show=Curry(Tables.EachValue, anchors, "Show");
-Anchors.Unlock=Anchors.Show;
-
-local showing=false;
-function Anchors.Toggle()
-    if showing then
-        Anchors.Hide();
-    else
-        Anchors.Show();
+do
+    function Anchors.Show()
+        if showing then
+            return;
+        end;
+        showing=true;
+        Tables.EachPair(anchors, ShowAnchor);
+        return Anchors.Hide;
     end;
-    showing=not showing;
+    Anchors.Unlock=Anchors.Show;
+
+    function Anchors.Hide()
+        if not showing then
+            return;
+        end;
+        showing=false;
+        Lists.CallEach(removers);
+    end;
+    Anchors.Lock=Anchors.Hide;
+
+    function Anchors.Toggle()
+        if showing then
+            Anchors.Hide();
+        else
+            Anchors.Show();
+        end;
+    end;
 end;
 
 local function CheckForError(name, location)
