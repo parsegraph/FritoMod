@@ -8,7 +8,7 @@ local function ToggledEvent(onEvent, offEvent, installer)
     local eventListenerName=onEvent.."Listeners";
     return function(frame, func, ...)
         func=Curry(func, ...);
-        if f:GetScript(onEvent) then
+        if frame:GetScript(onEvent) then
             assert(frame[eventListenerName],
             "Callbacks refuses to overwrite an existing listener");
         end;
