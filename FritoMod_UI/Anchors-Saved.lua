@@ -45,6 +45,16 @@ local function ShowAnchor(name, anchor)
         Callbacks.DragFrame(anchor.frame, function()
             anchorNameFrame:Hide();
             return Curry(anchorNameFrame, "Show");
+        end),
+        Callbacks.Click(anchor.frame, function(b)
+            if b~="MiddleButton" then
+                return;
+            end;
+            if Persistence[savedKey] then
+                Persistence[savedKey][name]=nil;
+            end;
+            anchors[name]:Hide();
+            anchors[name]=nil;
         end)
     );
 end;
