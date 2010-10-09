@@ -23,7 +23,7 @@ anchorFrame:SetAllPoints();
 anchorFrame:SetFrameStrata("HIGH");
 
 local anchorNameFrame=anchorFrame:CreateFontString();
-anchorNameFrame:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE");
+anchorNameFrame:SetFont("Fonts\\FRIZQT__.TTF", 11);
 
 local removers={};
 local showing=false;
