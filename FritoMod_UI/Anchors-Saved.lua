@@ -1,5 +1,6 @@
 if nil ~= require then
     require "WoW_UI/Frame-Layout";
+    require "WoW_UI/FontString";
 
     require "FritoMod_Functional/Callbacks";
     require "FritoMod_Persistence/Persistence";
