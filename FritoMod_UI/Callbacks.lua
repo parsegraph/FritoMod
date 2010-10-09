@@ -51,6 +51,7 @@ local function enableMouse(f)
     end)
 end;
 
+Callbacks.DragFrame=ToggledEvent("OnDragStart", "OnDragStop", enableMouse);
 Callbacks.MouseDown=ToggledEvent("OnMouseDown", "OnMouseUp", enableMouse);
 Callbacks.EnterFrame=ToggledEvent("OnEnter", "OnLeave", enableMouse);
 Callbacks.ShowFrame=ToggledEvent("OnShow", "OnHide");
