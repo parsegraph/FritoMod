@@ -21,6 +21,7 @@ function Frames.Color(f,r,g,b,a)
         f=t;
     end;
     f:SetTexture(r,g,b,a);
+    return f;
 end;
 Frames.Colored=Frames.Color;
 Frames.Solid=Frames.Color;
