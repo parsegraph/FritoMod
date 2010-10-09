@@ -32,6 +32,12 @@ function Anchors.Touch(frame, ref, anchor, gap)
     anchor=anchor:lower();
     frame:SetPoint(reverses[anchor], ref, anchor, touchGaps[anchor](gap));
 end;
+Anchors.Touching=Anchors.Touch;
+Anchors.Touches=Anchors.Touch;
+Anchors.Flip=Anchors.Touch;
+Anchors.Flipped=Anchors.Touch;
+Anchors.Flipping=Anchors.Touch;
+Anchors.Over=Anchors.Touch;
 
 -- frame shares ref's anchor
 function Anchors.Share(frame, ref, anchor, gap)
@@ -39,6 +45,7 @@ function Anchors.Share(frame, ref, anchor, gap)
     anchor=anchor:lower();
     frame:SetPoint(anchor, ref, anchor, touchGaps[anchor](gap));
 end;
+Anchors.On=Anchors.Share;
 
 function Anchors.Center(frame, ref, anchor)
     anchor=anchor or "center";
