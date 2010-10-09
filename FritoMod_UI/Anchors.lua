@@ -1,8 +1,3 @@
--- I think Anchors will be a collection of method dealing with points. Right now, these
--- live in Builders, but I'm going to move them here. I want to have the good decomposition
--- (i.e., Flip, Stack, Center, etc. anchors) along with persistent anchors (once I figure out
--- how these should work).
-
 if nil ~= require then
     require "FritoMod_Functional/Callbacks";
     require "FritoMod_Persistence/Persistence";
