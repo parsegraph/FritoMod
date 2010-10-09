@@ -10,7 +10,7 @@ local function ToggledEvent(onEvent, offEvent, installer)
         func=Curry(func, ...);
         if frame:GetScript(onEvent) then
             assert(frame[eventListenerName],
-            "Callbacks refuses to overwrite an existing listener");
+            "Callbacks refuses to overwrite an existing "..onEvent.." listener");
         end;
         local dispatcher;
         if frame[eventListenerName] then
@@ -18,8 +18,8 @@ local function ToggledEvent(onEvent, offEvent, installer)
         else
             dispatcher=ToggleDispatcher:New();
             function dispatcher:Install()
-                frame:SetScript(onEvent, dispatcher, "Fire");
-                frame:SetScript(offEvent, dispatcher, "Reset");
+                frame:SetScript(onEvent, Curry(dispatcher, "Fire"));
+                frame:SetScript(offEvent, Curry(dispatcher, "Reset"));
                 frame[eventListenerName]=dispatcher;
                 if installer then
                     uninstaller=installer;
