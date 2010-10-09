@@ -39,3 +39,17 @@ do
     Callbacks.Rest=Callbacks.Resting;
     Callbacks.RestState=Callbacks.Resting;
 end;
+
+do
+    local dispatcher=ToggleDispatcher:New();
+    function dispatcher:Install()
+        local r1=Events.PLAYER_REGEN_DISABLED(Seal(dispatcher, "Fire"));
+        local r2=Events.PLAYER_REGEN_ENABLED(Seal(dispatcher, "Reset"));
+        return Functions.OnlyOnce(function()
+            r1();
+            r2();
+        end);
+    end;
+    Callbacks.Combat=Curry(dispatcher, "Add");
+    Callbacks.InCombat=Callbacks.Combat;
+end;
