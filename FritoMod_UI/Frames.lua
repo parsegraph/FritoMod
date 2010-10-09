@@ -47,23 +47,27 @@ end;
 Frames.Opacity=Frames.Alpha;
 Frames.Visibility=Frames.Alpha;
 
-do 
+do
     local buttons={
+        leftbutton="LeftButton",
         left="LeftButton",
         leftmouse="LeftButton",
         ["1"]="LeftButton",
         mouse1="LeftButton",
 
+        rightbutton="LeftButton",
         right="RightButton",
         rightmouse="LeftButton",
         ["2"]="RightButton",
         mouse2="RightButton",
 
+        middlebutton="MiddleButton",
         middle="MiddleButton",
         middlemouse="MiddleButton",
         ["3"]="MiddleButton",
         mouse3="MiddleButton",
 
+        button4="Button4",
         ["4"]="Button4",
         mouse4="Button4",
         thumb="Button4",
@@ -71,28 +75,36 @@ do
         side1="Button4",
         side="Button4",
 
+        button5="Button5",
         ["5"]="Button5",
         mouse5="Button5",
         side2="Button4",
         thumb2="Button4",
     };
+    function Frames.GetButtonName(button)
+        assert(type(button)=="string", "Button name is not a string. Type: "..type(button));
+        return buttons[button:lower()] or button;
+    end;
+end;
+
+do 
     local function StartDrag(f, buttons)
-        f:EnableMouse(true);
         f:RegisterForDrag(unpack(buttons));
-        f:SetScript("OnDragStart", f.StartMoving);
-        f:SetScript("OnDragStop", f.StopMovingOrSizing);
+        f.dragRemover=Callbacks.DragFrame(f, Functions.Undoable(
+            Seal(f, "StartMoving"),
+            Seal(f, "StopMovingOrSizing")
+        ));
     end;
     local function StopDrag(f)
-        f:EnableMouse(false);
-        f:RegisterForDrag();
         f:StopMovingOrSizing();
-        f:SetScript("OnDragStart", nil);
-        f:SetScript("OnDragStop", nil);
+        f.dragRemover();
+        f.dragRemover=nil;
+        f:RegisterForDrag();
     end;
     function Frames.Draggable(f, ...)
         local buttons={...};
         if #buttons==0 then
-            buttons={"LeftButton"};
+            buttons={"LeftButton", "RightButton"};
         elseif #buttons==1 and type(buttons[1])=="boolean" then
             if buttons[1] then
                 StartDrag(f, {"LeftButton"});
@@ -104,7 +116,7 @@ do
                 if type(btn)~="string" then
                     btn=tostring(btn);
                 end;
-                buttons[i]=buttons[btn:lower()] or btn:lower();
+                buttons[i]=Frames.GetButtonName(btn);
             end;
         end;
         StartDrag(f, buttons);
