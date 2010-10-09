@@ -8,16 +8,17 @@ PersistentAnchor=OOP.Class();
 
 function PersistentAnchor:Constructor(parentFrame)
     local f=CreateFrame("Frame", nil, parentFrame)
+    f:Hide();
     self.frame=f;
     Frames.Square(f, 10);
     f:SetMovable(true);
-    Frames.Color(f, "black");
-    f:Hide();
+    local bg=Frames.Color(f, "black");
+    bg:SetDrawLayer("BACKGROUND");
 
-    local white=f:CreateTexture();
-    Frames.Color(f, "white");
+    local white=f:CreateTexture(nil, "BORDER");
+    Frames.Color(white, "white");
     white:SetPoint("center");
-    Frames.Square(white, 7);
+    Frames.Square(white, 8);
 end;
 
 function PersistentAnchor:Show()
