@@ -97,6 +97,8 @@ function Objects.Value(value)
     holder.AssertValue = holder.Assert;
     holder.AssertCurrentValue = holder.Assert;
 
+    getmetatable(holder).__call=holder.Value;
+
     return holder;
 end;
 
@@ -248,6 +250,8 @@ function Objects.Toggle(func, ...)
         return toggle.Assert(false, assertion);
     end;
     toggle.AssertOff=toggle.AssertFalse;
+    
+    getmetatable(toggle).__call=toggle.State;
 
     return toggle;
 end;
