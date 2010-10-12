@@ -244,3 +244,4 @@ function Objects.Toggle(func, ...)
 
     return toggle;
 end;
+Objects.Switch=Objects.Toggle;
