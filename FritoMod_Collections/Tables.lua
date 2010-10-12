@@ -71,6 +71,12 @@ function Tables.Update(dest, src, func, ...)
 	end;
 end;
 
+function Tables.Alias(t, key, ...)
+    for i=1,select("#", ...) do
+        t[select(i, ...)]=t[key];
+    end;
+end;
+
 -- Expands the keys in the specified table. Any key that is a table will be iterated,
 -- and its children will be used as new keys in the specified table. Their values will
 -- be that of the original table-key. The original table-keys will be removed.
