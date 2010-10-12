@@ -96,7 +96,14 @@ local function ForcedMetatable(forceFunc)
 end;
 
 Metatables.ForceFunctions = ForcedMetatable(ForcedFunction);
+Metatables.ForceFunction = ForcedMetatable(ForcedFunction);
+Metatables.ForcedFunctions = ForcedMetatable(ForcedFunction);
+Metatables.ForcedFunction = ForcedMetatable(ForcedFunction);
+
 Metatables.ForceMethods = ForcedMetatable(ForcedMethod);
+Metatables.ForcedMethods = ForcedMetatable(ForcedMethod);
+Metatables.ForcedMethod = ForcedMetatable(ForcedMethod);
+Metatables.ForceMethod = ForcedMetatable(ForcedMethod);
 
 -- Adds a metatable to the specified target that returns the specified default value for any
 -- non-existent key. The default value is never assigned to the specified table.
