@@ -1,12 +1,4 @@
-if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Chat/Chat";
-end;
-
-local Suite = ReflectiveTestSuite:New("FritoMod_Chat.Chat");
+local Suite = CreateTestSuite("FritoMod_Chat.Chat");
 
 Suite:AddListener(Metatables.Noop({
 	TestStarted = function(self, suite)
