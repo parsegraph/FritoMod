@@ -36,8 +36,6 @@ function Curry(...)
     if select("#", ...) == 1 then
         local potentialCallable = select(1, ...);
         if IsCallable(potentialCallable) then
-            assert(type(potentialCallable) == "function", 
-                "Callable objects must be functions. Type: " .. type(potentialCallable));
             return potentialCallable;
         end;
         if type(potentialCallable) == "string" then
