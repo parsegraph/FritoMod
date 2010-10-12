@@ -25,3 +25,19 @@ function Suite:TestValueAllowsMethodCalls()
     value:Set(true);
     Assert.Equals(true, value:Get(), "Value allows method-style calls");
 end;
+
+function Suite:TestToggleManagesAToggledFunctionOrValue()
+    local t=Objects.Toggle();
+    Assert.False(t:IsOn());
+    t:On();        
+    t:AssertTrue();
+    t:Off();
+    t:AssertFalse();
+    t:Off();
+    t:AssertFalse();
+    local r=t:Set(1);
+    t:AssertTrue();
+    r();
+    t:AssertFalse();
+    r();
+end;

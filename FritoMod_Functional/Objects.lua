@@ -115,35 +115,65 @@ local toggleAliases={
     switch="toggle",
     next="toggle"
 }
+local function InterpretState(state)
+    if type(state)=="string" then
+        if Strings then
+            -- FritoMod_Strings provides useful, but non-essential, trim functionality.
+            state=Strings.Trim(state)
+        end;
+        local convertedState=toggleAliases[state:lower()];
+        assert(convertedState, "Unrecognized state: "..state);
+        return convertedState;
+    elseif IsCallable(state) then
+        return InterpretState(state());
+    else
+        if state then
+            return "on";
+        else
+            return "off";
+        end
+    end;
+end;
 
 function Objects.Toggle(func, ...)
-    func=Curry(func, ...);
+    if func==nil and select("#",...)==0 then
+        func=Noop;
+    else
+        func=Curry(func, ...);
+    end;
     local resetter;
-    local toggle={};
+    local toggle=Metatables.ForcedFunctions();
 
-    function toggle:IsOn()
+    function toggle.IsOn()
         -- If we have a resetter, we're on.
-        return not resetter;
+        if resetter then
+            return true;
+        else
+            return false;
+        end;
     end;
     toggle.IsSet=toggle.IsOn;
     toggle.GetStatus=toggle.IsOn;
     toggle.GetState=toggle.IsOn;
 
-    function toggle:IsOff()
-        return not toggle:IsOn();
+    function toggle.IsOff()
+        return not toggle.IsOn();
     end;
 
-    function toggle:On()
-        if toggle:IsOn() then
+    function toggle.On()
+        if toggle.IsOn() then
             return toggle.Off;
         end;
         resetter=func();
+        if not IsCallable(resetter) then
+            resetter=Noop;
+        end;
         return toggle.Off;
     end;
     toggle.TurnOn=toggle.On;
 
-    function toggle:Off()
-        if toggle:IsOff() then
+    function toggle.Off()
+        if toggle.IsOff() then
             return toggle.On;
         end;
         resetter();
@@ -151,52 +181,66 @@ function Objects.Toggle(func, ...)
         return toggle.On;
     end;
 
-    function toggle:Toggle()
-        if toggle:IsOn() then
-            return toggle:Off();
+    function toggle.Toggle()
+        if toggle.IsOn() then
+            return toggle.Off();
         else
-            return toggle:On();
+            return toggle.On();
         end;
     end;
     toggle.Switch=toggle.Toggle;
     toggle.Next=toggle.Toggle;
+    toggle.Go=toggle.Toggle;
+    toggle.Fire=toggle.Toggle;
 
-    function toggle:State(state)
+    function toggle.State(state)
         if state == nil then
-            return toggle:IsOn();
+            return toggle.IsOn();
         else
-            return toggle:Set(state);
+            return toggle.Set(state);
         end;
     end;
     toggle.Status=toggle.State;
 
-    function toggle:Set(state)
-        if type(state)=="string" then
-            if Strings then
-                -- FritoMod_Strings provides useful, but non-essential, trim functionality.
-                state=Strings.Trim(state)
-            end;
-            state=toggleAliases[state:lower()] or state;
-            if     state=="on"     then toggle:On();
-            elseif state=="off"    then toggle:Off();
-            elseif state=="toggle" then toggle:Toggle();
-            else
-                assert(state, "Unrecognized state: "..state);
-            end;
-        elseif IsCallable(state) then
-            toggle:Set(state());
-        else
-            if state then
-                return toggle:On();
-            else
-                return toggle:Off();
-            end
+    function toggle.Set(state)
+        state=InterpretState(state);
+        if     state=="on"     then return toggle.On();
+        elseif state=="off"    then return toggle.Off();
+        else                        return toggle.Toggle();
         end;
     end;
     toggle.To=toggle.Set;
     toggle.Turn=toggle.Set;
     toggle.SwitchTo=toggle.Set;
-    toggle.State=toggle.Set;
+
+    function toggle.Assert(expectedState, assertion)
+        if assertion then
+            assertion=(" for assertion '%s'"):format(assertion);
+        else
+            assertion="";
+        end;
+        if expectedState==nil then
+            expectedState=true;
+        end;
+        expectedState=InterpretState(expectedState);
+        if expectedState=="on" then 
+            expectedState=true;
+        else
+            expectedState=false;
+        end;
+        assert(expectedState==toggle.State(), 
+            ("Toggle must be %s, but was %s%s"):format(tostring(expectedState), tostring(toggle.State()), assertion));
+    end;
+
+    function toggle.AssertTrue(assertion)
+        return toggle.Assert(true, assertion);
+    end;
+    toggle.AssertOn=toggle.AssertTrue;
+
+    function toggle.AssertFalse(assertion)
+        return toggle.Assert(false, assertion);
+    end;
+    toggle.AssertOff=toggle.AssertFalse;
 
     return toggle;
 end;
