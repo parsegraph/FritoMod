@@ -36,6 +36,10 @@ function Frame:Show()
 
 end;
 
+function Frame:Hide()
+
+end;
+
 function Frame:SetAlpha()
 
 end;
