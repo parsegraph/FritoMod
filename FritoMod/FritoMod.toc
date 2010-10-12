@@ -4,7 +4,7 @@
 ## Version: 1.3
 ## Notes: Disabling this addon will disable all FritoMod-dependent addons.
 ## Dependencies: FritoMod
-ChatThrottleLib.lua
 CreateTestSuite.lua
+ChatThrottleLib.lua
 TestingSlashCommand.lua
 global.lua
