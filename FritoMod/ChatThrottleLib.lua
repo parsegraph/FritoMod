@@ -21,6 +21,18 @@
 -- Can run as a standalone addon also, but, really, just embed it! :-)
 --
 
+if nil ~= require then
+    require "WoW_Functional/hooking";
+    require "WoW_Communication/Chat";
+
+    require "WoW_UI/Frame";
+    require "WoW_UI/Frame-Events";
+    require "WoW_UI/Frame-Layout";
+
+    require "WoW_Timing/Timing";
+
+end;
+
 local CTL_VERSION = 21
 
 local _G = _G
