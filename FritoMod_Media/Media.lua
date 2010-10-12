@@ -14,11 +14,6 @@
 -- you don't need to remember this piece of information, nor do you need to check
 -- before using other tables.
 --
--- If you just want to add a few values, you don't need to add a provider; just
--- add them directly to the media type:
---
--- Media.color.default = "black";
---
 -- If you're writing a provider, try to be as forgiving as possible. Have a sensible
 -- or obvious default value, and anticipate and correct common user errors, such as
 -- misspellings or locale-dependent spellings. Media is intended to be extremely
@@ -27,7 +22,7 @@
 -- You register your provider by setting it for the correct media name. For example,
 -- if I want to support LibSharedMedia, this is how I would do it:
 --
---  Media.color = function(name)
+--  Media.color(function(name)
 --      if not LibStub then
 --          return;
 --      end;
@@ -36,14 +31,13 @@
 --          return;
 --      end;
 --      return sharedMedia:Fetch("color", name);
---  end;
---
+--  end);
 --
 -- As you can see, most of our code is ensuring we actually have SharedMedia. Once this
 -- is executed, we'll have full access to any color in SharedMedia. Note that for this
 -- particular example, we provide this code for you. Use it through:
 --
--- Media.color = Curry(Media.SharedMedia, "color");
+-- Media.color(Curry(Media.SharedMedia, "color"));
 --
 -- I'm not sure whether older registries should have higher priority or not. I think
 -- the code prefers this, but it's not set in stone just yet. If you need to register
@@ -52,6 +46,8 @@
 -- table.insert(Media.registry.color, 1, yourProvider);
 --
 -- As always, please access this internal with care.
+
+
 local registry={};
 Media = setmetatable({
     registry=registry,
@@ -67,46 +63,57 @@ Media = setmetatable({
     end
     }, {
     __newindex=function(self,k,v)
-        if type(k) == "string" then
-            k=k:lower();
-        end;
-        if not registry[k] then
-            registry[k] = {};
-        end;
-        if v ~= nil then
-            table.insert(registry[k], v);
-        end;
+        error("Media is not directly settable: use Media['"..k.."'](v) instead");
     end;
     __index=function(self,mediaType)
         if type(mediaType) == "string" then
             mediaType=mediaType:lower();
         end;
         if not registry[mediaType] then
-            return nil;
+            rawset(self,mediaType, setmetatable({}, {
+                __call=function(self, provider)
+                    assert(provider, "provider must not be nil");
+                    if not registry[mediaType] then
+                        registry[mediaType] = {};
+                    end;
+                    table.insert(registry[mediaType], provider);
+                    return provider;
+                end,
+                __index=function(self, k)
+                    if type(k) == "string" then
+                        k=k:lower();
+                    end;
+                    local reg=registry[mediaType];
+                    if reg==nil then
+                        return nil;
+                    end;
+                    for i=1, #reg do
+                        local provider=reg[i];
+                        local v;
+                        if type(provider) == "function" then
+                            v=provider(k);
+                        elseif type(provider) == "table" then
+                            v=provider[k];
+                        end;
+                        if v ~= nil then
+                            return v;
+                        end;
+                    end;
+                    if k ~= "default" then
+                        return self.default
+                    end;
+                end,
+                __newindex=function(self)
+                    error(mediaType.." table is not directly editable");
+                end
+            }));
         end;
-        rawset(self,mediaType, setmetatable({}, {
-            __index=function(self, k)
-                if type(k) == "string" then
-                    k=k:lower();
-                end;
-                local reg=registry[mediaType];
-                for i=1, #reg do
-                    local provider=reg[i];
-                    local v;
-                    if type(provider) == "function" then
-                        v=provider(k);
-                    elseif type(provider) == "table" then
-                        v=provider[k];
-                    end;
-                    if v ~= nil then
-                        return v;
-                    end;
-                end;
-                if k ~= "default" then
-                    return self.default
-                end;
-            end
-        }));
         return self[mediaType];
     end
 });
+
+rawset(Media, "SetAlias", function(root, ...)
+    for i=1,select("#", ...) do
+        rawset(Media, select(i, ...), Media[root]);
+    end;
+end);

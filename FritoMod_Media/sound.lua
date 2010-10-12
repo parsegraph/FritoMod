@@ -2,19 +2,15 @@ if nil ~= require then
     require "FritoMod_Media/Media";
 end;
 
-local SOUNDS_DIR = "Interface\\Addons\\FritoMod_Media\\sounds\\"
-local SOUNDS={};
+local sounds={};
 for _, v in ipairs({
     "onoes",
     "eep",
     "hello",
     "silenced",
 }) do
-    SOUNDS[v]=true;
+    sounds[v]=("Interface\\Addons\\FritoMod_Media\\sounds\\%s.wav"):format(v);
 end;
 
-Media.sound = function(k)
-    if SOUNDS[k] then
-        return SOUNDS_DIR..sound_name..".wav";
-    end;
-end;
+Media.sound(sounds);
+Media.SetAlias("sound", "sounds", "wav", "mp3", "noises", "audio");
