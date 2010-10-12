@@ -63,7 +63,12 @@ function Objects.Value(value)
         -- throws
         --     if Assert.Equals determines that the values are not equal
         Assert = function(expectedValue, assertion)
-            return Assert.Equals(expectedValue, value, assertion);
+            if Assert then
+                -- FritoMod_Testing contains a useful Assert function that we can use.
+                return Assert.Equals(expectedValue, value, assertion);
+            else
+                assert(expectedValue==value, "Values are not equal");
+            end;
         end,
 
         -- If newValue is provided, this calls Set with that value. Otherwise, Get is
