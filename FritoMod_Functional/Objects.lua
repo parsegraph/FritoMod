@@ -155,6 +155,7 @@ function Objects.Toggle(func, ...)
     toggle.IsSet=toggle.IsOn;
     toggle.GetStatus=toggle.IsOn;
     toggle.GetState=toggle.IsOn;
+    toggle.Get=toggle.IsOn;
 
     function toggle.IsOff()
         return not toggle.IsOn();
