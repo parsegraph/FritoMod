@@ -13,6 +13,9 @@
 -- f:Bar("call");
 --
 -- Metatables.ForceFunctions and Metatables.ForceMethods will help you here.
+if nil ~= require then
+    require "FritoMod_Functional/Metatables";
+end;
 Objects=Objects or {};
 
 -- Holds a value, allowing functional access to changing it and ways to assert its
