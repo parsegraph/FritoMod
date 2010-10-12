@@ -89,6 +89,9 @@ Timing.Every=Timing.Periodic;
 -- Calls the specified function rhythmically. This timer will maintain a rhythm; actual 
 -- times will stay close to scheduled times, but distances between individual iterations 
 -- will vary.
+--
+-- This rhythm is local to this function. You'll have to do synchronizing on your own to
+-- maintain a global rhythm.
 Timing.Rhythmic = Timer(function(period, elapsed, func)
 	if elapsed >= period then
 		func();
