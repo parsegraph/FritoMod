@@ -48,5 +48,6 @@ function Suite:TestToggleManagesAnUndoable()
 
     inner.Assert(not outer.Get());
     outer.Toggle();
-    inner.Assert(not outer.Get());
+    inner.Assert(false);
+    outer.Assert("on");
 end;
