@@ -136,12 +136,17 @@ local function InterpretState(state)
 end;
 
 function Objects.Toggle(func, ...)
-    if func==nil and select("#",...)==0 then
+    local resetter;
+    if not IsCallable(func) and select("#", ...)==0 then
+        if InterpretState(func)=="on" then
+            resetter=Noop;
+        end;
+        func=Noop;
+    elseif func==nil and select("#",...)==0 then
         func=Noop;
     else
         func=Curry(func, ...);
     end;
-    local resetter;
     local toggle=Metatables.ForcedFunctions();
 
     function toggle.IsOn()
