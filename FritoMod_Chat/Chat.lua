@@ -41,6 +41,8 @@
 -- Chat[r]("This is sent to the guild again");
 
 if nil ~= require then
+    require "FritoMod/ChatThrottleLib";
+
     require "FritoMod_Functional/currying";
 
     require "FritoMod_Collections/Tables";
@@ -54,7 +56,7 @@ local Chat = Chat;
 
 local function SendMessage(medium, message, ...)
     message = Strings.JoinValues(" ", message, ...);
-    SendChatMessage(message, medium);
+    ChatThrottleLib:SendChatMessage("NORMAL", "FritoMod", message, medium);
 end;
 
 Chat.Say = CurryFunction(SendMessage, "SAY");
@@ -75,13 +77,13 @@ function Chat.Channel(target, message)
       target = GetChannelName(target);
    end;
 	assert(message ~= nil, "message must be provided");
-   SendChatMessage(message, "CHANNEL", GetDefaultLanguage("PLAYER"), target);
+   ChatThrottleLib:SendChatMessage("NORMAL", "FritoMod", message, "CHANNEL", GetDefaultLanguage("PLAYER"), target);
 end;
 
 function Chat.Whisper(target, message)
 	assert(type(target) == "string", "target must be a string");
 	assert(message ~= nil, "message must be provided");
-	SendChatMessage(message, "WHISPER", GetDefaultLanguage("PLAYER"), target:lower());
+	ChatThrottleLib:SendChatMessage("NORMAL", "FritoMod", message, "WHISPER", GetDefaultLanguage("PLAYER"), target:lower());
 end;
 
 local ALIASES = Tables.Expand({
