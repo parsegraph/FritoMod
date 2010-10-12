@@ -100,3 +100,103 @@ function Objects.Value(value)
     return holder;
 end;
 
+local toggleAliases={
+    on="on",
+    ["true"]="on",
+    ["1"]="on",
+
+    off="off",
+    ["false"]="off",
+    ["nil"]="off",
+    ["0"]="off",
+    [""]="off",
+
+    toggle="toggle",
+    switch="toggle",
+    next="toggle"
+}
+
+function Objects.Toggle(func, ...)
+    func=Curry(func, ...);
+    local resetter;
+    local toggle={};
+
+    function toggle:IsOn()
+        -- If we have a resetter, we're on.
+        return not resetter;
+    end;
+    toggle.IsSet=toggle.IsOn;
+    toggle.GetStatus=toggle.IsOn;
+    toggle.GetState=toggle.IsOn;
+
+    function toggle:IsOff()
+        return not toggle:IsOn();
+    end;
+
+    function toggle:On()
+        if toggle:IsOn() then
+            return toggle.Off;
+        end;
+        resetter=func();
+        return toggle.Off;
+    end;
+    toggle.TurnOn=toggle.On;
+
+    function toggle:Off()
+        if toggle:IsOff() then
+            return toggle.On;
+        end;
+        resetter();
+        resetter=nil;
+        return toggle.On;
+    end;
+
+    function toggle:Toggle()
+        if toggle:IsOn() then
+            return toggle:Off();
+        else
+            return toggle:On();
+        end;
+    end;
+    toggle.Switch=toggle.Toggle;
+    toggle.Next=toggle.Toggle;
+
+    function toggle:State(state)
+        if state == nil then
+            return toggle:IsOn();
+        else
+            return toggle:Set(state);
+        end;
+    end;
+    toggle.Status=toggle.State;
+
+    function toggle:Set(state)
+        if type(state)=="string" then
+            if Strings then
+                -- FritoMod_Strings provides useful, but non-essential, trim functionality.
+                state=Strings.Trim(state)
+            end;
+            state=toggleAliases[state:lower()] or state;
+            if     state=="on"     then toggle:On();
+            elseif state=="off"    then toggle:Off();
+            elseif state=="toggle" then toggle:Toggle();
+            else
+                assert(state, "Unrecognized state: "..state);
+            end;
+        elseif IsCallable(state) then
+            toggle:Set(state());
+        else
+            if state then
+                return toggle:On();
+            else
+                return toggle:Off();
+            end
+        end;
+    end;
+    toggle.To=toggle.Set;
+    toggle.Turn=toggle.Set;
+    toggle.SwitchTo=toggle.Set;
+    toggle.State=toggle.Set;
+
+    return toggle;
+end;
