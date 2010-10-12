@@ -207,6 +207,7 @@ function Objects.Toggle(func, ...)
         end;
     end;
     toggle.Status=toggle.State;
+    toggle.Value=toggle.State;
 
     function toggle.Set(state)
         state=InterpretState(state);
