@@ -54,7 +54,7 @@ end;
 
 Remote=setmetatable({}, {
     __index=function(self, prefix)
-        self[prefix]=setmetatable({
+        self[prefix]=setmetatable({}, {
             __index=function(self, medium)
                 assert(type(medium)=="string", "medium must be a string");
                 medium=medium:lower();
