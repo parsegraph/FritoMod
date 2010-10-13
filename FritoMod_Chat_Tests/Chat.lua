@@ -12,13 +12,16 @@ Suite:AddListener(Metatables.Noop({
 			local s = select("#", ...);
 			-- These tests ensure information is not lost when we store the arguments.
 			if s >= 2 then
-				assert(select(1, ...) ~= nil, "msg must not be nil if chatType is provided");
+				assert(select(1, ...) ~= nil or select(2, ...) == nil, 
+                    "msg must not be nil if chatType is provided");
 			end;
 			if s >= 3 then
-				assert(select(2, ...) ~= nil, "chatType must not be nil if language is provided");
+				assert(select(2, ...) ~= nil or select(3, ...) == nil, 
+                    "chatType must not be nil if language is provided");
 			end;
 			if s >= 4 then
-				assert(select(3, ...) ~= nil, "language must not be nil if channel is provided");
+				assert(select(3, ...) ~= nil or select(4, ...) == nil, 
+                    "language must not be nil if channel is provided");
 			end;
 			table.insert(suite.messages, {...});
 		end;
