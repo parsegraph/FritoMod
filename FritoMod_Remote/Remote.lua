@@ -19,15 +19,15 @@ Tables.Alias(mediums, "battleground", "battlegroup", "bg", "pvp");
 local function SendMessage(medium, prefix, msg)
     if mediums[medium] then
         if ChatThrottleLib then
-            ChatThrottleLib:SendAdddonMessage("NORMAL", prefix, msg, medium);
+            ChatThrottleLib:SendAddonMessage("NORMAL", prefix, msg, medium);
         else
-            SendAdddonMessage(prefix, msg, medium);
+            SendAddonMessage(prefix, msg, medium);
         end;
     else
         if ChatThrottleLib then
-            ChatThrottleLib:SendAdddonMessage("NORMAL", prefix, msg, "WHISPER", medium);
+            ChatThrottleLib:SendAddonMessage("NORMAL", prefix, msg, "WHISPER", medium);
         else
-            SendAdddonMessage(prefix, msg, "WHISPER", medium);
+            SendAddonMessage(prefix, msg, "WHISPER", medium);
         end;
     end;
 end;
