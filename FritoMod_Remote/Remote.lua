@@ -38,8 +38,10 @@ Remote=setmetatable({}, {
             __index=function(self, medium)
                 assert(type(medium)=="string", "medium must be a string");
                 medium=medium:lower();
-                self[medium]=function(msg)
-                    return SendMessage(medium, msg);
+                self[medium]=function(...)
+                    assert(select("#", ...)==1 and tostring(select(1, ...)), 
+                        "Remote does not accept non-string values");
+                    return SendMessage(medium, ...);
                 end;
                 return self[medium];
             end,
