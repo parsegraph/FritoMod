@@ -39,9 +39,9 @@ Tables.Alias(mediums, "battleground", "battlegroup", "bg", "pvp");
 local function SendMessage(medium, prefix, msg)
     if mediums[medium] then
         if ChatThrottleLib then
-            ChatThrottleLib:SendAddonMessage("NORMAL", prefix, msg, medium);
+            ChatThrottleLib:SendAddonMessage("NORMAL", prefix, msg, mediums[medium]);
         else
-            SendAddonMessage(prefix, msg, medium);
+            SendAddonMessage(prefix, msg, mediums[medium]);
         end;
     else
         if ChatThrottleLib then
@@ -58,12 +58,15 @@ Remote=setmetatable({}, {
             __index=function(self, medium)
                 assert(type(medium)=="string", "medium must be a string");
                 medium=medium:lower();
-                self[medium]=function(...)
+                local function sender(...)
                     assert(select("#", ...)==1 and tostring(select(1, ...)), 
                         "Remote does not accept non-string values");
                     return SendMessage(medium, prefix, ...);
                 end;
-                return self[medium];
+                if mediums[medium] then
+                    self[medium]=sender;
+                end;
+                return sender;
             end,
             __call=function(func, ...)
                 func=Curry(func, ...);
