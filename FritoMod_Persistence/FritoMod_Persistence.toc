@@ -1,4 +1,4 @@
-## Interface: 30300
+## Interface: 40000
 ## Title: FritoMod: Persistence
 ## Author: Aaron Faanes
 ## Version: 1.3
