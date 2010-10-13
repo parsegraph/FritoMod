@@ -61,7 +61,7 @@ Remote=setmetatable({}, {
                 self[medium]=function(...)
                     assert(select("#", ...)==1 and tostring(select(1, ...)), 
                         "Remote does not accept non-string values");
-                    return SendMessage(medium, ...);
+                    return SendMessage(medium, prefix, ...);
                 end;
                 return self[medium];
             end,
