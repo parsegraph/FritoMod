@@ -53,3 +53,15 @@ do
     Callbacks.Combat=Curry(dispatcher, "Add");
     Callbacks.InCombat=Callbacks.Combat;
 end;
+
+do
+    function Callbacks.Experience(func, ...)
+        func=Curry(func, ...);
+        Events.PLAYER_XP_UPDATE(function(who)
+            if who:lower()=="player" then
+                func(UnitXP("player"), UnitXPMax("player"), UnitLevel("player"));
+            end;
+        end);
+    end;
+    Callbacks.XP=Callbacks.Experience;
+end;
