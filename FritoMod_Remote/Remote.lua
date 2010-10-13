@@ -34,9 +34,6 @@ end;
 
 Remote=setmetatable({}, {
     __index=function(self, prefix)
-        if type(prefix)=="string" then
-            prefix=prefix:lower();
-        end;
         self[prefix]=setmetatable({
             __index=function(self, medium)
                 assert(type(medium)=="string", "medium must be a string");
