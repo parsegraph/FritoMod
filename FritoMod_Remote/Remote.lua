@@ -1,3 +1,23 @@
+-- Remote lets you listen for and dispatch remote events.
+--
+-- Slash.Register("notime", Remote["NoTime.Chat"].g);
+-- Remote["NoTime.Chat"](function(who, message)
+--     print(("%s said %q"):format(who, message));
+-- end);
+--
+-- /notime Hello, everyone!
+--
+-- Remote does no serialization, so it doesn't accept non-primitive values. I'm a 
+-- little torn on whether to include a built-in serializer. Not including one limits
+-- the usefulness of this solution and generates errors in situations where you wouldn't
+-- anticipate them.
+--
+-- I'm still against the idea because including a serializer means that using Remote locks
+-- people into FritoMod. People with foreign serializing solutions would be out of luck.
+-- 
+-- Plus, it seems easy to just write parsers separately and call them explicitly. We can do
+-- some metatable/closure magic to retain the original syntax.
+-- 
 if nil ~= require then
     require "FritoMod_Collections/Tables";
 end;
