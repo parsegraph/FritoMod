@@ -64,6 +64,18 @@ function Curry(...)
     error("objOrFunc is not a string, table, or function. Received type: " .. type(objOrFunc));
 end;
 
+local function CheckForNils(...)
+    local n=select("#", ...);
+    local foundNil=false;
+    for i=1,n do
+        if select(i, ...)==nil then
+            foundNil=true;
+        elseif foundNil then
+            error(("Argument #%d was nil, but the following argument was not."):format(i-1));
+        end;
+    end;
+end;
+
 -- Partially applies the specified function using the specified arguments, returning a function that
 -- will apply the specified function using any provided arguments.
 --
@@ -94,15 +106,39 @@ function CurryFunction(func, ...)
         error("func is not a function or string. Received type: %s", func);
     end;
     local numArgs = select("#", ...);
+    for i=1, numArgs do
+        if select(i, ...)==nil then
+            error(("Argument #%d must not be nil"):format(i));
+        end;
+    end;
     if numArgs == 0 then
         return func;
-    end;
-    for i=1, numArgs do
-        assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
-    end;
-    local args = {...};
-    return function(...)
-        return func(UnpackAll(args, {...}));
+    elseif numArgs == 1 then
+        -- This is an optimized case for 1-argument curries.
+        local a1=...;
+        return function(...)
+            CheckForNils(...);
+            return func(a1, ...);
+        end;
+    elseif numArgs == 2 then
+        -- This is an optimized case for 2-argument curries.
+        local a1, a2=...;
+        return function(...)
+            CheckForNils(...);
+            return func(a1, a2, ...);
+        end;
+    elseif numArgs == 3 then
+        -- This is an optimized case for 3-argument curries.
+        local a1, a2, a3=...;
+        return function(...)
+            CheckForNils(...);
+            return func(a1, a2, a3, ...);
+        end;
+    else
+        local args = {...};
+        return function(...)
+            return func(UnpackAll(args, {...}));
+        end;
     end;
 end
 
@@ -134,12 +170,41 @@ function CurryNamedFunction(obj, name, ...)
     for i=1, numArgs do
         assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
     end;
-    local args = {...};
-    return function(...)
+    local function GetFunc()
         local func = obj[name];
-        assert(func ~= nil, "Named function was not found. Name: " .. name);
+        if func==nil then
+            error("Named function was not found. Name: " .. name);
+        end;
         assert(IsCallable(func), "Named function is not callable.");
-        return func(UnpackAll(args, {...}));
+        return func;
+    end;
+    if numArgs==0 then
+        return function(...)
+            return GetFunc()(...);
+        end;
+    elseif numArgs==1 then
+        local a1=...;
+        return function(...)
+            CheckForNils(...);
+            return GetFunc()(a1,...);
+        end;
+    elseif numArgs==2 then
+        local a1,a2=...;
+        return function(...)
+            CheckForNils(...);
+            return GetFunc()(a1,a2,...);
+        end;
+    elseif numArgs==3 then
+        local a1, a2, a3=...;
+        return function(...)
+            CheckForNils(...);
+            return GetFunc()(a1,a2,a3,...);
+        end;
+    else
+        local args = {...};
+        return function(...)
+            return Getfunc()(UnpackAll(args, {...}));
+        end;
     end;
 end;
 
@@ -181,19 +246,48 @@ function CurryMethod(object, func, ...)
         error(("object is not a table. Received type: %s"):format(type(object)));
     end;
     local numArgs = select("#", ...);
-    for i=1, select("#", ...) do
+    for i=1, numArgs do
         assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
     end;
     local args = { ... };
     if IsCallable(func) then
-        return function(...)
-            return func(object, UnpackAll(args, {...}));
-        end;
+        return CurryFunction(func, object, ...);
     elseif type(func) == "string" then
-        return function(...)
-            local callable = object[func];
-            assert(callable, "Callable is false. Name: " .. func);
-            return callable(object, UnpackAll(args, {...}));
+        local name=func;
+        local function GetFunc()
+            local func=object[name];
+            if func==nil then
+                error("Named function was not found. Name: " .. name);
+            end;
+            assert(IsCallable(func), "Named function is not callable.");
+            return func;
+        end;
+        if numArgs==0 then
+            return function(...)
+                return GetFunc()(object,...);
+            end;
+        elseif numArgs==1 then
+            local a1=...;
+            return function(...)
+                CheckForNils(...);
+                return GetFunc()(object,a1,...);
+            end;
+        elseif numArgs==2 then
+            local a1,a2=...;
+            return function(...)
+                CheckForNils(...);
+                return GetFunc()(object,a1,a2,...);
+            end;
+        elseif numArgs==3 then
+            local a1,a2,a3=...;
+            return function(...)
+                CheckForNils(...);
+                return GetFunc()(object,a1,a2,a3,...);
+            end;
+        else
+            return function(...)
+                return GetFunc()(object, UnpackAll(args, {...}));
+            end;
         end;
     end;
     error("func is not callable and is not a string. Received type: " .. type(func));
@@ -235,19 +329,68 @@ function CurryHeadlessMethod(func, ...)
         assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
     end;
     local args = {...};
-    if IsCallable(func) then
+    if numArgs==0 then
         return function(self, ...)
             if not self then
                 error("self is falsy");
             end;
-            return func(self, UnpackAll(args, {...}));
+            CheckForNils(...);
+            if IsCallable(func) then
+                return func(self, ...);
+            else
+                return self[func](self, ...);
+            end;
         end;
-    elseif type(func) == "string" then
+    elseif numArgs==1 then
+        local a1=...;
         return function(self, ...)
             if not self then
                 error("self is falsy");
             end;
-            return self[func](self, UnpackAll(args, {...}));
+            CheckForNils(...);
+            if IsCallable(func) then
+                return func(self, a1, ...);
+            else
+                return self[func](self, a1, ...);
+            end;
+        end;
+    elseif numArgs==2 then
+        local a1,a2=...;
+        return function(self, ...)
+            if not self then
+                error("self is falsy");
+            end;
+            CheckForNils(...);
+            if IsCallable(func) then
+                return func(self, a1, a2, ...);
+            else
+                return self[func](self, a1, a2, ...);
+            end;
+        end;
+    elseif numArgs==3 then
+        local a1,a2,a3=...;
+        return function(self, ...)
+            if not self then
+                error("self is falsy");
+            end;
+            CheckForNils(...);
+            if IsCallable(func) then
+                return func(self, a1, a2, a3, ...);
+            else
+                return self[func](self, a1, a2, a3, ...);
+            end;
+        end;
+    else
+        local args={...};
+        return function(self, ...)
+            if not self then
+                error("self is falsy");
+            end;
+            if IsCallable(func) then
+                return func(self, UnpackAll(args, {...}));
+            else
+                return self[func](self, UnpackAll(args, {...}));
+            end;
         end;
     end;
     error("func is not callable and is not a string. Received type: %s", type(func));
