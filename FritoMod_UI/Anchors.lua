@@ -24,6 +24,7 @@ local touchGaps={
     bottomleft  = function(gap) return -gap, -gap end;
     left        = function(gap) return -gap,    0 end;
     topleft     = function(gap) return -gap,  gap end;
+    center      = function(gap) return -gap,  gap end;
 }
 
 function Anchors.ExpandGapValues(anchor, gap)
