@@ -26,11 +26,15 @@ local touchGaps={
     topleft     = function(gap) return -gap,  gap end;
 }
 
+function Anchors.ExpandGapValues(anchor, gap)
+    return touchGaps[anchor](gap);
+end;
+
 -- frame touches ref's anchor.
 function Anchors.Touch(frame, ref, anchor, gap)
     gap=gap or 0;
     anchor=anchor:lower();
-    frame:SetPoint(reverses[anchor], ref, anchor, touchGaps[anchor](gap));
+    frame:SetPoint(reverses[anchor], ref, anchor, Anchors.ExpandGapValues(anchor, gap));
 end;
 Anchors.Touching=Anchors.Touch;
 Anchors.Touches=Anchors.Touch;
@@ -43,7 +47,7 @@ Anchors.Over=Anchors.Touch;
 function Anchors.Share(frame, ref, anchor, gap)
     gap=gap or 0;
     anchor=anchor:lower();
-    frame:SetPoint(anchor, ref, anchor, touchGaps[anchor](gap));
+    frame:SetPoint(anchor, ref, anchor, Anchors.ExpandGapValues(anchor, gap));
 end;
 Anchors.On=Anchors.Share;
 
