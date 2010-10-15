@@ -8,5 +8,6 @@ Anchors.lua
 Frames.lua
 PersistentAnchor.lua
 Anchors-Saved.lua
+Animations.lua
 Callbacks.lua
 Metatables-StyleClient.lua
