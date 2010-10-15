@@ -34,6 +34,9 @@ end;
 Frames.Squared=Frames.Square;
 
 function Frames.Rectangle(f, w, h)
+    if h==nil then
+        return Frames.Square(f, w);
+    end;
     f:SetWidth(w);
     f:SetHeight(h);
 end;
