@@ -28,7 +28,9 @@ local touchGaps={
 }
 
 function Anchors.ExpandGapValues(anchor, gap)
-    return touchGaps[anchor](gap);
+    local gapFunc=touchGaps[anchor:lower()];
+    assert(gapFunc, "Unrecognized anchor name: "..anchor);
+    return gapFunc(gap);
 end;
 
 -- frame touches ref's anchor.
