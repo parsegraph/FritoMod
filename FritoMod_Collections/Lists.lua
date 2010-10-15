@@ -44,3 +44,32 @@ end;
 function Lists.Size(iterable)
     return #iterable;
 end;
+
+function Lists.ContainsValue(iterable, target, testFunc, ...)
+    if testFunc then
+        testFunc=Curry(testFunc, ...);
+    end;
+    for i=1,#iterable do
+        if testFunc then
+            if testFunc(iterable[i], target) then
+                return true;
+            end;
+        elseif target==iterable[i] then
+            return true;
+        end;
+    end;
+    return false;
+end;
+
+function Lists.ContainsKey(iterable, target, testFunc, ...)
+    if not testFunc then
+        return type(target)=="number" and target>=1 and target <=#iterable;
+    end;
+    testFunc=Curry(testFunc, ...);
+    for i=1, #iterable do
+        if testFunc(iterable[i], target) then
+            return true;
+        end;
+    end;
+    return false;
+end;
