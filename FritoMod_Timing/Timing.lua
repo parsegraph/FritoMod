@@ -38,14 +38,7 @@ do
             timingFrame:SetScript("OnUpdate", function(frame, elapsed) 
                 for i=1, #updateListeners do
                     local listener=updateListeners[i];
-                    local isDead=false;
-                    for i=1,#deadListeners do
-                        if deadListeners[i]==listener then
-                            isDead=true;
-                            break;
-                        end;
-                    end;
-                    if not isDead then
+                    if not Lists.Contains(deadListeners, listener) then
                         listener(elapsed);
                     end;
                 end;
