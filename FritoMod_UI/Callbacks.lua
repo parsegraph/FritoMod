@@ -58,6 +58,9 @@ end;
 Callbacks.DragFrame=ToggledEvent("OnDragStart", "OnDragStop", enableMouse);
 Callbacks.MouseDown=ToggledEvent("OnMouseDown", "OnMouseUp", enableMouse);
 Callbacks.EnterFrame=ToggledEvent("OnEnter", "OnLeave", enableMouse);
+Callbacks.MouseEnter=Callbacks.EnterFrame;
+Callbacks.FrameEnter=Callbacks.EnterFrame;
+
 Callbacks.ShowFrame=ToggledEvent("OnShow", "OnHide");
 
 local CLICK_TOLERANCE=.5;
