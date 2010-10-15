@@ -12,6 +12,16 @@ local function GetGroup(agOrFrame)
    return agOrFrame;
 end;
 
+function Animations.Origin(animation, anchor, xOffset, yOffset)
+    if xOffset==nil then
+        xOffset=0;
+    end;
+    if yOffset==nil then
+        xOffset, yOffset=Anchors.ExpandGapValues(anchor, xOffset);
+    end;
+    animation:SetOrigin(anchor, xOffset, yOffset);
+end;
+
 function Animations.Scale(ag, duration, xscale, yscale)
    ag=GetGroup(ag);
    local scale=ag:CreateAnimation("scale");
