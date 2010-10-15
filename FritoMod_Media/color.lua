@@ -71,5 +71,13 @@ if RAID_CLASS_COLORS then
     end;
 end;
 
+if PowerBarColor then
+    for name, color in pairs(PowerBarColor) do
+        if not tonumber(name) then
+            colors[name:gsub("_", " ")]=BreakColorTable(color);
+        end;
+    end;
+end;
+
 Media.color(colors);
 Media.SetAlias("color", "colors", "colour", "colours");
