@@ -13,7 +13,6 @@ if nil ~= require then
     require "FritoMod_Collections/Mixins-Iteration";
 end;
 Containers=Mixins.Iteration();
-Metatables.Defensive(Containers);
 
 local function ReadBagNames(iteratedBags, bag)
     if type(bag)=="table" then
@@ -42,6 +41,34 @@ local function ReadBagNames(iteratedBags, bag)
     end;
     return iteratedBags;
 end;
+
+-- This metatable allows us to do things like this:
+--
+-- assert(Containers.backpack.Contains("Hearthstone"));
+-- -- which is equivalent to:
+-- assert(Containers.Contains("backpack", "Hearthstone"));
+--
+-- -- Does your first bag contain a hearthstone?
+-- assert(Containers[1]Contains("Hearthstone"));
+setmetatable(Containers, {
+    __index=function(self, bag)
+        assert(ReadBagNames(bag), "Unrecognized key: "..tostring(bag));
+        if type(bag)=="string" then
+            bag=bag:lower();
+        end;
+        if not rawget(self, bag) then
+            self[bag]=setmetatable({}, {
+                __newindex=Seal(error, "Containers."..bag.." is an immutable table"),
+                __index=function(self, k)
+                    local retrieved=Containers[k];
+                    assert(IsCallable(retrieved), "Containers."..bag.."."..tostring(k).."is not callable");
+                    return Curry(retrieved, bag);
+                end
+            });
+        end;
+        return rawget(self, bag);
+    end
+});
 
 function Containers.Iterator(bag)
     local iteratedBags=ReadBagNames({}, bag);
@@ -84,11 +111,6 @@ function Containers.Iterator(bag)
         return slot, slot;
     end;
 end;
-Containers.Bag=Containers.Iterator;
-Containers.Iterate=Containers.Iterator;
-Containers.IterateBags=Containers.Iterator;
-Containers.All=Curry(Containers.Iterator, "all");
-Containers.Backpack=Curry(Containers.Iterator, 0);
 
 do
     oldEqualsTest=Containers.NewEqualsTest;
