@@ -131,6 +131,27 @@ function Iterators.Repeat(...)
     end;
 end;
 
+-- Iterates using each provided iterator, starting with the first iterator. Once
+-- an iterator is exhausted, the next iterator is used until all iterators have been
+-- expended.
+--
+-- I wrote this because I originally was only able to iterate over one bag at a time.
+-- I wanted to iterate over multiple bags, so this function let me chain those iterators
+-- together. I ended up rewriting how I did bag iteration, but I still like this function.
+function Iterators.Chain(...)
+    local iterators={...};
+    return function()
+        local k,v;
+        while #iterators>0 and k==nil do
+            k,v=iterators[1]();
+            if k==nil then
+                table.remove(iterators, 1);
+            end;
+        end;
+        return k,v;
+    end;
+end;
+
 -- Consumes an iterator, returning a list of its elements.
 --
 -- iterator, ...
