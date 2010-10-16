@@ -1,0 +1,6 @@
+## Interface: 40000
+## Title: FritoMod: Containers
+## Author: Aaron Faanes
+## Version: 1.3
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional
+Containers.lua
