@@ -37,6 +37,7 @@ end;
 -- see
 --     Mixins.Iteration. This mixin is also used on the specified library
 function Mixins.MutableIteration(library, iteratorFunc)
+    library=library or {};
 	local lib=library;
 
     Mixins.Iteration(library, iteratorFunc);
@@ -590,4 +591,5 @@ function Mixins.MutableIteration(library, iteratorFunc)
     end;
     library.StackTrim = CurryNamedFunction(library, "PopTrim");
 
+    return library;
 end;

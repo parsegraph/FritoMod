@@ -29,6 +29,7 @@ end;
 -- see
 --     Mixins.MutableIteration for more iteration methods if your iterables can be modified
 function Mixins.Iteration(library)
+    library=library or {};
 
     local function NewIterable()
         if rawget(library, "New") ~= nil then
@@ -1229,4 +1230,5 @@ function Mixins.Iteration(library)
 		library.Mean = CurryNamedFunction(library, "Average");
 	end;
     
+    return library;
 end;
