@@ -15,9 +15,14 @@ end;
 Containers=Mixins.Iteration();
 Metatables.Defensive(Containers);
 
-function Containers.Iterator(bag)
-    local iteratedBags={};
-    if type(bag)=="string" then
+local function ReadBagNames(iteratedBags, bag)
+    if type(bag)=="table" then
+        for i=1, #bag do
+            ReadBagNames(iteratedBags, bag[i]);
+        end;
+    elseif IsCallable(bag) then
+        ReadBagNames(iteratedBags, bag());
+    elseif type(bag)=="string" then
         bag=bag:lower();
         if bag=="backpack" then
             table.insert(iteratedBags, 0);
@@ -30,11 +35,16 @@ function Containers.Iterator(bag)
         end;
     elseif type(bag)=="number" then
         assert(bag >= 0 and bag <= NUM_BAG_SLOTS,
-        "Bag number out of range: "..bag);
+            "Bag number out of range: "..bag);
         table.insert(iteratedBags, bag);
-    elseif type(bag)=="table" then
-        error("Not yet supported");
+    elseif bag~=nil then
+        error("Unsupported type: "..type(bag));
     end;
+    return iteratedBags;
+end;
+
+function Containers.Iterator(bag)
+    local iteratedBags=ReadBagNames({}, bag);
     local slotNum=0;
     local slot={};
     return function()
@@ -47,16 +57,17 @@ function Containers.Iterator(bag)
                 bag=table.remove(iteratedBags, 1);
             else
                 slot.bag=bag;
-                slot[1]=bag;
                 slot.slot=slotNum;
+                slot[1]=bag;
                 slot[2]=slotNum;
             end;
         end;
         if slot.slot==nil then
+            -- We couldn't find a slot, so punt.
             return;
         end;
-        -- I don't like this at all. We should at least use a metatable 
-        -- with __index.
+        -- XXX This should use a metatable, and these should possibly be 
+        -- functions.
         slot.id=GetContainerItemID(bag, slotNum);
         if slot.id then
             slot.name=GetItemInfo(slot.id);
@@ -81,6 +92,20 @@ Containers.Backpack=Curry(Containers.Iterator, 0);
 
 do
     oldEqualsTest=Containers.NewEqualsTest;
+    local function DoComparision(slot, prim)
+         if type(prim)=="string" then
+            prim=prim:lower();
+            local name=slot.name;
+            if name then 
+                name=name:lower()
+            end;
+            return name==prim;
+        elseif type(prim)=="number" then
+            return slot.id==prim;
+        elseif type(prim)=="table" then
+            return slot.bag==prim.bag and slot.slot==prim.slot;
+        end;
+    end;
     -- This equality test lets us do things like:
     -- assert(Containers.Contains("all", "Hearthstone"), 
     --     "You don't have a hearthstone?!");
@@ -93,23 +118,9 @@ do
         end;
         return function(a, b)
             if type(a)=="table" then
-                if type(b)=="string" then
-                    local name=a.name;
-                    if name then name=name:lower() end;
-                    return name==b:lower();
-                elseif type(b)=="number" then
-                    return a.id==b;
-                elseif type(b)=="table" then
-                    return a.bag==b.bag and a.slot==b.slot;
-                end;
+                return DoComparision(a, b);
             elseif type(b)=="table" then
-                if type(a)=="string" then
-                    local name=a.name;
-                    if name then name=name:lower() end;
-                    return name==a:lower();
-                elseif type(a)=="number" then
-                    return b.id==a;
-                end;
+                return DoComparision(b, a);
             end;
             return a==b;
         end;
