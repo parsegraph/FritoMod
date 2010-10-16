@@ -16,7 +16,7 @@ local savedKey="FritoMod.Anchors";
 local anchors={};
 Anchors.anchors=anchors;
 
--- The parent for every anchor created using this process.
+-- anchorFrame is the parent for every anchor we create here.
 local anchorFrame;
 anchorFrame=CreateFrame("Frame", nil, UIParent);
 anchorFrame:SetAllPoints();
