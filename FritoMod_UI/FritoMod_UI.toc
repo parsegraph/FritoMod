@@ -5,10 +5,11 @@
 ## Notes: An OOP-based UI framework.
 ## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_Media, FritoMod_OOP, FritoMod_Persistence, FritoMod_Serialize
 Anchors.lua
+Callbacks.lua
 Frames.lua
 PersistentAnchor.lua
 Anchors-Saved.lua
 Animations.lua
-Callbacks.lua
+Frames-Persistent.lua
 Metatables-StyleClient.lua
 Serializers.lua
