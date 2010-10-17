@@ -110,7 +110,7 @@ end;
 
 local function CheckForError(name, location)
     if location and type(location)=="table" and location.error then
-        print(("Save error found during loading %s: %s"):format(name, err));
+        print(("Save error found during loading %s: %s"):format(name, location.error));
         location.error=nil;
     end;
 end;
