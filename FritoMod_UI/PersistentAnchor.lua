@@ -35,29 +35,11 @@ function PersistentAnchor:Hide()
     Frames.Draggable(self.frame, false);
 end;
 
-local function AssertLocationFormat(location)
-    assert(location, "location must not be nil");
-    assert(type(location) == "table", "location must be a table. Type: "..type(location));
-    assert(type(location.anchor)=="string", 
-        "location.anchor must be a string, but it was: "..tostring(location.anchor));
-    assert(tonumber(location.x) or location.x==nil, 
-        "location.x looks invalid (not a number or nil): "..tostring(location.x));
-    assert(tonumber(location.y) or location.y==nil, 
-        "location.y looks invalid (not a number or nil): "..tostring(location.y));
-end
-
 function PersistentAnchor:Load(location)
-    AssertLocationFormat(location);
     self.frame:ClearAllPoints();
-    self.frame:SetPoint(location.anchor, nil, location.anchor, location.x, location.y);
+    Serializers.LoadPoint(location, self.frame);
 end;
 
 function PersistentAnchor:Save()
-    local location={};
-    local anchor,_,_,x,y=self.frame:GetPoint(1);
-    location.anchor=anchor;
-    location.x=x;
-    location.y=y;
-    AssertLocationFormat(location);
-    return location;
+    return Serializers.SavePoint(self.frame, 1);
 end;
