@@ -47,6 +47,21 @@ function Callbacks.Persistence(func, ...)
     return Lists.Insert(listeners, func);
 end;
 
+function Callbacks.PersistentValue(key, func, ...)
+    func=Curry(func, ...);
+    return Callbacks.Persistence(function()
+        local remover=func(Persistence[key]);
+        if remover then
+            return function()
+                local newValue=remover(Persistence[key]);
+                if newValue~=nil then
+                    Persistence[key]=newValue;
+                end;
+            end;
+        end;
+    end);
+end;
+
 Events.ADDON_LOADED(function(addon)
     if addon~="FritoMod_Persistence" then
         return;
