@@ -14,30 +14,31 @@ if nil ~= require then
 end;
 Containers=Mixins.Iteration();
 
-local function ReadBagNames(iteratedBags, bag)
-    if type(bag)=="table" then
-        for i=1, #bag do
-            ReadBagNames(iteratedBags, bag[i]);
+function Containers.InterpretBagName(bagName, iteratedBags)
+    iteratedBags=iteratedBags or {};
+    if type(bagName)=="table" then
+        for i=1, #bagName do
+            Containers.InterpretBagName(bagName[i], iteratedBags);
         end;
-    elseif IsCallable(bag) then
-        ReadBagNames(iteratedBags, bag());
-    elseif type(bag)=="string" then
-        bag=bag:lower();
-        if bag=="backpack" then
+    elseif IsCallable(bagName) then
+        Containers.InterpretBagName(bagName(), iteratedBags);
+    elseif type(bagName)=="string" then
+        bagName=bagName:lower();
+        if bagName=="backpack" then
             table.insert(iteratedBags, 0);
-        elseif bag=="bags" or bag=="all" then
+        elseif bagName=="bags" or bagName=="all" then
             for i=0, NUM_BAG_SLOTS do
                 table.insert(iteratedBags, i);
             end;
         else
-            error("Unrecognized name: "..bag);
+            error("Unrecognized name: "..bagName);
         end;
-    elseif type(bag)=="number" then
-        assert(bag >= 0 and bag <= NUM_BAG_SLOTS,
-            "Bag number out of range: "..bag);
-        table.insert(iteratedBags, bag);
-    elseif bag~=nil then
-        error("Unsupported type: "..type(bag));
+    elseif type(bagName)=="number" then
+        assert(bagName >= 0 and bagName <= NUM_BAG_SLOTS,
+            "Bag number out of range: "..bagName);
+        table.insert(iteratedBags, bagName);
+    elseif bagName~=nil then
+        error("Unsupported type: "..type(bagName));
     end;
     return iteratedBags;
 end;
@@ -52,7 +53,7 @@ end;
 -- assert(Containers[1]Contains("Hearthstone"));
 setmetatable(Containers, {
     __index=function(self, bag)
-        assert(ReadBagNames(bag), "Unrecognized key: "..tostring(bag));
+        assert(Containers.InterpretBagName(bag), "Unrecognized key: "..tostring(bag));
         if type(bag)=="string" then
             bag=bag:lower();
         end;
@@ -71,7 +72,7 @@ setmetatable(Containers, {
 });
 
 function Containers.Iterator(bag)
-    local iteratedBags=ReadBagNames({}, bag);
+    local iteratedBags=Containers.InterpretBagName(bag);
     local slotNum=0;
     local slot={};
     return function()
