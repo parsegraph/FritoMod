@@ -11,8 +11,14 @@ local function AssertPersistence()
         assert(_Persistence~=nil, "SavedVariables have not yet been loaded");
 end;
 
+local loaded;
 Persistence=setmetatable({}, {
     __index=function(self, key)
+        if key=="Loaded" then
+            return function()
+                return loaded;
+            end;
+        end;
         AssertPersistence();
         return _Persistence[key];
     end,
@@ -27,7 +33,7 @@ Persistence=setmetatable({}, {
 
 local listeners={};
 local removers;
-local loaded;
+
 function Callbacks.Persistence(func, ...)
     func=Curry(func, ...);
     if loaded then
