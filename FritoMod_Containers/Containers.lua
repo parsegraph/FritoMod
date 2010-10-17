@@ -149,3 +149,18 @@ do
         end;
     end;
 end;
+
+function Containers.SumItem(bags, target)
+    return Containers.Sum(bags, function(slot)
+        if slot.id==nil then
+            return;
+        end;
+        if IsCallable(target) then
+            return target(slot);
+        elseif type(target)=="number" and slot.id==target then
+            return slot.count;
+        elseif type(target)=="string" and slot.name:lower()==target:lower() then
+            return slot.count;
+        end;
+    end);
+end;
