@@ -1161,7 +1161,10 @@ function Mixins.Iteration(library)
 		convertFunc = convertFunc or Functions.Return;
 		local sum=0;
         for v in iterator(iterable) do
-			sum=sum+convertFunc(v);
+            local numeric=tonumber(convertFunc(v));
+            if numeric~=nil then
+                sum=sum+numeric;
+            end;
 		end;
 		return sum;
 	end);
@@ -1211,7 +1214,11 @@ function Mixins.Iteration(library)
 		local s=0;
         for v in iterator(iterable) do
 			s=s+1;
-			sum=sum+convertFunc(v);
+            local numeric=tonumber(convertFunc(v));
+            if numeric~=nil then
+                sum=sum+numeric;
+            end;
+			sum=sum+numeric;
 		end;
 		assert(s>0, "Iterable must not be empty");
 		return sum/s;
