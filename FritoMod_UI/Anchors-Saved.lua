@@ -65,7 +65,6 @@ function Anchors.Named(name)
         anchor=anchors[name];
     else
         anchor=PersistentAnchor:New(anchorFrame);
-        anchor.frame:SetPoint("center");
         anchors[name]=anchor;
         ShowAnchor(name, anchor)
     end;
