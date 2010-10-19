@@ -15,12 +15,16 @@ function Frames.Color(f,r,g,b,a)
             a=possibleAlpha;
         end;
     end;
-    if not f.SetTexture then
+    if f.SetTextColor then
+        f:SetTextColor(r,g,b,a);
+    elseif f.SetTexture then
+        f:SetTexture(r,g,b,a);
+    elseif f.CreateTexture then
         local t=f:CreateTexture();
         t:SetAllPoints();
+        t:SetTexture(r,g,b,a);
         f=t;
     end;
-    f:SetTexture(r,g,b,a);
     return f;
 end;
 Frames.Colored=Frames.Color;
