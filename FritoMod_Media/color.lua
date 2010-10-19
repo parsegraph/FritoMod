@@ -44,7 +44,10 @@ end;
 colors.white= {1.0, 1.0, 1.0, 1.0};
 colors.black= {0.0, 0.0, 0.0, 1.0};
 colors.blue=  {0.0, 0.0, 1.0, 1.0};
+colors.orange={1.0, 0.5, 0.0, 1.0};
 colors.yellow={1.0, 1.0, 0.0, 1.0};
+colors.purple={1.0, 0.0, 1.0, 1.0};
+colors.violet=colors.purple;
 
 colors.warning=ConvertToTable(0xFFFF6347);
 colors.error=  ConvertToTable(0xFFB22222)
@@ -59,6 +62,7 @@ if GREEN_FONT_COLOR then
 end;
 if GRAY_FONT_COLOR then
     colors.gray=BreakColorTable(GRAY_FONT_COLOR);
+    colors.grey=colors.gray;
 end;
 
 if MATERIAL_TEXT_COLOR_TABLE then
