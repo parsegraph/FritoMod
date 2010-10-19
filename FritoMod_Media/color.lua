@@ -10,6 +10,8 @@ local colors=setmetatable({}, {
     __index = function(self, k)
         if type(k) == "string" then
             return rawget(self, k:lower());
+        elseif IsCallable(k) then
+            return self[k()];
         end;
     end,
     __newindex = function(self,k,v)
