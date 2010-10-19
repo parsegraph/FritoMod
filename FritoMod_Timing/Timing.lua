@@ -102,6 +102,24 @@ end);
 Timing.Beat=Timing.Rhythmic;
 Timing.OnBeat=Timing.Rhythmic;
 
+function Timing.CycleValues(period, value, ...)
+    local values={value, ...};
+    local index=1;
+    local remover=Timing.Rhythmic(period, function()
+        index=index + 1;
+        if index > #values then
+            index=1;
+        end;
+    end);
+    return function(stop)
+        if stop then
+            remover();
+        else
+            return values[index];
+        end;
+    end;
+end;
+
 -- Calls the specified function periodically. This timer will ensure that the function
 -- is called for every elapsed period. This is similar to Timing.Rhythmic, but where
 -- the rhymthic timer could "miss" beats, burst will fire the function as many times as
