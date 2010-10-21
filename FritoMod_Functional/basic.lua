@@ -50,6 +50,11 @@ function IsCallable(value)
     return mt and IsCallable(mt.__call);
 end;
 
+function IsPrimitive(value)
+    local valueType = type(value);
+    return valueType=="boolean" or valueType=="string" or valueType=="number";
+end;
+
 -- Returns an unpacked table that contains all elements in the specified tables.
 -- 
 -- WARNING: While this function goes above and beyond when handling nil values, it
