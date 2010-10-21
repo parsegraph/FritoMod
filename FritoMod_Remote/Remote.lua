@@ -60,10 +60,19 @@ Remote=setmetatable({}, {
             __index=function(self, medium)
                 assert(type(medium)=="string", "medium must be a string");
                 medium=medium:lower();
-                local function sender(...)
-                    assert(select("#", ...)==1 and tostring(select(1, ...)), 
-                        "Remote does not accept non-string values");
-                    return SendMessage(medium, prefix, ...);
+                local function sender(message, ...)
+                    assert(select("#", ...)==0, "Remote does not accept more than one argument");
+                    if IsCallable(message) then
+                        return sender(message());
+                    elseif type(message)=="table" then
+                        for i=1,#message do
+                            sender(message());
+                        end;
+                    elseif IsPrimitive(message) then
+                        return SendMessage(medium, prefix, tostring(message));
+                    end;
+                    assert(message~=nil, "Message must not be nil");
+                    error(message, "Could not send "..type(message) .. " message: "..tostring(message));
                 end;
                 if mediums[medium] then
                     self[medium]=sender;
