@@ -2,5 +2,6 @@
 ## Title: FritoMod: Remote
 ## Author: Aaron Faanes
 ## Version: 1.3
-## Dependencies: FritoMod, FritoMod_Collections
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_Serialize
+CroppedString.lua
 Remote.lua
