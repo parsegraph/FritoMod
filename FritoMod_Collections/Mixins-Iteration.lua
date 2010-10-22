@@ -1218,7 +1218,6 @@ function Mixins.Iteration(library)
             if numeric~=nil then
                 sum=sum+numeric;
             end;
-			sum=sum+numeric;
 		end;
 		assert(s>0, "Iterable must not be empty");
 		return sum/s;
