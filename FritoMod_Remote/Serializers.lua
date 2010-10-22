@@ -1,3 +1,15 @@
+-- This provides a serializer to get around Blizzard's absurd 255-character limit on messages.
+-- It will break up a long message into chunks, identifying them with a header so they may
+-- be reassembled.
+--
+-- I think this code will work well, but it might behoove us to embed the header in the prefix
+-- itself, instead of having them separate. I like having them separate for now, though, since
+-- that allows us to use this serializer in any addon channel that we want to use it in. On the
+-- flipside, we waste a bit of bandwidth.
+--
+-- There's also work to be done on the header itself. Right now, it's a integer literally represented
+-- as a string. It wouldn't be too difficult to compress it into the bytes of the characters.
+
 if nil ~= require then
     require "FritoMod_Functional/basic";
     require "FritoMod_Serialize/Serializers";
