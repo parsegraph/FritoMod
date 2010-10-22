@@ -138,6 +138,14 @@ function Assert.Type(expectedType, value, assertion)
         ("Type mismatch%s, expected %s, got %s"):format(assertion, s(expectedType), s(value)));
 end;
 
+function Assert.Number(value, assertion)
+    if type(value)=="number" then
+        return;
+    end;
+    assertion = FormatName(assertion);
+    assert(tonumber(value), ("%s value must be a number, but was not%s. Value was: "..tostring(value)):format(type(value), assertion));
+end;
+
 -- Asserts that the specified actual value is identical(==) to the specified expected value.
 --
 -- expected:*
