@@ -12,10 +12,9 @@
 
 if nil ~= require then
     require "FritoMod_Functional/basic";
-    require "FritoMod_Serialize/Serializers";
 end;
 
-Callbacks=Callbacks or {};
+Serializers=Serializers or {};
 
 -- Chunks are strings sent over the wire. They are comprised of a header and data, delimited
 -- by a colon ':' character.
@@ -57,16 +56,16 @@ local chunkGroup=-1;
 -- padding
 --     strings that reduce the chunk size of our message. Typically, this will be the string value
 --     of the prefix.
-function Serializers.WriteCroppedString(message, padding)
+function Serializers.WriteStringChunks(message, padding)
     if IsCallable(message) then
-        return Serializers.WriteCroppedString(message(), padding);
+        return Serializers.WriteStringChunks(message(), padding);
     elseif type(message)=="table" then
         if #message==1 then
-            return Serializers.WriteCroppedString(message[1], padding);
+            return Serializers.WriteStringChunks(message[1], padding);
         end;
         local chunks={};
         for i=1, #message do
-            local v=Serializers.WriteCroppedString(message[i], padding);
+            local v=Serializers.WriteStringChunks(message[i], padding);
             if type(v)=="table" then
                 Lists.InsertAll(chunks, v);
             else
