@@ -186,11 +186,19 @@ end
 -- returns:list
 --     a list of strings, split by the specified delimiter
 function Strings.SplitByDelimiter(delimiter, originalString, limit)
-	assert(delimiter ~= nil, "delimiter must be provided");
-	assert(delimiter ~= "", "delimiter must not be an empty string");
-    delimiter = tostring(delimiter);
-	assert(originalString ~= nil, "originalString must be provided");
-    local remainder = tostring(originalString);
+    if IsCallable(originalString) then
+        return Strings.SplitByDelimiter(delimiter, originalString(), limit);
+    elseif not IsPrimitive(originalString) then
+        error("Unsupported "..type(originalString).." value: "..tostring(originalString));
+    end;
+    if IsCallable(delimiter) then
+        return Strings.SplitByDelimiter(delimiter(), originalString, limit);
+    elseif not IsPrimitive(delimiter) then
+        error("Unsupported "..type(originalString).." value: "..tostring(originalString));
+    end;
+    delimiter=tostring(delimiter);
+    originalString=tostring(originalString);
+    local remainder = originalString;
     local items = {};
     while limit == nil or #items + 1 < limit do
         local startMatch, endMatch = remainder:find(delimiter);
