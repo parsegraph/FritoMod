@@ -3,16 +3,24 @@ if nil ~= require then
     require "FritoMod_Strings/Strings";
 end;
 
+local RANDOM_MEANINGLESS_TEXT=[[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin et tellus ut ante ornare tincidunt eget ac diam. Nam quam erat, sollicitudin eget suscipit vitae, commodo id erat. Vestibulum vel condimentum nibh. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus sollicitudin blandit nisl, vitae consectetur purus vehicula sit amet. Vivamus mauris eros, dapibus et aliquam ut, molestie at dui. Integer faucibus, risus vel rutrum aliquet, purus magna hendrerit odio, vel suscipit diam diam in nunc. Suspendisse molestie egestas hendrerit. Pellentesque porta odio nec eros convallis rutrum. Curabitur venenatis tempor metus sit amet pharetra. Nunc ultricies condimentum est nec vulputate. Maecenas a quam velit. Vivamus tristique interdum felis, vel tempor sapien vulputate quis. Fusce ligula enim, consequat vitae faucibus ac, consequat nec dui. Sed ut dui a odio semper porta. Vivamus at tortor a arcu congue accumsan. In sit amet convallis massa. Sed sagittis dictum mollis. Nullam euismod lorem sit amet nisl elementum ac iaculis arcu tempus.
+
+Quisque accumsan, sem vel congue convallis, neque risus consectetur mi, vitae tempor purus dui et magna. Mauris dapibus massa ac odio mollis lacinia. Nam fringilla eleifend turpis, id iaculis ante faucibus vel. Morbi a lorem neque. Aliquam a arcu ante, at sodales ipsum. Sed vestibulum nunc vel est sollicitudin quis consequat felis condimentum. Praesent sollicitudin, dolor in tempus cursus, lectus mi ullamcorper mauris, iaculis scelerisque nunc neque non tortor. Suspendisse potenti. Sed non mauris in nisl venenatis ultrices. Morbi nibh urna, fermentum vitae venenatis sit amet, pulvinar ut velit. Phasellus facilisis nulla eget nunc scelerisque auctor. Vivamus accumsan rhoncus augue, sit amet varius nulla rhoncus et. Sed congue suscipit felis, eu convallis metus adipiscing at. Vivamus in facilisis est. Morbi nulla lectus, tincidunt eget dictum non, ornare ut sapien. Mauris vulputate ullamcorper est eget feugiat. Nunc suscipit, dolor ut pellentesque tempor, eros justo accumsan tortor, ut vulputate enim turpis rhoncus sem.
+
+Sed luctus dui nec purus imperdiet porta. Mauris nibh nunc, consectetur vel tempus a, viverra sit amet magna. Ut vel nisl a neque fermentum cursus varius ac turpis. Donec eget auctor quam. Morbi faucibus nunc vitae lacus dapibus quis luctus dui tincidunt. Ut iaculis, nunc nec iaculis ullamcorper, ante urna congue metus, eu accumsan risus diam sit amet libero. Nulla semper viverra sem, quis aliquet diam volutpat quis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur congue congue neque consectetur suscipit. Sed mollis volutpat egestas. Phasellus in mauris velit. Sed ac augue sed sem pretium ullamcorper. Aliquam dolor dui, vehicula ac volutpat vitae, bibendum a erat. Proin tincidunt malesuada fringilla. Nullam nec turpis sed sapien tempus ultricies ut bibendum risus.
+
+Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam lorem dui, ultrices in fermentum vitae, lobortis eu lorem. Vestibulum interdum, metus quis luctus suscipit, ligula turpis congue lacus, at aliquet erat nibh id massa. In hac habitasse platea dictumst. Sed bibendum arcu eget justo facilisis auctor. Nunc cursus iaculis erat vitae eleifend. Sed porttitor elementum massa, id feugiat diam molestie non. Morbi sed orci ut dolor viverra commodo eget at turpis. Nulla quam est, suscipit ac accumsan sit amet, consequat et diam. Suspendisse dapibus lobortis consectetur. Aenean dapibus ligula eget risus viverra lobortis. Etiam laoreet convallis ante id fringilla. Praesent quis leo ante, non dignissim urna. Proin convallis mattis augue, ut malesuada leo sagittis non. Aliquam erat volutpat. Suspendisse luctus congue velit, id feugiat libero hendrerit vitae. Aenean ullamcorper malesuada est id rhoncus. Donec consequat, elit non vulputate suscipit, risus turpis semper eros, porta molestie ante lectus aliquet ante.
+
+Aenean eu risus vel massa ornare egestas. Integer nec scelerisque ante. Duis varius porta neque, suscipit pretium risus molestie ut. Sed eget neque eget eros laoreet rutrum in ut orci. Vestibulum sit amet velit ligula, non consectetur odio. Suspendisse laoreet fringilla est, non suscipit neque aliquet in. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam erat volutpat. Duis sed risus ante, sed accumsan tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed dui a lectus consequat adipiscing non id metus. Etiam euismod nibh a tortor ornare sed ullamcorper mauris laoreet. Duis in leo arcu, vitae porta risus. Phasellus nec condimentum risus. Aenean ut tellus elit, ut fringilla dui. Nunc placerat semper magna, in accumsan velit porttitor sit amet. Suspendisse et posuere elit. Curabitur neque orci, pellentesque quis dapibus eu, dapibus ut sapien. Maecenas velit enim, elementum eu sagittis vitae, semper ac nibh.]]
+
 function Suite:TestWritingACroppedString()
-    Assert.Equals("0:Notime", Serializers.WriteCroppedString("Notime"));
-    local chunks=Serializers.WriteCroppedString("ABCD", 253);
-    Assert.NotNil(chunks);
-    local chunkGroup=Strings.Split(":", chunks[1], 2)[1];
-    Assert.Number(chunkGroup);
-    local expectedChunks={};
-    for _, v in ipairs({"A","B","C","D"}) do
-        table.insert(expectedChunks, chunkGroup..":"..v);
+    Assert.Equals(":Notime", Serializers.WriteCroppedString("Notime"));
+    local chunks=Serializers.WriteCroppedString(RANDOM_MEANINGLESS_TEXT);
+    local message="";
+    for i=1, #chunks do
+        local chunk=chunks[i];
+        local data=Strings.Split(":", chunk, 2)[2];
+        message=message..data;
     end;
-    Assert.Equals(expectedChunks, chunks);
-    local chunks=Serializers.WriteCroppedString({"AB","CD"}, 253);
+    Assert.Equals(RANDOM_MEANINGLESS_TEXT, message);
 end;
