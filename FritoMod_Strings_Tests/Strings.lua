@@ -40,7 +40,7 @@ end;
 
 function Suite:TestPrettyWithGlobalFunction()
     local p = Strings.Pretty;
-    Assert.Equals("Function@Noop", p(Noop), "Global functions are named");
+    Assert.Equals("Function@CreateTestSuite", p(CreateTestSuite), "Global functions are named");
 end;
 
 function Suite:TestSplitByCaseTrivialCases()
