@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("FritoMod_Remote/CroppedString");
+local Suite=CreateTestSuite("FritoMod_Remote/Serializers");
 if nil ~= require then
     require "FritoMod_Strings/Strings";
 end;
