@@ -1,14 +1,16 @@
 -- Remote lets you listen for and dispatch remote events.
 --
 -- Slash.Register("notime", Remote["NoTime.Chat"].g);
--- Remote["NoTime.Chat"](function(who, message)
+-- Remote["NoTime.Chat"](function(message, who)
 --     print(("%s said %q"):format(who, message));
 -- end);
 --
 -- /notime Hello, everyone!
 --
--- Remote does no serialization, so it doesn't accept non-primitive values. I'm a 
--- little torn on whether to include a built-in serializer. Not including one limits
+-- Remote does no serialization, so it doesn't translate non-primitive values. It does accept
+-- things like functions and tables, but these must eventually return primitives.
+--
+-- I'm a little torn on whether to include a built-in serializer. Not including one limits
 -- the usefulness of this solution and generates errors in situations where you wouldn't
 -- anticipate them.
 --
@@ -74,7 +76,7 @@ Remote=setmetatable({}, {
                     if prefix~=msgPrefix then
                         return;
                     end;
-                    func(source, message);
+                    func(message, source, medium);
                 end);
             end
         });
