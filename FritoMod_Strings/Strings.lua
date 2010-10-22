@@ -198,6 +198,9 @@ function Strings.SplitByDelimiter(delimiter, originalString, limit)
     end;
     delimiter=tostring(delimiter);
     originalString=tostring(originalString);
+    if delimiter=="" then
+        return Strings.Array(originalString);
+    end;
     local remainder = originalString;
     local items = {};
     while limit == nil or #items + 1 < limit do
@@ -219,6 +222,14 @@ function Strings.SplitByDelimiter(delimiter, originalString, limit)
     return items;
 end;
 Strings.Split=Strings.SplitByDelimiter;
+
+function Strings.Array(str)
+    local chars={};
+    for i=1,#str do
+        table.insert(chars, str:sub(i, i));
+    end;
+    return chars;
+end;
 
 -- Removes leading and trailing whitespace from the specified string.
 --

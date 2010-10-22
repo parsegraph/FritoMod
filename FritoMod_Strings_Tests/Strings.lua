@@ -107,7 +107,7 @@ function Suite:TestSplitByDelimiterNoopCase()
 end;
 
 function Suite:TestSplitByDelimiterWithEmptyStringDelimiter()
-	Assert.Exception("SplitByDelimiter gracefully fails on empty string delimiter", Strings.SplitByDelimiter, "", "test");
+	Assert.Equals({'t', 'e', 's', 't'}, Strings.SplitByDelimiter("", "test"));
 end;
 
 function Suite:TestSplitByDelimiterHandlesEmptyString()
