@@ -118,6 +118,11 @@ function Assert.Nil(actual, assertion)
     assert(nil == actual, ("Value was not nil%s, value was %s"):format(assertion, s(actual)));
 end;
 
+function Assert.NotNil(actual, assertion)
+    assertion = FormatName(assertion);
+    assert(nil ~= actual, ("Value must be non-nil, but was nil anyway%s"):format(assertion, s(actual)));
+end;
+
 -- Asserts that the specified value is of the specified expected type.
 --
 -- expectedType
