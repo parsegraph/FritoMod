@@ -116,5 +116,9 @@ function Serializers.WriteStringChunks(message, padding)
     for i=1,#message,messageSize do
         table.insert(chunks, header..message:sub(i, i+messageSize-1));
     end;
+    if #chunks[#chunks]==messageSize then
+        -- Our last message was completely full, so we need to send another one to indicate we've finished.
+        table.insert(chunks, header);
+    end;
     return chunks;
 end;
