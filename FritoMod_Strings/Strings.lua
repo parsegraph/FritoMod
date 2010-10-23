@@ -51,8 +51,9 @@ function Strings.IsLower(word)
 end;
 
 function Strings.CharAt(str, index)
-    return str:sub(index, index);
+    return string.char(str:byte(index));
 end;
+Strings.Get=Strings.CharAt;
 
 function Strings.StartsWith(match, str)
 	assert(type(match) == "string", "match must be a string");
