@@ -1,1 +1,1 @@
-Serializers={};
+Serializers=Serializers or {};

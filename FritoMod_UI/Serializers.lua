@@ -1,6 +1,8 @@
 if nil ~= require then
-    require "FritoMod_Serialize/Serializers";
+    require "WoW_UI/Frame-Layout";
 end;
+
+Serializers=Serializers or {};
 
 function Serializers.VerifyPoint(location)
     assert(location, "location must not be nil");
