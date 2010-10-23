@@ -2,16 +2,36 @@ if nil ~= require then
     require "FritoMod_Functional/basic";
     require "FritoMod_Functional/Metatables";
 
+    require "FritoMod_Collections/Mixins-Iteration";
     require "FritoMod_Collections/Lists";
     require "FritoMod_Collections/Tables";
+    require "FritoMod_Collections/Iterators";
     
     require "FritoMod_OOP/OOP";
 end;
 
-Strings = Metatables.Defensive({
-	__print=print
-});
-local Strings = Strings;
+Strings=Mixins.Iteration();
+Strings.__print=print;
+Metatables.Defensive(Strings);
+
+function Strings.Iterator(str)
+    local k=0;
+    return function()
+        if k==nil then
+            return;
+        end;
+        k=k+1;
+        if k > #str then
+            k=nil;
+            return nil;
+        end;
+        return k, Strings.Get(str, k);
+    end;
+end;
+
+function Strings.KeyIterator(str)
+    return Iterators.Counter(#str);
+end;
 
 Strings.DIGITS = "0123456789"
 Strings.ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

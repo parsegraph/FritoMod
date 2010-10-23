@@ -1,8 +1,18 @@
 if nil ~= require then
     require "FritoMod_Functional/currying";
+
+    require "FritoMod_Collections_Tests/Mixins-ArrayTests";
+    require "FritoMod_Collections_Tests/Mixins-ComparableIteration";
 end;
 
 local Suite=CreateTestSuite("FritoMod_Strings/Strings");
+
+Mixins.ComparableIterationTests(Suite, Strings);
+Mixins.ArrayTests(Suite, Strings);
+
+function Suite:Array(...)
+	return Strings.JoinValues(" ", ...);
+end;
 
 function Suite:TestStartsWith()
 	Assert.True(Strings.StartsWith("A", "ABC"), "Strings that start with the given value must match");
