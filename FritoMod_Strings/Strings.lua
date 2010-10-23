@@ -354,7 +354,7 @@ function Strings.JoinCamelCase(words)
 end;
 
 function Strings.JoinSnakeCase(words)
-    return Strings.Join("_", words):lower();
+    return Strings.JoinArray("_", words):lower();
 end;
 
 -- Converts AProperCase to aProperCase. 
