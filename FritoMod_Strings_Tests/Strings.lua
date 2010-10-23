@@ -7,11 +7,14 @@ end;
 
 local Suite=CreateTestSuite("FritoMod_Strings/Strings");
 
-Mixins.ComparableIterationTests(Suite, Strings);
-Mixins.ArrayTests(Suite, Strings);
+function Suite:TestStringGet()
+    local s="abcde";
+    Assert.Equals("c", Strings.Get(s, 3));
+end;
 
-function Suite:Array(...)
-	return Strings.JoinValues(" ", ...);
+function Suite:TestUpperCasingAString()
+    local s="abcde";
+    Assert.Equals(s:upper(), Strings.JoinArray("", Strings.Map(s, "upper")));
 end;
 
 function Suite:TestStartsWith()
