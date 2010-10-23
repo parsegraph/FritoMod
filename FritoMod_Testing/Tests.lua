@@ -238,7 +238,7 @@ function Tests.Flag(isSet)
         -- assertion:string
         --     specifies why the flag should be raised or describes the significance of the raised
         --     flag
-        Assert = function(assertion)
+        AssertSet = function(assertion)
             assert(flag.IsSet(), assertion or "Flag must be set");
         end,
 
@@ -254,10 +254,15 @@ function Tests.Flag(isSet)
 
     -- Aliases
     flag.Unset = flag.Clear;
+    flag.Lower = flag.Clear;
 
-    flag.AssertSet = flag.Assert;
+    flag.Assert = flag.AssertSet;
+    flag.AssertTrue = flag.AssertSet;
+    flag.AssertRaised = flag.AssertSet;
+
     flag.AssertFalse = flag.AssertUnset;
-    flag.AssertTrue = flag.Assert;
+    flag.AssertUnraised= flag.AssertUnset;
+
 
     return flag;
 end
