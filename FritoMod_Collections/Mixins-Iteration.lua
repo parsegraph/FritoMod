@@ -309,13 +309,14 @@ function Mixins.Iteration(library)
             end;
         end;
         local reachedEnd = false;
+        local key, value;
         local iterator = {
             Next = function()
                 if reachedEnd and index > #keys then
                     return;
                 end;
                 index = index + 1;
-                local key, value = Get();
+                key, value = Get();
                 if key == nil then
                     reachedEnd = true;
                     return;
@@ -329,6 +330,12 @@ function Mixins.Iteration(library)
                 index = index - 1;
 				reachedEnd=false;
                 return chooser(Get());
+            end,
+            Key = function()
+                return key;
+            end,
+            Value = function()
+                return value;
             end
         };
         setmetatable(iterator, {
