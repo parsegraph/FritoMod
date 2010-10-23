@@ -23,7 +23,7 @@ function Suite:TestEndsWith()
 end;
 
 function Suite:TestJoin()
-    local j = Curry(Strings.Join, " ");
+    local j = Curry(Strings.JoinArray, " ");
     Assert.Equals("2 3 4", j({2,3,4}), "Simple group");
 end;
 

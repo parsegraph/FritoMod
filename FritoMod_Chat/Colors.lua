@@ -33,13 +33,13 @@ function Colors.PackHex(colorParts, ...)
     if select("#", ...) > 0 then
         colorParts = { colorParts, ... };
     end;
-    return Strings.Join("", unpack(Lists.Map(colorParts, function(colorPart)
+    return Strings.JoinArray("", Lists.Map(colorParts, function(colorPart)
         local hexColor = ConvertToBase(16, math.floor(colorValue * 255));
         while #hexColor < 2 do
             hexColor = "0" .. hexColor;
         end;
         return hexColor;
-    end)));
+    end));
 end;
 
 -- Unpacks the specified colorValue into its color value parts.

@@ -89,7 +89,7 @@ function Strings.Pretty(value)
 end;
 
 function Strings.Print(...)
-	Strings.__print(Strings.Join(" ", Lists.Map({...}, Strings.Pretty)));
+	Strings.__print(Strings.JoinArray(" ", Lists.Map({...}, Strings.Pretty)));
 end;
 Strings.p=Strings.Print;
 
@@ -123,7 +123,7 @@ function Strings.PrettyList(value)
     end;
     local size = Strings.PrettyNamedNumber(Strings.PrettyNumber(size), "item");
     local contents = Lists.Map(value, Strings.Pretty);
-    return ("[<%s> %s]"):format(size, Strings.Join(", ", contents));
+    return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", contents));
 end;
 
 function Strings.PrettyMap(value)
@@ -136,7 +136,7 @@ function Strings.PrettyMap(value)
     local contents = Tables.MapPairs(value, function(key, value)
         return ("%s = %s"):format(Strings.Pretty(key), Strings.Pretty(value));
     end);
-    return ("[<%s> %s]"):format(size, Strings.Join(", ", contents));
+    return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", contents));
 end;
 
 function Strings.PrettyNumber(value)
@@ -157,7 +157,7 @@ function Strings.PrettyString(value)
     return ('%q'):format(value);
 end;
 
-function Strings.Join(delimiter, items)
+function Strings.JoinArray(delimiter, items, ...)
     assert(delimiter ~= nil, "delimiter is nil");
     delimiter = tostring(delimiter);
     return Lists.Reduce(items, "", function(concatted, word)
@@ -171,11 +171,11 @@ function Strings.Join(delimiter, items)
         return word;
     end);
 end
-Strings.Concat=Strings.Join;
 
 function Strings.JoinValues(delimiter, ...)
-    return Strings.Join(delimiter, { ... });
+    return Strings.JoinArray(delimiter, { ... });
 end
+Strings.Join=Strings.JoinValues;
 
 -- Splits originalString by the given delimiter.
 --
