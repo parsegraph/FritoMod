@@ -3,4 +3,5 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Dependencies: FritoMod, FritoMod_Remote, FritoMod_Strings, FritoMod_Testing
+Callbacks.lua
 Serializers.lua

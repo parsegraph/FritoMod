@@ -2,6 +2,6 @@
 ## Title: FritoMod: Strings Tests
 ## Author: Aaron Faanes
 ## Version: 1.3
-## Dependencies: FritoMod, FritoMod_Functional, FritoMod_Strings, FritoMod_Testing
+## Dependencies: FritoMod, FritoMod_Collections_Tests, FritoMod_Functional, FritoMod_Strings, FritoMod_Testing
 Parsers.lua
 Strings.lua

@@ -1,7 +1,7 @@
 if nil ~= require then
     require "WoW_UI/Frame-Layout";
 
-    require "FritoMod_Serialize/Serializers";
+    require "FritoMod_Serializers/Serializers";
     require "FritoMod_Persistence/Persistence";
 
     require "FritoMod_UI/Frames";

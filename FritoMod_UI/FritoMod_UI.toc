@@ -3,13 +3,13 @@
 ## Author: Aaron Faanes
 ## Version: 1.3
 ## Notes: An OOP-based UI framework.
-## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_Media, FritoMod_OOP, FritoMod_Persistence, FritoMod_Serialize
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_Media, FritoMod_OOP, FritoMod_Persistence, FritoMod_Serializers
 Anchors.lua
 Callbacks.lua
 Frames.lua
+Serializers.lua
 PersistentAnchor.lua
 Anchors-Saved.lua
 Animations.lua
 Frames-Position.lua
 Metatables-StyleClient.lua
-Serializers.lua
