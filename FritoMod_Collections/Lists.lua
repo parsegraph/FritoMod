@@ -55,6 +55,7 @@ end;
 function Lists.Length(iterable)
     return #iterable;
 end;
+Lists.Size=Lists.Length;
 
 function Lists.Insert(iterable, value)
     table.insert(iterable, value);
@@ -65,8 +66,19 @@ function Lists.Delete(iterable, key)
     return table.remove(iterable, key);
 end;
 
-function Lists.Size(iterable)
-    return #iterable;
+do
+    local super=Lists.Snippet;
+    function Lists.Snippet(iterable, first, last, func, ...)
+        if first~=nil and first<0 then
+            first=#iterable-first;
+        end;
+        if last~= nil and last<0 then
+            last=#iterable-last;
+        end;
+        first=math.max(first, 1);
+        last=math.min(last, #iterable);
+        return super(iterable, first, last, func, ...);
+    end;
 end;
 
 function Lists.ContainsValue(iterable, target, testFunc, ...)

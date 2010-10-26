@@ -166,6 +166,40 @@ function Mixins.Iteration(library)
         -- This optional function must be explicitly implemented by clients.
     end;
 
+    if library.Snippet == nil then
+        -- Snippet gets a sublist or subvalue from the given iterable.
+        --
+        -- This version doesn't do comparisions, only equality, so your anchors
+        -- must be exact. I might write one that works via comparisons, but I
+        -- haven't yet needed to.
+        --
+        -- This works similar to string's sub function, though negative index
+        -- support is optional.
+        function library.Snippet(iterable, first, last, testFunc, ...)
+            testFunc=library.NewEqualsTest(testFunc, ...);
+            if last==nil then
+                last=first;
+                first=nil;
+            end;
+            local pastFirst=first==nil;
+            local pastLast=false;
+            return library.FilterPairs(iterable, function(k, v)
+                if pastLast then
+                    -- We're dead, always return false.
+                    return false;
+                end;
+                if not pastFirst and testFunc(k, first) then
+                    pastFirst=true;
+                end;
+                if not pastFirst then
+                    return false;
+                end;
+                pastLast=testFunc(k, last);
+                return true;
+            end);
+        end;
+    end;
+
     -- Returns whether the two iterables contain the same elements, in the same order.
     --
     -- This option is applicable to keys or values.

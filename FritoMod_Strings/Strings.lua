@@ -107,6 +107,13 @@ function Strings.Length(iterable)
     return #iterable;
 end;
 
+function Strings.Snippet(str, first, last)
+    if last==nil then
+        return str:sub(first);
+    end;
+    return str:sub(first, last);
+end;
+
 function Strings.StartsWith(match, str)
 	assert(type(match) == "string", "match must be a string");
 	assert(#match > 0, "match must contain at least one character");
