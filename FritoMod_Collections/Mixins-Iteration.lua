@@ -154,6 +154,18 @@ function Mixins.Iteration(library)
         -- This function must be explicitly implemented by clients.
     end;
 
+    if library.Next == nil then
+        -- This optional function must be explicitly implemented by clients.
+    end;
+
+    if library.Previous == nil then
+        -- This optional function must be explicitly implemented by clients.
+    end;
+
+    if library.Length == nil then
+        -- This optional function must be explicitly implemented by clients.
+    end;
+
     -- Returns whether the two iterables contain the same elements, in the same order.
     --
     -- This option is applicable to keys or values.

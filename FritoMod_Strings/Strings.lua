@@ -81,6 +81,32 @@ function Strings.CharAt(str, index)
 end;
 Strings.Get=Strings.CharAt;
 
+function Strings.Next(iterable, i)
+    if i==nil or i<1 then
+        i=0;
+    end;
+    i=i+1;
+    local c=Strings.Get(iterable, i);
+    if c then
+        return i, c;
+    end;
+end;
+
+function Strings.Previous(iterable, i)
+    if i==nil or i<1 then
+        i=0;
+    end;
+    i=i-1;
+    local c=Strings.Get(iterable, i);
+    if c then
+        return i, c;
+    end;
+end;
+
+function Strings.Length(iterable)
+    return #iterable;
+end;
+
 function Strings.StartsWith(match, str)
 	assert(type(match) == "string", "match must be a string");
 	assert(#match > 0, "match must contain at least one character");

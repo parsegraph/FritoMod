@@ -32,6 +32,30 @@ function Lists.Get(iterable, key)
     return iterable[key];
 end;
 
+function Lists.Next(iterable, i)
+    if i==nil or i<1 then
+        i=0;
+    end;
+    i=i+1;
+    if iterable[i] then
+        return i, iterable[i];
+    end;
+end;
+
+function Lists.Previous(iterable, i)
+    if i==nil or i<1 then
+        i=0;
+    end;
+    i=i-1;
+    if iterable[i] then
+        return i, iterable[i];
+    end;
+end;
+
+function Lists.Length(iterable)
+    return #iterable;
+end;
+
 function Lists.Insert(iterable, value)
     table.insert(iterable, value);
     return Functions.OnlyOnce(Lists.Remove, iterable, value);
