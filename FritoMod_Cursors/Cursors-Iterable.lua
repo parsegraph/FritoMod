@@ -232,14 +232,14 @@ cursor.PeekPrevious=Headless("Peek", -1);
 
 local function MoveWhile(self, steps, func, ...)
     func=Curry(func, ...);
-    local moved=false;
-    while self:Move(steps) do
-        moved=true;
-        if not func(self:Get(), self:Index()) then
-            break;
+    while true do 
+        self:Move(steps);
+        local k,v=self:Pair();
+        if k==nil or not func(v, k) then
+            return k~=nil;
         end;
     end;
-    return moved;
+    return false;
 end;
 
 local function MoveUntil(self, steps, func, ...)
@@ -251,16 +251,14 @@ end;
 
 local function SneakWhile(self, steps, func, ...)
     func=Curry(func, ...);
-    local moved=false;
     while true do 
         local k,v=self:Pair();
         if k==nil or not func(v, k) then
-            break;
+            return k~=nil;
         end;
-        moved=true;
         self:Move(steps);
     end;
-    return moved;
+    return false;
 end;
 
 local function SneakUntil(self, steps, func, ...)
@@ -272,16 +270,14 @@ end;
 
 local function PeekWhile(self, steps, func, ...)
     func=Curry(func, ...);
-    local moved=false;
     while true do
         local k,v=self:Peek(steps);
         if k==nil or not func(v, k) then
-            break;
+            return k~=nil;
         end;
-        moved=true;
         self:Move(steps);
     end;
-    return moved;
+    return false;
 end;
 
 local function PeekUntil(self, steps, func, ...)
