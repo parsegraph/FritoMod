@@ -318,6 +318,12 @@ function cursor:Mark()
     return self.mark;
 end;
 
+function cursor:MarkNext()
+    self:Next();
+    self.mark=self.index;
+    return self.mark;
+end;
+
 function cursor:Reset()
     if self.mark then
         self.index=self.mark;
