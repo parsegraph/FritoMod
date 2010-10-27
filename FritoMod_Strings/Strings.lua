@@ -38,17 +38,14 @@ Strings.ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 Strings.ALPHANUMERICS = Strings.DIGITS .. Strings.ALPHABET;
 
 function Strings.Matches(pattern, candidate)
-    candidate = tostring(candidate);
     return Bool(candidate:find(pattern));
 end;
 
 function Strings.IsLetter(letter)
-    letter = tostring(letter);
     return Bool(letter:find("^%a*$"));
 end;
 
 function Strings.IsNumber(letter)
-    letter = tostring(letter);
     return Bool(letter:find("^%d*$"));
 end;
 
