@@ -72,7 +72,7 @@ end);
 -- Augments a table such that every non-existent key causes an error. This is useful if you wish
 -- to explicitly avoid this class of potential programming problems.
 Metatables.Defensive = MetatableAttacher(function(self, key)
-    error("key not found: " .. key);
+    error(type(key).." key not found: " .. tostring(key));
 end);
 
 local function ForcedMetatable(forceFunc)
