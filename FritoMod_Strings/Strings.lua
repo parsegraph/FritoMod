@@ -71,7 +71,10 @@ function Strings.IsLower(word)
 end;
 
 function Strings.CharAt(str, index)
-    return string.char(str:byte(index));
+    local b=str:byte(index);
+    if b~=nil then
+        return string.char(b);
+    end;
 end;
 Strings.Get=Strings.CharAt;
 
