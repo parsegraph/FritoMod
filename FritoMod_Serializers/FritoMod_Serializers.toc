@@ -2,6 +2,6 @@
 ## Title: FritoMod: Serializers
 ## Author: Aaron Faanes
 ## Version: 1.3
-## Dependencies: FritoMod
+## Dependencies: FritoMod, FritoMod_Cursors, FritoMod_Functional
 Serializers-Data.lua
 Serializers.lua

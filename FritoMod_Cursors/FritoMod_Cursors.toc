@@ -2,6 +2,5 @@
 ## Title: FritoMod: Cursors
 ## Author: Aaron Faanes
 ## Version: 1.3
-## Dependencies: FritoMod, FritoMod_OOP
+## Dependencies: FritoMod, FritoMod_Collections, FritoMod_Functional, FritoMod_OOP, FritoMod_Strings
 Cursors-Iterable.lua
-Cursors-String.lua
