@@ -191,7 +191,7 @@ end;
 cursor.Size=cursor.Length;
 
 function cursor:AtStart()
-    return self.index<1;
+    return self.index<=1;
 end;
 cursor.AtBeginning=cursor.AtStart;
 
@@ -201,7 +201,7 @@ end;
 cursor.ToBeginning=cursor.ToStart;
 
 function cursor:AtEnd()
-    return self.index>self.library.Length(self.iterable);
+    return self.index>=self.library.Length(self.iterable);
 end;
 
 function cursor:ToEnd()
