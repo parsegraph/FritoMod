@@ -314,14 +314,17 @@ cursor.SneakNextUntil    =Headless(SneakUntil,  1);
 cursor.SneakPreviousUntil=Headless(SneakUntil, -1);
 
 function cursor:Mark()
-    self.mark=self.index;
-    return self.mark;
+    if self:AtValid() then
+        self.mark=self.index;
+        return self.mark;
+    end;
 end;
 
 function cursor:MarkNext()
-    self:Next();
-    self.mark=self.index;
-    return self.mark;
+    if self:Next() ~= nil then
+        self.mark=self.index;
+        return self.mark;
+    end;
 end;
 
 function cursor:Reset()
