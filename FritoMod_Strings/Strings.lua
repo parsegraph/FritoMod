@@ -50,6 +50,9 @@ function Strings.IsNumber(letter)
 end;
 
 function Strings.IsUpper(word)
+    if word==nil then
+        return false;
+    end
     if word:lower() == word:upper() then
         -- It contains no upper or lower-case values, so
         -- it's neither upper nor lower case.
@@ -59,6 +62,9 @@ function Strings.IsUpper(word)
 end;
 
 function Strings.IsLower(word)
+    if word==nil then
+        return false;
+    end
     if word:lower() == word:upper() then
         -- It contains no upper or lower-case values, so
         -- it's neither upper nor lower case.
