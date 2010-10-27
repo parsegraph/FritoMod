@@ -225,7 +225,7 @@ function cursor:Peek(steps)
     local sneakedIndex=self:Move(steps);
     local v=self:Get();
     self:To(oldIndex);
-    return sneakedIndex, v;
+    return v, sneakedIndex;
 end;
 cursor.PeekNext=Headless("Peek", 1);
 cursor.PeekPrevious=Headless("Peek", -1);
@@ -271,7 +271,7 @@ end;
 local function PeekWhile(self, steps, func, ...)
     func=Curry(func, ...);
     while true do
-        local k,v=self:Peek(steps);
+        local v, k=self:Peek(steps);
         if k==nil or not func(v, k) then
             return k~=nil;
         end;
