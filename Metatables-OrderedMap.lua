@@ -1,7 +1,6 @@
 if nil ~= require then
-    require "FritoMod_Functional/currying";
-
-    require "FritoMod_Collections/Lists";
+    require "currying";
+    require "Lists";
 end;
 
 if Metatables == nil then

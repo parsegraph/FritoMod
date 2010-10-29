@@ -1,8 +1,8 @@
 if nil ~= require then
-    require "WoW_UI/Frame-Layout";
+    require "wow/Frame-Layout";
 
-    require "FritoMod_Functional/Functions";
-    require "FritoMod_Media/color";
+    require "Functions";
+    require "color";
 end;
 
 Frames={};

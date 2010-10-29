@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "FritoMod_Media/Media";
+    require "Media";
 end;
 
 local sounds={};

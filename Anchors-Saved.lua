@@ -1,10 +1,10 @@
 if nil ~= require then
-    require "WoW_UI/Frame-Layout";
-    require "WoW_UI/FontString";
+    require "wow/Frame-Layout";
+    require "wow/FontString";
 
-    require "FritoMod_UI/PersistentAnchor";
-    require "FritoMod_UI/Anchors";
-    require "FritoMod_UI/Callbacks";
+    require "PersistentAnchor";
+    require "Anchors";
+    require "Callbacks-UI";
 end;
 
 -- A mapping of anchor names to PersistentAnchor objects.

@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "FritoMod_Testing/MappedTestSuite";
+    require "MappedTestSuite";
 end;
 
 -- Tests is the global registry for all named test suites. 

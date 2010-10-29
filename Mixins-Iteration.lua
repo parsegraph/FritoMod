@@ -1,9 +1,8 @@
 if nil ~= require then
-    require "FritoMod_Functional/basic";
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Operator";
-
-    require "FritoMod_Collections/Mixins";
+    require "basic";
+    require "currying";
+    require "Operator";
+    require "Mixins";
 end;
 
 if Mixins == nil then

@@ -1,6 +1,4 @@
-
-OOP = {};
-local OOP = OOP;
+OOP = OOP or {};
 
 -- Integrates a library into a given class. This takes all
 -- public (non-double-underscored functions), and adds them

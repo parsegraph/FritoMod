@@ -11,7 +11,7 @@
 -- as a string. It wouldn't be too difficult to compress it into the bytes of the characters.
 
 if nil ~= require then
-    require "FritoMod_Functional/basic";
+    require "basic";
 end;
 
 Serializers=Serializers or {};

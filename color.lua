@@ -1,9 +1,8 @@
 if nil ~= require then
-    require "FritoMod_Functional/Metatables";
-    require "FritoMod_Strings/Strings";
-    require "FritoMod_Chat/Colors";
-
-    require "FritoMod_Media/Media";
+    require "Metatables";
+    require "Strings";
+    require "Colors";
+    require "Media";
 end;
 
 local colors=setmetatable({}, {

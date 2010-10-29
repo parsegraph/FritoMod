@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "FritoMod_Functional/basic";
+    require "basic";
 end;
 
 Operator = setmetatable({

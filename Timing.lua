@@ -1,11 +1,10 @@
 if nil ~= require then
-    require "WoW_UI/Frame-Events";
+    require "wow/Frame-Events";
 
-    require "FritoMod_Functional/basic";
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Functions";
-
-    require "FritoMod_Collections/Lists";
+    require "basic";
+    require "currying";
+    require "Functions";
+    require "Lists";
 end;
 
 Timing = {};

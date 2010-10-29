@@ -1,10 +1,10 @@
 -- Automatic Item Selling
 if nil ~= require then
-	require "WoW_Containers/Containers";
-	require "WoW_Items/Item";
+	require "wow/Containers";
+	require "wow/Item";
 	
-	require "FritoMod_Functional/currying";
-	require "FritoMod_Events/Events";
+	require "currying";
+	require "Events";
 end;
 
 Labs=Labs or {};

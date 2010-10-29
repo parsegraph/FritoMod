@@ -1,8 +1,7 @@
 if nil ~= require then
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Metatables";
-
-    require "FritoMod_Collections/Mixins-MutableIteration";
+    require "currying";
+    require "Metatables";
+    require "Mixins-MutableIteration";
 end;
 
 Tables = {}

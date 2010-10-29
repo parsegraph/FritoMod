@@ -1,9 +1,8 @@
 if nil ~= require then
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Callbacks";
-
-    require "FritoMod_Collections/Lists";
-    require "FritoMod_Events/ToggleDispatcher";
+    require "currying";
+    require "Callbacks";
+    require "Lists";
+    require "ToggleDispatcher";
 end;
 
 Callbacks=Callbacks or {};

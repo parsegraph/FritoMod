@@ -1,7 +1,7 @@
 -- Functions that deal with metatables.
 
 if nil ~= require then
-    require "FritoMod_Functional/currying";
+    require "currying";
 end;
 
 if Metatables == nil then

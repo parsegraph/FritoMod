@@ -1,10 +1,10 @@
 if nil~=require then
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Functions";
-    require "FritoMod_Functional/Callbacks";
-    require "FritoMod_Collections/Lists";
-    require "FritoMod_Events/Events";
-    require "FritoMod_Timing/Callbacks";
+    require "currying";
+    require "Functions";
+    require "Callbacks";
+    require "Lists";
+    require "Events";
+    require "Callbacks";
 end;
 
 local function AssertPersistence()

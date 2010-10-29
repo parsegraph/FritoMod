@@ -27,8 +27,8 @@
 -- code in, since I think there's some potential value. However, I haven't found it yet.
 
 if nil ~= require then
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Functions";
+    require "currying";
+    require "Functions";
 end;
 
 Parameters=Parameters or {};

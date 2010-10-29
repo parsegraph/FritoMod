@@ -41,11 +41,9 @@
 -- Chat[r]("This is sent to the guild again");
 
 if nil ~= require then
-    require "FritoMod_Functional/currying";
-
-    require "FritoMod_Collections/Tables";
-
-    require "FritoMod_Strings/Strings";
+    require "currying";
+    require "Tables";
+    require "Strings";
 end;
 
 Chat = {};

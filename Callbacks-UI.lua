@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Callbacks";
+    require "currying";
+    require "Callbacks";
 end;
 
 local function ToggledEvent(onEvent, offEvent, installer)

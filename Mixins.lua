@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "FritoMod_Functional/currying";
+    require "currying";
 end;
 
 if Mixins == nil then

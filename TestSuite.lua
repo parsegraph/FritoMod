@@ -1,17 +1,14 @@
 if nil ~= require then
-    require "FritoMod_Functional/basic";
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Metatables";
-    require "FritoMod_Functional/Functions";
-
-    require "FritoMod_OOP/OOP";
-    require "FritoMod_OOP/OOP-Class";
-
-    require "FritoMod_Collections/Metatables";
-    require "FritoMod_Collections/Lists";
-    require "FritoMod_Collections/Iterators";
-
-    require "FritoMod_Testing/Tests";
+    require "basic";
+    require "currying";
+    require "Metatables";
+    require "Functions";
+    require "OOP";
+    require "OOP-Class";
+    require "Metatables";
+    require "Lists";
+    require "Iterators";
+    require "Tests";
 end;
 
 TestSuite = OOP.Class();

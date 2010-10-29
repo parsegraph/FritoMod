@@ -1,8 +1,8 @@
 -- Allows access to combat log events in a style similar to Events.
 if nil ~= require then
-	require "FritoMod_Functional/Functions";
-	require "FritoMod_Collections/Lists";
-	require "FritoMod_Events/Events";
+	require "Functions";
+	require "Lists";
+	require "Events";
 end;
 
 CombatEvents = {};

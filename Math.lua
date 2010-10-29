@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "FritoMod_Collections/Lists";
+    require "Lists";
 end;
 
 Math = {};

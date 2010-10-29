@@ -1,7 +1,5 @@
 if nil ~= require then
-    require "FritoMod_Collections/Tables";
-
-    require "FritoMod_Labs/Labs";
+    require "Tables";
 end;
 
 Labs=Labs or {};

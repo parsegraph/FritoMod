@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "FritoMod_Functional/Metatables";
-    require "FritoMod_Cursors/Cursors-Iterable";
+    require "Metatables";
+    require "Cursors-Iterable";
 end;
 
 Serializers=Serializers or {};

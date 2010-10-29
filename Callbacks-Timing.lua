@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "FritoMod_Functional/Callbacks";
-    require "FritoMod_Timing/Timing";
+    require "Callbacks";
+    require "Timing";
 end;
 
 Callbacks=Callbacks or {};

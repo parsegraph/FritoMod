@@ -1,13 +1,10 @@
 if nil ~= require then
-    require "WoW_UI/Frame-Animation";
-    require "WoW_UI/Frame-Layout";
+    require "wow/Frame-Animation";
+    require "wow/Frame-Layout";
 
-    require "FritoMod_Collections/Lists";
-    --XXX: Builders has been, mostly, renamed to Frames.
-    --require "FritoMod_UI/Builders";
-    require "FritoMod_Events/Events";
-
-    require "FritoMod_Labs/Labs";
+    require "Lists";
+    require "Frames";
+    require "Events";
 end;
 
 Labs=Labs or {};

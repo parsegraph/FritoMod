@@ -1,8 +1,7 @@
 if nil ~= require then
-    require "FritoMod_OOP/OOP-Class";
-
-    require "FritoMod_UI/Frames";
-    require "FritoMod_UI/Serializers";
+    require "OOP-Class";
+    require "Frames";
+    require "Serializers";
 end;
 
 PersistentAnchor=OOP.Class();

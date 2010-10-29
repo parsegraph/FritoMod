@@ -1,10 +1,8 @@
 if nil ~= require then
-    require "FritoMod_OOP/OOP";
-
-    require "FritoMod_Strings/Strings";
-    require "FritoMod_Collections/Lists";
-
-    require "FritoMod_Cursors/Cursors-Iterable";
+    require "OOP";
+    require "Strings";
+    require "Lists";
+    require "Cursors-Iterable";
 end;
 
 -- Splits a camelCase'd or ProperCase'd string into lower-case words. Acronyms will be 

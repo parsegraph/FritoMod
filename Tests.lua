@@ -1,10 +1,9 @@
 if nil ~= require then
-    require "FritoMod_Functional/basic";
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Functions";
-    require "FritoMod_Functional/Objects";
-
-    require "FritoMod_Collections/Lists";
+    require "basic";
+    require "currying";
+    require "Functions";
+    require "Objects";
+    require "Lists";
 end;
 
 Tests = {};

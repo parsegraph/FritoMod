@@ -81,12 +81,11 @@
 -- this case, your clarity will probably be similar to the naive method.
 
 if nil ~= require then
-    require "FritoMod_Functional/currying";
-    require "FritoMod_OOP/OOP-Class";
-
-    require "FritoMod_Strings/Strings";
-    require "FritoMod_Collections/Lists";
-    require "FritoMod_Collections/Tables";
+    require "currying";
+    require "OOP-Class";
+    require "Strings";
+    require "Lists";
+    require "Tables";
 end;
 Cursors=Cursors or {};
 

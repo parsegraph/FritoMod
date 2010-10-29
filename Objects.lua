@@ -14,7 +14,7 @@
 --
 -- Metatables.ForceFunctions and Metatables.ForceMethods will help you here.
 if nil ~= require then
-    require "FritoMod_Functional/Metatables";
+    require "Metatables";
 end;
 Objects=Objects or {};
 

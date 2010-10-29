@@ -1,6 +1,6 @@
 if nil~=require then
-   require "WoW_UI/Frame-Layout";
-   require "WoW_UI/Frame-Animation";
+   require "wow/Frame-Layout";
+   require "wow/Frame-Animation";
 end
 
 -- Animations contains functions for creating different kinds of animations. I personally
