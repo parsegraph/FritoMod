@@ -4,4 +4,4 @@ source fm-load-settings.sh >/dev/null
 make_root
 cd $root
 
-fm get-all-tests | xargs lua FritoMod/runtests.lua
+fm get-all-tests | xargs lua runtests.lua
