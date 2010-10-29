@@ -10,6 +10,7 @@ get_file_list() {
 update_files() {
     echo "$UI_HEADER"
     for f in `get_file_list | grep -v -e'^libs' -e'^wow' -e'^tests'`; do
+        f=`echo $f | sed -e 's#/#\\#g'`
         echo '<Script file="'$f'"/>'
     done;
     echo "</Ui>"
@@ -18,7 +19,8 @@ update_files() {
 update_test_files() {
     echo "$UI_HEADER"
     for f in `get_file_list | grep -e'^tests'`; do
-        echo '<Script file="'`basename $f`'"/>'
+        f=`basename $f | sed -e 's#/#\\#g'`
+        echo '<Script file="'$f'"/>'
     done
     echo "</Ui>"
 }
