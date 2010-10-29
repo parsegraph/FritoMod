@@ -1,6 +1,5 @@
 if nil ~= require then
     require "currying";
-    require "Callbacks";
     require "Lists";
     require "ToggleDispatcher";
 end;
