@@ -22,14 +22,12 @@
 --
 
 if nil ~= require then
-    require "WoW_Functional/hooking";
-    require "WoW_Communication/Chat";
-
-    require "WoW_UI/Frame";
-    require "WoW_UI/Frame-Events";
-    require "WoW_UI/Frame-Layout";
-
-    require "WoW_Timing/Timing";
+    require "wow/hooking";
+    require "wow/Chat";
+    require "wow/Frame";
+    require "wow/Frame-Events";
+    require "wow/Frame-Layout";
+    require "wow/Timing";
 
 end;
 
