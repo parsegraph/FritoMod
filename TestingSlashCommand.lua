@@ -3,6 +3,7 @@ if nil ~= require then
     require "Lists";
     require "AllTests";
     require "Slash";
+    require "Persistence";
 end;
 
 function TestingSlashCommand()
@@ -47,49 +48,82 @@ function TestingSlashCommand()
         return ("Test %d (|cff%s%s|r)"):format(testIndex, testNameColor, name);
     end;
 
-    local tests, numRan, numSuccessful, numCrashed, numFailed;
+    local runners;
+    local report;
     local removers = {
         AllTests:AddListener(Metatables.Noop({
             StartAllTests = function(self)
-                tests = {};
-                numRan = 0;
-                numSuccessful = 0;
-                numFailed = 0;
-                numCrashed = 0;
+                runners = {};
+                report={
+                    date=date(),
+                    startTime=GetTime(),
+                    tests={},
+                    successes={},
+                    failures={},
+                    crashes={},
+                    state="Running",
+                    numRan=0
+                };
+                if Persistence:Loaded() then
+                    local N="FritoMod.Cumulative Tests";
+                    Persistence[N]=Persistence[N] or {};
+                    table.insert(Persistence[N], report);
+                end;
             end,
                     
-            FinishAllTests = function(self, suite, successful, report)
+            FinishAllTests = function(self, suite, successful, reason)
+                report.finishTime=GetTime();
                 if successful then
-                    PrintWithColor(("Cumulative: All %d tests ran successfully."):format(numRan), DumpColor(cumulativePassColor));
+                    report.state="Successful";
+                    PrintWithColor(
+                        ("Cumulative: All %d tests ran successfully."):format(report.numRan),
+                        DumpColor(cumulativePassColor)
+                    );
                 else
+                    report.state="Failed";
+                    report.reason=reason;
                     PrintWithColor(("Cumulative: %d of %d tests ran successfuly. %d failed, %d crashed"):format(
-                        numSuccessful,
-                        numRan,
-                        numFailed,
-                        numCrashed), DumpColor(cumulativeFailedColor));
+                        #report.successes,
+                        report.numRan,
+                        #report.failures,
+                        #report.crashes),
+                        DumpColor(cumulativeFailedColor)
+                    );
                 end;
             end
         })),
 
         AllTests:AddRecursiveListener(Metatables.Noop({
-            TestStarted = function()
-                numRan = numRan + 1;
+            TestStarted = function(self, suite, name, runner)
+                report.numRan=report.numRan+1;
+                assert(not report.tests[name], "Duplicate test name: "..name);
+                report.tests[name]={
+                    index=#report.tests,
+                    startTime=GetTime(),
+                    state="Running"
+                };
             end,
             TestSuccessful = function(self, suite, name, runner, reason)
-                numSuccessful = numSuccessful + 1;
+                table.insert(report.successes, name);
             end,
             TestFailed = function(self, suite, name, runner, reason)
-                numFailed = numFailed + 1;
-                local testIndex = #tests + 1;
+                table.insert(report.failures, name);
+                local testIndex = #runners + 1;
                 PrintFailure("[|cff%sFAIL|r] %d. %s\n|cff%s%s|r", testFailedColor, testIndex, name, failedReasonColor, reason);
-                Lists.Insert(tests, runner);
+                Lists.Insert(runners, runner);
             end,
             TestCrashed = function(self, suite, name, runner, errorMessage)
-                numCrashed = numCrashed + 1;
-                local testIndex = #tests + 1;
+                table.insert(report.crashes, name);
+                local testIndex = #runners + 1;
                 PrintError("[|cff%sCRASH|r] %d. %s\n|cff%s%s|r", testCrashedColor, testIndex, name, crashedReasonColor, errorMessage);
-                Lists.Insert(tests, runner);
+                Lists.Insert(runners, runner);
             end,
+            TestFinished=function(self, suite, name, runner, state, reason)
+                local currentTest=report.tests[name];
+                currentTest.finishTime=GetTime();
+                currentTest.state=state;
+                currentTest.reason=reason;
+            end
         }))
     };
 
@@ -100,7 +134,7 @@ function TestingSlashCommand()
         end;
         if tonumber(cmd) then
             local index = tonumber(cmd);
-            local test = tests[index];
+            local test = runners[index];
             if not test then
                 Print("Test not found: '%s'", cmd);
                 return;
