@@ -104,6 +104,19 @@ Metatables.ForcedMethods = ForcedMetatable(ForcedMethod);
 Metatables.ForcedMethod = ForcedMetatable(ForcedMethod);
 Metatables.ForceMethod = ForcedMetatable(ForcedMethod);
 
+function Metatables.CoercingKey(t, func, ...)
+    func=Curry(func, ...);
+    return setmetatable(AssertTable(t), {
+        __index=function(self, k)
+            return rawget(self, func(k));
+        end,
+        __newindex=function(self, k, v)
+            assert(k, "key must not be nil");
+            rawset(self, tostring(k):lower(), v);
+        end
+    });
+end;
+
 -- Adds a metatable to the specified target that returns the specified default value for any
 -- non-existent key. The default value is never assigned to the specified table.
 --
