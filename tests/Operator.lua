@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("FritoMod_Functional/Operator");
+local Suite=CreateTestSuite("Operator");
 
 function Suite:TestAdditionSumsAllPassedNumbers()
     Assert.Equals(nil, Operator.Add());

@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("FritoMod_Events/ToggleDispatcher");
+local Suite=CreateTestSuite("ToggleDispatcher");
 
 function Suite:TestAddingAndRemovingAListener()
     local v=Tests.Counter(0);

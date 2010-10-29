@@ -1,16 +1,10 @@
 if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Collections/Lists";
-
-    require "FritoMod_Collections_Tests/Mixins-ArrayTests";
-    require "FritoMod_Collections_Tests/Mixins-MutableArrayTests";
-    require "FritoMod_Collections_Tests/Mixins-ComparableIteration";
+    require "tests/Mixins-ArrayTests";
+    require "tests/Mixins-MutableArrayTests";
+    require "tests/Mixins-ComparableIteration";
 end;
 
-local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Lists");
+local Suite = CreateTestSuite("Lists");
 
 function Suite:Array(...)
 	return {...};

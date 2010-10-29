@@ -1,14 +1,9 @@
 if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Collections/Mixins";
+    require "Assert";
+    require "Tests";
 end;
 
-if Mixins == nil then
-    Mixins = {};
-end;
+Mixins=Mixins or {};
 
 function Mixins.MutableTableTests(Suite, library)
 	Assert.Type("table", library, "Library must be a table");

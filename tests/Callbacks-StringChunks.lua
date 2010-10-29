@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("FritoMod_Remote/Callbacks");
+local Suite=CreateTestSuite("Callbacks-StringChunks");
 
 function Suite:TestChunkStringCallback()
     local callback=Objects.Value();

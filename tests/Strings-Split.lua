@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("FritoMod_Strings/Strings-Split");
+local Suite=CreateTestSuite("Strings-Split");
 
 function Suite:TestSplitByCaseTrivialCases()
     local s = Strings.SplitByCase;

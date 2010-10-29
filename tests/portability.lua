@@ -2,12 +2,12 @@
 -- indicates that the environment is lacking some required, albeit non-standard, components.
 
 if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
+    require "ReflectiveTestSuite";
+    require "Assert";
+    require "Tests";
 end;
 
-local Suite = ReflectiveTestSuite:New("FritoMod_SanityTests.portability");
+local Suite = ReflectiveTestSuite:New("portability");
 
 function Suite:TestStackTraceAccessors()
     if debugstack then

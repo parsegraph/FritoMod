@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("FritoMod_Serializers/Serializers-Data");
+local Suite=CreateTestSuite("Serializers-Data");
 
 local function Check(...)
     Assert.Equals({...}, {Serializers.ReadData(Serializers.WriteData(...))});

@@ -1,16 +1,10 @@
 if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Collections/Tables";
-
-    require "FritoMod_Collections_Tests/Mixins-TableTests";
-    require "FritoMod_Collections_Tests/Mixins-MutableTableTests";
-    require "FritoMod_Collections_Tests/Mixins-ComparableIteration";
+    require "tests/Mixins-TableTests";
+    require "tests/Mixins-MutableTableTests";
+    require "tests/Mixins-ComparableIteration";
 end;
 
-local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Tables");
+local Suite = CreateTestSuite("Tables");
 
 Mixins.TableTests(Suite, Tables);
 Mixins.MutableTableTests(Suite, Tables);

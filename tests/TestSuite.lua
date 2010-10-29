@@ -1,14 +1,8 @@
 if nil ~= require then
-    require "FritoMod_Strings/Strings";
-
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Testing/TestSuite";
+    require "Strings";
 end;
 
-local Suite = ReflectiveTestSuite:New("FritoMod_Testing.TestSuite");
+local Suite = CreateTestSuite("TestSuite");
 
 function Suite:TestErrorStackTraceOutputsProperly()
     local suite = TestSuite:New();

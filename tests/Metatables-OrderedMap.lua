@@ -1,12 +1,4 @@
-if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Collections/Metatables";
-end;
-
-local Suite = ReflectiveTestSuite:New("FritoMod_Collections.Metatables");
+local Suite = CreateTestSuite("Metatables-OrderedMap");
 
 function Suite:TestMulticast()
     local comp = Metatables.Multicast();

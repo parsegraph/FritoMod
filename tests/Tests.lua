@@ -1,10 +1,4 @@
-if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-end;
-
-local Suite = ReflectiveTestSuite:New("FritoMod_Testing.Tests");
+local Suite = CreateTestSuite("Tests");
 
 function Suite:TestSimpleFlagMechanics()
     local flag = Tests.Flag();

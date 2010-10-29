@@ -1,12 +1,12 @@
 -- In this tutorial, I explain arrays, maps, and for-loops. I use a built-in function
 -- called assert to prove my points:
 if nil ~= require then
-	require "FritoMod_Testing/Assert";
-	require "FritoMod_Testing/Tests";
-	require "FritoMod_Testing/ReflectiveTestSuite";
+	require "Assert";
+	require "Tests";
+	require "ReflectiveTestSuite";
 end;
 
-local Suite=ReflectiveTestSuite:New("FritoMod_SanityTests/tutorial");
+local Suite=ReflectiveTestSuite:New("tutorial");
 
 function Suite:TestAssert()
 	-- assert takes a boolean value, and that boolean is false, throws an error. Because 

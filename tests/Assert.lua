@@ -1,10 +1,4 @@
-if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-end;
-
-local Suite = ReflectiveTestSuite:New("FritoMod_Testing.Assert");
+local Suite = CreateTestSuite("Assert");
 
 function Suite:TestAssertException()
     assert(not pcall(Assert.Exception, "Don't throw", Noop), "Assert.Exception throws on successful test");

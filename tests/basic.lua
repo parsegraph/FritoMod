@@ -1,12 +1,4 @@
-if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Functional/basic";
-end;
-
-local Suite = ReflectiveTestSuite:New("FritoMod_Functional.basic");
+local Suite = CreateTestSuite("basic");
 
 function Suite:TestUnpackAll()
     local a, b, c = UnpackAll({1,2,3});

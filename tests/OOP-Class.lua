@@ -1,12 +1,4 @@
-if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_OOP/OOP-Class";
-end;
-
-local Suite = ReflectiveTestSuite:New("FritoMod_OOP.OOP.Class");
+local Suite = CreateTestSuite("OOP-Class");
 
 function Suite:TestSimpleClass()
     local Base = OOP.Class();

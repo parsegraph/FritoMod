@@ -1,13 +1,8 @@
 if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_OOP/OOP";
-    require "FritoMod_OOP/OOP-Class";
+    require "OOP-Class";
 end;
 
-local Suite = ReflectiveTestSuite:New("FritoMod_OOP.OOP");
+local Suite = CreateTestSuite("OOP");
 
 function Suite:TestIsClass()
     assert(OOP.IsClass(OOP.Class()), "class is a class");

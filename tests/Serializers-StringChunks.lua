@@ -1,6 +1,6 @@
-local Suite=CreateTestSuite("FritoMod_Remote/Serializers");
+local Suite=CreateTestSuite("Serializers-StringChunks");
 if nil ~= require then
-    require "FritoMod_Strings/Strings";
+    require "Strings";
 end;
 
 local RANDOM_MEANINGLESS_TEXT=[[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin et tellus ut ante ornare tincidunt eget ac diam. Nam quam erat, sollicitudin eget suscipit vitae, commodo id erat. Vestibulum vel condimentum nibh. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus sollicitudin blandit nisl, vitae consectetur purus vehicula sit amet. Vivamus mauris eros, dapibus et aliquam ut, molestie at dui. Integer faucibus, risus vel rutrum aliquet, purus magna hendrerit odio, vel suscipit diam diam in nunc. Suspendisse molestie egestas hendrerit. Pellentesque porta odio nec eros convallis rutrum. Curabitur venenatis tempor metus sit amet pharetra. Nunc ultricies condimentum est nec vulputate. Maecenas a quam velit. Vivamus tristique interdum felis, vel tempor sapien vulputate quis. Fusce ligula enim, consequat vitae faucibus ac, consequat nec dui. Sed ut dui a odio semper porta. Vivamus at tortor a arcu congue accumsan. In sit amet convallis massa. Sed sagittis dictum mollis. Nullam euismod lorem sit amet nisl elementum ac iaculis arcu tempus.

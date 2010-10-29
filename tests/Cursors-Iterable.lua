@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("FritoMod_Cursors/Cursors-Iterable");
+local Suite=CreateTestSuite("Cursors-Iterable");
 
 function Suite:TestCursorOverAList()
     local a={3,4,5};

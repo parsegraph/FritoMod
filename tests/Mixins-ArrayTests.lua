@@ -1,15 +1,10 @@
 if nil ~= require then
-    require "FritoMod_Testing/ReflectiveTestSuite";
-    require "FritoMod_Testing/Assert";
-    require "FritoMod_Testing/Tests";
-
-    require "FritoMod_Functional/Operator";
-    require "FritoMod_Collections/Mixins";
+    require "Assert";
+    require "Tests";
+    require "Operator";
 end;
 
-if Mixins == nil then
-    Mixins = {};
-end;
+Mixins=Mixins or {};
 
 function Mixins.ArrayTests(Suite, library)
 	local lib=library;

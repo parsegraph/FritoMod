@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("FritoMod_UI/Metatables-StyleClient");
+local Suite = CreateTestSuite("Metatables-StyleClient");
 
 sc = nil;
 

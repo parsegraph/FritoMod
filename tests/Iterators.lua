@@ -1,11 +1,11 @@
 if nil ~= require then
-    require "FritoMod_Collections_Tests/Mixins-ArrayTests";
-    require "FritoMod_Collections_Tests/Mixins-TableTests";
+    require "tests/Mixins-ArrayTests";
+    require "tests/Mixins-TableTests";
 end;
 
-local Suite=CreateTestSuite("FritoMod_Collections/Iterators");
+local Suite=CreateTestSuite("Iterators");
 
-local arraySuite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators (arrays)");
+local arraySuite = ReflectiveTestSuite:New("Iterators (arrays)");
 Mixins.ArrayTests(arraySuite, Iterators);
 function arraySuite:Array(...)
     return Iterators.IterateList({...});
@@ -15,7 +15,7 @@ function arraySuite:TestRandom()
 	return nil;
 end;
 
-local tableSuite = ReflectiveTestSuite:New("FritoMod_Collections.Iterators (tables)");
+local tableSuite = ReflectiveTestSuite:New("Iterators (tables)");
 Mixins.TableTests(tableSuite, Iterators);
 function tableSuite:Table(t)
 	if t == nil then
