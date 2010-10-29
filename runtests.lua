@@ -3,7 +3,7 @@ require "lfs"
 
 for i=1,#arg do
 	local f=arg[i];
-	require(f:sub(1, f:find("_")-1).."/global");
+	require("global");
 	dofile(f);
 end;
 
