@@ -36,6 +36,8 @@
 <Script file="Timing.lua"/>
 <Script file="Callbacks-Timing.lua"/>
 <Script file="Chat.lua"/>
+<Script file="Unicode.lua"/>
+<Script file="Chatpic.lua"/>
 <Script file="Events.lua"/>
 <Script file="CombatEvents.lua"/>
 <Script file="CreateTestSuite.lua"/>
@@ -60,5 +62,4 @@
 <Script file="font.lua"/>
 <Script file="global.lua"/>
 <Script file="sound.lua"/>
-<Script file="uchar.lua"/>
 </Ui>
