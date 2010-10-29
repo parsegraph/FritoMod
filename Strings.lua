@@ -215,10 +215,16 @@ function Strings.PrettyString(value)
     return ('%q'):format(value);
 end;
 
-function Strings.JoinArray(delimiter, items, ...)
+function Strings.JoinArray(delimiter, items)
     assert(delimiter ~= nil, "delimiter is nil");
     delimiter = tostring(delimiter);
     return Lists.Reduce(items, "", function(concatted, word)
+        while IsCallable(word) do
+            word=word();
+        end;
+        if type(word)=="table" then
+            word=Strings.JoinArray(delimiter, word)
+        end;
         word = tostring(word);
         if #word == 0 then
             return concatted;
