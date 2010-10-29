@@ -2,27 +2,15 @@
 PATH=/bin:/usr/bin:$HOME/bin:$FM_ROOT
 
 source fm-library.sh
-make_root
-
-case $1 in
-	-f)
-		FORCE=true
-		shift
-	;;
-esac;
 
 make_name $*
+make_root
 make_path_from_root $name
-path=$path_from_root
-
-echo $path | grep -q '/' || error "opening a root file does not make sense"
-
-this=${path%%/*}
-shared_path=${path#*/}
+path_to_file=$path_from_root
 
 function write_test_suite {
-	cat >$1 <<EOF
-local Suite=CreateTestSuite("${path%.*}");
+    [ -e $1 ] || cat >$1 <<EOF
+local Suite=CreateTestSuite("${path_to_file%.*}");
 
 function Suite:TestFoo()
 	-- TODO: Write this test.
@@ -30,17 +18,12 @@ end;
 EOF
 }
 
-if echo $this | grep -q '_Tests$'; then
-	other_path="$root/${this%_*}"
-	[ -e $name ] || write_test_suite $name
+if echo $path_to_file | grep -q 'tests'; then
+    test_file=`basename $name`
+    write_test_suite $test_file
+    $EDITOR $name $test_file
 else
-	other_path="$root/$this""_Tests"
-	tests="$other_path/$shared_path"
-	[ -e $tests ] || write_test_suite $tests
-fi
-if `echo $shared_path | grep -q '/'`; then
-	mkdir -p $other_path/${shared_path%/*}
+    test_file=tests/$name
+    write_test_suite $test_file
+    $EDITOR $name $test_file
 else
-	mkdir -p $other_path
-fi
-$EDITOR $name $other_path/$shared_path
