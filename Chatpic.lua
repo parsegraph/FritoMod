@@ -1,81 +1,56 @@
 if nil ~= require then
     require "basic";
     require "currying";
-    require "Metatables";
     require "Unicode";
+    require "Strings";
+    require "Lists";
 end;
 
-local pictures={};
-pictures.fail={
-    "_______________",
-    "_000__0__0_0___",
-    "_0___0_0_0_0___",
-    "_00__000_0_0___",
-    "_0___0_0_0_0___",
-    "_0___0_0_0_000_",
-    "_______________",
-    set="mark"
-};
+-- Chatpics.fail(Chat.g);
+-- Chatpics.sets.mark("0101010101", Chat.g);
 
-local sets=Metatables.CoercingKey({}, string.lower);
-sets.marks={
-    ["_"] = "{square}",
-    ["0"] = "{skull}",
-    ["1"] = "{x}",
-    ["2"] = "{circle}",
-    ["3"] = "{triangle}",
-    ["4"] = "{diamond}",
-    ["5"] = "{star}",
-    ["6"] = "{moon}",
-};
-sets.raidmarks=sets.marks;
-sets.rm=sets.marks;
-sets.mark=sets.mark;
-
-sets.blocks={
-    ["_"] = 75,
-    ["0"] = 72
-};
-sets.block=sets.blocks;
-
-local function Draw(name, output, ...)
-    output=Curry(output, ...);
-    local picture=pictures[name];
-    local Transform=
-        picture.Transform or
-        picture.transform or
-        picture.Convert or
-        picture.convert or
-        picture.Set or
-        picture.set or
-        picture.Conversions or
-        picture.conversions;
-    if not IsCallable(Transform) then
-        local conversions=Transform;
-        if sets[conversions] then
-            conversions=sets[conversions];
-        else
-            conversions={};
-        end;
-        Transform=function(line)
-            line:gsub(".", function(c)
-                local converted=conversions[c];
-                if not converted then
-                    return c;
-                end;
-                if type(converted)=="number" then
-                    return Unicode[converted];
-                end;
-                return converted;
-            end);
-        end;
+function Strings.Transform(set, str)
+    if IsCallable(str) then
+        return Strings.Transform(set, str());
     end;
-    for _, line in ipairs(picture) do
-        output(Transform(line));
+    if type(str)=="table" then
+        return Lists.Map(str, Strings.Transform, set);
     end;
+    return str:gsub(".", function(c)
+        local converted=set[c];
+        if not converted then
+            return c;
+        end;
+        if type(converted)=="number" then
+            return Unicode[converted];
+        end;
+        return converted;
+    end);
 end;
 
-Chatpic={};
+local sets=setmetatable({}, {
+    __index=function(self, k)
+        if IsCallable(k) then
+            return self[k()];
+        end;
+        return rawget(self, tostring(k):lower());
+    end,
+    __newindex=function(self, k, set)
+        k=tostring(k):lower();
+        assert(type(set)=="table", "Set must be a table");
+        local mt=getmetatable(set);
+        if not mt then
+            mt={};
+            setmetatable(set, mt);
+        end;
+        mt.__call=function(str, out, ...)
+            out=Curry(out, ...);
+            out(Strings.Transform(set, str));
+        end;
+        rawset(self, k, set);
+    end
+});
+
 Chatpic=setmetatable({}, {
     __index=function(self, k)
         if type(k)=="function" then
@@ -91,14 +66,16 @@ Chatpic=setmetatable({}, {
             assert(k, "key was falsy");
             k=tostring(k):lower();
         end;
-        assert(pictures[k], "No picture with the name: "..k);
-        return Seal(Draw, k);
+        return rawget(self, k);
     end,
-    __newindex=function(self, k, v)
+    __newindex=function(self, k, picture)
         k=tostring(k):lower();
-        pictures[k]=v;
+        rawset(self, k, function(out, ...)
+            out=Curry(out, ...);
+            out(Strings.Transform(picture.set, picture));
+        end);
     end
 });
 
-Chatpic.sets=sets;
-Chatpic.Sets=sets;
+rawset(Chatpic, "set", sets);
+rawset(Chatpic, "sets", sets);
