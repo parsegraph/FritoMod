@@ -1,5 +1,9 @@
--- This is: a script that runs a test runner. It currently is very much unsupported and actually
--- requires some code that's not in FritoMod proper.
+if nil ~= require then
+    require "currying";
+    require "Lists";
+    require "AllTests";
+    require "Slash";
+end;
 
 function TestingSlashCommand()
     local testNameColor = "FFE5B4";
