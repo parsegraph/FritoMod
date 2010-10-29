@@ -19,7 +19,7 @@ function TestSuite:Constructor(name)
     self.name = name or "";
     if name then
         if require then
-            require("FritoMod_Testing/AllTests");
+            require("AllTests");
         end;
         AllTests[name] = self;
     end;

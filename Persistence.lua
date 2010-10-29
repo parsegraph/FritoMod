@@ -63,7 +63,7 @@ function Callbacks.PersistentValue(key, func, ...)
 end;
 
 Events.ADDON_LOADED(function(addon)
-    if addon~="FritoMod_Persistence" then
+    if addon~="FritoMod" then
         return;
     end;
     loaded=true;
