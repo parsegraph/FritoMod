@@ -3,6 +3,4 @@
 ## Notes: A function-oriented library for Lua & WoW
 ## Version: 1.4
 ## SavedVariables: _Persistence
-embeds.xml
-files.xml
-tests/files.xml
+fritomod.xml
