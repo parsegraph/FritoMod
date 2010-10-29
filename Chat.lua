@@ -66,8 +66,25 @@ Chat.__ChannelName=function(...)
     return GetChannelName(...);
 end;
 
-local function SendMessage(medium, message, ...)
-    Chat.__Send(Strings.JoinValues(" ", message, ...), medium);
+local function SendMessage(medium, ...)
+    if select("#", ...)==1 then
+        -- We handle single arguments specially if they're tables. If so,
+        -- we recurse for each value in the table. 
+        --
+        -- If we receive multiple arguments, there's not really a good way
+        -- of doing it, so we just let Strings.JoinValues do its stuff.
+        local str=...;
+        while IsCallable(str) do
+            str=str();
+        end;
+        if type(str)=="table" then
+            Lists.Each(str, SendMessage, medium);
+        else
+            Chat.__Send(tostring(str), medium);
+        end;
+    else
+        Chat.__Send(Strings.JoinValues(" ", ...), medium);
+    end;
 end;
 
 Chat.Say = CurryFunction(SendMessage, "SAY");
