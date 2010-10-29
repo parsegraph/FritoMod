@@ -93,7 +93,7 @@ function TestingSlashCommand()
         }))
     };
 
-    RegisterSlash(function(cmd)
+    Slash.Register("test", function(cmd)
         if not cmd or cmd == "" then
             AllTests:Run();
             return;
@@ -109,7 +109,7 @@ function TestingSlashCommand()
         else
             AllTests:Run(cmd);
         end;
-    end, "test");
+    end);
 
     return Curry(Lists.CallEach, removers);
 end;
