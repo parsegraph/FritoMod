@@ -4,6 +4,8 @@ if nil ~= require then
     require "FritoMod_Labs/Labs";
 end;
 
+Labs=Labs or {};
+
 function Labs.IconSpellCounts()
     local n="Frito.IconSpellCounts";
     local parent=Curry(Tables.Value, Frames, n);

@@ -10,6 +10,8 @@ if nil ~= require then
     require "FritoMod_Labs/Labs";
 end;
 
+Labs=Labs or {};
+
 function Labs.FirstAid()
     local frame=CreateFrame("Frame", nil, UIParent);
 

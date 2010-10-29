@@ -6,6 +6,8 @@ if nil ~= require then
     require "FritoMod_Events/ToggleDispatcher";
 end;
 
+Callbacks=Callbacks or {};
+
 do
     local dispatcher=ToggleDispatcher:New();
     function dispatcher:Install()
