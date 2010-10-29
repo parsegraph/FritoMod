@@ -1,5 +1,5 @@
 if nil ~= require then
-	require "WoW_UI/Frame";
+	require "wow/Frame";
 end;
 
 local Frame=WoW.Frame;

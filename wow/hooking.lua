@@ -1,4 +1,4 @@
-require "FritoMod_Functional/Functions";
+require "Functions";
 
 function hooksecurefunc(objOrName, ...)
 end;

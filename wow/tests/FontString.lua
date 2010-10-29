@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("WoW_UI/FontString");
+local Suite=CreateTestSuite("wow/FontString");
 
 function Suite:TestCreateFontString()
 	local f=CreateFrame("Frame");

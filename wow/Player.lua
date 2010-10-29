@@ -1,5 +1,5 @@
 if nil ~= require then
-	require "WoW_Spells/Buffs"
+	require "wow/Buffs"
 end;
 
 function UnitBuff()

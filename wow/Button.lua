@@ -1,7 +1,7 @@
 if nil ~= require then
-	require "FritoMod_OOP/OOP-Class";
+	require "OOP-Class";
 
-	require "WoW_UI/Frame";
+	require "wow/Frame";
 end;
 
 WoW.Button=OOP.Class(WoW.Frame);

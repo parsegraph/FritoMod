@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("WoW_UI/Frame-Animation");
+local Suite=CreateTestSuite("wow/Frame-Animation");
 
 function Suite:TestAnimation()
 	local f=CreateFrame("Frame");

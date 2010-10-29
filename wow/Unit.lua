@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "FritoMod_OOP/OOP-Class";
+    require "OOP-Class";
 end;
 
 Unit = OOP.Class();

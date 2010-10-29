@@ -1,7 +1,7 @@
 if nil ~= require then
-	require "FritoMod_Functional/Metatables";
+	require "Metatables";
 
-	require "WoW_UI/Frame";
+	require "wow/Frame";
 end;
 
 function WoW.Frame:CreateAnimationGroup()

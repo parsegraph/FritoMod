@@ -1,5 +1,5 @@
 if nil ~= require then
-	require "WoW_UI/Frame-Layout";
+	require "wow/Frame-Layout";
 end;
 
 UIParent=CreateFrame("Frame");

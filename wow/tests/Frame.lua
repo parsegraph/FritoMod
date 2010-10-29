@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("WoW_UI/Frame");
+local Suite=CreateTestSuite("wow/Frame");
 
 function Suite:TestCreateFrame()
 	assert(CreateFrame("Frame"), "CreateFrame must return a value for valid frame types");

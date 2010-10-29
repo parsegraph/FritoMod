@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("WoW_UI/Frame-Events");
+local Suite=CreateTestSuite("wow/Frame-Events");
 
 function Suite:TestSetScript()
 	local f=CreateFrame("Frame");

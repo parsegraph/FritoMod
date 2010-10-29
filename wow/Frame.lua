@@ -1,7 +1,6 @@
 if nil ~= require then
-	require "FritoMod_Functional/Metatables";
-
-	require "FritoMod_OOP/OOP-Class";
+	require "Metatables";
+	require "OOP-Class";
 end;
 
 WoW=WoW or Metatables.Defensive();
