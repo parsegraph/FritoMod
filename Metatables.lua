@@ -4,10 +4,7 @@ if nil ~= require then
     require "currying";
 end;
 
-if Metatables == nil then
-    Metatables = {};
-end;
-local Metatables = Metatables;
+Metatables=Metatables or {};
 
 -- Ensures a target is either already a table or a nil value.
 --
@@ -15,13 +12,14 @@ local Metatables = Metatables;
 --     target or a new table
 -- throws
 --     if target is non-nil and not a table
-local function AssertTable(target)
+function Metatables._AssertTable(target)
     if target == nil then
         target = {};
     end;
     assert(type(target) == "table", "table is not a table object");
     return target;
 end;
+local AssertTable=Metatables._AssertTable;
 
 -- Returns a function that attaches the specified metatable to all given tables.
 --
@@ -29,7 +27,7 @@ end;
 --     the metatble to attach to given tables
 -- returns
 --     a function that attaches the specified metatable to classes
-local function MetatableAttacher(metatable)
+function Metatables.Attacher(metatable)
     if type(metatable) == "function" then
         metatable = { __index = metatable };
     end;
@@ -46,6 +44,7 @@ local function MetatableAttacher(metatable)
         return target;
     end;
 end;
+local MetatableAttacher=Metatables.Attacher;
 
 function Metatables.FocusedTable(target, func, ...)
     target = AssertTable(target);
@@ -161,3 +160,52 @@ Metatables.Headless=MetatableAttacher({
         end
     end
 });
+
+do
+    -- Adds the specified observer to self. Used with Metatables.Multicast
+    local function Add(self, observer)
+        if not observer then
+            error("observer is falsy");
+        end;
+        assert(type(observer) == "table", "observer is not a table. Type: ".. type(observer));
+        table.insert(self, observer);
+        return Curry(Lists.Remove, self, observer);
+    end;
+
+    -- Creates a "composite" table. The returned table forwards all method calls
+    -- to all of its registered observers. This allows for very clean event dispatching,
+    -- and for adaptability in the future, since one, regular table acts almost identical 
+    -- to the composite table created here. 
+    --
+    -- For example, assume we want to receive Bar events from an object "foo". To accomplish
+    -- this, we write:
+    --
+    -- foo:Add(listener);
+    -- 
+    -- Now, in foo, when we wish to dispatch Bar events, we simply call "Bar":
+    --
+    -- foo:Bar();
+    --
+    -- When this is done, listener:Bar() is invoked.
+    --
+    -- table
+    --     the table that is the target of this operation. If nil, a new table is created.
+    -- returns
+    --     table
+    Metatables.Multicast = MetatableAttacher({
+        __index = function(self, key)
+            if key == "Add" then
+                return Add;
+            end;
+            return function(self, ...)
+                for i=1, #self do
+                    local observer = self[i];
+                    local f = observer[key];
+                    if f then
+                        f(observer, ...);
+                    end;
+                end;
+            end;
+        end
+    });
+end;
