@@ -9,7 +9,7 @@ end;
 
 do
     local tests, numRan, numSuccessful, numCrashed, numFailed;
-    require("FritoMod_Testing/AllTests");
+    require("AllTests");
 
     AllTests:AddListener(Metatables.Noop({
         StartAllTests = function(self, suite, name, runner, reason)
