@@ -1,0 +1,124 @@
+#!/usr/bin/lua
+
+local env;
+local dependencies={};
+local files={};
+
+local current={};
+local CURRENT_ARG="";
+
+local libs={
+	bit=true,
+	lfs=true
+};
+
+ORIG_REQUIRE=require;
+
+local function orig_require(name)
+	if libs[name] then
+		return ORIG_REQUIRE(name);
+	end;
+	if not name:find("%.lua$") then
+		name=name..".lua";
+	end;
+	if env._context[name] then
+		return;
+	end;
+	env._context[name]=true;
+	local f, err=loadfile(name);
+	if not f then
+		error(CURRENT_ARG..": "..err);
+	end;
+	setfenv(f,env);
+	f();
+end;
+
+function watching_require(f)
+	if libs[f] then
+		return ORIG_REQUIRE(f);
+	end;
+	if not f:find("%.lua$") then
+		f=f..".lua";
+	end;
+	if CURRENT_ARG==f then
+		return;
+	end;
+	table.insert(current, f);
+	env.require=orig_require;
+	orig_require(f);
+	env.require=watching_require;
+end;
+require=watching_require;
+
+local global=loadfile("global.lua");
+
+local function parse(f)
+	env=setmetatable({
+		_context={},
+		require=watching_require,
+		print=function()
+			-- noop
+		end
+	},{ __index=_G});
+	current={};
+	table.insert(files, f);
+	dependencies[f]=current;
+	local f=assert(loadfile(f));
+	setfenv(f, env);
+	if global then 
+		global();
+	end;
+	f()
+end;
+
+for i=1, #arg do
+	CURRENT_ARG=arg[i];
+	parse(arg[i]);
+end;
+
+local function keys(t)
+	local r={};
+	for k,v in pairs(t) do
+		table.insert(r,k);
+	end;
+	return r;
+end;
+
+local function strjoin(join, ...)
+	local s="";
+	for i=1,select("#",...) do
+		local v=select(i,...);
+		s=s..v;
+		if i<select("#",...) then
+			s=s..join;
+		end;
+	end;
+	return s;
+end;
+
+local parents=dependencies;
+
+local ordered={};
+function Insert(f)
+	if ordered[f] then
+		return
+	end;
+	ordered[f] = true
+    assert(parents[f], ("%s has no parents"):format(f));
+	table.sort(parents[f])
+	for i=1, #parents[f] do
+        --print(("%s depends on %s"):format(f, parents[f][i]));
+		Insert(parents[f][i])
+	end
+	table.insert(ordered, f)
+end;
+
+table.sort(files);
+for i=1,#files do
+    local f=files[i];
+    Insert(f);
+end;
+
+for i=1, #ordered do
+    print(ordered[i]);
+end;
