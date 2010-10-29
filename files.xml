@@ -1,20 +1,19 @@
-<Ui>
-<Script file="CreateTestSuite.lua"/>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 <Script file="basic.lua"/>
 <Script file="currying.lua"/>
+<Script file="Functions.lua"/>
 <Script file="Metatables.lua"/>
 <Script file="Mixins.lua"/>
 <Script file="Operator.lua"/>
 <Script file="Mixins-Iteration.lua"/>
 <Script file="Iterators.lua"/>
-<Script file="OOP.lua"/>
-<Script file="OOP-Class.lua"/>
-<Script file="Functions.lua"/>
 <Script file="Mixins-MutableIteration.lua"/>
 <Script file="Lists.lua"/>
+<Script file="OOP.lua"/>
 <Script file="Tables.lua"/>
 <Script file="Strings.lua"/>
 <Script file="Assert.lua"/>
+<Script file="OOP-Class.lua"/>
 <Script file="Objects.lua"/>
 <Script file="Tests.lua"/>
 <Script file="TestSuite.lua"/>
@@ -39,6 +38,7 @@
 <Script file="Chat.lua"/>
 <Script file="Events.lua"/>
 <Script file="CombatEvents.lua"/>
+<Script file="CreateTestSuite.lua"/>
 <Script file="Cursors-Iterable.lua"/>
 <Script file="FirstAid.lua"/>
 <Script file="Persistence.lua"/>
@@ -59,7 +59,6 @@
 <Script file="TestingSlashCommand.lua"/>
 <Script file="font.lua"/>
 <Script file="global.lua"/>
-<Script file="libs/ChatThrottleLib.lua"/>
 <Script file="sound.lua"/>
 <Script file="uchar.lua"/>
 </Ui>
