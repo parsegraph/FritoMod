@@ -60,8 +60,7 @@ Remote=setmetatable({}, {
             __index=function(self, medium)
                 assert(type(medium)=="string", "medium must be a string");
                 medium=medium:lower();
-                local function sender(message, ...)
-                    assert(select("#", ...)==0, "Remote does not accept more than one argument");
+                local function sender(message)
                     if IsCallable(message) then
                         return sender(message());
                     elseif type(message)=="table" then
