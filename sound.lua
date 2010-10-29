@@ -9,7 +9,7 @@ for _, v in ipairs({
     "hello",
     "silenced",
 }) do
-    sounds[v]=("Interface\\Addons\\FritoMod_Media\\sounds\\%s.wav"):format(v);
+    sounds[v]=("Interface\\Addons\\FritoMod\\media\\%s.wav"):format(v);
 end;
 
 Media.sound(sounds);
