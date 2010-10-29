@@ -7,7 +7,7 @@ make_root
 name=$1
 if [ ! $1 ]; then
 	cd $root
-	lua -l "FritoMod/global"
+	lua -l "global"
 elif [ -f $1 ]; then
 	name=$1
 elif [ -f $1.lua ]; then
@@ -17,10 +17,10 @@ else
 fi;
 
 case $name in
-	*.lua) name=`echo $name | trim -4` ;;
+	*.lua) name=`basename $name .lua` ;;
 esac
 make_path_from_root $name
 echo $path_from_root
 
 cd $root
-lua -l "FritoMod/global" -l $path_from_root
+lua -l "global" -l $path_from_root
