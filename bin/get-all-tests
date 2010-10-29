@@ -4,9 +4,4 @@ source fm-load-settings.sh >/dev/null
 make_root
 cd $root
 
-IFS='
-'
-for comp in `fm-search.sh -l -t -r`; do
-	path=`echo $comp | sed 's/	/_/g'`
-	fm-toc.sh $path | grep -v '^##' | sed "s/^/$path\//g"
-done
+find tests -name '*.lua'
