@@ -15,6 +15,8 @@
 -- Metatables.ForceFunctions and Metatables.ForceMethods will help you here.
 if nil ~= require then
     require "Metatables";
+    require "Assert";
+    require "Strings";
 end;
 Objects=Objects or {};
 
@@ -63,12 +65,7 @@ function Objects.Value(value)
         -- throws
         --     if Assert.Equals determines that the values are not equal
         Assert = function(expectedValue, assertion)
-            if Assert then
-                -- FritoMod_Testing contains a useful Assert function that we can use.
-                return Assert.Equals(expectedValue, value, assertion);
-            else
-                assert(expectedValue==value, "Values are not equal");
-            end;
+            return Assert.Equals(expectedValue, value, assertion);
         end,
 
         -- If newValue is provided, this calls Set with that value. Otherwise, Get is
@@ -119,10 +116,7 @@ local toggleAliases={
 }
 local function InterpretState(state)
     if type(state)=="string" then
-        if Strings then
-            -- FritoMod_Strings provides useful, but non-essential, trim functionality.
-            state=Strings.Trim(state)
-        end;
+        state=Strings.Trim(state)
         local convertedState=toggleAliases[state:lower()];
         assert(convertedState, "Unrecognized state: "..state);
         return convertedState;
