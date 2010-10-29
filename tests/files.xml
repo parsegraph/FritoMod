@@ -1,0 +1,37 @@
+<Ui>
+<Script file="Assert.lua"/>
+<Script file="Callbacks-StringChunks.lua"/>
+<Script file="Chat.lua"/>
+<Script file="Cursors-Iterable.lua"/>
+<Script file="Events.lua"/>
+<Script file="Functions.lua"/>
+<Script file="Mixins-ArrayTests.lua"/>
+<Script file="Mixins-TableTests.lua"/>
+<Script file="Iterators.lua"/>
+<Script file="Mixins-ComparableIteration.lua"/>
+<Script file="Mixins-MutableArrayTests.lua"/>
+<Script file="Lists.lua"/>
+<Script file="Math.lua"/>
+<Script file="Metatables-OrderedMap.lua"/>
+<Script file="Metatables-StyleClient.lua"/>
+<Script file="Metatables.lua"/>
+<Script file="Mixins-MutableTableTests.lua"/>
+<Script file="OOP-Class.lua"/>
+<Script file="OOP.lua"/>
+<Script file="Objects.lua"/>
+<Script file="Operator.lua"/>
+<Script file="ReflectiveTestSuite.lua"/>
+<Script file="Serializers-Data.lua"/>
+<Script file="Serializers-StringChunks.lua"/>
+<Script file="Strings-Split.lua"/>
+<Script file="Strings.lua"/>
+<Script file="Tables.lua"/>
+<Script file="TestSuite.lua"/>
+<Script file="Tests.lua"/>
+<Script file="ToggleDispatcher.lua"/>
+<Script file="basic.lua"/>
+<Script file="currying.lua"/>
+<Script file="portability.lua"/>
+<Script file="sanity.lua"/>
+<Script file="tutorial.lua"/>
+</Ui>
