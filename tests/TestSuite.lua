@@ -19,7 +19,7 @@ function Suite:TestErrorStackTraceOutputsProperly()
         TestFailed = function(self, suite, testName, testRunner, reason)
             local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
             Assert.Equals("Assertion failed: \"Intentional error\"", reason);
-            assert(trace:match("FritoMod_Testing_Tests[/\\]TestSuite\.lua:[0-9]+"), 
+            assert(trace:match("FritoMod[/\\]tests[/\\]TestSuite\.lua:[0-9]+"), 
                 "First line of stack trace is relevant. Trace: " .. trace);
         end,
         TestFinished = Noop,
@@ -43,7 +43,7 @@ function Suite:TestAssertStackTraceOutputsProperly()
         TestFailed = function(self, suite, testName, testRunner, reason)
             local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
             Assert.Equals("Assertion failed: \"Intentional false assertion\"", reason);
-            assert(trace:match("FritoMod_Testing_Tests[/\\]TestSuite\.lua:[0-9]+"), 
+            assert(trace:match("FritoMod[/\\]tests[/\\]TestSuite\.lua:[0-9]+"), 
                 "First line of stack trace is relevant. Trace: " .. trace);
         end,
         TestFinished = Noop,
@@ -66,7 +66,7 @@ function Suite:TestCrashStackTraceOutputsProperly()
     end;
     suite:AddListener(Metatables.Noop({
         TestCrashed = function(self, suite, testName, testRunner, reason)
-            assert(reason:match("FritoMod_Testing_Tests[/\\]TestSuite\.lua:[0-9]+: attempt to"),
+            assert(reason:match("FritoMod[/\\]tests[/\\]TestSuite\.lua:[0-9]+: attempt to"),
                 "Reason contains stack trace");
         end
     }));

@@ -97,7 +97,7 @@ function Suite:TestFullStackTrace()
         "First stack level is FullStackTrace. Level was: " .. Strings.Pretty(stackTrace[1].name));
 end;
 
-local TEST_FILE="FritoMod_Testing_Tests[/\\]Tests\.lua";
+local TEST_FILE="FritoMod/tests[/\\]Tests\.lua";
 
 function Suite:TestPartialStackTrace()
     if not debug then
