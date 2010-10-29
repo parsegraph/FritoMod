@@ -3,12 +3,12 @@ local Suite = CreateTestSuite("Chat");
 Suite:AddListener(Metatables.Noop({
 	TestStarted = function(self, suite)
 		suite.messages = {};
-		self.oldGetDefaultLanguage = GetDefaultLanguage;
-		GetDefaultLanguage = function()
+		self.oldLanguage = Chat.__Language;
+		Chat.__Language = function()
 			return "Common";
 		end;
-		self.oldSendChatMessage = SendChatMessage;
-		SendChatMessage = function(...) -- msg, chatType, language, channel
+		self.oldSend=Chat.__Send;
+        Chat.__Send=function(...) -- msg, chatType, language, channel
 			local s = select("#", ...);
 			-- These tests ensure information is not lost when we store the arguments.
 			if s >= 2 then
@@ -25,8 +25,8 @@ Suite:AddListener(Metatables.Noop({
 			end;
 			table.insert(suite.messages, {...});
 		end;
-		self.oldGetChannelName = GetChannelName;
-		GetChannelName = function(name)
+		self.oldChannelName = Chat.__ChannelName;
+		Chat.__ChannelName = function(name)
 			local channels = {
 				"general",
 				"localdefense",
@@ -50,9 +50,9 @@ Suite:AddListener(Metatables.Noop({
 		end;
 	end,
 	TestFinished = function(self, suite)
-		SendChatMessage = self.oldSendChatMessage;
-		GetChannelName = self.oldGetChannelName;
-		GetDefaultLanguage = self.oldGetDefaultLanguage;
+        Chat.__Send = self.oldSend;
+        Chat.__ChannelName = self.oldChannelName;
+		Chat.__Language = self.oldLanguage;
 	end
 }));
 

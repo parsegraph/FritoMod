@@ -50,13 +50,24 @@ Chat = {};
 Chat = Chat;
 local Chat = Chat;
 
-local function SendMessage(medium, message, ...)
-    message = Strings.JoinValues(" ", message, ...);
+Chat.__Send=function(...)
     if ChatThrottleLib then
-        ChatThrottleLib:SendChatMessage("NORMAL", "FritoMod", message, medium);
+        ChatThrottleLib:SendChatMessage("NORMAL", "FritoMod", ...);
     else
-        SendChatMessage(message, medium);
+        SendChatMessage(...);
     end;
+end;
+
+Chat.__Language=function()
+    return GetDefaultLanguage("PLAYER");
+end;
+
+Chat.__ChannelName=function(...)
+    return GetChannelName(...);
+end;
+
+local function SendMessage(medium, message, ...)
+    Chat.__Send(Strings.JoinValues(" ", message, ...), medium);
 end;
 
 Chat.Say = CurryFunction(SendMessage, "SAY");
@@ -74,24 +85,16 @@ Chat.Debug = print;
 
 function Chat.Channel(target, message)
     if type(target) == "string" then
-        target = GetChannelName(target);
+        target = Chat.__ChannelName(target);
     end;
     assert(message ~= nil, "message must be provided");
-    if ChatThrottleLib then
-        ChatThrottleLib:SendChatMessage("NORMAL", "FritoMod", message, "CHANNEL", GetDefaultLanguage("PLAYER"), target);
-    else
-        SendChatMessage(message, "CHANNEL", GetDefaultLanguage("PLAYER"), target);
-    end
+    Chat.__Send(message, "CHANNEL", Chat.__Language(), target);
 end;
 
 function Chat.Whisper(target, message)
 	assert(type(target) == "string", "target must be a string");
 	assert(message ~= nil, "message must be provided");
-    if ChatThrottleLib then
-        ChatThrottleLib:SendChatMessage("NORMAL", "FritoMod", message, "WHISPER", GetDefaultLanguage("PLAYER"), target:lower());
-    else
-        SendChatMessage(message, "WHISPER", GetDefaultLanguage("PLAYER"), target:lower());
-    end;
+    Chat.__Send(message, "WHISPER", Chat.__Language(), target:lower());
 end;
 
 local ALIASES = Tables.Expand({
@@ -143,7 +146,7 @@ setmetatable(Chat, {
 				end;
                 return Chat[ALIASES[medium]];
             end;
-            local channelIndex = GetChannelName(medium);
+            local channelIndex = Chat.__ChannelName(medium);
             if channelIndex > 0 then
                 return CurryFunction(Chat.Channel, channelIndex);
             end;
