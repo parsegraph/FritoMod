@@ -1,0 +1,25 @@
+#!/bin/bash
+PATH=/bin:/usr/bin
+
+get_file_list() {
+    find * -name "*.lua" -print0 | xargs -0 ./get-requires;
+}
+
+update_files() {
+    echo "<Ui>"
+    for f in `get_file_list | grep -v -e'^libs' -e'^wow' -e'^tests'`; do
+        echo '<Script file="'$f'"/>'
+    done;
+    echo "</Ui>"
+}
+
+update_test_files() {
+    echo "<Ui>"
+    for f in `get_file_list | grep -e'^tests'`; do
+        echo '<Script file="'`basename $f`'"/>'
+    done
+    echo "</Ui>"
+}
+
+update_files >files.xml
+update_test_files >tests/files.xml
