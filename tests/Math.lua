@@ -1,1 +1,1 @@
-local MathTests = ReflectiveTestSuite:New("Math");
+local MathTests = CreateTestSuite("Math");

@@ -1,4 +1,4 @@
-local Suite = ReflectiveTestSuite:New("currying");
+local Suite = CreateTestSuite("currying");
 
 local function Sum(...)
     local sum = 0;

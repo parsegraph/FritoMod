@@ -7,7 +7,7 @@ if nil ~= require then
     require "Tests";
 end;
 
-local Suite = CreateTestSuite("sanity");
+local Suite = ReflectiveTestSuite:New("sanity");
 
 local function Count(...)
     local total = select("#", ...);

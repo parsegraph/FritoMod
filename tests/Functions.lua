@@ -1,4 +1,4 @@
-local Suite = ReflectiveTestSuite:New("Functions");
+local Suite = CreateTestSuite("Functions");
 
 function Suite:TestReturn()
     local returned = {Functions.Return(1,2,3)};
