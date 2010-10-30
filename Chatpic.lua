@@ -1,32 +1,11 @@
 if nil ~= require then
     require "basic";
     require "currying";
-    require "Unicode";
-    require "Strings";
-    require "Lists";
+    require "Strings-Transform";
 end;
 
 -- Chatpics.fail(Chat.g);
 -- Chatpics.sets.mark("0101010101", Chat.g);
-
-function Strings.Transform(set, str)
-    if IsCallable(str) then
-        return Strings.Transform(set, str());
-    end;
-    if type(str)=="table" then
-        return Lists.Map(str, Strings.Transform, set);
-    end;
-    return str:gsub(".", function(c)
-        local converted=set[c];
-        if not converted then
-            return c;
-        end;
-        if type(converted)=="number" then
-            return Unicode[converted];
-        end;
-        return converted;
-    end);
-end;
 
 local sets=setmetatable({}, {
     __index=function(self, k)
