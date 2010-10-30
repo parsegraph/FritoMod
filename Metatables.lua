@@ -104,6 +104,16 @@ Metatables.ForcedMethods = ForcedMetatable(ForcedMethod);
 Metatables.ForcedMethod = ForcedMetatable(ForcedMethod);
 Metatables.ForceMethod = ForcedMetatable(ForcedMethod);
 
+-- A metatable that passes missing keys to func, who processes and returns
+-- a new key.
+--
+-- This is useful for things like case-insensitive tables. We can do this through:
+--
+-- local myTable={a=42};
+-- Metatables.CoercingKey(myTable, string.lower);
+-- Assert.Equals(42, myTable.A);
+--
+-- and now all missing keys will be lower-cased.
 function Metatables.CoercingKey(t, func, ...)
     func=Curry(func, ...);
     return setmetatable(AssertTable(t), {
