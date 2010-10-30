@@ -87,20 +87,20 @@ local function SendMessage(medium, ...)
     end;
 end;
 
-Chat.Say = CurryFunction(SendMessage, "SAY");
-Chat.Emote = CurryFunction(SendMessage, "EMOTE");
-Chat.Yell = CurryFunction(SendMessage, "YELL");
-Chat.Raid = CurryFunction(SendMessage, "RAID");
-Chat.Party = CurryFunction(SendMessage, "PARTY");
-Chat.RaidWarning = CurryFunction(SendMessage, "RAID_WARNING");
-Chat.Battleground = CurryFunction(SendMessage, "BATTLEGROUND");
-Chat.Guild = CurryFunction(SendMessage, "GUILD");
-Chat.Party = CurryFunction(SendMessage, "PARTY");
-Chat.Officer = CurryFunction(SendMessage, "OFFICER");
-Chat.Null = Noop;
-Chat.Debug = print;
+Chat.say = CurryFunction(SendMessage, "SAY");
+Chat.emote = CurryFunction(SendMessage, "EMOTE");
+Chat.yell = CurryFunction(SendMessage, "YELL");
+Chat.raid = CurryFunction(SendMessage, "RAID");
+Chat.party = CurryFunction(SendMessage, "PARTY");
+Chat.raidwarning = CurryFunction(SendMessage, "RAID_WARNING");
+Chat.battleground = CurryFunction(SendMessage, "BATTLEGROUND");
+Chat.guild = CurryFunction(SendMessage, "GUILD");
+Chat.party = CurryFunction(SendMessage, "PARTY");
+Chat.officer = CurryFunction(SendMessage, "OFFICER");
+Chat.null = Noop;
+Chat.debug = print;
 
-function Chat.Channel(target, message)
+function Chat.channel(target, message)
     if type(target) == "string" then
         target = Chat.__ChannelName(target);
     end;
@@ -108,25 +108,25 @@ function Chat.Channel(target, message)
     Chat.__Send(message, "CHANNEL", Chat.__Language(), target);
 end;
 
-function Chat.Whisper(target, message)
+function Chat.whisper(target, message)
 	assert(type(target) == "string", "target must be a string");
 	assert(message ~= nil, "message must be provided");
     Chat.__Send(message, "WHISPER", Chat.__Language(), target:lower());
 end;
 
 local ALIASES = Tables.Expand({
-      c = Chat.Channel,
-      w = Chat.Whisper,
-      d = "Debug",
-      g = "Guild",
-      [{"p", "par", "party"}] = "Party",
-      [{"gr", "group"}] = "Group",
-      [{"s", "say"}] = "Say",
-      [{"y", "yell"}] = "Yell",
-      [{"r", "ra", "raid"}] = "Raid",
-      [{"rw", "warning", "warn"}] = "RaidWarning",
-      [{"o", "officer"}] = "Officer",
-      [{"bg", "battlegroup"}] = "Battleground"
+      c = Chat.channel,
+      [{"w", "pst", "tell"}] = Chat.whisper,
+      d = "debug",
+      g = "guild",
+      [{"p", "par", "party"}] = "party",
+      [{"gr", "group"}] = "group",
+      [{"s", "say"}] = "say",
+      [{"y", "yell"}] = "yell",
+      [{"r", "ra", "raid"}] = "raid",
+      [{"rw", "warning", "warn"}] = "raidwarning",
+      [{"o", "officer"}] = "officer",
+      [{"bg", "battlegroup"}] = "battleground"
 });
 
 setmetatable(Chat, {
@@ -134,29 +134,32 @@ setmetatable(Chat, {
         if type(medium) == "function" then
             return Chat[medium()];
         end;
-        if type(medium) == "table" and #medium > 0 then
-            return function(...)
-                for i=1, #medium do 
-                    childMedium = medium[i];
-                    Chat[childMedium](...);
+        if type(medium) == "table" then
+            if medium.GetAttribute then
+                local editboxMedium=assert(medium:GetAttribute("chatType"));
+                if editboxMedium:lower()=="whisper" then
+                    medium=medium:GetAttribute("tellTarget");
+                elseif editboxMedium:lower()=="channel" then
+                    medium=medium:GetAttribute("channelTarget");
+                else
+                    return self[editboxMedium];
+                end;
+            elseif #medium > 0 then
+                return function(...)
+                    for i=1, #medium do 
+                        childMedium = medium[i];
+                        Chat[childMedium](...);
+                    end;
                 end;
             end;
         end;
         if type(medium) == "string" then
-            medium = Strings.Trim(medium);
-            if medium:find(" ") then
-                medium:gsub(" ", "_");
-            end;
-            if medium:find("_") then
-                medium = Strings.CamelToProperCase(medium);
-            elseif medium:lower() == medium or medium:upper() == medium then
-                medium = Strings.ProperNounize(medium);
-            end;
+            medium=Strings.Trim(medium):lower();
+            medium=medium:gsub("[ _]", "");
             local requestedMedium = rawget(Chat, medium);
             if requestedMedium then
                 return requestedMedium;
             end;
-            medium = medium:lower();
             if ALIASES[medium] then
 				if IsCallable(ALIASES[medium]) then
 					return ALIASES[medium];
