@@ -50,9 +50,12 @@ do
     sets.marks[">"]=triangle;
     sets.marks["^"]=triangle;
     sets.marks["%"]=triangle;
+    sets.marks["v"]=triangle;
+    sets.marks["w"]=triangle;
 
     local diamond="{diamond}";
     sets.marks["d"]=diamond;
+    sets.marks["a"]=diamond;
     sets.marks["|"]=diamond;
     sets.marks["\\"]=diamond;
     sets.marks["/"]=diamond;
@@ -64,6 +67,7 @@ do
     sets.marks["*"]=star;
     sets.marks["."]=star;
     sets.marks["'"]=star;
+    sets.marks["+"]=diamond;
 
     local moon="{moon}";
     sets.marks["m"]=moon;
