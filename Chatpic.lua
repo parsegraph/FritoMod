@@ -22,7 +22,7 @@ local sets=setmetatable({}, {
             mt={};
             setmetatable(set, mt);
         end;
-        mt.__call=function(str, out, ...)
+        mt.__call=function(self, str, out, ...)
             out=Curry(out, ...);
             out(Strings.Transform(set, str));
         end;
@@ -49,10 +49,24 @@ Chatpic=setmetatable({}, {
     end,
     __newindex=function(self, k, picture)
         k=tostring(k):lower();
-        rawset(self, k, function(out, ...)
-            out=Curry(out, ...);
-            out(Strings.Transform(picture.set, picture));
-        end);
+        if IsCallable(picture) then
+            rawset(self, k, picture);
+        else
+            local mt=getmetatable(picture);
+            if not mt then
+                mt={};
+                setmetatable(picture, mt);
+            end;
+            mt.__call=function(self, out, ...)
+                local set=picture.set;
+                out=Curry(out, ...);
+                if type(picture.set)~="table" then
+                    set=assert(Chatpic.set[picture.set], "Not a valid set name: "..tostring(picture.set));
+                end;
+                out(Strings.Transform(set, picture));
+            end;
+            rawset(self, k, picture);
+        end;
     end
 });
 
