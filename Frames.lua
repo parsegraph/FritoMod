@@ -4,7 +4,7 @@ if nil ~= require then
     require "wow/Frame-Layout";
 
     require "Functions";
-    require "color";
+    require "Media-Color";
 end;
 
 Frames={};
