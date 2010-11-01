@@ -1,3 +1,22 @@
+-- Anchors.Named provides a way to align UI elements to a saved location. Here's
+-- my typical workflow:
+--
+-- local frame=CreateFrame("Frame", nil, UIParent);
+-- ... -- create your frame
+-- Anchors.Center(frame, Anchors.Named("FritoMod.MagicalStuff"));
+--
+-- Now our frame is aligned to the named anchor "FritoMod.MagicalStuff". Initially,
+-- an anchor appears in the center of the screen. You can move the anchor by
+-- calling:
+--
+-- Anchors.Unlock();
+--
+-- which will show the anchor as a small white box. Drag it to where you want, then
+-- call Anchors.Lock() to hide it. The location will be saved between sessions.
+--
+-- Don't use named anchors as parents, as they will be hidden when Anchors.Lock() is
+-- called. You also shouldn't modify an anchor, as these changes won't be persisted.
+
 if nil ~= require then
     require "wow/Frame-Layout";
     require "wow/FontString";

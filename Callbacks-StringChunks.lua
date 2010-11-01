@@ -1,3 +1,5 @@
+-- A callback that handles the receiving end of Serializers.StringChunks.
+
 if nil ~= require then
     require "currying";
 end;
@@ -6,6 +8,25 @@ Callbacks=Callbacks or {};
 
 local DELIMITER_BYTE=(":"):byte(1);
 
+-- This is a callback that will piece together string chunks provided from
+-- the specified source.
+--
+-- local r=Callbacks.StringChunks(Remote["FritoMod.Chat"], function(msg, who)
+--     printf("%s said %q", who, msg);
+-- end);
+--
+-- You'll pretty much always use this in tandem with Serializers.StringChunks.
+--
+-- source
+--     A function that provides data to registered callbacks. Remote is
+--     by far the most common source.
+-- callback, ...
+--     A callback that expects messages from the source. The callback will
+--     be invoked whenever a full message is received.
+-- returns
+--    a function that disables this callback.
+-- see
+--    Serializers.StringChunks for the other side of this function.
 function Callbacks.StringChunks(source, callback, ...)
     callback=Curry(callback, ...);
     local messages={};

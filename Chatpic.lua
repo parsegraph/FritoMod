@@ -1,9 +1,3 @@
-if nil ~= require then
-    require "basic";
-    require "currying";
-    require "Strings-Transform";
-end;
-
 -- Chatpic lets us print out obnoxious pictures using raid icons.
 --
 -- Specifically, it provides a place for pictures and sets. Pictures
@@ -48,6 +42,12 @@ end;
 -- end);
 -- 
 -- Which will print the "fail" picture to whatever medium you're using, such as guild, party, etc.
+
+if nil ~= require then
+    require "basic";
+    require "currying";
+    require "Strings-Transform";
+end;
 
 local sets=setmetatable({}, {
     __index=function(self, k)

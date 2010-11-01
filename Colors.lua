@@ -1,3 +1,5 @@
+-- A namespace for functions that deal with colors.
+
 if nil ~= require then
     require "bit"
 

@@ -1,3 +1,5 @@
+-- Sets up fonts for Media.font
+
 if nil ~= require then
     require "currying";
     require "Media";

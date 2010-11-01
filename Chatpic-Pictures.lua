@@ -1,3 +1,5 @@
+-- Some pictures we use commonly with Chatpic.
+
 if nil ~= require then
     require "Chatpic";
 end;

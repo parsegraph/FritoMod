@@ -1,3 +1,7 @@
+-- Labs.FirstAid shows a pulsing first-aid icon that correlates with the player's health.
+-- As the player's health decreases, the icon will beat faster. At critically low health,
+-- the icon will turn red.
+
 if nil ~= require then
     require "wow/Frame-Animation";
     require "wow/Frame-Layout";

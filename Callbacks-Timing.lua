@@ -1,10 +1,15 @@
+-- Callbacks that deal with time.
+
 if nil ~= require then
-    require "Callbacks";
     require "Timing";
 end;
 
 Callbacks=Callbacks or {};
 
+-- Call the specified callback "later." This allows for functions to be called after
+-- a OnUpdate event has fired, which may be necessary if changes to UI elements don't
+-- propagate immediately.
+--
 function Callbacks.Later(func, ...)
     func=Curry(func, ...);
     local remover;
@@ -12,4 +17,5 @@ function Callbacks.Later(func, ...)
         func();
         remover();
     end);
+    return remover;
 end;

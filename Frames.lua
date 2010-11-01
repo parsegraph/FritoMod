@@ -1,3 +1,5 @@
+-- A namespace of functions for frames.
+
 if nil ~= require then
     require "wow/Frame-Layout";
 
@@ -7,6 +9,15 @@ end;
 
 Frames={};
 
+-- Sets the color for a frame. This handles Frames, FontStrings, and 
+-- Textures. The color can be a name, which will be retrieved using
+-- Media.color
+--
+-- -- Sets frame to red.
+-- Frames.Color(f, "red");
+--
+-- -- Sets frame to a half-transparent red.
+-- Frames.Color(f, "red", .5);
 function Frames.Color(f,r,g,b,a)
     if tonumber(r) == nil then
         local possibleAlpha=g;
@@ -31,12 +42,13 @@ Frames.Colored=Frames.Color;
 Frames.Solid=Frames.Color;
 Frames.SolidColor=Frames.Color;
 
-
+-- Sets the size of the specified frame.
 function Frames.Square(f, size)
     return Frames.Rectangle(f, size, size);
 end;
 Frames.Squared=Frames.Square;
 
+-- Sets the dimensions for the specified frame.
 function Frames.Rectangle(f, w, h)
     if h==nil then
         return Frames.Square(f, w);
@@ -48,6 +60,10 @@ Frames.Rect=Frames.Rectangle;
 Frames.Rectangular=Frames.Rectangle;
 Frames.Size=Frames.Rectangle;
 
+-- Sets the alpha for a frame. 
+--
+-- You don't need to use this function: we have it here when we use
+-- Frames as a headless table.
 function Frames.Alpha(f, alpha)
     f:SetAlpha(alpha);
 end;
@@ -88,12 +104,24 @@ do
         side2="Button4",
         thumb2="Button4",
     };
+    -- Returns the "proper" button name for a given alias. This lets
+    -- us use plenty of different names without needing to remember the 
+    -- One True Way.
     function Frames.GetButtonName(button)
         assert(type(button)=="string", "Button name is not a string. Type: "..type(button));
         return buttons[button:lower()] or button;
     end;
 end;
 
+-- Registers the frame to be draggable. This uses Frames.GetButtonName, so buttons can
+-- be specified freely.
+--
+-- local r=Frames.Draggable(f); -- f is now draggable with the left and right mouse buttons.
+-- r(); -- f is no longer draggable.
+--
+-- -- Same as the above. Note that we don't have to use the remover here.
+-- Frames.Draggable(f, true);
+-- Frames.Draggable(f, false);
 do 
     local function StartDrag(f, buttons)
         f:RegisterForDrag(unpack(buttons));

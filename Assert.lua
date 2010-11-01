@@ -1,3 +1,27 @@
+-- Assert contains a bunch of functions that perform assertions. These functions will error
+-- if their tested conditions are false. I use them in testingo
+-- 
+-- Most functions in Assert follow this pattern:
+--
+-- Assert.Equals(expected, actual, reason)
+--
+-- where reason is an optional string stating why the assertion was made.
+--
+-- Assert.Equals(42, 40+2); -- Asserts that 40+2 is equal to the expected 42.
+--
+-- Assertions can optionally take reasons. If the assertion fails, the reason is shown:
+--
+-- -- Raises the error "Value was not truthy for assertion 'Whoops!', value was false"
+-- Assert.True(false, "Whoops!"); 
+-- Assert.True(true, "This is never shown"); 
+--
+-- You can use these in your code, but their emphasis is verbosity and error message accuracy,
+-- rather than performance. I usually don't use them outside of tests and debugging since I 
+-- don't like introducing dependencies if I don't need to.
+--
+-- These functions behave like assert, but they don't return their passed value. This is more of
+-- an oversight than a design decision.
+
 if nil ~= require then
     require "Metatables";
     require "Strings";

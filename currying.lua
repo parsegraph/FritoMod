@@ -1,5 +1,9 @@
 -- Methods that provide currying, a common functional programming idiom that allows one
 -- to partially apply a method.
+--
+-- Most functions in this addon use Curry implicitly, so you don't need to call it yourself.
+--
+-- TODO Write more about currying, since we use it everywhere.
 
 if nil ~= require then
     require "basic";

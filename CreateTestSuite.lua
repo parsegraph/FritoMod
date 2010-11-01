@@ -1,3 +1,6 @@
+-- Creates a test suite, including the proper require's and corrects the path
+-- if necessary. This is purely for convenience when writing tests.
+
 function CreateTestSuite(name, path)
 	if path == nil then
 		path = name:gsub("[.]", "/");

@@ -1,4 +1,5 @@
 -- Allows access to combat log events in a style similar to Events.
+
 if nil ~= require then
 	require "Functions";
 	require "Lists";

@@ -1,3 +1,21 @@
+-- Callbacks is a namespace of functions that register callbacks. Most
+-- callbacks involve registering listeners for events. You can also have
+-- callbacks that fire after a given time.
+--
+-- Callbacks should follow this pattern:
+--
+-- Callbacks.Resting(listener, ...);
+--
+-- where listener, ... is a curried function that is called whenever the player is
+-- resting. Listeners can be undoable where applicable.
+--
+-- Whenever I'm writing event listening code, I usually see if I can extract
+-- the boilerplate into a function that lives here. A callback usually has a couple
+-- possible names, so I typically add aliases until I've covered most of them.
+
+-- Internally, many callbacks use ToggleDispatcher, which greatly simplifies writing
+-- callbacks that have two possible states.
+
 if nil ~= require then
     require "currying";
     require "Lists";
@@ -6,6 +24,8 @@ end;
 
 Callbacks=Callbacks or {};
 
+
+-- Callbacks.Arena fires the specified callback whenever you enter an arena.
 do
     local dispatcher=ToggleDispatcher:New();
     function dispatcher:Install()
@@ -24,6 +44,7 @@ do
     Callbacks.EnteringArena=Callbacks.EnterArena;
 end;
 
+-- Callbacks.Resting fires the specified callback whenever the player is resting.
 do
     local dispatcher=ToggleDispatcher:New();
     function dispatcher:Install()
@@ -40,6 +61,7 @@ do
     Callbacks.RestState=Callbacks.Resting;
 end;
 
+-- Callbacks.Combat fires the specified callback whenever the player enters combat.
 do
     local dispatcher=ToggleDispatcher:New();
     function dispatcher:Install()
@@ -54,6 +76,10 @@ do
     Callbacks.InCombat=Callbacks.Combat;
 end;
 
+-- Callbacks.Experience fires the specified callback whenever the player gains experience.
+--
+-- The callback is called like so:
+-- callback(currentXP, maxXP, currentLevel)
 do
     function Callbacks.Experience(func, ...)
         func=Curry(func, ...);

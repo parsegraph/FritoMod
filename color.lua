@@ -1,3 +1,5 @@
+-- A bunch of colors for Media.color
+
 if nil ~= require then
     require "Metatables";
     require "Strings";

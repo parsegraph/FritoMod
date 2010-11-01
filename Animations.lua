@@ -1,8 +1,3 @@
-if nil~=require then
-   require "wow/Frame-Layout";
-   require "wow/Frame-Animation";
-end
-
 -- Animations contains functions for creating different kinds of animations. I personally
 -- like Blizzard's API for animating, since I feel like it is well-designed. My only
 -- complaint is that it is somewhat verbose. These functions remove a lot of that verbosity.
@@ -27,7 +22,10 @@ end
 -- -- This creates an opacity change, all the way to transparent, in five seconds. All animation
 -- -- constructors follow this pattern:
 -- --
--- -- Animations.[Alpha|Move|Rotate|Scale](ag, duration, ...)
+-- -- Animations.Alpha(ag, duration, ...)
+-- -- Animations.Move(ag, duration, ...)
+-- -- Animations.Rotate(ag, duration, ...)
+-- -- Animations.Scale(ag, duration, ...)
 -- --
 -- -- I find this convention to be convenient when trying to remember the signatures.
 -- --
@@ -50,6 +48,12 @@ end
 -- -- You can tweak this by setting the looping behavior, or by adding a handler for the OnFinished 
 -- -- event.
 -- ag:Play();
+
+if nil~=require then
+   require "wow/Frame-Layout";
+   require "wow/Frame-Animation";
+end
+
 Animations={};
 
 local function GetGroup(agOrFrame)

@@ -1,3 +1,21 @@
+-- Anchors lets us set up Frame anchor points in a way that strikes me
+-- as somewhat more readable. They're especially useful if you want to have
+-- offsets between anchors.
+--
+-- -- myFrame's right anchor touches otherFrame's left anchor.
+-- Anchors.Touch(myFrame, otherFrame, "left");
+--
+-- -- myFrame's bottomright anchor touches otherFrame's topleft anchor.
+-- Anchors.Touch(myFrame, otherFrame, "topleft");
+--
+-- -- myFrame is aligned 2 pixels beneath otherFrame's top anchor.
+-- Anchor.Share(myFrame, otherFrame, "top", -2); 
+--
+-- My advice is to use Anchors when it's convenient. Otherwise, there's no need
+-- to religiously use it: Anchors is not intended to be a replacement or a substitute
+-- for Frame:SetPoint. I typically use it only when I want to have gaps between frames
+-- and don't want to remember which way is positive/negative.
+
 if nil ~= require then
     require "wow/Frame-Layout";
 

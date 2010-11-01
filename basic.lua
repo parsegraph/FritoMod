@@ -1,7 +1,11 @@
--- A few primitive functions that are either used pervasively or are so low-level that it doesn't
--- make sense putting them in a higher-level project.
+-- A few low-level functions that are used pervasively throughout this addon. There are
+-- also other functions that are so random that they haven't found a suitable home yet.
 
--- A function that intentionally does nothing.
+-- I don't like adding functions here, and I rarely do. Most functions should live in a
+-- namespace like Functional, Callbacks, etc.
+
+-- A function that intentionally does nothing. This is useful in those situations where
+-- you always want a function, but don't care if it doesn't actually do anything.
 function Noop()
     -- Do nothing.
 end;
@@ -50,6 +54,13 @@ function IsCallable(value)
     return mt and IsCallable(mt.__call);
 end;
 
+-- Returns whether the specified value is a boolean, string, or number. Nil values are 
+-- not primitive.
+--
+-- value
+--     any value
+-- returns
+--     true if value is a boolean, string, or number
 function IsPrimitive(value)
     local valueType = type(value);
     return valueType=="boolean" or valueType=="string" or valueType=="number";
@@ -113,6 +124,11 @@ do
     end
 end;
 
+-- Outputs the memory address for the given table or function. The memory address is shown whenever
+-- you do things like print({}).
+--
+-- target
+--     a table or function value
 function Reference(target)
     local str = nil;
     if type(target) == "table" then
@@ -130,6 +146,8 @@ function Reference(target)
     return str:sub(split + 1);
 end;
 
+-- Removes a value from a table. This is for efficiency and dependency reasons. Now that FritoMod
+-- is merged into one addon, we can probably kill this method.
 function RemoveValueFromTable(t, v)
     for i=1,#t do
         if t[i] == v then
@@ -138,3 +156,7 @@ function RemoveValueFromTable(t, v)
         end;
     end;
 end;
+
+function printf(str, ...)
+    print(str:format(...));
+end

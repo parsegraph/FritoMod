@@ -1,4 +1,7 @@
-if nil ~= require then
+-- A few sets that we use in Chatpic. A set is a table that maps characters to their
+-- translation. Chatpic and Strings.Transform can use sets.
+
+A if nil ~= require then
     require "Chatpic";
 end;
 
