@@ -32,6 +32,9 @@ ensures existing functions are not overwritten.
 
 noop - A function that does nothing.
 
+registry - A table that can be modified, but modification has special behavior. Events and Remote are both
+registries. Registries usually manage callbacks.
+
 undoable - A function that performs some action, returning a function that undoes itself. For example,
 Lists.Insert returns a curried Lists.Remove that removes the elements that were inserted. The returned
 function should only work once and be a noop afterward. It can, but doesn't need to, return a function to
