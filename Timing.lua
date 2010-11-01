@@ -144,7 +144,9 @@ end);
 --     the minimum amount of time between calls to the specified function
 -- returns
 --     a function that throttles invocations of function
-function Timing.Throttle(cooldownTime, func, ...)
+-- see
+--     Timing.Throttle
+function Timing.Cooldown(cooldownTime, func, ...)
     func = Curry(func, ...);
     local lastCall = 0;
     return function(...)
@@ -154,6 +156,50 @@ function Timing.Throttle(cooldownTime, func, ...)
         end;
         lastCall = current;
         return func(...);
+    end;
+end;
+
+-- Saves invocations so that func is only called periodically. Excess invocations are
+-- saved, so you can use this function to "slow down" a stream of data. This function
+-- is similar to Timing.Cooldown, but cooldown ignores excess invocations instead of
+-- postponing them.
+--
+-- This function is not undoable, but it can be poisoned.
+-- 
+-- waitTime
+--     time to wait between invocations, in seconds
+-- func, ...
+--     func that is eventually called
+-- returns
+--     a function that receives invocations. The arguments passed to the returned function
+--     will eventually be passed to func.
+-- see
+--     Timing.Cooldown
+function Timing.Throttle(waitTime, func, ...)
+    func=Curry(func, ...);
+    local invocations={};
+    local r;
+    return function(p, ...)
+        if p == POISON then
+            if r then
+                r();
+                r=nil;
+            end;
+            invocations={};
+            return;
+        end;
+        table.insert(invocations, {p,...});
+        if not r then
+            r=Timing.Rhythmic(waitTime, function()
+                if #invocations > 0 then
+                    func(unpack(table.remove(invocations, 1)));
+                end;
+                if #invocations==0 then
+                    r();
+                    r=nil;
+                end;
+            end);
+        end;
     end;
 end;
 

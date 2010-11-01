@@ -20,6 +20,15 @@ function Bool(value)
 	return not not value;
 end	
 
+-- A value that is used to signal the death of some operations. This is used where a remover
+-- cannot easily be provided.
+-- 
+-- Never change, edit, or use this value.
+--
+-- see
+--     Timing.Throttle, Timing.After
+POISON={};
+
 -- Returns whether the specified value is of the specified type.
 --
 -- requiredType
