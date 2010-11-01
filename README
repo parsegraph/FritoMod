@@ -1,41 +1,17 @@
-FritoMod is an addon for WoW. Here's a glossary of some terms and concepts I use freely in the documentation:
+FritoMod is an open-source addon for WoW. It provides a large number of tools 
+to help you write addons.
 
-alias - Another name for a method or function. We use aliases a lot to provide freedom of expression
-for developers.
+Download (ZIP):
+http://files.no-time.org
 
-callback - A function that expects to be invoked on some event.
+Documentation (wiki):
+http://github.com/dafrito/FritoMod/wiki
 
-currying - A concept that allows functions to be "partially applied". A partially applied function
-saves some of its arguments so that, when invoked later, it will include those saved arguments in the
-call.
+Code repository (git):
+http://github.com/dafrito/FritoMod
 
-    We implement currying through Curry, which we call everywhere. This means that users can pass 
-functions around freely.
+Bugs and issue tracker (github):
+http://github.com/dafrito/FritoMod/issues
 
-Assert.Equals(4, Operator.Add(2, 2));
-local curriedAdd=Curry(Operator.Add, 2);
-Assert.Equals(4, curriedAdd(2));
-
-local a={1,2,3};
-Assert.Equals({2,3,4}, Lists.Each(a, Operator.Add, 1));
-
-headless - A method that has no object. A headless table is a table whose functions all expect an object
-to work on. Lists and Tables are headless tables.
-
-namespace - A table that contains functions of a similar purpose. For example, Callbacks contains
-functions that register callbacks. Assert contains functions that make assertions. OOP contains
-functions that work with OOP.
-
-    Namespaces are typically "open" in that others are free to add their functions to the namespace.
-While this may seem dangerous, it's given me a lot of flexibility. I'll probably write a metatable that
-ensures existing functions are not overwritten.
-
-noop - A function that does nothing.
-
-registry - A table that can be modified, but modification has special behavior. Events and Remote are both
-registries. Registries usually manage callbacks.
-
-undoable - A function that performs some action, returning a function that undoes itself. For example,
-Lists.Insert returns a curried Lists.Remove that removes the elements that were inserted. The returned
-function should only work once and be a noop afterward. It can, but doesn't need to, return a function to
-"redo" itself.
+Aaron Faanes
+dafrito@gmail.com
