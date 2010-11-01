@@ -49,6 +49,18 @@ if nil ~= require then
     require "Strings-Transform";
 end;
 
+local function OutputTransform(set, picture, out, ...)
+    out=Curry(out, ...);
+    local transformed=Strings.Transform(set, picture);
+    if type(transformed)=="table" then
+        for i=1,#transformed do
+            out(transformed[i]);
+        end;
+    else
+        out(transformed);
+    end;
+end;
+
 local sets=setmetatable({}, {
     __index=function(self, k)
         if IsCallable(k) then
@@ -66,8 +78,7 @@ local sets=setmetatable({}, {
         end;
         -- Calling a set lets you write using that set's transformations.
         mt.__call=function(self, str, out, ...)
-            out=Curry(out, ...);
-            out(Strings.Transform(set, str));
+            OutputTransform(set, str, out, ...);
         end;
         rawset(self, k, set);
     end
@@ -103,11 +114,10 @@ Chatpic=setmetatable({}, {
             -- Calling a picture draws that picture using the provided output function.
             mt.__call=function(self, out, ...)
                 local set=picture.set;
-                out=Curry(out, ...);
                 if type(picture.set)~="table" then
                     set=assert(Chatpic.set[picture.set], "Not a valid set name: "..tostring(picture.set));
                 end;
-                out(Strings.Transform(set, picture));
+                OutputTransform(set, picture, out, ...);
             end;
             rawset(self, k, picture);
         end;
