@@ -25,7 +25,10 @@ local function Require(env, file)
     end;
     env.__included[file]=true;
     table.insert(dependencyStack[#dependencyStack], file);
-    local runner=assert(loadfile(file));
+    local runner, err=loadfile(file);
+    if not runner then
+        error(env.__included[1]..":"..err);
+    end;
     setfenv(runner, env);
     if dependencies[file] then
         runner();
