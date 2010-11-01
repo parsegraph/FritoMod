@@ -97,7 +97,9 @@ Chat.battleground = CurryFunction(SendMessage, "BATTLEGROUND");
 Chat.guild = CurryFunction(SendMessage, "GUILD");
 Chat.party = CurryFunction(SendMessage, "PARTY");
 Chat.officer = CurryFunction(SendMessage, "OFFICER");
+Chat.group = CurryFunction(SendMessage, "RAID");
 Chat.null = Noop;
+Chat.noop = Noop;
 Chat.debug = print;
 
 function Chat.channel(target, message)
