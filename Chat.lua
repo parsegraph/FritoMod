@@ -3,6 +3,15 @@
 -- Chat.Say("Hello!");
 -- Chat.RaidWarning("Sup raid :)");
 --
+-- The most flexible one is "group" which will send messages to the proper group,
+-- determining on the fly what that may be:
+--
+-- Chat.group("Hello, battleground!") -- If you're in WSG
+-- Chat.group("Hello, raid!") -- If you're in a raid
+-- Chat.group("Hello, party!") -- If you're in a party or dungeon group
+--
+-- Chat.group will die if you're not in a group.
+--
 -- You don't have to necessarily use proper capitalization:
 --
 -- Chat.YELL("I AM YELLING!");
@@ -11,6 +20,7 @@
 -- Matter of fact, there's a healthy amount of aliases for these standard channels:
 --
 -- Chat.g("Sup guild!");
+-- Chat.gr("HELLO, FELLOW DUNGEONEERS.");
 -- Chat.RW("This is a raid warning");
 --
 -- Spaces and underscores are also ignored:
@@ -35,12 +45,13 @@
 --
 -- If necessary, you can even use functions as keys:
 --
--- local r = Iterators.Repeat({"guild", "party"});
+-- local r = Iterators.Repeat("guild", "party");
 -- Chat[r]("This is sent to the guild");
 -- Chat[r]("This is sent to the party");
 -- Chat[r]("This is sent to the guild again");
 
 if nil ~= require then
+    require "wow/Chat";
     require "currying";
     require "Tables";
     require "Strings";
@@ -66,25 +77,31 @@ Chat.__ChannelName=function(...)
     return GetChannelName(...);
 end;
 
-local function SendMessage(medium, ...)
+local function SendTargetedMessage(medium, target, ...)
+    if type(target)=="string" then
+        target=target:lower();
+    end;
     if select("#", ...)==1 then
         -- We handle single arguments specially if they're tables. If so,
         -- we recurse for each value in the table. 
-        --
-        -- If we receive multiple arguments, there's not really a good way
-        -- of doing it, so we just let Strings.JoinValues do its stuff.
         local str=...;
         while IsCallable(str) do
             str=str();
         end;
         if type(str)=="table" then
-            Lists.Each(str, SendMessage, medium);
+            Lists.Each(str, SendTargetedMessage, medium, target);
         else
-            Chat.__Send(tostring(str), medium);
+            Chat.__Send(tostring(str), medium, Chat.__Language(), target);
         end;
     else
-        Chat.__Send(Strings.JoinValues(" ", ...), medium);
+        -- If we receive multiple arguments, there's not really a good way
+        -- of cleaning them up, so we defer to Strings.JoinValues.
+        Chat.__Send(Strings.JoinValues(" ", ...), medium, Chat.__Language(), target);
     end;
+end;
+
+local function SendMessage(medium, ...)
+    SendTargetedMessage(medium, "", ...);
 end;
 
 Chat.say = CurryFunction(SendMessage, "SAY");
@@ -97,23 +114,37 @@ Chat.battleground = CurryFunction(SendMessage, "BATTLEGROUND");
 Chat.guild = CurryFunction(SendMessage, "GUILD");
 Chat.party = CurryFunction(SendMessage, "PARTY");
 Chat.officer = CurryFunction(SendMessage, "OFFICER");
-Chat.group = CurryFunction(SendMessage, "RAID");
-Chat.null = Noop;
-Chat.noop = Noop;
 Chat.debug = print;
 
-function Chat.channel(target, message)
+function Chat.channel(target, ...)
     if type(target) == "string" then
         target = Chat.__ChannelName(target);
     end;
-    assert(message ~= nil, "message must be provided");
-    Chat.__Send(message, "CHANNEL", Chat.__Language(), target);
+    return SendTargetedMessage("CHANNEL", target, ...);
 end;
 
-function Chat.whisper(target, message)
+function Chat.whisper(target, ...)
 	assert(type(target) == "string", "target must be a string");
-	assert(message ~= nil, "message must be provided");
-    Chat.__Send(message, "WHISPER", Chat.__Language(), target:lower());
+    return SendTargetedMessage("WHISPER", target, ...);
+end;
+
+-- Sends a message to the appropriate group. This uses IsInInstance
+-- to send messages, so battlegrounds and arenas work as intended. 
+-- Otherwise, it will send to raid or party. If you're not in a group,
+-- this function will raise an error.
+function Chat.group(...)
+    local _, instanceType=IsInInstance();
+    if not instanceType or instanceType=="none" then
+        if GetNumRaidMembers() > 0 then
+            return Chat.raid(...);
+        elseif GetNumPartyMembers() > 0 then
+            return Chat.party(...);
+        else
+            error("Currently not in a group");
+        end;
+    else
+        return Chat[instanceType](...);
+    end;
 end;
 
 local ALIASES = Tables.Expand({
@@ -128,7 +159,8 @@ local ALIASES = Tables.Expand({
       [{"r", "ra", "raid"}] = "raid",
       [{"rw", "warning", "warn"}] = "raidwarning",
       [{"o", "officer"}] = "officer",
-      [{"bg", "battlegroup"}] = "battleground"
+      [{"bg", "battlegroup", "pvp", "arena"}] = "battleground",
+      [{"null", "noop", "none"}] = Noop
 });
 
 setmetatable(Chat, {

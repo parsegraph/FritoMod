@@ -3,27 +3,13 @@ local Suite = CreateTestSuite("Chat");
 Suite:AddListener(Metatables.Noop({
 	TestStarted = function(self, suite)
 		suite.messages = {};
-		self.oldLanguage = Chat.__Language;
-		Chat.__Language = function()
-			return "Common";
-		end;
 		self.oldSend=Chat.__Send;
-        Chat.__Send=function(...) -- msg, chatType, language, channel
-			local s = select("#", ...);
-			-- These tests ensure information is not lost when we store the arguments.
-			if s >= 2 then
-				assert(select(1, ...) ~= nil or select(2, ...) == nil, 
-                    "msg must not be nil if chatType is provided");
-			end;
-			if s >= 3 then
-				assert(select(2, ...) ~= nil or select(3, ...) == nil, 
-                    "chatType must not be nil if language is provided");
-			end;
-			if s >= 4 then
-				assert(select(3, ...) ~= nil or select(4, ...) == nil, 
-                    "language must not be nil if channel is provided");
-			end;
-			table.insert(suite.messages, {...});
+        Chat.__Send=function(message, medium, language, target)
+            assert(message~=nil, "Message must not be nil");
+            assert(medium~=nil, "Medium must not be nil");
+            assert(language~=nil, "Language must not be nil");
+            assert(target~=nil, "Target must not be nil");
+			table.insert(suite.messages, {message, medium, language, target});
 		end;
 		self.oldChannelName = Chat.__ChannelName;
 		Chat.__ChannelName = function(name)
@@ -52,38 +38,37 @@ Suite:AddListener(Metatables.Noop({
 	TestFinished = function(self, suite)
         Chat.__Send = self.oldSend;
         Chat.__ChannelName = self.oldChannelName;
-		Chat.__Language = self.oldLanguage;
 	end
 }));
 
 function Suite:TestChatSay()
 	Chat.Say("test");
-	Assert.Equals({"test", "SAY"}, table.remove(self.messages));
+	Assert.Equals({"test", "SAY", Chat.__Language(), ""}, table.remove(self.messages));
 end;
 
 function Suite:TestChatChannel()
 	Chat.General("Hello, general!");
-	Assert.Equals({"Hello, general!", "CHANNEL", "Common", 1}, table.remove(self.messages));
+	Assert.Equals({"Hello, general!", "CHANNEL", Chat.__Language(), 1}, table.remove(self.messages));
 end;
 
 function Suite:TestWhisper()
 	Chat.Threep("Hello, Threep!");
-	Assert.Equals({"Hello, Threep!", "WHISPER", "Common", "threep"}, table.remove(self.messages));
+	Assert.Equals({"Hello, Threep!", "WHISPER", Chat.__Language(), "threep"}, table.remove(self.messages));
 end;
 
 function Suite:TestChatAlias()
 	Chat.g("Hello, guild!");
-	Assert.Equals({"Hello, guild!", "GUILD"}, table.remove(self.messages));
+	Assert.Equals({"Hello, guild!", "GUILD", Chat.__Language(), ""}, table.remove(self.messages));
 end;
 
 function Suite:TestChatWhisper()
 	Chat.w("Threep", "Hello, Threep!");
-	Assert.Equals({"Hello, Threep!", "WHISPER", "Common", "threep"}, table.remove(self.messages));
+	Assert.Equals({"Hello, Threep!", "WHISPER", Chat.__Language(), "threep"}, table.remove(self.messages));
 end;
 
 function Suite:TestChatBatchDispatch()
 	local s = "Hello, guild and party!";
 	Chat[{"g","p"}](s);
-	Assert.Equals({s, "PARTY"}, table.remove(self.messages));
-	Assert.Equals({s, "GUILD"}, table.remove(self.messages));
+	Assert.Equals({s, "PARTY", Chat.__Language(), ""}, table.remove(self.messages));
+	Assert.Equals({s, "GUILD", Chat.__Language(), ""}, table.remove(self.messages));
 end;
