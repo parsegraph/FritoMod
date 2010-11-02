@@ -1,3 +1,54 @@
+-- Timing is a namespace of functions dealing with time. Timing.OnUpdate is likely to be
+-- the most familiar timer for any newbies.
+--
+-- local r=Timing.OnUpdate(print, "This is printed every frame!");
+-- r() -- Remove the timer
+--
+-- Timing also lets you call a function periodically. All periods in Timing are specified 
+-- in seconds:
+--
+-- Timing.Every(1, print, "Print every 1 second");
+--
+-- Invocations are dependent on framerate, so a slow or inconsistent framerate can cause
+-- issues. There's a few different strategies for compensating for this problem, and Timing
+-- provides them as separate timing functions:
+--
+-- * Periodic - Call function one period after now. Invocations can be lost, and the actual
+-- time will drift from the scheduled time. However, time between invocations will stay fairly
+-- constant.
+-- * Rhythmic - Compensate for drift, so delayed invocations will not delay subsequent 
+-- invocations. Invocations can be lost. Time between individual invocations will vary.
+-- * Burst - Compensate for delays. Invocations are never lost, but time between invocations
+-- can be extremely inconsistent.
+--
+-- If you have a good framerate, there will be very little difference between these functions.
+-- Periodic and Rhythmic are only subtly different from one another. You must use Burst if
+-- you're depending on a function to be called a certain number of times.
+--
+-- There's also some other neat functions here that aren't timers:
+--
+-- -- Cycle a myPowerText between purple and orange
+-- local color=Timing.CycleValues(1, "purple", "orange");
+-- Timing.Every(.2, function()
+--     Frames.Color(myPowerText, color);
+--     myPowerText:SetText(UnitPower("player");
+-- end);
+--
+-- -- Spam guild with "FAIL" five times, streaming every .1 seconds.
+-- local out=Timing.Throttle(.1, Chat.g);
+-- for i=1, 5 do
+--     Chatpic.fail(out);
+-- end;
+
+-- I don't try to have FritoMod cover every possible case. If your timing strategy is sufficiently
+-- complicated, you'll have to write it yourself.
+--
+-- I might eventually write a scheduler that would balance timer invocations and framerate. This
+-- would take some of the guesswork out of deciding period magnitude. Until then, use your best
+-- judgement.
+--
+-- Prefer callbacks over timers, as callbacks will only fire on changes. These saved frames add up.
+
 if nil ~= require then
     require "wow/Frame-Events";
 
