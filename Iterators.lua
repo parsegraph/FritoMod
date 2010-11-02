@@ -116,19 +116,25 @@ function Iterators.Flip(iterator)
     end;
 end;
 
+-- Repeat iterating over the given values.
+--
+-- local c=Iterators.Repeat(0,1,2); -- 0,1,2,0,1,2,0, and so forth
+-- for i=0,6 do
+--    Assert.Equals(i%3,c());
+-- end;
 function Iterators.Repeat(...)
     local args = { ... };
-    local iterator = nil;
+    local iterator=Iterators.IterateList(args);
     return function()
-        local value = iterator();
-        if value == nil then
-            iterator = Iterators.Iterate(unpack(args));
-            value = iterator();
-            assert(value ~= nil, "Cannot repeat over an empty iterable");
+        local _,v=iterator();
+        if v==nil then
+            iterator=Iterators.IterateList(args);
+            _,v=iterator();
         end;
-        return value;
+        return v;
     end;
 end;
+Iterators.RepeatValues=Iterators.Repeat;
 
 -- Iterates using each provided iterator, starting with the first iterator. Once
 -- an iterator is exhausted, the next iterator is used until all iterators have been

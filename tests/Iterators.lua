@@ -107,3 +107,15 @@ function Suite:TestCounter()
     Assert.Equals(2, unbounded());
     Assert.Equals(3, unbounded());
 end;
+
+function Suite:TestRepeat()
+    local i=Iterators.Repeat("a", "b", "c");
+    Assert.Equals("a", i());
+    Assert.Equals("b", i());
+    Assert.Equals("c", i());
+    Assert.Equals("a", i());
+    local c=Iterators.Repeat(0,1,2);
+    for i=0,6 do
+        Assert.Equals(i%3,c());
+    end;
+end;
