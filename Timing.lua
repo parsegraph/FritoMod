@@ -214,5 +214,10 @@ function Timing.After(seconds, func, ...)
 			func();
 		end;
 	end);
-	return r;
+	return function(delay)
+        if delay==POISON or delay==nil then
+            r();
+        end;
+        elapsed=elapsed-delay;
+    end;
 end;
