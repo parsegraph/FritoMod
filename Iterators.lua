@@ -108,8 +108,9 @@ function Iterators.IterateList(list)
     end;
 end;
 
-function Iterators.Flip(iterator)
-    iterator = Iterators.Iterate(iterator);
+-- Flips the keys and the values for the given iterator.
+function Iterators.Flip(iterator, ...)
+    iterator = Iterators.Iterate(Curry(iterator, ...));
     return function()
         local key, value = iterator();
         return value, key;
