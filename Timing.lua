@@ -152,21 +152,34 @@ end);
 Timing.Beat=Timing.Rhythmic;
 Timing.OnBeat=Timing.Rhythmic;
 
+-- Cycle between a series of values, based on when this function is called.
+--
+-- This function has no remover since it does not use a timer.
+--
+-- period
+--     the amount of time for which any given value will be returned.
+-- value, ...
+--     the values that will, over time, be used
 function Timing.CycleValues(period, value, ...)
     local values={value, ...};
-    local index=1;
-    local remover=Timing.Rhythmic(period, function()
-        index=index + 1;
-        if index > #values then
-            index=1;
-        end;
-    end);
-    return function(stop)
-        if stop then
-            remover();
-        else
-            return values[index];
-        end;
+    local time=GetTime();
+    return function()
+        -- First, get the total elapsed time. 
+        --
+        -- Imagine a 2 second period with 3 values and our elapsed time is 9 seconds.
+        local elapsed=GetTime()-time;
+        -- Then, use modulus to get our elapsed time in the scope of a single period.
+        --
+        -- elapsed is now 3, due to 9 % ( 3 * 2)
+        elapsed=elapsed % (#values * period);
+        -- Since elapsed is now in the range [0,#values * period), we can use it to
+        -- find which value to return.
+        --
+        -- math.max(3 / 2)
+        -- math.max(1.5)
+        -- 2
+        elapsed=math.max(elapsed / period);
+        return values[math.max(math.min(1, elapsed), #values)];
     end;
 end;
 
