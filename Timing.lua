@@ -267,21 +267,47 @@ function Timing.Throttle(waitTime, func, ...)
     end;
 end;
 
-function Timing.After(seconds, func, ...)
+-- Return a timer that, after `wait` seconds, will call `func`.
+--
+-- The timer can be delayed by calling it with special values:
+-- * If the timer is called with a number, the call to `func`
+-- will be delayed by that amount. There is no maximum delay, so
+-- you can delay `func` by a value that's greater than the initial
+-- `wait`.
+-- * If the timer is called with POISON, the timer will be
+-- irrecoverably killed.
+-- * If the timer is called with nil, this timer will wait
+-- at least `wait` seconds before calling `func`.
+--
+-- wait
+--     the initial wait time, in seconds
+-- func, ...
+--     the function that may be eventually called
+-- returns
+--     a timer that responds to the values listed above
+function Timing.After(wait, func, ...)
 	func=Curry(func,...);
 	local elapsed=0;
 	local r;
 	r=Timing.OnUpdate(function(delta)
 		elapsed=elapsed+delta;
-		if elapsed > seconds then
+		if elapsed > wait then
 			r();
+            r=nil;
 			func();
 		end;
 	end);
 	return function(delay)
-        if delay==POISON or delay==nil then
+        if not r then
+            return;
+        end
+        if delay==POISON then
             r();
+            r=nil;
+        elseif delay==nil then
+            elapsed=math.min(0, elapsed);
+        else
+            elapsed=elapsed-delay;
         end;
-        elapsed=elapsed-delay;
     end;
 end;
