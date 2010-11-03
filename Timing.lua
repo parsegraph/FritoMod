@@ -152,6 +152,19 @@ end);
 Timing.Beat=Timing.Rhythmic;
 Timing.OnBeat=Timing.Rhythmic;
 
+-- Calls the specified function periodically. This timer will ensure that the function
+-- is called for every elapsed period. This is similar to Timing.Rhythmic, but where
+-- the rhymthic timer could "miss" beats, burst will fire the function as many times as
+-- necessary to account for them.
+Timing.Burst = Timer(function(period, elapsed, func)
+	local c=math.floor(elapsed / period);
+	while c > 0 do
+		func();
+		t=t-period;
+	end;
+	return elapsed % period;
+end);
+
 -- Cycle between a series of values, based on when this function is called.
 --
 -- This function has no remover since it does not use a timer.
@@ -182,19 +195,6 @@ function Timing.CycleValues(period, value, ...)
         return values[math.max(math.min(1, elapsed), #values)];
     end;
 end;
-
--- Calls the specified function periodically. This timer will ensure that the function
--- is called for every elapsed period. This is similar to Timing.Rhythmic, but where
--- the rhymthic timer could "miss" beats, burst will fire the function as many times as
--- necessary to account for them.
-Timing.Burst = Timer(function(period, elapsed, func)
-	local c=math.floor(elapsed / period);
-	while c > 0 do
-		func();
-		t=t-period;
-	end;
-	return elapsed % period;
-end);
 
 -- Throttles invocations for the specified function. Multiple calls to this function
 -- will only yield one invocation of the specified function. Subsequent calls will be
