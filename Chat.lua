@@ -137,10 +137,8 @@ function Chat.group(...)
     if not instanceType or instanceType=="none" then
         if GetNumRaidMembers() > 0 then
             return Chat.raid(...);
-        elseif GetNumPartyMembers() > 0 then
-            return Chat.party(...);
         else
-            error("Currently not in a group");
+            return Chat.party(...);
         end;
     else
         return Chat[instanceType](...);
