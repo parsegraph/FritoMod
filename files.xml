@@ -46,6 +46,7 @@
 <Script file="CreateTestSuite.lua"/>
 <Script file="Cursors-Iterable.lua"/>
 <Script file="FirstAid.lua"/>
+<Script file="Frames-Mouse.lua"/>
 <Script file="Persistence.lua"/>
 <Script file="Frames-Position.lua"/>
 <Script file="Media-Font.lua"/>
