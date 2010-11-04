@@ -82,6 +82,10 @@ function Objects.Value(value)
                 return holder.Set(newValue);
             end;
             return holder.Get();
+        end,
+
+        Clear = function()
+            return holder.Set(nil);
         end
     });
 
@@ -94,6 +98,8 @@ function Objects.Value(value)
 
     holder.AssertValue = holder.Assert;
     holder.AssertCurrentValue = holder.Assert;
+
+    holder.Reset = holder.Clear;
 
     getmetatable(holder).__call=holder.Value;
 
