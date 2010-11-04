@@ -57,6 +57,7 @@ if nil ~= require then
     require "currying";
     require "Functions";
     require "Lists";
+    require "Callbacks-Events";
 end;
 
 Timing = {};
@@ -113,13 +114,8 @@ do
                 table.insert(deadListeners, func);
             end);
         end,
-        Functions.Install(function()
-            timingFrame:SetScript("OnUpdate", function(frame, elapsed) 
-                Timing._Tick(elapsed);
-            end);
-            return function()
-                timingFrame:SetScript("OnUpdate", nil);
-            end;
+        Functions.Install(Callbacks.OnUpdate, timingFrame, function(_, elapsed) 
+            Timing._Tick(elapsed);
         end)
     );
 end;
