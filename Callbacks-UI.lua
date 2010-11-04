@@ -5,6 +5,8 @@
 -- Callbacks.MouseDown(frame, callbackFunc, ...)
 
 if nil ~= require then
+    require "wow/Frame-Events";
+
     require "currying";
     require "ToggleDispatcher";
 end;
