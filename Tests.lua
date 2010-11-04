@@ -300,8 +300,10 @@ function Tests.Counter(count)
             assert(count <= num, ("Count was %d, but assertion requires at most %d"):format(count, num));
         end,
     });
+	counter.Reset=counter.Clear;
 	counter.Tick=counter.Hit;
 	counter.Count=counter.Hit;
     counter.Assert = counter.AssertEquals;
+    getmetatable(counter).__call=counter.Hit;
     return counter;
 end;
