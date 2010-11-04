@@ -67,6 +67,34 @@ do
     local deadListeners = {};
     local timingFrame = CreateFrame("Frame", nil, UIParent);
 
+    -- Replace our listener tables with new ones.
+    --
+    -- You'll never call this function unless you're developing this addon.
+    Timing._Mask = function(newUpdate, newDead)
+        local oldUpdate, oldDead=updateListeners, deadListeners;
+        updateListeners=newUpdate;
+        deadListeners=newDead;
+        return function()
+            updateListeners=oldUpdate;
+            deadListeners=oldDead;
+        end;
+    end;
+
+    -- Iterate our timers.
+    --
+    -- You'll never call this function unless you're developing this addon.
+    Timing._Tick = function(elapsed)
+        for i=1, #updateListeners do
+            local listener=updateListeners[i];
+            if not Lists.Contains(deadListeners, listener) then
+                listener(elapsed);
+            end;
+        end;
+        while #deadListeners > 0 do
+            Lists.Remove(updateListeners, table.remove(deadListeners));
+        end;
+    end;
+
     -- Adds a function that is fired every update. This is the highest-precision timing
     -- function though its precision is dependent on framerate.
     --
@@ -87,15 +115,7 @@ do
         end,
         Functions.Install(function()
             timingFrame:SetScript("OnUpdate", function(frame, elapsed) 
-                for i=1, #updateListeners do
-                    local listener=updateListeners[i];
-                    if not Lists.Contains(deadListeners, listener) then
-                        listener(elapsed);
-                    end;
-                end;
-                while #deadListeners > 0 do
-                    Lists.Remove(updateListeners, table.remove(deadListeners));
-                end;
+                Timing._Tick(elapsed);
             end);
             return function()
                 timingFrame:SetScript("OnUpdate", nil);

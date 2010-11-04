@@ -29,6 +29,7 @@
 <Script file="Tables.lua"/>
 <Script file="TestSuite.lua"/>
 <Script file="Tests.lua"/>
+<Script file="Timing.lua"/>
 <Script file="ToggleDispatcher.lua"/>
 <Script file="basic.lua"/>
 <Script file="currying.lua"/>
