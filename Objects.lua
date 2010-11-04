@@ -30,7 +30,8 @@ Objects=Objects or {};
 -- returns:object
 --     a holder for the specified value.
 function Objects.Value(value)
-    local holder = Metatables.ForceFunctions({
+    local holder;
+    holder = Metatables.ForceFunctions({
         -- Returns the current value.
         --
         -- returns:*
