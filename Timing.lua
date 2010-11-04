@@ -51,6 +51,7 @@
 
 if nil ~= require then
     require "wow/Frame-Events";
+    require "wow/Timing"
 
     require "basic";
     require "currying";
@@ -160,7 +161,7 @@ Timing.Burst = Timer(function(period, elapsed, func)
 	local c=math.floor(elapsed / period);
 	while c > 0 do
 		func();
-		t=t-period;
+		c=c-1;
 	end;
 	return elapsed % period;
 end);
@@ -188,11 +189,9 @@ function Timing.CycleValues(period, value, ...)
         -- Since elapsed is now in the range [0,#values * period), we can use it to
         -- find which value to return.
         --
-        -- math.max(3 / 2)
-        -- math.max(1.5)
-        -- 2
-        elapsed=math.max(elapsed / period);
-        return values[math.max(math.min(1, elapsed), #values)];
+        -- math.ceil(3 / 2) == math.ceil(1.5) == 2
+        elapsed=math.ceil(elapsed / period);
+        return values[math.min(math.max(1, elapsed), #values)];
     end;
 end;
 
@@ -212,10 +211,10 @@ end;
 --     Timing.Throttle
 function Timing.Cooldown(cooldownTime, func, ...)
     func = Curry(func, ...);
-    local lastCall = 0;
+    local lastCall;
     return function(...)
         local current = GetTime();
-        if lastCall + cooldownTime > current then
+        if lastCall and lastCall + cooldownTime > current then
             return;
         end;
         lastCall = current;
@@ -291,7 +290,7 @@ function Timing.After(wait, func, ...)
 	local r;
 	r=Timing.OnUpdate(function(delta)
 		elapsed=elapsed+delta;
-		if elapsed > wait then
+		if elapsed >= wait then
 			r();
             r=nil;
 			func();
