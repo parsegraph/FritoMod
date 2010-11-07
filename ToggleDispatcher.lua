@@ -39,17 +39,22 @@ end;
 function ToggleDispatcher:Fire(...)
     self.iterating=true;
     for _, listener in ipairs(self.listeners) do
-        if not Lists.Contains(self.deadListeners, listener) then
-            local resetter=listener(...);
-            if resetter then
-                table.insert(self.resetters, resetter);
-                self.resetters[listener]=resetter;
-                self.resetters[resetter]=listener;
-            end;
-        end;
+        self:_FireListener(listener, ...);
     end;
     self.iterating=false;
     self:CleanUp();
+end;
+
+function ToggleDispatcher:_FireListener(listener, ...)
+    if Lists.Contains(self.deadListeners, listener) then
+        return;
+    end;
+    local resetter=listener(...);
+    if resetter then
+        table.insert(self.resetters, resetter);
+        self.resetters[listener]=resetter;
+        self.resetters[resetter]=listener;
+    end;
 end;
 
 function ToggleDispatcher:CleanUp()
