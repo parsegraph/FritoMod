@@ -8,10 +8,10 @@ Documentation (wiki):
 http://github.com/dafrito/FritoMod/wiki
 
 Code repository (git):
-http://github.com/dafrito/FritoMod
+git://github.com/dafrito/FritoMod.git
+https://github.com/dafrito/FritoMod.git
 
 Bugs and issue tracker (github):
 http://github.com/dafrito/FritoMod/issues
 
-Aaron Faanes
-dafrito@gmail.com
+Aaron Faanes <dafrito@gmail.com>
