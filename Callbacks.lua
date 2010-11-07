@@ -24,7 +24,6 @@ end;
 
 Callbacks=Callbacks or {};
 
-
 -- Callbacks.Arena fires the specified callback whenever you enter an arena.
 do
     local dispatcher=ToggleDispatcher:New();
