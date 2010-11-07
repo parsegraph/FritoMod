@@ -24,24 +24,50 @@ end;
 
 Callbacks=Callbacks or {};
 
--- Callbacks.Arena fires the specified callback whenever you enter an arena.
 do
+    local lastInstance;
+    local listeners={};
+    Callbacks.ChangedInstance=Functions.Install(function()
+        lastInstance=select(2, IsInInstance()); 
+        Events.PLAYER_ENTERING_WORLD(function()
+            local instance=select(2, IsInInstance());
+            if instance~=lastInstance then
+                Lists.CallEach(listeners, instance);
+            end;
+        end);
+    end, 
+        Lists.InsertFunction, listeners
+    );
+    Callbacks.InstanceChange=Callbacks.ChangedInstance;
+    Callbacks.InstanceChanged=Callbacks.ChangedInstance;
+    Callbacks.ChangeInstance=Callbacks.ChangedInstance;
+end;
+
+local function InstanceWatcher(watchedType, specialName)
     local dispatcher=ToggleDispatcher:New();
     function dispatcher:Install()
-        return Events.PLAYER_ENTERING_WORLD(function()
-            local _, instanceType = IsInInstance();
-            if instanceType and instanceType:lower() == "arena" then
+        return Callbacks.ChangedInstance(function(instanceType)
+            if instanceType:lower()==watchedType then
                 dispatcher:Fire();
             else
                 dispatcher:Reset();
             end;
         end);
     end;
-    Callbacks.EnterArena=Curry(dispatcher, "Add");
-    Callbacks.Arena=Callbacks.EnterArena;
-    Callbacks.EnteredArena=Callbacks.EnterArena;
-    Callbacks.EnteringArena=Callbacks.EnterArena;
+    Callbacks[specialName]=Curry(dispatcher, "Add");
+    Callbacks["Enter"..specialName]=Callbacks[specialName];
+    Callbacks["Entering"..specialName]=Callbacks[specialName];
+    Callbacks["Entered"..specialName]=Callbacks[specialName];
 end;
+
+InstanceWatcher("arena", "Arena");
+InstanceWatcher("pvp", "Battleground");
+InstanceWatcher("raid", "RaidInstance");
+Callbacks.EnterRaid=Callbacks.EnterRaidInstance;
+Callbacks.EnteringRaid=Callbacks.EnterRaidInstance;
+Callbacks.EnteredRaid=Callbacks.EnterRaidInstance;
+InstanceWatcher("party", "Dungeon");
+InstanceWatcher("none", "World");
 
 -- Callbacks.Resting fires the specified callback whenever the player is resting.
 do
