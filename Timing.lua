@@ -57,7 +57,7 @@ if nil ~= require then
     require "currying";
     require "Functions";
     require "Lists";
-    require "Callbacks-Events";
+    require "Callbacks-Frames";
 end;
 
 Timing = {};

@@ -1,10 +1,8 @@
 if nil~=require then
     require "currying";
     require "Functions";
-    require "Callbacks";
     require "Lists";
     require "Events";
-    require "Callbacks";
 end;
 
 local function AssertPersistence()
@@ -34,6 +32,7 @@ Persistence=setmetatable({}, {
 local listeners={};
 local removers;
 
+Callbacks=Callbacks or {};
 function Callbacks.Persistence(func, ...)
     func=Curry(func, ...);
     if loaded then

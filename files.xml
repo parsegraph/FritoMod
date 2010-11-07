@@ -32,10 +32,10 @@
 <Script file="Anchors-Saved.lua"/>
 <Script file="Animations.lua"/>
 <Script file="Callbacks-Events.lua"/>
+<Script file="Callbacks-Frames.lua"/>
 <Script file="Callbacks-StringChunks.lua"/>
 <Script file="Timing.lua"/>
 <Script file="Callbacks-Timing.lua"/>
-<Script file="Callbacks.lua"/>
 <Script file="Chat.lua"/>
 <Script file="Unicode.lua"/>
 <Script file="Strings-Transform.lua"/>
