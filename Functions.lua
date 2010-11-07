@@ -320,7 +320,7 @@ function Functions.Install(setUp, ...)
     local count = 0;
     return function()
         if count == 0 then
-            tearDown = setUp();
+            tearDown = setUp() or Noop;
         end;
         count = count + 1;
         return Functions.OnlyOnce(function()
