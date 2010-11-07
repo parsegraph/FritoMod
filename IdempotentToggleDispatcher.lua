@@ -27,8 +27,9 @@ end;
 
 function IdempotentToggleDispatcher:Add(listener, ...)
     listener=Curry(listener, ...);
+    local r=self.super.Add(self, listener);
     if self.fired then
         self:_FireListener(listener, unpack(self.fired));
     end;
-    return self.super.Add(self, listener);
+    return r;
 end;
