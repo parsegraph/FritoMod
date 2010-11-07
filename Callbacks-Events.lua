@@ -27,16 +27,21 @@ Callbacks=Callbacks or {};
 do
     local lastInstance;
     local listeners={};
-    Callbacks.ChangedInstance=Functions.Install(function()
-        lastInstance=select(2, IsInInstance()); 
-        Events.PLAYER_ENTERING_WORLD(function()
-            local instance=select(2, IsInInstance());
-            if instance~=lastInstance then
-                Lists.CallEach(listeners, instance);
-            end;
-        end);
-    end, 
-        Lists.InsertFunction, listeners
+    Callbacks.ChangedInstance=Functions.Install(
+        function()
+            lastInstance=select(2, IsInInstance()); 
+            Events.PLAYER_ENTERING_WORLD(function()
+                local instance=select(2, IsInInstance());
+                if instance~=lastInstance then
+                    Lists.CallEach(listeners, instance);
+                end;
+            end);
+        end, 
+        function(func, ...)
+            func=Curry(func, ...);
+            func(select(2, IsInInstance()));
+            return Lists.Insert(listeners, func);
+        end
     );
     Callbacks.InstanceChange=Callbacks.ChangedInstance;
     Callbacks.InstanceChanged=Callbacks.ChangedInstance;
