@@ -19,6 +19,7 @@
 if nil ~= require then
     require "currying";
     require "Lists";
+    require "IdempotentToggleDispatcher";
     require "ToggleDispatcher";
 end;
 
@@ -49,7 +50,7 @@ do
 end;
 
 local function InstanceWatcher(watchedType, specialName)
-    local dispatcher=ToggleDispatcher:New();
+    local dispatcher=IdempotentToggleDispatcher:New();
     function dispatcher:Install()
         return Callbacks.ChangedInstance(function(instanceType)
             if instanceType:lower()==watchedType then
