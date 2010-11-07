@@ -50,6 +50,7 @@
 <Script file="Frames-Mouse.lua"/>
 <Script file="Persistence.lua"/>
 <Script file="Frames-Position.lua"/>
+<Script file="IdempotentToggleDispatcher.lua"/>
 <Script file="Media-Font.lua"/>
 <Script file="Media-Sound.lua"/>
 <Script file="Merchant.lua"/>
