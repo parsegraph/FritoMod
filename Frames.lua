@@ -69,3 +69,24 @@ function Frames.Alpha(f, alpha)
 end;
 Frames.Opacity=Frames.Alpha;
 Frames.Visibility=Frames.Alpha;
+
+function Frames.Text(parent, font, size, ...)
+    local text;
+    if type(parent) ~= "table" then
+        text=parent;
+        parent=UIParent:CreateFontString();
+    end;
+    if parent.CreateFontString then
+        f=parent:CreateFontString();
+    else
+        f=parent;
+    end;
+    if not font:match("\\") then
+        font=Media.font[font];
+    end;
+    f:SetFont(font, size, ...);
+    if text then
+        f:SetText(text);
+    end;
+    return f;
+end;
