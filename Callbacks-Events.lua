@@ -28,6 +28,7 @@ Callbacks=Callbacks or {};
 do
     local lastInstance;
     local listeners={};
+    local removers;
     Callbacks.ChangedInstance=Functions.Spy(
         function(func, ...)
             func=Curry(func, ...);
@@ -36,11 +37,11 @@ do
         end,
         Functions.Install(function()
             lastInstance=select(2, IsInInstance()); 
-            Events.PLAYER_ENTERING_WORLD(function()
-                local instance=select(2, IsInInstance());
-                if instance~=lastInstance then
-                    Lists.CallEach(listeners, instance);
+            return Events.PLAYER_ENTERING_WORLD(function()
+                if removers then
+                    Lists.CallEach(removers);
                 end;
+                removers=Lists.MapCall(listeners, select(2, IsInInstance()));
             end);
         end)
     );
