@@ -228,13 +228,27 @@ end;
 function Timing.Cooldown(cooldownTime, func, ...)
     func = Curry(func, ...);
     local lastCall;
-    return function(...)
+    local waitingInvocation;
+    return function(poison)
+        if poison==POISON then
+           lastCall=nil;
+           waitingInvocation();
+           waitingInvocation=nil;
+           return;
+        end;
         local current = GetTime();
         if lastCall and lastCall + cooldownTime > current then
+            if not waitingInvocation then
+                waitingInvocation=Timing.After(cooldownTime - (current - lastCall), function()
+                    waitingInvocation=nil;
+                    lastCall=GetTime();
+                    func();
+                end);
+            end;
             return;
         end;
         lastCall = current;
-        return func(...);
+        func();
     end;
 end;
 
