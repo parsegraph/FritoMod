@@ -207,3 +207,12 @@ setmetatable(Chat, {
 		error("medium must be a string, table, or function. Type: " .. type(medium));
     end
 });
+
+Chatf=setmetatable({}, {
+    __index = function(self, medium)
+        self[medium]=function(s, ...)
+            return Chat[medium](s:format(...));
+        end
+        return self[medium];
+    end
+});
