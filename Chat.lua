@@ -145,6 +145,16 @@ function Chat.group(...)
     end;
 end;
 
+-- Announce behaves like Chat.rw, unless you're not able to make raid warnings.
+-- Otherwise, it will output to your group.
+function Chat.announce(...)
+    if GetNumRaidMembers() > 0 and IsRaidLeader() or IsRaidOfficer() then
+        Chat.rw(...);
+    else
+        Chat.group(...);
+    end;
+end;
+
 local ALIASES = Tables.Expand({
       c = Chat.channel,
       [{"w", "pst", "tell"}] = Chat.whisper,
