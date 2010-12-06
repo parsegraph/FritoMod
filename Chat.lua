@@ -157,7 +157,7 @@ local ALIASES = Tables.Expand({
       [{"r", "ra", "raid"}] = "raid",
       [{"rw", "warning", "warn"}] = "raidwarning",
       [{"o", "officer"}] = "officer",
-      [{"bg", "battlegroup", "pvp", "arena"}] = "battleground",
+      [{"bg", "battlefield", "battlegroup", "pvp", "arena"}] = "battleground",
       [{"null", "noop", "none"}] = Noop
 });
 
