@@ -2,7 +2,7 @@
 -- translation. Chatpic and Strings.Transform can use sets.
 
 if nil ~= require then
-    require "Chatpic";
+    require "labs/Chatpic";
 end;
 
 local sets=Chatpic.sets;

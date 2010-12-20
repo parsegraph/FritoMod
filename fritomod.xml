@@ -1,5 +1,6 @@
 <Ui>
     <Include file="libs\files.xml"/>
     <Include file="files.xml"/>
+    <Include file="labs\files.xml"/>
     <Include file="tests\files.xml"/>
 </Ui>

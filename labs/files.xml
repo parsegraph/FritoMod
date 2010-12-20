@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+<Script file="Chatpic.lua"/>
+<Script file="Chatpic-Pictures.lua"/>
+<Script file="Chatpic-Sets.lua"/>
+<Script file="FirstAid.lua"/>
+<Script file="Merchant.lua"/>
+<Script file="Parameters.lua"/>
+<Script file="SpellCount.lua"/>
+</Ui>
