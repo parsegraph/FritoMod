@@ -1,8 +1,8 @@
 local Suite=CreateTestSuite("Timing");
 
 function Suite:Tick(value)
-    Timing._Tick(value);
     self.time=self.time+value;
+    Timing._Tick(value);
 end;
 
 Suite:AddListener(Metatables.Noop({
@@ -142,19 +142,24 @@ function Suite:TestDelayTimerCanBePoisoned()
 end;
 
 function Suite:TestCooldown()
+    print("Cooldown");
     local c=Tests.Counter(0);
     local f=Timing.Cooldown(3, c);
     f();
     -- The first call is not on cooldown.
     c.Assert(1);
     f();
-    -- We're on cooldown, so do nothing.
+    f();
+    f();
+    -- We're on cooldown, so our counter doesn't move.
     c.Assert(1);
     self:Tick(3);
-    -- We don't store previously ignored calls, so it's still just 1.
-    c.Assert(1);
+    -- We coalesce calls, so now that our cooldown is complete, the implicit call will
+    -- fire.
+    c.Assert(2);
+    print("Call!");
     f();
-    -- The tick put us off cooldown, so this call will work.
+    -- Invocations due to cooldown put us on cooldown, just like user-initiated ones.
     c.Assert(2);
 end;
 
