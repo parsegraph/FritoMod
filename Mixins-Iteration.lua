@@ -810,21 +810,21 @@ function Mixins.Iteration(library)
     -- func(1,2, ...)
     -- func(2,3, ...)
     -- func(3,4, ...)
-    --
-    -- This is an unconventional calling pattern, since we'd usually Curry a function. However,
-    -- for what I use this for, it makes sense. I also ignore results of the function, which I 
-    -- might also change.
-    if library.March == nil then
-        function library.March(iterable, func, ...)
-            local iterator=library.ValueIterator(iterable);
-            local a, b=iterator(), iterator();
-            while b~=nil do
-                func(a, b, ...);
-                a=b;
-                b=iterator();
-            end;
+    Mixins.Overridable(library, "March", function(iterable, func, ...)
+        local iterator=library.ValueIterator(iterable);
+        local a, b=iterator(), iterator();
+        while b~=nil do
+            func(a, b, ...);
+            a=b;
+            b=iterator();
         end;
-    end;
+    end);
+
+    Mixins.Overridable(library, "FlipMarch", function(iterable, func, ...)
+        return library.March(iterable, function(a, b, ...)
+            return func(b, a, ...);
+        end, ...);
+    end);
 
     if library.Build == nil then
         -- Constructs some value by chaining the result through each function.

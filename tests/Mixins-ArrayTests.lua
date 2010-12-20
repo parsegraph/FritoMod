@@ -206,12 +206,15 @@ function Mixins.ArrayTests(Suite, library)
     end;
 
     function Suite:TestMarch()
-        local a=Suite:Array(1,2,3,4);
         local results={};
-        library.March(a, function(a,b)
-            table.insert(results, a+b);
-        end);
-        Assert.Equals({3,5,7}, results);
+        local function Do(a, b)
+            table.insert(results, a-b);
+        end;
+        library.March(Suite:Array(1,2,3,4), Do);
+        Assert.Equals({-1,-1,-1}, results);
+        results={};
+        library.FlipMarch(Suite:Array(1,2,3,4), Do);
+        Assert.Equals({1,1,1}, results);
     end;
 
 end;
