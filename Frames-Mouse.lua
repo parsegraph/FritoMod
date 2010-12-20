@@ -86,6 +86,7 @@ do
             else
                 StopDrag(f);
             end;
+            return;
         else
             for i,btn in ipairs(buttons) do
                 buttons[i]=Frames.GetButtonName(btn);
