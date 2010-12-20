@@ -68,7 +68,7 @@ Anchors.Over=Anchors.Touch;
 function Anchors.Share(frame, ref, anchor, gap)
     gap=gap or 0;
     anchor=anchor:lower();
-    frame:SetPoint(anchor, ref, anchor, Anchors.ExpandGapValues(anchor, gap));
+    frame:SetPoint(anchor, ref, anchor, Anchors.ExpandGapValues(anchor, -gap));
 end;
 Anchors.On=Anchors.Share;
 
