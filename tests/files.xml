@@ -16,6 +16,7 @@
 <Script file="Metatables-StyleClient.lua"/>
 <Script file="Metatables.lua"/>
 <Script file="Mixins-MutableTableTests.lua"/>
+<Script file="Mixins.lua"/>
 <Script file="OOP-Class.lua"/>
 <Script file="OOP.lua"/>
 <Script file="Objects.lua"/>

@@ -78,3 +78,21 @@ function Mixins.KeyValuePairOperationByName(library, name, operation)
     end;
 end;
 
+-- Creates a runtime alias, pointing to the function at the specified target.
+--
+-- We use this a lot in our Iteration mixin, since it's sort-of a pain to
+-- type this out.
+function Mixins.DefaultAlias(t, target, ...)
+    for i=1,select("#", ...) do
+        local name=select(i, ...);
+        if t[name] == nil then
+            t[name]=CurryNamedFunction(t, target);
+        end;
+    end;
+end;
+
+function Mixins.Overridable(t, name, func)
+    if t[name] == nil then
+        t[name]=func;
+    end;
+end;
