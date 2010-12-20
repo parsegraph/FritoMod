@@ -142,7 +142,6 @@ function Suite:TestDelayTimerCanBePoisoned()
 end;
 
 function Suite:TestCooldown()
-    print("Cooldown");
     local c=Tests.Counter(0);
     local f=Timing.Cooldown(3, c);
     f();
@@ -157,7 +156,6 @@ function Suite:TestCooldown()
     -- We coalesce calls, so now that our cooldown is complete, the implicit call will
     -- fire.
     c.Assert(2);
-    print("Call!");
     f();
     -- Invocations due to cooldown put us on cooldown, just like user-initiated ones.
     c.Assert(2);
