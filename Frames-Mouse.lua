@@ -44,7 +44,7 @@ do
     -- us use plenty of different names without needing to remember the 
     -- One True Way.
     function Frames.GetButtonName(button)
-        assert(type(button)=="string", "Button name is not a string. Type: "..type(button));
+        button=tostring(button);
         return buttons[button:lower()] or button;
     end;
 end;
@@ -84,9 +84,6 @@ do
             end;
         else
             for i,btn in ipairs(buttons) do
-                if type(btn)~="string" then
-                    btn=tostring(btn);
-                end;
                 buttons[i]=Frames.GetButtonName(btn);
             end;
         end;
