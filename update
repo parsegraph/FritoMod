@@ -1,29 +1,19 @@
 #!/bin/bash
 PATH=/bin:/usr/bin
 
-UI_HEADER='<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">'
-
 get_file_list() {
     find * -name "*.lua" ! -name 'run-*' -print0 | xargs -0 ./get-requires | grep -v -e'^#';
 }
 
 update_files() {
-    echo "$UI_HEADER"
-    for f in `get_file_list | grep -v -e'^libs' -e'^wow' -e'^tests'`; do
-        f=`echo $f | sed -e 's#/#\\\\#g'`
+    echo '<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">'
+    for f in `get_file_list | grep $*`; do
+        f=`basename $f | sed -e 's#/#\\\\#g'`
         echo '<Script file="'$f'"/>'
     done;
     echo "</Ui>"
 }
 
-update_test_files() {
-    echo "$UI_HEADER"
-    for f in `get_file_list | grep -e'^tests'`; do
-        f=`basename $f | sed -e 's#/#\\\\#g'`
-        echo '<Script file="'$f'"/>'
-    done
-    echo "</Ui>"
-}
-
-update_files >files.xml
-update_test_files >tests/files.xml
+update_files -v -e'^labs' -e'^libs' -e'^wow' -e'^tests' >files.xml
+update_files -e'^tests' >tests/files.xml
+update_files -e'^labs' >labs/files.xml
