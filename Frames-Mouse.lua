@@ -49,7 +49,7 @@ do
     end;
 end;
 
--- Registers the frame to be draggable. This uses Frames.GetButtonName, so buttons can
+-- Registers the frame to be draggable. This uses Frames.GetButtonName, so mouse buttons can
 -- be specified freely.
 --
 -- local r=Frames.Draggable(f); -- f is now draggable with the left and right mouse buttons.
