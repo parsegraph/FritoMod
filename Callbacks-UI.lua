@@ -90,6 +90,18 @@ Callbacks.ShowFrame=ToggledEvent("OnShow", "OnHide");
 local CLICK_TOLERANCE=.5;
 function Callbacks.Click(f, func, ...)
     func=Curry(func, ...);
+    if f:HasScript("OnClick") then
+        if not f.clickHooks then
+            f.clickHooks={};
+            f:HookScript("OnClick", function(self, button)
+                Lists.CallEach(f.clickHooks, button);
+            end);
+        end;
+        return Functions.OnlyOnce(Lists.CallEach, {
+            enableMouse(f),
+            Lists.Insert(f.clickHooks, func)
+        });
+    end;
     Callbacks.MouseDown(f, function(btn)
         local downTime=GetTime();
         return function()
