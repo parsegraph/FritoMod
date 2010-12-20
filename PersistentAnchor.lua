@@ -11,7 +11,6 @@ function PersistentAnchor:Constructor(parentFrame)
     f:Hide();
     self.frame=f;
     Frames.Square(f, 10);
-    f:SetMovable(true);
     local bg=Frames.Color(f, "black");
     bg:SetDrawLayer("BACKGROUND");
 

@@ -60,6 +60,7 @@ end;
 -- Frames.Draggable(f, false);
 do 
     local function StartDrag(f, buttons)
+        f:SetMovable(true);
         f:RegisterForDrag(unpack(buttons));
         f.dragRemover=Callbacks.DragFrame(f, Functions.Undoable(
             Seal(f, "StartMoving"),
@@ -71,6 +72,7 @@ do
         f.dragRemover();
         f.dragRemover=nil;
         f:RegisterForDrag();
+        f:SetMovable(false);
     end;
     function Frames.Draggable(f, ...)
         local buttons={...};
