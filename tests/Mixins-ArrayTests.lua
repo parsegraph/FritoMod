@@ -205,4 +205,13 @@ function Mixins.ArrayTests(Suite, library)
         Assert.Equals(3, library.Reduce(Suite:Array(1,1,1), 0, Operator.Add));
     end;
 
+    function Suite:TestMarch()
+        local a=Suite:Array(1,2,3,4);
+        local results={};
+        library.March(a, function(a,b)
+            table.insert(results, a+b);
+        end);
+        Assert.Equals({3,5,7}, results);
+    end;
+
 end;
