@@ -69,8 +69,10 @@ do
     end;
     local function StopDrag(f)
         f:StopMovingOrSizing();
-        f.dragRemover();
-        f.dragRemover=nil;
+        if f.dragRemover then
+            f.dragRemover();
+            f.dragRemover=nil;
+        end;
         f:RegisterForDrag();
         f:SetMovable(false);
     end;
