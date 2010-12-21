@@ -10,7 +10,9 @@ Callbacks=Callbacks or {};
 -- Easy callback for registering OnFoo events, in a more FritoMod-esque fashion.
 function Callbacks.Script(frame, event, callback, ...)
     callback=Curry(callback, ...);
-    frame:SetScript(event, callback);
+    frame:SetScript(event, function(frame, ...)
+        callback(...);
+    end);
     return Functions.OnlyOnce(function()
         frame:SetScript(event, nil);
     end);

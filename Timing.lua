@@ -114,7 +114,7 @@ do
                 table.insert(deadListeners, func);
             end);
         end,
-        Functions.Install(Callbacks.OnUpdate, timingFrame, function(_, elapsed) 
+        Functions.Install(Callbacks.OnUpdate, timingFrame, function(elapsed) 
             Timing._Tick(elapsed);
         end)
     );
