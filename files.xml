@@ -35,11 +35,13 @@
 <Script file="IdempotentToggleDispatcher.lua"/>
 <Script file="Callbacks-Events.lua"/>
 <Script file="Callbacks-Frames.lua"/>
+<Script file="Containers.lua"/>
+<Script file="Events.lua"/>
+<Script file="Callbacks-Inventory.lua"/>
 <Script file="Callbacks-StringChunks.lua"/>
 <Script file="Timing.lua"/>
 <Script file="Callbacks-Timing.lua"/>
 <Script file="Chat.lua"/>
-<Script file="Events.lua"/>
 <Script file="CombatEvents.lua"/>
 <Script file="CreateTestSuite.lua"/>
 <Script file="Cursors-Iterable.lua"/>
