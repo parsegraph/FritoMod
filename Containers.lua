@@ -5,12 +5,10 @@
 -- end);
 -- assert(Containers.Contains("bags", "Hearthstone"), "You don't have a Hearthstone?!");
 if nil ~= require then
-    require "WoW_Containers/Containers";
-
-    require "FritoMod_Functional/currying";
-    require "FritoMod_Functional/Metatables";
-
-    require "FritoMod_Collections/Mixins-Iteration";
+    require "wow/Containers";
+    require "currying";
+    require "Metatables";
+    require "Mixins-Iteration";
 end;
 Containers=Mixins.Iteration();
 

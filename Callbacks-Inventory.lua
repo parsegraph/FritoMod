@@ -1,8 +1,10 @@
 if nil ~= require then
-    require "FritoMod_Events/Callbacks";
-
-    require "FritoMod_Containers/Containers";
+    require "Lists";
+    require "Events";
+    require "Containers";
 end;
+
+Callbacks=Callbacks or {};
 
 function Callbacks.Quantity(bag, item, func, ...)
     func=Curry(func, ...);
