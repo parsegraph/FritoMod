@@ -293,7 +293,7 @@ end;
 function Anchors.Share(frame, ref, anchor, gap)
     gap=gap or 0;
     anchor=anchor:lower();
-    frame:SetPoint(anchor, ref, anchor, Anchors.ExpandGapValues(anchor, -gap));
+    frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, -gap));
 end;
 Anchors.Shares=Anchors.Share;
 Anchors.Sharing=Anchors.Share;
