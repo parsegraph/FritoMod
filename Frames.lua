@@ -90,3 +90,27 @@ function Frames.Text(parent, font, size, ...)
     end;
     return f;
 end;
+
+function Frames.ButtonTexture(f, textureName)
+    local texture;
+    if tostring(textureName) or not textureName then
+        texture=Media.button[textureName];
+    else
+        texture=textureName;
+    end;
+    if f:GetObjectType():find("Button$") then
+        f:SetNormalTexture(texture.normal);
+        f:SetPushedTexture(texture.pushed);
+        f:SetHighlightTexture(texture.highlight);
+        if f:GetObjectType():find("CheckButton$") then
+            f:SetCheckedTexture(texture.checked);
+            f:SetDisabledCheckedTexture(texture.disabledChecked);
+        end;
+    elseif f:GetObjectType() == "Texture" then
+        f:SetTexture(texture.normal);
+    end;
+    if texture.Finish then
+        texture.Finish(f);
+    end;
+    return f;
+end;
