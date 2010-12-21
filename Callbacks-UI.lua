@@ -91,18 +91,21 @@ local CLICK_TOLERANCE=.5;
 function Callbacks.Click(f, func, ...)
     func=Curry(func, ...);
     if f:HasScript("OnClick") then
-        if not f.clickHooks then
-            f.clickHooks={};
-            f:HookScript("OnClick", function(self, button)
-                Lists.CallEach(f.clickHooks, button);
-            end);
+        if not f.doClick then
+            local listeners={};
+            f.doClick=Functions.Spy(
+                Curry(Lists.Insert, listeners),
+                Functions.Install(function()
+                    return Curry(Lists.CallEach, {
+                        enableMouse(f),
+                        Callbacks.HookScript(f, "On"..event, Lists.CallEach, listeners)
+                    });
+                end)
+            );
         end;
-        return Functions.OnlyOnce(Lists.CallEach, {
-            enableMouse(f),
-            Lists.Insert(f.clickHooks, func)
-        });
+        return f.doClick(func);
     end;
-    Callbacks.MouseDown(f, function(btn)
+    return Callbacks.MouseDown(f, function(btn)
         local downTime=GetTime();
         return function()
             local upTime=GetTime();
