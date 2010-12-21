@@ -21,3 +21,18 @@ Callbacks.On=Callbacks.Script;
 
 Callbacks.OnEvent=Headless(Callbacks.Script, "OnEvent");
 Callbacks.OnUpdate=Headless(Callbacks.Script, "OnUpdate");
+
+-- Easy callback for registering OnFoo events, in a more FritoMod-esque fashion.
+function Callbacks.HookScript(frame, event, callback, ...)
+    callback=Curry(callback, ...);
+    frame:HookScript(event, function(frame, ...)
+        if callback then
+            callback(...);
+        end;
+    end);
+    return Functions.OnlyOnce(function()
+        callback=nil;
+    end);
+end;
+Callbacks.HookedScript=Callbacks.HookScript;
+Callbacks.ScriptHook=Callbacks.HookScript;
