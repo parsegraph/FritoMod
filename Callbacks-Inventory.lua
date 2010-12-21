@@ -17,6 +17,7 @@ function Callbacks.Quantity(bag, item, func, ...)
         local newQuantity=Containers.SumItem(bag, item)
         if newQuantity~=lastQuantity then
             func(newQuantity);
+            lastQuantity=newQuantity;
         end;
     end);
 end;
