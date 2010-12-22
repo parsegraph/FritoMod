@@ -114,3 +114,18 @@ function Frames.ButtonTexture(f, textureName)
     end;
     return f;
 end;
+
+function Frames.Backdrop(f, backdrop, bg)
+    if type(backdrop)=="string" or not backdrop then
+        backdrop=Media.backdrop[backdrop];
+    else
+        backdrop=backdrop;
+    end;
+    if bg then
+        local usedBackdrop=Tables.Clone(backdrop);
+        usedBackdrop.bgFile=bg;
+        backdrop=usedBackdrop;
+    end;
+    f:SetBackdrop(backdrop);
+    return f;
+end;
