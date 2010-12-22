@@ -93,7 +93,7 @@ end;
 
 function Frames.ButtonTexture(f, textureName)
     local texture;
-    if tostring(textureName) or not textureName then
+    if type(textureName)=="string" or not textureName then
         texture=Media.button[textureName];
     else
         texture=textureName;
