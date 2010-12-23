@@ -70,6 +70,30 @@ end;
 Frames.Opacity=Frames.Alpha;
 Frames.Visibility=Frames.Alpha;
 
+function Frames.Show(f)
+    f:Show();
+    return Functions.OnlyOnce(f, "Hide");
+end;
+
+function Frames.Hide(f)
+    f:Hide();
+    return Functions.OnlyOnce(f, "Show");
+end;
+
+function Frames.ToggleShowing(f)
+    if f:IsVisible() then
+        f:Hide();
+    else
+        f:Show();
+    end;
+end;
+Frames.ToggleVisibility=Frames.ToggleShowing;
+Frames.ToggleVisible=Frames.ToggleShowing;
+Frames.ToggleShown=Frames.ToggleShowing;
+Frames.ToggleShow=Frames.ToggleShowing;
+Frames.ToggleHide=Frames.ToggleShowing;
+Frames.ToggleHidden=Frames.ToggleShowing;
+
 function Frames.Text(parent, font, size, ...)
     local text;
     if type(parent) ~= "table" then
