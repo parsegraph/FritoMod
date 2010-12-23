@@ -1,14 +1,14 @@
 -- Events is a registry of event listeners.
 --
--- Events.EVENT_NAME(Mediums.Say, "Event!");
+-- Events.EVENT_NAME(Chat.Say, "Something happened!")
 --
 -- This prints out a message for up to five spell misses:
 --
 -- local count = 0;
 -- local remover;
--- remover = Events["UNIT_SPELLMISS"](function(unitId, reason)
+-- remover = Events.UNIT_SPELLMISS(function(unitId, reason)
 --     count = count + 1;
---     Mediums.Say(("%s missed. Reason: %s"):format(reason, UnitName(unitId)));
+--     Chatf.s("%s missed. Reason: %s", reason, UnitName(unitId));
 --     if count > 5 then 
 --         remover();
 --     end;
