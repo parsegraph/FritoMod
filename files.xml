@@ -49,7 +49,7 @@
 <Script file="Frames-Options.lua"/>
 <Script file="Persistence.lua"/>
 <Script file="Frames-Position.lua"/>
-<Script file="Media-Border.lua"/>
+<Script file="Media-Backdrop.lua"/>
 <Script file="Media-Button.lua"/>
 <Script file="Media-Font.lua"/>
 <Script file="Media-Sound.lua"/>

@@ -19,9 +19,9 @@ local insets=setmetatable({
     end
 });
 
-local borders={};
+local backdrops={};
 
-borders.goldDialog={
+backdrops.goldDialog={
     edgeFile="Interface/DialogFrame/UI-DialogBox-Gold-Border",
     bgFile = "Interface/DialogFrame/UI-DialogBox-Gold-Background", 
     edgeSize = 32,
@@ -29,9 +29,9 @@ borders.goldDialog={
     tileSize=32,
     insets = insets.dialog
 };
-borders.gold=borders.goldDialog;
+backdrops.gold=backdrops.goldDialog;
 
-borders.blackdialog={
+backdrops.blackdialog={
     edgeFile="Interface/DialogFrame/UI-DialogBox-Border",
     bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
     edgeSize = 32,
@@ -39,10 +39,10 @@ borders.blackdialog={
     tileSize=32,
     insets = insets.dialog
 };
-borders.dialog=borders.blackdialog;
-borders.black=borders.blackdialog;
+backdrops.dialog=backdrops.blackdialog;
+backdrops.black=backdrops.blackdialog;
 
-borders.chatbubble={
+backdrops.chatbubble={
     edgeFile = "Interface/Tooltips/ChatBubble-Backdrop",
     bgFile = "Interface/Tooltips/ChatBubble-Background",
     edgeSize = 32,
@@ -50,9 +50,9 @@ borders.chatbubble={
     tileSize=32,
     insets = insets[32]
 };
-borders.chat=borders.chatbubble;
+backdrops.chat=backdrops.chatbubble;
 
-borders.tooltip={
+backdrops.tooltip={
     edgeFile="Interface/Tooltips/UI-Tooltip-Border",
     bgFile = "Interface/Tooltips/UI-Tooltip-Background",
     edgeSize = 16,
@@ -60,9 +60,9 @@ borders.tooltip={
     tileSize=16,
     insets = insets[5]
 };
-borders.default=borders.tooltip;
+backdrops.default=backdrops.tooltip;
 
-borders.slider={
+backdrops.slider={
     edgeFile="Interface/Buttons/UI-SliderBar-Border",
     bgFile = "Interface/Buttons/UI-SliderBar-Background", 
     edgeSize=8,
@@ -72,5 +72,5 @@ borders.slider={
 };
 
 
-Media.border(borders);
-Media.SetAlias("border", "borders", "backdrop", "backdrops", "edge", "edges");
+Media.backdrop(backdrops);
+Media.SetAlias("backdrops", "border", "borders", "edge", "edges");
