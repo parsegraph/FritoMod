@@ -89,6 +89,9 @@ do
     -- | f |   |
     -- +---+---+
     function Anchors.HorizontalFlip(frame, ref, anchor, gap)
+        if type(ref)=="string" then
+            ref,anchor=anchor,ref;
+        end;
         gap=gap or 0;
         anchor=anchor:lower();
         frame:SetPoint(horizontalReverses[anchor], ref, anchor, Anchors.HorizontalGap(anchor, gap));
@@ -168,6 +171,9 @@ do
     -- |  ref  |
     -- +-------+
     function Anchors.VerticalFlip(frame, ref, anchor, gap)
+        if type(ref)=="string" then
+            ref,anchor=anchor,ref;
+        end;
         gap=gap or 0;
         anchor=anchor:lower();
         frame:SetPoint(verticalReverses[anchor], ref, anchor, Anchors.VerticalGap(anchor, gap));
@@ -275,6 +281,9 @@ do
     -- | f |ref|
     -- +---+---+
     function Anchors.DiagonalFlip(frame, ref, anchor, gap)
+        if type(ref)=="string" then
+            ref,anchor=anchor,ref;
+        end;
         gap=gap or 0;
         anchor=anchor:lower();
         frame:SetPoint(reverses[anchor], ref, anchor, Anchors.RadialGap(anchor, gap));
@@ -291,6 +300,9 @@ end;
 
 -- frame shares ref's anchor
 function Anchors.Share(frame, ref, anchor, gap)
+    if type(ref)=="string" then
+        ref,anchor=anchor,ref;
+    end;
     gap=gap or 0;
     anchor=anchor:lower();
     frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, -gap));
