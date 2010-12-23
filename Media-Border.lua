@@ -54,7 +54,7 @@ borders.chatbubble={
 borders.chat=borders.chatbubble;
 
 borders.tooltip={
-    edgeFile="Interface/Tooltips/UI-Tooltip-Backdrop",
+    edgeFile="Interface/Tooltips/UI-Tooltip-Border",
     bgFile = "Interface/Tooltips/UI-Tooltip-Background",
     edgeSize = 16,
     tile=true,
