@@ -58,7 +58,7 @@ buttons.check={
     Finish         =BlendHighlights
 };
 
-buttons.default={
+buttons.slot={
     normal         ="Interface\\Buttons\\UI-Quickslot2",
     pushed         ="Interface\\Buttons\\UI-Quickslot-Depress",
     highlight      ="Interface\\Buttons\\ButtonHilight-Square",
@@ -83,6 +83,7 @@ buttons.default={
         BlendHighlights(button);
     end
 };
+buttons.default=buttons.slot;
 
 Media.button(buttons);
 Media.SetAlias("button", "buttons", "buttontexture");
