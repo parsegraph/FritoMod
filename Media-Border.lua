@@ -41,7 +41,6 @@ borders.blackdialog={
 };
 borders.dialog=borders.blackdialog;
 borders.black=borders.blackdialog;
-borders.default=borders.blackdialog;
 
 borders.chatbubble={
     edgeFile = "Interface/Tooltips/ChatBubble-Backdrop",
@@ -61,6 +60,7 @@ borders.tooltip={
     tileSize=16,
     insets = insets[5]
 };
+borders.default=borders.tooltip;
 
 borders.slider={
     edgeFile="Interface/Buttons/UI-SliderBar-Border",
@@ -70,6 +70,7 @@ borders.slider={
     tileSize=8, 
     insets = insets.slider
 };
+
 
 Media.border(borders);
 Media.SetAlias("border", "borders", "backdrop", "backdrops", "edge", "edges");
