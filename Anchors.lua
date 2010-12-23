@@ -299,7 +299,7 @@ Anchors.Shares=Anchors.Share;
 Anchors.Sharing=Anchors.Share;
 Anchors.On=Anchors.Share;
 
-function Anchors.Center(frame, ref, anchor)
+function Anchors.Center(frame, ref)
     anchor=anchor or "center";
     frame:SetPoint(anchor, ref, "center");
 end;
