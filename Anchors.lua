@@ -272,3 +272,8 @@ function Anchors.Center(frame, ref)
     anchor=anchor or "center";
     frame:SetPoint(anchor, ref, "center");
 end;
+
+function Anchors.Inset(frame, ref, inset)
+    Anchors.Share(frame, "topleft", ref, inset);
+    Anchors.Share(frame, "bottomright", ref, inset);
+end;
