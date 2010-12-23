@@ -55,3 +55,7 @@ end;
 function Frame:SetBackdrop()
 
 end;
+
+function Frame:SetBackdropBorderColor()
+
+end;

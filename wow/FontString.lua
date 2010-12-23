@@ -29,3 +29,11 @@ end;
 function WoW.FontString:GetStringHeight()
 	return 0;
 end;
+
+function WoW.FontString:SetJustifyH()
+
+end;
+
+function WoW.FontString:SetJustifyV()
+
+end;
