@@ -88,14 +88,14 @@ FlipAnchor("Horizontal", {
         topleft    = "topright",
         bottomleft = "bottomright",
         left       = "right",
-    }, {
+    }, { -- Signs
         topright    =  {  1,  1 },
         right       =  {  1,  1 },
         bottomright =  {  1, -1 },
         bottomleft  =  { -1, -1 },
         left        =  { -1,  1 },
         topleft     =  { -1,  1 }
-    }, { 1, 0 }
+    }, { 1, 0 } -- Default mask
 );
 
 -- Anchors.VerticalFlip(f, "bottomleft", ref);
@@ -144,14 +144,14 @@ FlipAnchor("Vertical",
         bottomright = "topright",
         bottomleft  = "topleft",
         bottom      = "top"
-    }, {
+    }, { -- Signs
         topright    =  {  1,  1 },
         top         =  {  1,  1 },
         topleft     =  { -1,  1 },
         bottomright =  {  1, -1 },
         bottom      =  {  1, -1 },
         bottomleft  =  { -1, -1 }
-    }, { 0, 1 }
+    }, { 0, 1 } -- Default mask
 );
 
 -- "frame touches ref's anchor."
@@ -225,7 +225,7 @@ FlipAnchor("Diagonal",
         right    = "left",
         topleft  = "bottomright",
         topright = "bottomleft",
-    }, {
+    }, { -- Signs
         top         = {  1,  1 },
         topright    = {  1,  1 },
         right       = {  1,  1 },
@@ -234,7 +234,7 @@ FlipAnchor("Diagonal",
         bottomleft  = { -1, -1 },
         left        = { -1, -1 },
         topleft     = { -1,  1 },
-    }, {
+    }, { -- Defaults
         top         = {  0,  1 },
         topright    = {  1,  1 },
         right       = {  1,  0 },
