@@ -1,311 +1,262 @@
--- Anchors lets us set up Frame anchor points in a way that strikes me
--- as somewhat more readable. They're especially useful if you want to have
--- offsets between anchors.
---
--- -- myFrame's right anchor touches otherFrame's left anchor.
--- Anchors.Touch(myFrame, otherFrame, "left");
---
--- -- myFrame's bottomright anchor touches otherFrame's topleft anchor.
--- Anchors.Touch(myFrame, otherFrame, "topleft");
---
--- -- myFrame is aligned 2 pixels beneath otherFrame's top anchor.
--- Anchor.Share(myFrame, otherFrame, "top", -2); 
---
--- My advice is to use Anchors when it's convenient. Otherwise, there's no need
--- to religiously use it: Anchors is not intended to be a replacement or a substitute
--- for Frame:SetPoint. I typically use it only when I want to have gaps between frames
--- and don't want to remember which way is positive/negative.
-
 if nil ~= require then
     require "wow/Frame-Layout";
 end;
 
 Anchors={};
 
-do 
-    local horizontalReverses={
-        topleft    = "topright",
-        bottomleft = "bottomright",
-        left       = "right",
-    };
-    for k,v in pairs(horizontalReverses) do
-        horizontalReverses[v]=k;
-    end;
-
-    local horizontalGaps={
-        topright    =  1,
-        right       =  1,
-        bottomright =  1, 
-        bottomleft  = -1,
-        left        = -1,
-        topleft     = -1,
-    };
-
-    function Anchors.HorizontalGap(anchor, gap)
-        local sign=horizontalGaps[anchor];
-        assert(sign, "Unrecognized anchor name: "..anchor);
-        return gap * sign, 0;
-    end;
-
-    -- Anchors.HorizontalFlip(f, ref, "topright");
-    -- +---+---+
-    -- |   | f |
-    -- |ref|---+
-    -- |   |
-    -- +---+
-    -- 
-    -- Anchors.HorizontalFlip(f, ref, "right");
-    -- +---+
-    -- |   |---+
-    -- |ref| f |
-    -- |   |---+
-    -- +---+
-    -- 
-    -- Anchors.HorizontalFlip(f, ref, "bottomright");
-    -- +---+
-    -- |   |
-    -- |ref|---+
-    -- |   | f |
-    -- +---+---+
-    --
-    -- Anchors.HorizontalFlip(f, ref, "topleft");
-    -- +---+---+
-    -- | f |   |
-    -- +---|ref|
-    --     |   |
-    --     +---+
-    --
-    -- Anchors.HorizontalFlip(f, ref, "left");
-    --     +---+
-    -- +---|   |
-    -- | f |ref|
-    -- +---|   |
-    --     +---+
-    -- 
-    -- Anchors.HorizontalFlip(f, ref, "bottomleft");
-    --     +---+
-    --     |   |
-    -- +---|ref|
-    -- | f |   |
-    -- +---+---+
-    function Anchors.HorizontalFlip(frame, ref, anchor, gap)
-        if type(ref)=="string" then
-            ref,anchor=anchor,ref;
-        end;
-        gap=gap or 0;
-        anchor=anchor:lower();
-        frame:SetPoint(horizontalReverses[anchor], ref, anchor, Anchors.HorizontalGap(anchor, gap));
-    end;
-    Anchors.HorizontalFlipping = Anchors.HorizontalFlip;
-    Anchors.HorizontalFlipped  = Anchors.HorizontalFlip;
-    Anchors.HorizontalTouch    = Anchors.HorizontalFlip;
-    Anchors.HorizontalTouching = Anchors.HorizontalFlip;
-    Anchors.HorizontalTouches  = Anchors.HorizontalFlip;
-    Anchors.HorizontalOver     = Anchors.HorizontalFlip;
-end;
-
-do 
-    local verticalReverses={
-        bottomright = "topright",
-        bottomleft  = "topleft",
-        bottom      = "top"
-    };
-    for k,v in pairs(verticalReverses) do
-        verticalReverses[v]=k;
-    end;
-
-    local verticalGaps={
-        topright    =  1,
-        top         =  1,
-        topleft     =  1,
-        bottomright = -1, 
-        bottom      = -1, 
-        bottomleft  = -1,
-    };
-
-    function Anchors.VerticalGap(anchor, gap)
-        local sign=verticalGaps[anchor];
-        assert(sign, "Unrecognized anchor name: "..anchor);
-        return 0, gap * sign;
-    end;
-
-    -- Anchors.VerticalFlip(f, ref, "bottomleft");
-    -- +-------+
-    -- |  ref  |
-    -- +-------+
-    -- | f |
-    -- +---+
-    -- 
-    -- Anchors.VerticalFlip(f, ref, "bottom");
-    -- +-------+
-    -- |  ref  |
-    -- +-------+
-    --   | f |
-    --   +---+
-    --
-    -- Anchors.VerticalFlip(f, ref, "bottomright");
-    -- +-------+
-    -- |  ref  |
-    -- +-------+
-    --     | f |
-    --     +---+
-    --
-    -- Anchors.VerticalFlip(f, ref, "topleft");
-    -- +---+
-    -- | f |
-    -- +-------+
-    -- |  ref  |
-    -- +-------+
-    --
-    -- Anchors.VerticalFlip(f, ref, "top");
-    --   +---+
-    --   | f |
-    -- +-------+
-    -- |  ref  |
-    -- +-------+
-    --
-    -- Anchors.VerticalFlip(f, ref, "topright");
-    --     +---+
-    --     | f |
-    -- +-------+
-    -- |  ref  |
-    -- +-------+
-    function Anchors.VerticalFlip(frame, ref, anchor, gap)
-        if type(ref)=="string" then
-            ref,anchor=anchor,ref;
-        end;
-        gap=gap or 0;
-        anchor=anchor:lower();
-        frame:SetPoint(verticalReverses[anchor], ref, anchor, Anchors.VerticalGap(anchor, gap));
-    end;
-    Anchors.VerticalFlipping = Anchors.VerticalFlip;
-    Anchors.VerticalFlipped  = Anchors.VerticalFlip;
-    Anchors.VerticalTouch    = Anchors.VerticalFlip;
-    Anchors.VerticalTouching = Anchors.VerticalFlip;
-    Anchors.VerticalTouches  = Anchors.VerticalFlip;
-    Anchors.VerticalOver     = Anchors.VerticalFlip;
-end;
-
-do
-    local reverses={
-        top      = "bottom",
-        right    = "left",
-        topleft  = "bottomright",
-        topright = "bottomleft",
-    };
+local function FlipAnchor(name, reverses, signs, defaultSigns)
     for k,v in pairs(reverses) do
         reverses[v]=k;
     end;
 
-    local touchGaps={
-        top         = function(gap) return    0,  gap end;
-        topright    = function(gap) return  gap,  gap end;
-        right       = function(gap) return  gap,    0 end;
-        bottomright = function(gap) return  gap, -gap end;
-        bottom      = function(gap) return    0, -gap end;
-        bottomleft  = function(gap) return -gap, -gap end;
-        left        = function(gap) return -gap,    0 end;
-        topleft     = function(gap) return -gap,  gap end;
-    }
-
-    -- Given a single number, convert it to the appropriate direction depending on
-    -- what anchor is used.
-    --
-    -- Positive gap values will increase the distance between frames.
-    -- Negative gap values will decrease the distance between frames.
-    --
-    -- The centers will form a line that passes through the anchor; diagonal anchor
-    -- points will cause the frames to separate diagonally.
-    function Anchors.DiagonalGap(anchor, gap)
-        local gapFunc=touchGaps[anchor:lower()];
-        assert(gapFunc, "Unrecognized anchor name: "..anchor);
-        return gapFunc(gap);
+    local function Gap(anchor, x, y)
+        if not x then
+            x=0;
+        end;
+        local sign=assert(signs[anchor], "Unrecognized anchor name: "..anchor);
+        local sx, sy=unpack(sign);
+        if not y then
+            y=x;
+            local defaults;
+            if #defaultSigns > 0 then
+                defaults=defaultSigns;
+            else
+                defaults=defaultSigns[anchor];
+            end;
+            sx, sy = defaults[1] * sx, defaults[2] * sy;
+        end;
+        return sx * x, sy * y;
     end;
-    Anchors.RadialGap = Anchors.DiagonalGap;
+    Anchors[name.."Gap"] = Gap;
 
-    -- "frame touches ref's anchor."
-    --
-    -- frame will be "flipped" over the reference frame. The centers of the two frames
-    -- will form a line that passes through the anchor.
-    --
-    -- Anchors.DiagonalFlip(f, ref, "topleft");
-    -- +---+
-    -- | f |
-    -- +---+---+
-    --     |ref|
-    --     +---+
-    --
-    -- Anchors.DiagonalFlip(f, ref, "top");
-    -- +---+
-    -- | f |
-    -- +---+
-    -- |ref|
-    -- +---+
-    --
-    -- Anchors.DiagonalFlip(f, ref, "topright");
-    --     +---+
-    --     | f |
-    -- +---+---+
-    -- |ref|
-    -- +---+
-    --
-    -- Anchors.DiagonalFlip(f, ref, "right");
-    -- +---+---+
-    -- |ref| f |
-    -- +---+---+
-    --
-    --
-    -- Anchors.DiagonalFlip(f, ref, "bottomright");
-    -- +---+
-    -- |ref|
-    -- +---+---+
-    --     | f |
-    --     +---+
-    --
-    -- Anchors.DiagonalFlip(f, ref, "bottom");
-    -- +---+
-    -- |ref|
-    -- +---+
-    -- | f |
-    -- +---+
-    --
-    -- Anchors.DiagonalFlip(f, ref, "bottomleft");
-    --     +---+
-    --     |ref|
-    -- +---+---+
-    -- | f |
-    -- +---+
-    --
-    -- Anchors.DiagonalFlip(f, ref, "left");
-    -- +---+---+
-    -- | f |ref|
-    -- +---+---+
-    function Anchors.DiagonalFlip(frame, ref, anchor, gap)
+    local function Flip(frame, anchor, ref, ...)
         if type(ref)=="string" then
             ref,anchor=anchor,ref;
         end;
-        gap=gap or 0;
         anchor=anchor:lower();
-        frame:SetPoint(reverses[anchor], ref, anchor, Anchors.RadialGap(anchor, gap));
-    end;
-    Anchors.DiagonalFlipping = Anchors.DiagonalFlip;
-    Anchors.DiagonalFlipped  = Anchors.DiagonalFlip; 
-    Anchors.DiagonalTouch    = Anchors.DiagonalFlip;
-    Anchors.DiagonalTouching = Anchors.DiagonalFlip;
-    Anchors.DiagonalTouches  = Anchors.DiagonalFlip;
-    Anchors.DiagonalOver     = Anchors.DiagonalFlip;
-    Anchors.RadialFlip       = Anchors.DiagonalFlip;
-    Anchors.Flip             = Anchors.DiagonalFlip;
+        frame:SetPoint(reverses[anchor], ref, anchor, Gap(anchor, ...));
+    end
+
+    Anchors[name.."Flip"]     = Flip;
+    Anchors[name.."Flipping"] = Flip;
+    Anchors[name.."Flipped"]  = Flip;
+    Anchors[name.."Over"]     = Flip;
 end;
 
+-- Anchors.HorizontalFlip(f, "topright", ref);
+-- +---+---+
+-- |   | f |
+-- |ref|---+
+-- |   |
+-- +---+
+-- 
+-- Anchors.HorizontalFlip(f, "right", ref);
+-- +---+
+-- |   |---+
+-- |ref| f |
+-- |   |---+
+-- +---+
+-- 
+-- Anchors.HorizontalFlip(f, "bottomright", ref);
+-- +---+
+-- |   |
+-- |ref|---+
+-- |   | f |
+-- +---+---+
+--
+-- Anchors.HorizontalFlip(f, "topleft", ref);
+-- +---+---+
+-- | f |   |
+-- +---|ref|
+--     |   |
+--     +---+
+--
+-- Anchors.HorizontalFlip(f, "left", ref);
+--     +---+
+-- +---|   |
+-- | f |ref|
+-- +---|   |
+--     +---+
+-- 
+-- Anchors.HorizontalFlip(f, "bottomleft", ref);
+--     +---+
+--     |   |
+-- +---|ref|
+-- | f |   |
+-- +---+---+
+FlipAnchor("Horizontal", {
+        topleft    = "topright",
+        bottomleft = "bottomright",
+        left       = "right",
+    }, {
+        topright    =  {  1,  1 },
+        right       =  {  1,  1 },
+        bottomright =  {  1, -1 },
+        bottomleft  =  { -1, -1 },
+        left        =  { -1,  1 },
+        topleft     =  { -1,  1 }
+    }, { 1, 0 }
+);
+
+-- Anchors.VerticalFlip(f, "bottomleft", ref);
+-- +-------+
+-- |  ref  |
+-- +-------+
+-- | f |
+-- +---+
+-- 
+-- Anchors.VerticalFlip(f, "bottom", ref);
+-- +-------+
+-- |  ref  |
+-- +-------+
+--   | f |
+--   +---+
+--
+-- Anchors.VerticalFlip(f, "bottomright", ref);
+-- +-------+
+-- |  ref  |
+-- +-------+
+--     | f |
+--     +---+
+--
+-- Anchors.VerticalFlip(f, "topleft", ref);
+-- +---+
+-- | f |
+-- +-------+
+-- |  ref  |
+-- +-------+
+--
+-- Anchors.VerticalFlip(f, "top", ref);
+--   +---+
+--   | f |
+-- +-------+
+-- |  ref  |
+-- +-------+
+--
+-- Anchors.VerticalFlip(f, "topright", ref);
+--     +---+
+--     | f |
+-- +-------+
+-- |  ref  |
+-- +-------+
+FlipAnchor("Vertical",
+    {
+        bottomright = "topright",
+        bottomleft  = "topleft",
+        bottom      = "top"
+    }, {
+        topright    =  {  1,  1 },
+        top         =  {  1,  1 },
+        topleft     =  { -1,  1 },
+        bottomright =  {  1, -1 },
+        bottom      =  {  1, -1 },
+        bottomleft  =  { -1, -1 }
+    }, { 0, 1 }
+);
+
+-- "frame touches ref's anchor."
+--
+-- frame will be "flipped" over the reference frame. The centers of the two frames
+-- will form a line that passes through the anchor.
+-- Given a single number, convert it to the appropriate direction depending on
+-- what anchor is used.
+--
+-- Positive gap values will increase the distance between frames.
+-- Negative gap values will decrease the distance between frames.
+--
+-- The centers will form a line that passes through the anchor; diagonal anchor
+-- points will cause the frames to separate diagonally.
+-- 
+-- Anchors.DiagonalFlip(f, "topleft", ref);
+-- +---+
+-- | f |
+-- +---+---+
+--     |ref|
+--     +---+
+--
+-- Anchors.DiagonalFlip(f, "top", ref);
+-- +---+
+-- | f |
+-- +---+
+-- |ref|
+-- +---+
+--
+-- Anchors.DiagonalFlip(f, "topright", ref);
+--     +---+
+--     | f |
+-- +---+---+
+-- |ref|
+-- +---+
+--
+-- Anchors.DiagonalFlip(f, "right", ref);
+-- +---+---+
+-- |ref| f |
+-- +---+---+
+--
+--
+-- Anchors.DiagonalFlip(f, "bottomright", ref);
+-- +---+
+-- |ref|
+-- +---+---+
+--     | f |
+--     +---+
+--
+-- Anchors.DiagonalFlip(f, "bottom", ref);
+-- +---+
+-- |ref|
+-- +---+
+-- | f |
+-- +---+
+--
+-- Anchors.DiagonalFlip(f, "bottomleft", ref);
+--     +---+
+--     |ref|
+-- +---+---+
+-- | f |
+-- +---+
+--
+-- Anchors.DiagonalFlip(f, "left", ref);
+-- +---+---+
+-- | f |ref|
+-- +---+---+
+FlipAnchor("Diagonal", 
+    {
+        top      = "bottom",
+        right    = "left",
+        topleft  = "bottomright",
+        topright = "bottomleft",
+    }, {
+        top         = {  1,  1 },
+        topright    = {  1,  1 },
+        right       = {  1,  1 },
+        bottomright = {  1, -1 },
+        bottom      = {  1, -1 },
+        bottomleft  = { -1, -1 },
+        left        = { -1, -1 },
+        topleft     = { -1,  1 },
+    }, {
+        top         = {  0,  1 },
+        topright    = {  1,  1 },
+        right       = {  1,  0 },
+        bottomright = {  1, -1 },
+        bottom      = {  0, -1 },
+        bottomleft  = { -1, -1 },
+        left        = { -1,  0 },
+        topleft     = { -1,  1 },
+    }
+);
+Anchors.Flip=Anchors.DiagonalFlip;
+Anchors.Flipping=Anchors.DiagonalFlip;
+Anchors.Flipped=Anchors.DiagonalFlip;
+Anchors.Over=Anchors.DiagonalOver;
+
 -- frame shares ref's anchor
-function Anchors.Share(frame, ref, anchor, gap)
+function Anchors.Share(frame, anchor, ref, ...)
     if type(ref)=="string" then
         ref,anchor=anchor,ref;
     end;
-    gap=gap or 0;
     anchor=anchor:lower();
-    frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, -gap));
+    frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, ...));
 end;
 Anchors.Shares=Anchors.Share;
 Anchors.Sharing=Anchors.Share;
