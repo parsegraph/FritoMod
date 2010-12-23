@@ -1,3 +1,9 @@
+-- Mixes in a large suite of iteration functions to the specified library. This
+-- mixin allow you to interact with various iterable types with a healthy baseline
+-- of functionality.
+--
+-- Specifically, this mixin adds a set of generic accessors and modifiers, insertion
+-- and removal functions, cloning, updating, and reversing.
 if nil ~= require then
     require "currying";
     require "Operator";
@@ -8,13 +14,6 @@ if Mixins == nil then
     Mixins = {};
 end;
 
--- Mixes in a large suite of iteration functions to the specified library. This
--- mixin allow you to interact with various iterable types with a healthy baseline
--- of functionality.
---
--- Specifically, this mixin adds a set of generic accessors and modifiers, insertion
--- and removal functions, cloning, updating, and reversing.
---
 -- The specified library must provide an Iterator function, as required by 
 -- Mixins.Iteration. Other methods should be provided for various parts of this mixin:
 --

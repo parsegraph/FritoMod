@@ -1,3 +1,12 @@
+-- Tables provides a number of iteration functions for lua tables, viewed as a
+-- map or dictionary. 
+--
+-- Most of the code for iteration is actually found in Mixins.Iteration or
+-- Mixins.MutableIteration; Lists is merely an implementation of that mixin.
+--
+-- All these functions work on, and are intended to work on,  plain old Lua
+-- tables. You don't need to create some special object to use these methods.
+
 if nil ~= require then
     require "currying";
     require "Metatables";
@@ -7,7 +16,7 @@ end;
 Tables = {}
 local Tables = Tables;
 
--- Mixes in iteration functionality for tables
+-- Iteration functionality for tables.
 Mixins.MutableIteration(Tables);
 Metatables.Defensive(Tables);
 

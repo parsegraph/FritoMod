@@ -1,3 +1,5 @@
+-- A large number of iteration functions for iterable objects, like tables, arrays, and
+-- so forth.
 if nil ~= require then
     require "basic";
     require "currying";

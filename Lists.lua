@@ -1,3 +1,10 @@
+-- Lists provides a number of iteration functions for arrays. Most of the code
+-- is actually found in Mixins.Iteration or Mixins.MutableIteration; Lists is
+-- merely an implementation of that mixin.
+--
+-- All these functions work on, and are intended to work on,  plain old Lua
+-- tables. You don't need to create some special object to use these methods.
+
 if nil ~= require then
     require "currying";
     require "Functions";
@@ -8,7 +15,7 @@ end;
 Lists = {}; 
 local Lists = Lists;
 
--- Mixes in iteration functionality for lists.
+-- Iteration functionality for lists.
 Mixins.MutableIteration(Lists);
 Metatables.Defensive(Lists);
 
