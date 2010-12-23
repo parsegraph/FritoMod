@@ -238,11 +238,11 @@ FlipAnchor("Diagonal",
         top         = {  0,  1 },
         topright    = {  1,  1 },
         right       = {  1,  0 },
-        bottomright = {  1, -1 },
-        bottom      = {  0, -1 },
-        bottomleft  = { -1, -1 },
-        left        = { -1,  0 },
-        topleft     = { -1,  1 },
+        bottomright = {  1,  1 },
+        bottom      = {  0,  1 },
+        bottomleft  = {  1,  1 },
+        left        = {  1,  0 },
+        topleft     = {  1,  1 },
     }
 );
 Anchors.Flip=Anchors.DiagonalFlip;
