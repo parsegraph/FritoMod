@@ -44,6 +44,19 @@ Frames.Colored=Frames.Color;
 Frames.Solid=Frames.Color;
 Frames.SolidColor=Frames.Color;
 
+function Frames.BorderColor(f, r, g, b, a)
+    if tonumber(r) == nil then
+        local possibleAlpha=g;
+        r,g,b,a=unpack(Media.color[r]);
+        if possibleAlpha then
+            a=possibleAlpha;
+        end;
+    end;
+    f:SetBackdropBorderColor(r,g,b,a);
+    return f;
+end;
+Frames.BackdropBorderColor=Frames.BorderColor;
+
 -- Sets the size of the specified frame.
 function Frames.Square(f, size)
     return Frames.Rectangle(f, size, size);
