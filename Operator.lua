@@ -39,15 +39,16 @@ Operator = setmetatable({
 Operators=Operator;
 
 -- These mathematical operations support working over many numbers. I made them
--- resilient in the face of nil values since they would otherwise require priming.
--- That is, you would have to check if a value was nil before using this function.
+-- resilient in the face of nil values since they would otherwise require
+-- priming.  That is, you would have to check if a value was nil before using
+-- this function.
 --
--- They also return a sensible value if no values are given. This is to ensure they
--- don't give themselves invalid data if reentered.
+-- They also return a sensible value if no values are given. This is to ensure
+-- they don't give themselves invalid data if reentered.
 --
--- These aren't designed for speed, or for simplicity. If you need a simple math
--- function, my advice is to write it yourself. It should be noted that these will
--- all work as expected if only given two values.
+-- These aren't designed for speed, or for simplicity. If you need a simple
+-- math function, my advice is to write the simple function yourself. It should
+-- be noted that these will all work as expected if only given two values.
 local function Operation(op)
     return function(...)
         local total;
