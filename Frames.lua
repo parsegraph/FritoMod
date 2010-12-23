@@ -168,3 +168,9 @@ function Frames.Backdrop(f, backdrop, bg)
     f:SetBackdrop(backdrop);
     return f;
 end;
+
+function Frames.Destroy(f)
+    f:Hide();
+    f:ClearAllPoints();
+    f:SetParent(nil);
+end;
