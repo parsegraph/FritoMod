@@ -150,6 +150,7 @@ function Strings.Print(...)
 	Strings.__print(Strings.JoinArray(" ", Lists.Map({...}, Strings.Pretty)));
 end;
 Strings.p=Strings.Print;
+dump=Strings.Print
 
 function Strings.PrettyFunction(value)
     assert(type(value) == "function", "value is not a function. Type: " .. type(value));
