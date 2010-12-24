@@ -102,14 +102,23 @@ end;
 -- meaning you need to "yank" a frame out of place to move it.
 function Frames.InstantDraggable(f, ...)
     local buttons={...};
-    if #buttons==0 then
-        buttons={"LeftButton", "RightButton"};
-    end;
-    for i,btn in ipairs(buttons) do
-        buttons[i]=Frames.GetButtonName(btn);
+    local conditional;
+    if type(buttons[1])=="function" or type(buttons[1])=="table" then
+        conditional=Curry(...);
+    else
+        if #buttons==0 then
+            buttons={"LeftButton", "RightButton"};
+        else
+            for i,btn in ipairs(buttons) do
+                buttons[i]=Frames.GetButtonName(btn);
+            end;
+        end;
+        conditional=function(button)
+            return Lists.Contains(buttons, button, Strings.StartsWith);
+        end;
     end;
     return Callbacks.MouseDown(f, function(button)
-        if not Lists.Contains(buttons, button, Strings.StartsWith) then
+        if not conditional(button) then
             return;
         end;
         local startX, startY=select(4, f:GetPoint(1));
