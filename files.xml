@@ -20,6 +20,8 @@
 <Script file="MappedTestSuite.lua"/>
 <Script file="AllTests.lua"/>
 <Script file="Anchors.lua"/>
+<Script file="Callbacks-Frames.lua"/>
+<Script file="Timing.lua"/>
 <Script file="ToggleDispatcher.lua"/>
 <Script file="Callbacks-UI.lua"/>
 <Script file="Math.lua"/>
@@ -34,12 +36,10 @@
 <Script file="Bindings.lua"/>
 <Script file="IdempotentToggleDispatcher.lua"/>
 <Script file="Callbacks-Events.lua"/>
-<Script file="Callbacks-Frames.lua"/>
 <Script file="Containers.lua"/>
 <Script file="Events.lua"/>
 <Script file="Callbacks-Inventory.lua"/>
 <Script file="Callbacks-StringChunks.lua"/>
-<Script file="Timing.lua"/>
 <Script file="Callbacks-Timing.lua"/>
 <Script file="Chat.lua"/>
 <Script file="CombatEvents.lua"/>

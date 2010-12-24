@@ -8,6 +8,8 @@ if nil ~= require then
     require "wow/Frame-Events";
 
     require "currying";
+    require "Lists";
+    require "Timing";
     require "ToggleDispatcher";
 end;
 
@@ -115,6 +117,20 @@ function Callbacks.Click(f, func, ...)
         end;
     end);
 end;
+
+function Callbacks.CursorOffset(func, ...)
+    func=Curry(func, ...);
+    local origX, origY=GetCursorPosition();
+    local lastX, lastY=origX, origY;
+    return Timing.OnUpdate(function()
+        local x, y=GetCursorPosition();
+        if lastX~=x or lastY~=y then
+            lastX, lastY=x,y;
+            func(x-origX, y-origY);
+        end;
+    end);
+end;
+Callbacks.MouseOffset=Callbacks.CursorOffset;
 
 local function enableKeyboard(f)
     f.keyListenerTypes=f.keyListenerTypes or 0;
