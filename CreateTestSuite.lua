@@ -16,3 +16,13 @@ function CreateTestSuite(name, path)
 	end;
 	return ReflectiveTestSuite:New(name);
 end;
+UnitTest=CreateTestSuite;
+
+function IntegrationTest(name)
+	if nil ~= require then
+		require "ReflectiveTestSuite";
+		require "Assert";
+		require "Tests";
+    end;
+	return ReflectiveTestSuite:New("Integration."..name);
+end;
