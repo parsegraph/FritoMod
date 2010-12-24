@@ -96,3 +96,25 @@ do
         return Functions.OnlyOnce(StopDrag, f);
     end;
 end;
+
+-- Allow dragging on a frame, similar to Frames.Draggable. The difference is that dragging
+-- that occurs here is immediate - OnDragStart waits until a minimum threshold is exceeded,
+-- meaning you need to "yank" a frame out of place to move it.
+function Frames.InstantDraggable(f, ...)
+    local buttons={...};
+    if #buttons==0 then
+        buttons={"LeftButton", "RightButton"};
+    end;
+    for i,btn in ipairs(buttons) do
+        buttons[i]=Frames.GetButtonName(btn);
+    end;
+    return Callbacks.MouseDown(f, function(button)
+        if not Lists.Contains(buttons, button, Strings.StartsWith) then
+            return;
+        end;
+        local startX, startY=select(4, f:GetPoint(1));
+        return Callbacks.CursorOffset(function(x, y)
+            f:SetPoint("center", UIParent, "center", startX+x, startY+y);
+        end);
+    end);
+end;
