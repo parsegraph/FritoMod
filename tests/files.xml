@@ -34,6 +34,7 @@
 <Script file="ToggleDispatcher.lua"/>
 <Script file="basic.lua"/>
 <Script file="currying.lua"/>
+<Script file="iteration.lua"/>
 <Script file="portability.lua"/>
 <Script file="sanity.lua"/>
 <Script file="tutorial.lua"/>
