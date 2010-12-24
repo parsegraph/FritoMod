@@ -35,8 +35,8 @@ Strings.DIGITS = "0123456789"
 Strings.ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 Strings.ALPHANUMERICS = Strings.DIGITS .. Strings.ALPHABET;
 
-function Strings.Matches(pattern, candidate)
-    return Bool(candidate:find(pattern));
+function Strings.Matches(str, pattern)
+    return Bool(str:find(pattern));
 end;
 
 function Strings.IsLetter(letter)
@@ -112,13 +112,13 @@ function Strings.Snippet(str, first, last)
     return str:sub(first, last);
 end;
 
-function Strings.StartsWith(match, str)
+function Strings.StartsWith(str, match)
 	assert(type(match) == "string", "match must be a string");
 	assert(#match > 0, "match must contain at least one character");
 	return match==str:sub(1, #match);
 end;
 
-function Strings.EndsWith(match, str)
+function Strings.EndsWith(str, match)
 	assert(type(match) == "string", "match must be a string");
 	assert(#match > 0, "match must contain at least one character");
 	return match==str:sub(#str-#match+1);

@@ -31,7 +31,7 @@
 -- a place to store sets and pictures, along with some metatable magic to make it convenient
 -- to use. To continue our example, we could have just done this:
 -- 
--- Chat.g(String.Transform(Chatpic.set.banner, "_0_0_0_0_"));
+-- Chat.g(String.Transform("_0_0_0_0_", Chatpic.set.banner));
 --
 -- which also prints the same thing.
 --
@@ -51,7 +51,7 @@ end;
 
 local function OutputTransform(set, picture, out, ...)
     out=Curry(out, ...);
-    local transformed=Strings.Transform(set, picture);
+    local transformed=Strings.Transform(picture, set);
     if type(transformed)=="table" then
         for i=1,#transformed do
             out(transformed[i]);

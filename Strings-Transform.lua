@@ -4,12 +4,12 @@ if nil ~= require then
     require "Lists";
 end;
 
-function Strings.Transform(set, str)
+function Strings.Transform(str, set)
     if type(str)=="function" then
-        return Strings.Transform(set, str());
+        return Strings.Transform(str(), set);
     end;
     if type(str)=="table" then
-        return Lists.Map(str, Strings.Transform, set);
+        return Lists.Map(str, Headless(Strings.Transform, set));
     end;
     str=str:gsub(".", function(c)
         local converted=set[c];
