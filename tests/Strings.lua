@@ -51,9 +51,13 @@ function Suite:TestPretty()
     Assert.Equals("{<empty>}", p({}), "Empty list");
 end;
 
+function ThisFunctionWillNeverEverBeCalled()
+
+end;
+
 function Suite:TestPrettyWithGlobalFunction()
     local p = Strings.Pretty;
-    Assert.Equals("Function@CreateTestSuite", p(CreateTestSuite), "Global functions are named");
+    Assert.Equals("Function@ThisFunctionWillNeverEverBeCalled", p(ThisFunctionWillNeverEverBeCalled), "Global functions are named");
 end;
 
 function Suite:TestSplitByDelimiter()
