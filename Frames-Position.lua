@@ -30,6 +30,9 @@ local function LoadPoint(name, frame, savedPosition)
 end;
 
 function Frames.Position(frame, name)
+    if not name then
+        name=frame:GetName();
+    end;
     positionedFrames[name]=frame;
     if frame and Persistence.Loaded() then
         local savedPosition;
