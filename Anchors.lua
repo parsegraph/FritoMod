@@ -280,6 +280,31 @@ Anchors.Shares=Anchors.Share;
 Anchors.Sharing=Anchors.Share;
 Anchors.On=Anchors.Share;
 
+function Anchors.ShareTop(frame, ref, x, y)
+    Anchors.Share(frame, "topleft",  ref, x, y);
+    Anchors.Share(frame, "topright", ref, x, y);
+end;
+
+function Anchors.ShareBottom(frame, ref, x, y)
+    Anchors.Share(frame, "bottomleft",  ref, x, y);
+    Anchors.Share(frame, "bottomright", ref, x, y);
+end;
+
+function Anchors.ShareLeft(frame, ref, x, y)
+    Anchors.Share(frame, "topleft",  ref, x, y);
+    Anchors.Share(frame, "bottomleft", ref, x, y);
+end;
+
+function Anchors.ShareRight(frame, ref, x, y)
+    Anchors.Share(frame, "topright",  ref, x, y);
+    Anchors.Share(frame, "bottomright", ref, x, y);
+end;
+
+function Anchors.ShareAll(frame, ref, x, y)
+    Anchors.Share(frame, "topleft", ref, x, y);
+    Anchors.Share(frame, "bottomright", ref, x, y);
+end;
+
 function Anchors.Center(frame, ref)
     anchor=anchor or "center";
     frame:SetPoint(anchor, ref, "center");
