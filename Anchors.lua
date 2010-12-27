@@ -255,14 +255,10 @@ function Anchors.Share(frame, anchor, ref, x, y)
     if type(ref)=="string" then
         ref,anchor=anchor,ref;
     end;
-    if x then
-        x=-x;
-    end;
-    if y then
-        y=-y;
-    end;
+    x=x or 0;
+    y=y or 0;
     anchor=anchor:lower();
-    frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, x, y));
+    frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, -x, -y));
 end;
 Anchors.Shares=Anchors.Share;
 Anchors.Sharing=Anchors.Share;
