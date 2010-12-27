@@ -4,6 +4,24 @@ end;
 
 Anchors={};
 
+local function GetAnchorArguments(frame, ...)
+    local anchor, ref, x, y;
+    if type(select(1, ...)) == "string" then
+        if type(select(2, ...))=="number" then
+            anchor, x, y=...;
+        else
+            anchor, ref, x, y=...;
+        end;
+    else
+        ref, anchor, x, y=...;
+    end;
+    anchor=anchor:lower();
+    if ref == nil then
+        ref=frame:GetParent();
+    end;
+    return anchor, ref, x, y;
+end;
+
 local function FlipAnchor(name, reverses, signs, defaultSigns)
     for k,v in pairs(reverses) do
         reverses[v]=k;
@@ -29,12 +47,9 @@ local function FlipAnchor(name, reverses, signs, defaultSigns)
     end;
     Anchors[name.."Gap"] = Gap;
 
-    local function Flip(frame, anchor, ref, ...)
-        if type(ref)=="string" then
-            ref,anchor=anchor,ref;
-        end;
-        anchor=anchor:lower();
-        frame:SetPoint(reverses[anchor], ref, anchor, Gap(anchor, ...));
+    local function Flip(frame, ...)
+        local anchor, ref, x, y=GetAnchorArguments(frame, ...);
+        frame:SetPoint(reverses[anchor], ref, anchor, Gap(anchor, x, y));
     end
 
     Anchors[name.."Flip"]     = Flip;
@@ -252,18 +267,7 @@ Anchors.Over=Anchors.DiagonalOver;
 
 -- frame shares ref's anchor
 function Anchors.Share(frame, ...)
-    local anchor, ref, x, y;
-    if type(select(1, ...)) == "string" then
-        if type(select(2, ...))=="number" then
-            anchor, x, y=...;
-            ref=frame:GetParent();
-        else
-            anchor, ref, x, y=...;
-        end;
-    else
-        ref, anchor, x, y=...;
-    end;
-    anchor=anchor:lower();
+    local anchor, ref, x, y=GetAnchorArguments(frame, ...);
     if x ~= nil then
         x=-x;
     end;
