@@ -251,14 +251,26 @@ Anchors.Flipped=Anchors.DiagonalFlip;
 Anchors.Over=Anchors.DiagonalOver;
 
 -- frame shares ref's anchor
-function Anchors.Share(frame, anchor, ref, x, y)
-    if type(ref)=="string" then
-        ref,anchor=anchor,ref;
+function Anchors.Share(frame, ...)
+    local anchor, ref, x, y;
+    if type(select(1, ...)) == "string" then
+        if type(select(2, ...))=="number" then
+            anchor, x, y=...;
+            ref=frame:GetParent();
+        else
+            anchor, ref, x, y=...;
+        end;
+    else
+        ref, anchor, x, y=...;
     end;
-    x=x or 0;
-    y=y or 0;
     anchor=anchor:lower();
-    frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, -x, -y));
+    if x ~= nil then
+        x=-x;
+    end;
+    if y ~= nil then
+        y=-y;
+    end;
+    frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, x, y));
 end;
 Anchors.Shares=Anchors.Share;
 Anchors.Sharing=Anchors.Share;
