@@ -107,19 +107,23 @@ function Objects.Value(value)
 end;
 
 local toggleAliases={
-    on="on",
-    ["true"]="on",
-    ["1"]="on",
+    ["yes"]   ="on",
+    ["on"]    ="on",
+    ["true"]  ="on",
+    ["1"]     ="on",
+    ["start"] ="on",
 
-    off="off",
+    ["no"]   ="off",
+    ["off"]  ="off",
     ["false"]="off",
-    ["nil"]="off",
-    ["0"]="off",
-    [""]="off",
+    ["nil"]  ="off",
+    ["0"]    ="off",
+    ["stop"] ="off",
 
-    toggle="toggle",
-    switch="toggle",
-    next="toggle"
+    [""]      ="toggle",
+    ["toggle"]="toggle",
+    ["switch"]="toggle",
+    ["next"]  ="toggle"
 }
 local function InterpretState(state)
     if type(state)=="string" then
