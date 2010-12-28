@@ -1,5 +1,6 @@
 if nil ~= require then
     require "wow/Frame-Layout";
+    require "Strings";
 end;
 
 Anchors={};
@@ -52,6 +53,8 @@ local function FlipAnchor(name, reverses, signs, defaultSigns)
         frame:SetPoint(reverses[anchor], ref, anchor, Gap(anchor, x, y));
     end
 
+    Anchors[Strings.CharAt(name, 1).."Flip"] = Flip;
+    Anchors[name.."Flip"]     = Flip;
     Anchors[name.."Flip"]     = Flip;
     Anchors[name.."Flipping"] = Flip;
     Anchors[name.."Flipped"]  = Flip;
