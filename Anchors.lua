@@ -8,7 +8,11 @@ Anchors={};
 local function GetAnchorArguments(frame, ...)
     local anchor, ref, x, y;
     if type(select(1, ...)) == "string" then
-        if type(select(2, ...))=="number" then
+        -- Since type() is a C function, it makes a nuisance of itself
+        -- by demanding we always pass at least one argument. This is true
+        -- even if the argument is nil. Since select(2, ...) can return
+        -- nothing, we have to add the "or nil" to the end to be safe.
+        if type(select(2, ...) or nil)=="number" then
             anchor, x, y=...;
         else
             anchor, ref, x, y=...;
