@@ -23,7 +23,7 @@ local backdrops={};
 
 backdrops.goldDialog={
     edgeFile="Interface/DialogFrame/UI-DialogBox-Gold-Border",
-    bgFile = "Interface/DialogFrame/UI-DialogBox-Gold-Background", 
+    bgFile  ="Interface/DialogFrame/UI-DialogBox-Gold-Background", 
     edgeSize = 32,
     tile=true,
     tileSize=32,
@@ -33,7 +33,7 @@ backdrops.gold=backdrops.goldDialog;
 
 backdrops.blackdialog={
     edgeFile="Interface/DialogFrame/UI-DialogBox-Border",
-    bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
+    bgFile  ="Interface/DialogFrame/UI-DialogBox-Background", 
     edgeSize = 32,
     tile=true,
     tileSize=32,
@@ -43,8 +43,8 @@ backdrops.dialog=backdrops.blackdialog;
 backdrops.black=backdrops.blackdialog;
 
 backdrops.chatbubble={
-    edgeFile = "Interface/Tooltips/ChatBubble-Backdrop",
-    bgFile = "Interface/Tooltips/ChatBubble-Background",
+    edgeFile="Interface/Tooltips/ChatBubble-Backdrop",
+    bgFile  ="Interface/Tooltips/ChatBubble-Background",
     edgeSize = 32,
     tile=true,
     tileSize=32,
@@ -54,7 +54,7 @@ backdrops.chat=backdrops.chatbubble;
 
 backdrops.tooltip={
     edgeFile="Interface/Tooltips/UI-Tooltip-Border",
-    bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+    bgFile  ="Interface/Tooltips/UI-Tooltip-Background",
     edgeSize = 16,
     tile=true,
     tileSize=16,
@@ -64,7 +64,7 @@ backdrops.default=backdrops.tooltip;
 
 backdrops.slider={
     edgeFile="Interface/Buttons/UI-SliderBar-Border",
-    bgFile = "Interface/Buttons/UI-SliderBar-Background", 
+    bgFile  ="Interface/Buttons/UI-SliderBar-Background", 
     edgeSize=8,
     tile=true,
     tileSize=8, 
