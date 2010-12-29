@@ -49,15 +49,6 @@ local function BlendHighlights(button)
     end;
 end;
 
-buttons.check={
-    normal         ="Interface\\Buttons\\UI-CheckBox-Up",
-    pushed         ="Interface\\Buttons\\UI-CheckBox-Down",
-    highlight      ="Interface\\Buttons\\UI-CheckBox-Highlight",
-    checked        ="Interface\\Buttons\\UI-CheckBox-Check",
-    disabledChecked="Interface\\Buttons\\UI-CheckBox-Check-Disabled",
-    Finish         =BlendHighlights
-};
-
 buttons.slot={
     normal         ="Interface\\Buttons\\UI-Quickslot2",
     pushed         ="Interface\\Buttons\\UI-Quickslot-Depress",
@@ -84,6 +75,26 @@ buttons.slot={
     end
 };
 buttons.default=buttons.slot;
+
+local function StandardButton(name)
+    local backdrop={
+        normal         =name.."-Up",
+        pushed         =name.."-Down",
+        highlight      =name.."-Highlight",
+        Finish         =BlendHighlights
+    };
+    return backdrop;
+end;
+
+local function StandardCheckButton(name)
+    local backdrop=StandardButton(name);
+    backdrop.checked=name.."-Check";
+    backdrop.checked=name.."-Check-Disabled";
+    return backdrop;
+end;
+
+buttons.check=StandardCheckButton("Interface/Buttons/UI-CheckBox");
+buttons.close=StandardButton("Interface/Buttons/UI-Panel-MinimizeButton");
 
 Media.button(buttons);
 Media.SetAlias("button", "buttons", "buttontexture");
