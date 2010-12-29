@@ -67,9 +67,9 @@ buttons.slot={
             -- are hardcoded, so they won't scale, but I think that's acceptable;
             -- once a button gets really big, it looks a little odd if it shrinks
             -- dramatically on click.
-            t:SetTexCoord(.18,.82,.18,.82);
-            Anchors.Share(t, button, "topleft", -2);
-            Anchors.Share(t, button, "bottomright", -2);
+            local textureInset=.18;
+            t:SetTexCoord(textureInset,1-textureInset,textureInset,1-textureInset);
+            Anchors.ShareAll(t, button, -2);
         end;
         BlendHighlights(button);
     end
