@@ -192,6 +192,11 @@ function Frames.ButtonTexture(f, textureName)
         end;
     elseif f:GetObjectType() == "Texture" then
         f:SetTexture(texture.normal);
+    else
+        local t=f:CreateTexture();
+        t:SetAllPoints();
+        t:SetTexture(texture.normal);
+        f=t;
     end;
     if texture.Finish then
         texture.Finish(f);
