@@ -24,8 +24,12 @@ function Frames.Inject(f, ...)
     return f;
 end;
 
+function Frames.IsInjected(frame)
+    return Bool(f._injected);
+end;
+
 local function CallOriginal(f, k, ...)
-    if f._injected then
+    if Frames.IsInjected(f) then
         return f._injected[k](f, ...);
     else
         return f[k](f, ...);
@@ -34,7 +38,9 @@ end;
 
 function Frames.Child(frame, t, name, ...)
     local child=CreateFrame(t, name, frame, ...);
-    Frames.Inject(child);
+    if Frames.IsInjected(frame) then
+        Frames.Inject(child);
+    end;
     return child;
 end;
 
