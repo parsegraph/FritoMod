@@ -100,7 +100,7 @@ function Callbacks.Click(f, func, ...)
                 Functions.Install(function()
                     return Curry(Lists.CallEach, {
                         enableMouse(f),
-                        Callbacks.HookScript(f, "On"..event, Lists.CallEach, listeners)
+                        Callbacks.HookScript(f, "OnClick", Lists.CallEach, listeners)
                     });
                 end)
             );
