@@ -153,6 +153,7 @@ function Frames.ButtonTexture(f, textureName)
     end;
     return f;
 end;
+Frames.Button=Frames.ButtonTexture;
 
 function Frames.Backdrop(f, backdrop, bg)
     if type(backdrop)=="string" or not backdrop then
