@@ -42,13 +42,15 @@ local function ConvertToTable(alpha, ...)
     return {red, green, blue, alpha};
 end;
 
-colors.white= {1.0, 1.0, 1.0, 1.0};
-colors.black= {0.0, 0.0, 0.0, 1.0};
-colors.blue=  {0.0, 0.0, 1.0, 1.0};
-colors.orange={1.0, 0.5, 0.0, 1.0};
-colors.yellow={1.0, 1.0, 0.0, 1.0};
-colors.purple={1.0, 0.0, 1.0, 1.0};
+colors.white= {1.0, 1.0,  1.0, 1.0};
+colors.black= {0.0, 0.0,  0.0, 1.0};
+colors.blue=  {0.0, 0.0,  1.0, 1.0};
+colors.orange={1.0, 0.5,  0.0, 1.0};
+colors.yellow={1.0, 1.0,  0.0, 1.0};
+colors.purple={1.0, 0.0,  1.0, 1.0};
+colors.gold  ={1.0, 0.82, 0.0, 1.0}; -- This is the yellow/gold color Blizzard uses in text.
 colors.violet=colors.purple;
+
 
 colors.warning=ConvertToTable(0xFFFF6347);
 colors.error=  ConvertToTable(0xFFB22222)
