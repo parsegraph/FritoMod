@@ -9,30 +9,30 @@ end;
 
 Frames={};
 
-function Frames.Inject(f, ...)
-    if type(f)=="string" then
-        f=CreateFrame(f, ...);
+function Frames.Inject(frame)
+    if Frames.IsInjected(frame) then
+        return;
     end;
-    local mt=getmetatable(f).__index;
-    f._injected=mt;
+    local mt=getmetatable(frame).__index;
+    frame._injected=mt;
     assert(type(mt)=="table", "Frame is not injectable");
-    setmetatable(f, {
+    setmetatable(frame, {
         __index=function(self, k)
             return Frames[k] or Anchors[k] or mt[k];
         end
     });
-    return f;
+    return frame;
 end;
 
 function Frames.IsInjected(frame)
-    return Bool(f._injected);
+    return Bool(frame._injected);
 end;
 
-local function CallOriginal(f, k, ...)
-    if Frames.IsInjected(f) then
-        return f._injected[k](f, ...);
+local function CallOriginal(frame, name, ...)
+    if Frames.IsInjected(frame) then
+        return frame._injected[name](frame, ...);
     else
-        return f[k](f, ...);
+        return frame[name](frame, ...);
     end;
 end;
 
