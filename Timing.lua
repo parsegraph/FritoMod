@@ -151,7 +151,15 @@ Timing.Periodic = Timer(function(period, elapsed, func)
 	end;
 	return elapsed;
 end);
-Timing.Every=Timing.Periodic;
+
+
+function Timing.Every(...)
+    if type(select(1, ...))=="number" then
+        return Timing.Periodic(...);
+    else
+        return Timing.OnUpdate(...);
+    end;
+end;
 
 -- Calls the specified function rhythmically. This timer will maintain a rhythm; actual 
 -- times will stay close to scheduled times, but distances between individual iterations 
