@@ -19,7 +19,18 @@ local insets=setmetatable({
     end
 });
 
-local backdrops={};
+local backdrops=setmetatable({}, {
+    __newindex=function(self, name, backdrop)
+        -- Unix-style slashes work for Blizzard's textures, but not for
+        -- custom addons. I like not having to type two characters, so
+        -- we do the conversion here.
+        backdrop.edgeFile=backdrop.edgeFile:gsub("/", "\\");
+        if backdrop.bgFile then
+            backdrop.bgFile=backdrop.bgFile:gsub("/", "\\");
+        end;
+        rawset(self, name, backdrop);
+    end
+});
 
 backdrops.goldDialog={
     edgeFile="Interface/DialogFrame/UI-DialogBox-Gold-Border",
