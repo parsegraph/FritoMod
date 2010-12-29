@@ -9,6 +9,35 @@ end;
 
 Frames={};
 
+function Frames.Inject(f, ...)
+    if type(f)=="string" then
+        f=CreateFrame(f, ...);
+    end;
+    local mt=getmetatable(f).__index;
+    f._injected=mt;
+    assert(type(mt)=="table", "Frame is not injectable");
+    setmetatable(f, {
+        __index=function(self, k)
+            return Frames[k] or Anchors[k] or mt[k];
+        end
+    });
+    return f;
+end;
+
+local function CallOriginal(f, k, ...)
+    if f._injected then
+        return f._injected[k](f, ...);
+    else
+        return f[k](f, ...);
+    end;
+end;
+
+function Frames.Child(frame, t, name, ...)
+    local child=CreateFrame(t, name, frame, ...);
+    Frames.Inject(child);
+    return child;
+end;
+
 -- Sets the color for a frame. This handles Frames, FontStrings, and 
 -- Textures. The color can be a name, which will be retrieved using
 -- Media.color
@@ -18,10 +47,20 @@ Frames={};
 --
 -- -- Sets frame to a half-transparent red.
 -- Frames.Color(f, "red", .5);
-function Frames.Color(f,r,g,b,a)
+function Frames.Color(f,...)
+    local r,g,b,a;
+    if select("#", ...)<3 then
+        local color, possibleAlpha=...;
+        r,g,b,a=unpack(Media.color[color]);
+        if possibleAlpha then
+            a=possibleAlpha;
+        end;
+    else
+        r,g,b,a=...;
+        a=a or 1.0;
+    end;
     if tonumber(r) == nil then
         local possibleAlpha=g;
-        r,g,b,a=unpack(Media.color[r]);
         if possibleAlpha then
             a=possibleAlpha;
         end;
@@ -86,13 +125,13 @@ Frames.Opacity=Frames.Alpha;
 Frames.Visibility=Frames.Alpha;
 
 function Frames.Show(f)
-    f:Show();
-    return Functions.OnlyOnce(f, "Hide");
+    CallOriginal(f, "Show");
+    return Functions.OnlyOnce(CallOriginal, f, "Hide");
 end;
 
 function Frames.Hide(f)
-    f:Hide();
-    return Functions.OnlyOnce(f, "Show");
+    CallOriginal(f, "Hide");
+    return Functions.OnlyOnce(CallOriginal, f, "Show");
 end;
 
 function Frames.ToggleShowing(f)
