@@ -162,6 +162,9 @@ function Frames.Text(parent, font, size, ...)
     end;
     if parent.CreateFontString then
         f=parent:CreateFontString();
+        if Frames.IsInjected(parent) then
+            Frames.Inject(f);
+        end;
     else
         f=parent;
     end;
