@@ -2,6 +2,8 @@ if nil ~= require then
     require "Media";
 end;
 
+local FRITOMOD="Interface/AddOns/FritoMod/media/";
+
 local insets=setmetatable({
     dialog = { left = 11, right = 12, top = 12, bottom = 11 },
     slider = { left = 3,  right = 3,  top = 6,  bottom = 6  },
@@ -82,6 +84,14 @@ backdrops.slider={
     insets = insets.slider
 };
 
+backdrops.test={
+    edgeFile=FRITOMOD.."Test-16-Border",
+    bgFile  ="Interface/Tooltips/UI-Tooltip-Background",
+    edgeSize = 16,
+    tile=true,
+    tileSize=16,
+    insets = insets[1]
+};
 
 Media.backdrop(backdrops);
 Media.SetAlias("backdrops", "border", "borders", "edge", "edges");
