@@ -89,4 +89,12 @@ if PowerBarColor then
 end;
 
 Media.color(colors);
+
+Media.color(function(grayShade)
+    if tonumber(grayShade) then
+        grayShade=tonumber(grayShade);
+    end;
+    return {grayShade, grayShade, grayShade, 1.0};
+end);
+
 Media.SetAlias("color", "colors", "colour", "colours");
