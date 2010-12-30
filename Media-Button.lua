@@ -66,20 +66,20 @@ buttons.slot={
 buttons.default=buttons.slot;
 
 local function StandardButton(name)
-    local backdrop={
+    local button={
         normal         =name.."-Up",
         pushed         =name.."-Down",
         highlight      =name.."-Highlight",
         Finish         =BlendHighlights
     };
-    return backdrop;
+    return button;
 end;
 
 local function StandardCheckButton(name)
-    local backdrop=StandardButton(name);
-    backdrop.checked=name.."-Check";
-    backdrop.checked=name.."-Check-Disabled";
-    return backdrop;
+    local button=StandardButton(name);
+    button.checked=name.."-Check";
+    button.disabledChecked=name.."-Check-Disabled";
+    return button;
 end;
 
 buttons.check=StandardCheckButton("Interface/Buttons/UI-CheckBox");
