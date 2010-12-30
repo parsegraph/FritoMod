@@ -126,7 +126,7 @@ function Callbacks.CursorOffset(func, ...)
         local x, y=GetCursorPosition();
         if lastX~=x or lastY~=y then
             lastX, lastY=x,y;
-            func(x-origX, y-origY);
+            func((x-origX)/UIParent:GetEffectiveScale(), (y-origY)/UIParent:GetEffectiveScale());
         end;
     end);
 end;
