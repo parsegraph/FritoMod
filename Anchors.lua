@@ -272,6 +272,36 @@ Anchors.Flipping=Anchors.DiagonalFlip;
 Anchors.Flipped=Anchors.DiagonalFlip;
 Anchors.Over=Anchors.DiagonalOver;
 
+local function EdgeFunctions(name)
+    local func=Anchors[name];
+    Anchors[name.."Left"]=function(frame, ref, x, y)
+        func(frame, "topleft", ref, x, y);
+        func(frame, "bottomleft", ref, x, y);
+    end;
+    Anchors[name.."Right"]=function(frame, ref, x, y)
+        func(frame, "topright", ref, x, y);
+        func(frame, "bottomright", ref, x, y);
+    end;
+    Anchors[name.."Top"]=function(frame, ref, x, y)
+        func(frame, "topleft", ref, x, y);
+        func(frame, "topright", ref, x, y);
+    end;
+    Anchors[name.."Bottom"]=function(frame, ref, x, y)
+        func(frame, "bottomleft", ref, x, y);
+        func(frame, "bottomright", ref, x, y);
+    end;
+end;
+
+EdgeFunctions("HFlip");
+EdgeFunctions("VFlip");
+EdgeFunctions("DFlip");
+
+Anchors.FlipTop   =Anchors.VFlipTop;
+Anchors.FlipBottom=Anchors.VFlipBottom;
+
+Anchors.FlipLeft =Anchors.HFlipLeft;
+Anchors.FlipRight=Anchors.HFlipRight;
+
 -- frame shares ref's anchor
 function Anchors.Share(frame, ...)
     local anchor, ref, x, y=GetAnchorArguments(frame, ...);
@@ -287,25 +317,7 @@ Anchors.Shares=Anchors.Share;
 Anchors.Sharing=Anchors.Share;
 Anchors.On=Anchors.Share;
 
-function Anchors.ShareTop(frame, ref, x, y)
-    Anchors.Share(frame, "topleft",  ref, x, y);
-    Anchors.Share(frame, "topright", ref, x, y);
-end;
-
-function Anchors.ShareBottom(frame, ref, x, y)
-    Anchors.Share(frame, "bottomleft",  ref, x, y);
-    Anchors.Share(frame, "bottomright", ref, x, y);
-end;
-
-function Anchors.ShareLeft(frame, ref, x, y)
-    Anchors.Share(frame, "topleft",  ref, x, y);
-    Anchors.Share(frame, "bottomleft", ref, x, y);
-end;
-
-function Anchors.ShareRight(frame, ref, x, y)
-    Anchors.Share(frame, "topright",  ref, x, y);
-    Anchors.Share(frame, "bottomright", ref, x, y);
-end;
+EdgeFunctions("Share");
 
 function Anchors.ShareAll(frame, ref, x, y)
     Anchors.Share(frame, "topleft", ref, x, y);
