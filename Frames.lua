@@ -185,24 +185,28 @@ function Frames.ButtonTexture(f, textureName)
     else
         texture=textureName;
     end;
-    if f:GetObjectType():find("Button$") then
-        f:SetNormalTexture(texture.normal);
-        f:SetPushedTexture(texture.pushed);
-        f:SetHighlightTexture(texture.highlight);
-        if f:GetObjectType():find("CheckButton$") then
-            f:SetCheckedTexture(texture.checked);
-            f:SetDisabledCheckedTexture(texture.disabledChecked);
-        end;
-    elseif f:GetObjectType() == "Texture" then
-        f:SetTexture(texture.normal);
+    if IsCallable(texture) then
+        texture(f, texture);
     else
-        local t=f:CreateTexture();
-        t:SetAllPoints();
-        t:SetTexture(texture.normal);
-        f=t;
-    end;
-    if texture.Finish then
-        texture.Finish(f);
+        if f:GetObjectType():find("Button$") then
+            f:SetNormalTexture(texture.normal);
+            f:SetPushedTexture(texture.pushed);
+            f:SetHighlightTexture(texture.highlight);
+            if f:GetObjectType():find("CheckButton$") then
+                f:SetCheckedTexture(texture.checked);
+                f:SetDisabledCheckedTexture(texture.disabledChecked);
+            end;
+        elseif f:GetObjectType() == "Texture" then
+            f:SetTexture(texture.normal);
+        else
+            local t=f:CreateTexture();
+            t:SetAllPoints();
+            t:SetTexture(texture.normal);
+            f=t;
+        end;
+        if texture.Finish then
+            texture.Finish(f, texture);
+        end;
     end;
     return f;
 end;
