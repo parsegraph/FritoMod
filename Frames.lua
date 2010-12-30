@@ -223,6 +223,19 @@ function Frames.Backdrop(f, backdrop, bg)
     return f;
 end;
 
+function Frames.Font(frame, font, size, ...)
+    if not font:match("\\") then
+        font=Media.font[font];
+    end;
+    if frame.GetFontString then
+        frame=frame:GetFontString();
+    end;
+    if frame.SetFont then
+        frame:SetFont(font, size, ...);
+    end
+    return f;
+end;
+
 function Frames.Destroy(f)
     f:Hide();
     f:ClearAllPoints();
