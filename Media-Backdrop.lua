@@ -1,4 +1,5 @@
 if nil ~= require then
+    require "Tables";
     require "Media";
 end;
 
@@ -95,3 +96,21 @@ backdrops.test={
 
 Media.backdrop(backdrops);
 Media.SetAlias("backdrops", "border", "borders", "edge", "edges");
+
+Frames=Frames or {};
+
+function Frames.Backdrop(f, backdrop, bg)
+    if type(backdrop)=="string" or not backdrop then
+        backdrop=Media.backdrop[backdrop];
+    else
+        backdrop=backdrop;
+    end;
+    if bg then
+        local usedBackdrop=Tables.Clone(backdrop);
+        usedBackdrop.bgFile=bg;
+        backdrop=usedBackdrop;
+    end;
+    f:SetBackdrop(backdrop);
+    return f;
+end;
+

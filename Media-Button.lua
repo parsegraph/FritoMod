@@ -196,3 +196,19 @@ end;
 
 Media.button(buttons);
 Media.SetAlias("button", "buttons", "buttontexture");
+
+Frames=Frames or {};
+
+function Frames.ButtonTexture(button, layout)
+    if type(layout)=="string" or not layout then
+        layout=Media.button[layout];
+    end;
+    if IsCallable(layout) then
+        layout(button);
+    else
+        ApplyStandardButton(button);
+    end;
+    return f;
+end;
+Frames.Button=Frames.ButtonTexture;
+

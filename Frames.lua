@@ -7,7 +7,7 @@ if nil ~= require then
     require "Media-Color";
 end;
 
-Frames={};
+Frames=Frames or {};
 
 function Frames.Inject(frame)
     if Frames.IsInjected(frame) then
@@ -43,64 +43,6 @@ function Frames.Child(frame, t, name, ...)
     end;
     return child;
 end;
-
--- Sets the color for a frame. This handles Frames, FontStrings, and 
--- Textures. The color can be a name, which will be retrieved using
--- Media.color
---
--- -- Sets frame to red.
--- Frames.Color(f, "red");
---
--- -- Sets frame to a half-transparent red.
--- Frames.Color(f, "red", .5);
-function Frames.Color(f,...)
-    local r,g,b,a;
-    if select("#", ...)<3 then
-        local color, possibleAlpha=...;
-        r,g,b,a=unpack(Media.color[color]);
-        if possibleAlpha then
-            a=possibleAlpha;
-        end;
-    else
-        r,g,b,a=...;
-        a=a or 1.0;
-    end;
-    if tonumber(r) == nil then
-        local possibleAlpha=g;
-        if possibleAlpha then
-            a=possibleAlpha;
-        end;
-    end;
-    if f.GetBackdrop and f:GetBackdrop() then
-        f:SetBackdropColor(r,g,b,a);
-    elseif f.SetTextColor then
-        f:SetTextColor(r,g,b,a);
-    elseif f.SetTexture then
-        f:SetTexture(r,g,b,a);
-    elseif f.CreateTexture then
-        local t=f:CreateTexture();
-        t:SetAllPoints();
-        t:SetTexture(r,g,b,a);
-        f=t;
-    end;
-    return f;
-end;
-Frames.Colored=Frames.Color;
-Frames.Solid=Frames.Color;
-Frames.SolidColor=Frames.Color;
-
-function Frames.BorderColor(f, r, g, b, a)
-    if tonumber(r) == nil then
-        local possibleAlpha=g;
-        r,g,b,a=unpack(Media.color[r]);
-        if possibleAlpha then
-            a=possibleAlpha;
-        end;
-    end;
-    f:SetBackdropBorderColor(r,g,b,a);
-    return f;
-end;
-Frames.BackdropBorderColor=Frames.BorderColor;
 
 -- Sets the size of the specified frame.
 function Frames.Square(f, size)
@@ -169,92 +111,6 @@ Frames.ToggleShown=Frames.ToggleShowing;
 Frames.ToggleShow=Frames.ToggleShowing;
 Frames.ToggleHide=Frames.ToggleShowing;
 Frames.ToggleHidden=Frames.ToggleShowing;
-
-function Frames.Text(parent, font, size, ...)
-    local text;
-    if type(parent) ~= "table" then
-        text=parent;
-        parent=UIParent:CreateFontString();
-    end;
-    if parent.CreateFontString then
-        f=parent:CreateFontString();
-        if Frames.IsInjected(parent) then
-            Frames.Inject(f);
-        end;
-    else
-        f=parent;
-    end;
-    if not font:match("\\") then
-        font=Media.font[font];
-    end;
-    f:SetFont(font, size, ...);
-    if text then
-        f:SetText(text);
-    end;
-    return f;
-end;
-
-function Frames.ButtonTexture(f, textureName)
-    local texture;
-    if type(textureName)=="string" or not textureName then
-        texture=Media.button[textureName];
-    else
-        texture=textureName;
-    end;
-    if IsCallable(texture) then
-        texture(f, texture);
-    else
-        if f:GetObjectType():find("Button$") then
-            f:SetNormalTexture(texture.normal);
-            f:SetPushedTexture(texture.pushed);
-            f:SetHighlightTexture(texture.highlight);
-            if f:GetObjectType():find("CheckButton$") then
-                f:SetCheckedTexture(texture.checked);
-                f:SetDisabledCheckedTexture(texture.disabledChecked);
-            end;
-        elseif f:GetObjectType() == "Texture" then
-            f:SetTexture(texture.normal);
-        else
-            local t=f:CreateTexture();
-            t:SetAllPoints();
-            t:SetTexture(texture.normal);
-            f=t;
-        end;
-        if texture.Finish then
-            texture.Finish(f, texture);
-        end;
-    end;
-    return f;
-end;
-Frames.Button=Frames.ButtonTexture;
-
-function Frames.Backdrop(f, backdrop, bg)
-    if type(backdrop)=="string" or not backdrop then
-        backdrop=Media.backdrop[backdrop];
-    else
-        backdrop=backdrop;
-    end;
-    if bg then
-        local usedBackdrop=Tables.Clone(backdrop);
-        usedBackdrop.bgFile=bg;
-        backdrop=usedBackdrop;
-    end;
-    f:SetBackdrop(backdrop);
-    return f;
-end;
-
-function Frames.Font(frame, font, size, ...)
-    if not font:match("\\") then
-        font=Media.font[font];
-    end;
-    if frame.GetFontString then
-        frame=frame:GetFontString();
-    end;
-    if frame.SetFont then
-        frame:SetFont(font, size, ...);
-    end
-    return f;
-end;
 
 function Frames.Destroy(f)
     f:Hide();
