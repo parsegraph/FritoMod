@@ -35,6 +35,7 @@
 -- when a virtual frame actually fits well with what I'm doing. However, this 
 -- happens less often than you'd think.
 if nil ~= require then
+    require "Frames";
     require "Media";
 end;
 
@@ -84,6 +85,114 @@ end;
 
 buttons.check=StandardCheckButton("Interface/Buttons/UI-CheckBox");
 buttons.close=StandardButton("Interface/Buttons/UI-Panel-MinimizeButton");
+
+local function HorizontalFixedButton(name, layout)
+    layout.normal   =name.."-Up";
+    layout.pushed   =name.."-Down";
+    layout.highlight=name.."-Highlight";
+
+    assert(layout.textureWidth, "textureWidth must be provided");
+    assert(layout.textureHeight, "textureWidth must be provided");
+
+    if layout.dimensions then
+        layout.dimensions.left  =layout.dimensions.left   or 0;
+        layout.dimensions.right =layout.dimensions.right  or layout.textureWidth;
+        layout.dimensions.top   =layout.dimensions.top    or 0;
+        layout.dimensions.bottom=layout.dimensions.bottom or layout.textureHeight;
+    end;
+
+    setmetatable(layout, {
+        __call=function(self, button)
+            local leftSlice =layout.slices.left;
+            local rightSlice=layout.slices.right;
+
+            local topEdge   =layout.dimensions.top;
+            local leftEdge  =layout.dimensions.left;
+            local rightEdge =layout.dimensions.right;
+            local bottomEdge=layout.dimensions.bottom;
+
+            local textureWidth =layout.textureWidth;
+            local textureHeight=layout.textureHeight;
+
+            local left  =button:CreateTexture();
+            local right =button:CreateTexture();
+            local center=button:CreateTexture();
+
+            Anchors.ShareLeft(left);
+            Anchors.ShareRight(right);
+            Anchors.HFlipLeft(center, right);
+            Anchors.HFlipRight(center, left);
+
+            left  :SetWidth(leftSlice);
+            right :SetWidth(rightSlice);
+
+            left  :SetTexture(layout.normal);
+            right :SetTexture(layout.normal);
+            center:SetTexture(layout.normal);
+
+            left  :SetDrawLayer("BORDER");
+            right :SetDrawLayer("BORDER");
+            center:SetDrawLayer("BACKGROUND");
+
+            left:SetTexCoord(
+                leftEdge/textureWidth, (leftEdge+leftSlice)/textureWidth,
+                topEdge/textureHeight,  bottomEdge/textureHeight
+            );
+
+            right:SetTexCoord(
+                (rightEdge-rightSlice)/textureWidth, rightEdge/textureWidth,
+                topEdge/textureHeight,  bottomEdge/textureHeight
+            );
+
+            center:SetTexCoord(
+                (leftEdge+leftSlice)/textureWidth, (rightEdge-rightSlice)/textureWidth, 
+                topEdge/textureHeight,  bottomEdge/textureHeight
+            );
+    
+            button:SetHighlightTexture(layout.highlight);
+
+            Callbacks.MouseDown(button, function()
+                left  :SetTexture(layout.pushed);
+                right :SetTexture(layout.pushed);
+                center:SetTexture(layout.pushed);
+                return function()
+                    left  :SetTexture(layout.normal);
+                    right :SetTexture(layout.normal);
+                    center:SetTexture(layout.normal);
+                end;
+            end);
+
+            if layout.Finish then
+                layout.Finish(button, layout, left, right, center);
+            end;
+        end
+    });
+
+    return layout;
+end;
+
+buttons.dialog=HorizontalFixedButton("Interface/Buttons/UI-DialogBox-Button", {
+    slices={
+        left=8,
+        right=8,
+    },
+    dimensions={
+        bottom=23
+    },
+    textureWidth=128,
+    textureHeight=32,
+});
+function buttons.dialog.Finish(button, layout, left, right, center)
+    local ht=button:GetHighlightTexture();
+    ht:SetBlendMode("ADD");
+    ht:SetAlpha(.75);
+    ht:SetTexCoord(0, 1, 0, layout.dimensions.bottom/layout.textureHeight);
+
+    local texCoords={center:GetTexCoord()};
+    texCoords[5]=110/layout.textureWidth;
+    texCoords[7]=texCoords[5];
+    center:SetTexCoord(unpack(texCoords));
+end;
 
 Media.button(buttons);
 Media.SetAlias("button", "buttons", "buttontexture");
