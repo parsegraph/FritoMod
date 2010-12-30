@@ -46,6 +46,28 @@ function Metatables.Attacher(metatable)
 end;
 local MetatableAttacher=Metatables.Attacher;
 
+function Metatables.Callable(target, func, ...)
+    setmetatable(target, {
+        __call=Curry(func, ...)
+    });
+    return target;
+end;
+
+function Metatables.OverloadCallable(target, func, ...)
+    func=Curry(func, ...);
+    local orig=Noop;
+    if getmetatable(target) then
+        orig=getmetatable(target).__call;
+    else
+        setmetatable(target, {});
+    end;
+    getmetatable(target).__call=function(...)
+        orig(...);
+        return func(...);
+    end
+    return target;
+end;
+
 function Metatables.FocusedTable(target, func, ...)
     target = AssertTable(target);
     func = Curry(func, ...);
