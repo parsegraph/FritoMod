@@ -57,19 +57,8 @@ buttons.slot={
     Finish         =function(button)
         if button.GetNormalTexture then
             local t=button:GetNormalTexture();
-            -- Blizzard's code seems to assume we'll never resize this frame
-            -- beyond 36 pixels. Resizing seems like something we should
-            -- anticipate, so I changed it to use texcoords. These values
-            -- are just what looked best to me at the time.
-            --
-            -- I added the shared anchors to oversize our normal texture. This
-            -- emphasizes the "pressed" nature when we click on a button. These
-            -- are hardcoded, so they won't scale, but I think that's acceptable;
-            -- once a button gets really big, it looks a little odd if it shrinks
-            -- dramatically on click.
-            local textureInset=.18;
-            t:SetTexCoord(textureInset,1-textureInset,textureInset,1-textureInset);
-            Anchors.ShareAll(t, button, -2);
+            -- Ensure the textures' visible portion fills the size.
+            t:SetTexCoord(12/64, 51/64, 12/64, 51/64);
         end;
         BlendHighlights(button);
     end
