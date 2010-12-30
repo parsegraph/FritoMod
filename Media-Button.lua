@@ -66,25 +66,85 @@ buttons.slot={
 };
 buttons.default=buttons.slot;
 
-local function StandardButton(name)
-    local button={
-        normal         =name.."-Up",
-        pushed         =name.."-Down",
-        highlight      =name.."-Highlight",
-        Finish         =BlendHighlights
-    };
+local function ApplyStandardButton(layout, button)
+    if button:GetObjectType():find("Button$") then
+        button:SetNormalTexture(layout.normal);
+        button:SetPushedTexture(layout.pushed);
+        button:SetHighlightTexture(layout.highlight);
+        if button:GetObjectType():find("CheckButton$") then
+            button:SetCheckedTexture(layout.checked);
+            button:SetDisabledCheckedTexture(layout.disabledChecked);
+        end;
+    elseif button:GetObjectType() == "Texture" then
+        button:SetTexture(layout.normal);
+    else
+        local t=button:CreateTexture();
+        t:SetAllPoints();
+        t:SetTexture(layout.normal);
+        button=t;
+    end;
+    if layout.Finish then
+        layout.Finish(button, layout);
+    end;
     return button;
 end;
 
-local function StandardCheckButton(name)
-    local button=StandardButton(name);
-    button.checked=name.."-Check";
-    button.disabledChecked=name.."-Check-Disabled";
-    return button;
+local function StandardButton(name, layout)
+    if not layout then
+        layout={};
+    end;
+    layout.normal         =name.."-Up";
+    layout.pushed         =name.."-Down";
+    layout.highlight      =name.."-Highlight";
+    Metatables.Callable(layout, function(layout, button)
+        ApplyStandardButton(layout, button);
+        BlendHighlights(button);
+    end);
+    return layout;
+end;
+
+local function StandardCheckButton(name, layout)
+    layout=StandardButton(name, layout);
+    layout.checked=name.."-Check";
+    layout.disabledChecked=name.."-Check-Disabled";
+    return layout;
+end;
+
+local function AdjustTexCoords(layout, texture)
+    local topEdge   =layout.dimensions.top;
+    local leftEdge  =layout.dimensions.left;
+    local rightEdge =layout.dimensions.right;
+    local bottomEdge=layout.dimensions.bottom;
+
+    local textureWidth =layout.textureWidth;
+    local textureHeight=layout.textureHeight;
+    
+    if texture then
+        texture:SetTexCoord(
+            leftEdge/textureWidth, rightEdge/textureWidth, 
+            topEdge/textureHeight, bottomEdge/textureHeight
+        );
+    end;
 end;
 
 buttons.check=StandardCheckButton("Interface/Buttons/UI-CheckBox");
-buttons.close=StandardButton("Interface/Buttons/UI-Panel-MinimizeButton");
+buttons.close=StandardButton("Interface/Buttons/UI-Panel-MinimizeButton", {
+    dimensions={
+        left=6,
+        right=25,
+        top=7,
+        bottom=25
+    },
+    textureWidth=32,
+    textureHeight=32
+});
+Metatables.OverloadCallable(buttons.close, function(layout, button)
+    AdjustTexCoords(layout, button:GetNormalTexture());
+    AdjustTexCoords(layout, button:GetPushedTexture());
+    AdjustTexCoords(layout, button:GetDisabledTexture());
+
+    return button;
+end);
 
 local function HorizontalFixedButton(name, layout)
     layout.normal   =name.."-Up";
