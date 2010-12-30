@@ -305,6 +305,23 @@ Anchors.FlipRight=Anchors.HFlipRight;
 -- frame shares ref's anchor
 function Anchors.Share(frame, ...)
     local anchor, ref, x, y=GetAnchorArguments(frame, ...);
+    local insets=Frames.Insets(ref);
+    if insets.top > 0 and anchor:find("^top") then
+        y=y or 0;
+        y=y+insets.top;
+    end;
+    if insets.left > 0 and anchor:find("left$") then
+        x=x or 0;
+        x=x+insets.left;
+    end
+    if insets.right > 0 and anchor:find("right$") then
+        x=x or 0;
+        x=x+insets.right;
+    end;
+    if insets.bottom > 0 and anchor:find("^bottom") then
+        y=y or 0;
+        y=y+insets.bottom;
+    end;
     if x ~= nil then
         x=-x;
     end;
@@ -327,9 +344,4 @@ end;
 function Anchors.Center(frame, ref)
     anchor=anchor or "center";
     frame:SetPoint(anchor, ref, "center");
-end;
-
-function Anchors.Inset(frame, ref, inset)
-    Anchors.Share(frame, "topleft", ref, inset);
-    Anchors.Share(frame, "bottomright", ref, inset);
 end;

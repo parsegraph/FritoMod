@@ -120,6 +120,22 @@ Frames.Rect=Frames.Rectangle;
 Frames.Rectangular=Frames.Rectangle;
 Frames.Size=Frames.Rectangle;
 
+local INSETS_ZERO={
+    left=0,
+    top=0,
+    bottom=0,
+    right=0
+};
+function Frames.Insets(f)
+    if f.GetBackdrop then
+        local b=f:GetBackdrop();
+        if b then
+            return b.insets;
+        end;
+    end;
+    return INSETS_ZERO;
+end;
+
 -- Sets the alpha for a frame. 
 --
 -- You don't need to use this function: we have it here when we use
