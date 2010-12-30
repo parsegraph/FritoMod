@@ -11,23 +11,19 @@ do
         leftbutton="LeftButton",
         left=      "LeftButton",
         leftmouse= "LeftButton",
-        ["1"]=     "LeftButton",
         mouse1=    "LeftButton",
 
         rightbutton="RightButton",
         right=      "RightButton",
         rightmouse= "RightButton",
-        ["2"]=      "RightButton",
         mouse2=     "RightButton",
 
         middlebutton="MiddleButton",
         middle=      "MiddleButton",
         middlemouse= "MiddleButton",
-        ["3"]=       "MiddleButton",
         mouse3=      "MiddleButton",
 
         button4="Button4",
-        ["4"]=  "Button4",
         mouse4= "Button4",
         thumb=  "Button4",
         thumb1= "Button4",
@@ -35,7 +31,6 @@ do
         side=   "Button4",
 
         button5="Button5",
-        ["5"]=  "Button5",
         mouse5= "Button5",
         side2=  "Button5",
         thumb2= "Button5",
@@ -76,7 +71,7 @@ do
         f:RegisterForDrag();
         f:SetMovable(false);
     end;
-    function Frames.Draggable(f, ...)
+    function Frames.BlizzardDraggable(f, ...)
         local buttons={...};
         if #buttons==0 then
             buttons={"LeftButton", "RightButton"};
@@ -97,10 +92,34 @@ do
     end;
 end;
 
--- Allow dragging on a frame, similar to Frames.Draggable. The difference is that dragging
--- that occurs here is immediate - OnDragStart waits until a minimum threshold is exceeded,
--- meaning you need to "yank" a frame out of place to move it.
-function Frames.InstantDraggable(f, ...)
+local function AdjustPoint(f)
+    local possibilities={
+        { 0,                     0,                   "bottomleft" },
+        { UIParent:GetRight()/2, 0,                   "bottom" },
+        { UIParent:GetRight(),   0,                   "bottomright" },
+        { UIParent:GetRight(),   UIParent:GetTop()/2, "right" },
+        { UIParent:GetRight(),   UIParent:GetTop(),   "topright" },
+        { UIParent:GetRight()/2, UIParent:GetTop(),   "top" },
+        { 0,                     UIParent:GetTop(),   "topleft" },
+        { 0,                     UIParent:GetTop()/2, "left" },
+        { UIParent:GetRight()/2, UIParent:GetTop()/2, "center" },
+    };
+    local center={f:GetCenter()};
+    local bestDistance;
+    local best=Lists.Reduce(possibilities, nil, function(best, candidate)
+        local candidateDistance=Math.Distance(candidate, center);
+        if bestDistance==nil or candidateDistance < bestDistance then
+            bestDistance=candidateDistance;
+            return candidate;
+        else
+            return best;
+        end;
+    end);
+    f:ClearAllPoints();
+    f:SetPoint("center", UIParent, best[3], center[1]-best[1], center[2]-best[2]);
+end;
+
+function Frames.ThresholdDraggable(f, threshold, ...)
     local buttons={...};
     local conditional;
     if type(buttons[1])=="function" or type(buttons[1])=="table" then
@@ -121,9 +140,36 @@ function Frames.InstantDraggable(f, ...)
         if not conditional(button) then
             return;
         end;
-        local startX, startY=select(4, f:GetPoint(1));
-        return Callbacks.CursorOffset(function(x, y)
-            f:SetPoint("center", UIParent, "center", startX+x, startY+y);
+        local startX, startY=f:GetCenter();
+        local moving=false;
+        local r=Callbacks.CursorOffset(function(x, y)
+            if not moving and math.abs(x) > threshold or math.abs(y) > threshold then
+                moving=true;
+                f:ClearAllPoints();
+                f:SetParent(UIParent);
+            end;
+            if moving then
+                f:SetPoint("center", UIParent, "bottomleft", startX+x, startY+y);
+            end;
+        end);
+        return Functions.OnlyOnce(function()
+            if moving then
+                AdjustPoint(f);
+            end;
+            r();
         end);
     end);
+end;
+
+function Frames.InstantDraggable(f, ...)
+    return Frames.ThresholdDraggable(f, 0, ...);
+end;
+
+function Frames.Draggable(f, ...)
+    -- Type is dumb, so we have to include "or nil"
+    if type(select(1, ...) or nil)=="number" then
+        return Frames.ThresholdDraggable(f, ...);
+    else
+        return Frames.InstantDraggable(f, ...);
+    end;
 end;
