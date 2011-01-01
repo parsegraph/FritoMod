@@ -182,6 +182,9 @@ function Labs.FrameFinder()
 
     Slash.Register("ff", Frames.ToggleShow, f);
     Callbacks.ShowFrame(f, Timing.Every, .3, function()
+        if not IsAltKeyDown() then
+            return;
+        end;
         local focusedFrame = GetMouseFocus()
         if focusedFrame then
             finder:Set(focusedFrame);
