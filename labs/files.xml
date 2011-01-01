@@ -3,6 +3,7 @@
 <Script file="Chatpic-Pictures.lua"/>
 <Script file="Chatpic-Sets.lua"/>
 <Script file="FirstAid.lua"/>
+<Script file="FrameFinder.lua"/>
 <Script file="Merchant.lua"/>
 <Script file="Parameters.lua"/>
 <Script file="SpellCount.lua"/>
