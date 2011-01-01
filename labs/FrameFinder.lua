@@ -62,22 +62,18 @@ function PointFrame:Constructor(parent)
     self.container:SetHeight(40);
     parent=self.container;
     self.anchorText=Frames.Text(parent, "friz", 12);
-    self.anchorToText=Frames.Text(parent, "friz", 10);
     self.refText=Frames.Text(parent, "friz", 10);
 
     self.anchorText:SetJustifyH("left");
-    self.anchorToText:SetJustifyH("left");
     self.refText:SetJustifyH("left");
 
     Anchors.ShareTop(self.anchorText);
     Anchors.VFlipBottom(self.refText, self.anchorText);
-    Anchors.VFlipBottom(self.anchorToText, self.refText);
 end;
 
 function PointFrame:Set(frame, index)
     self.container:Hide();
     self.anchorText:Hide();
-    self.anchorToText:Hide();
     self.refText:Hide();
     if not frame then
         return;
@@ -88,12 +84,10 @@ function PointFrame:Set(frame, index)
     end;
     self.container:Show();
     self.anchorText:Show();
-    self.anchorText:SetText(anchor);
     if not anchorTo then
         anchorTo="("..anchor..")";
     end;
-    self.anchorToText:Show();
-    self.anchorToText:SetText(anchorTo);
+    self.anchorText:SetText(("%s : %s"):format(anchor, anchorTo));
     if not ref then
         ref=UIParent;
     end;
