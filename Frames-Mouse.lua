@@ -125,6 +125,40 @@ local function AdjustPoint(f)
     );
 end;
 
+function Frames.StartMovingFrame(f, startX, startY)
+    if f.dragging then
+        f.dragging=f.dragging+1;
+    else
+        f.dragging=1;
+        if not startX or not startY then
+            startX, startY=f:GetCenter();
+        end;
+        f:ClearAllPoints();
+        if f:GetParent() ~= UIParent then
+            -- Remove the local scale and re-add it once we've reparented. If we 
+            -- don't do this, startX and startY will use an out-of-date scale and
+            -- will cause the frame to "jump" once it's first moved.
+            startX=startX*f:GetEffectiveScale();
+            startY=startY*f:GetEffectiveScale();
+            f:SetParent(UIParent);
+            startX=startX/f:GetEffectiveScale();
+            startY=startY/f:GetEffectiveScale();
+        end;
+        f.dragBehavior=Callbacks.CursorOffset(f, function(x, y)
+            f:SetPoint("center", UIParent, "bottomleft", startX+x, startY+y);
+        end);
+    end;
+    return Functions.OnlyOnce(function()
+        f.dragging=f.dragging-1;
+        if f.dragging <= 0 then
+            f.dragBehavior();
+            AdjustPoint(f);
+            f.dragBehavior=nil;
+            f.dragging=nil;
+        end;
+    end);
+end;
+
 function Frames.ThresholdDraggable(f, threshold, ...)
     local buttons={...};
     local conditional;
@@ -142,37 +176,21 @@ function Frames.ThresholdDraggable(f, threshold, ...)
             return Lists.Contains(buttons, button, Strings.StartsWith);
         end;
     end;
+    local startX, startY=f:GetCenter();
     return Callbacks.MouseDown(f, function(button)
         if not conditional(button) then
             return;
         end;
-        local startX, startY=f:GetCenter();
-        local moving=false;
-        local r=Callbacks.CursorOffset(f, function(x, y)
-            if not moving and math.abs(x) > threshold or math.abs(y) > threshold then
-                moving=true;
-                f:ClearAllPoints();
-                if f:GetParent() ~= UIParent then
-                    -- Remove the local scale and re-add it once we've reparented. If we 
-                    -- don't do this, startX and startY will use an out-of-date scale and
-                    -- will cause the frame to "jump" once it's first moved.
-                    startX=startX*f:GetEffectiveScale();
-                    startY=startY*f:GetEffectiveScale();
-                    f:SetParent(UIParent);
-                    startX=startX/f:GetEffectiveScale();
-                    startY=startY/f:GetEffectiveScale();
-                end;
-            end;
-            if moving then
-                f:SetPoint("center", UIParent, "bottomleft", startX+x, startY+y);
+        local r;
+        r=Callbacks.CursorOffset(f, function(x, y)
+            if math.abs(x) > threshold or math.abs(y) > threshold then
+                r();
+                r=Frames.StartMovingFrame(f, startX, startY);
             end;
         end);
-        return Functions.OnlyOnce(function()
-            if moving then
-                AdjustPoint(f);
-            end;
+        return function()
             r();
-        end);
+        end;
     end);
 end;
 
