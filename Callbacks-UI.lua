@@ -118,7 +118,13 @@ function Callbacks.Click(f, func, ...)
     end);
 end;
 
-function Callbacks.CursorOffset(func, ...)
+-- Returns the cursor's distance from the time this function was invoked.
+--
+-- The specified frame's scale will be used to adjust the distance. If no frame
+-- is provided, UIParent is used. If you're using this function for frame
+-- movement, you should provide the frame that is being moved.
+function Callbacks.CursorOffset(frame, func, ...)
+    frame=frame or UIParent;
     func=Curry(func, ...);
     local origX, origY=GetCursorPosition();
     local lastX, lastY=origX, origY;
@@ -126,7 +132,10 @@ function Callbacks.CursorOffset(func, ...)
         local x, y=GetCursorPosition();
         if lastX~=x or lastY~=y then
             lastX, lastY=x,y;
-            func((x-origX)/UIParent:GetEffectiveScale(), (y-origY)/UIParent:GetEffectiveScale());
+            func(
+                (x-origX)/frame:GetEffectiveScale(),
+                (y-origY)/frame:GetEffectiveScale()
+            );
         end;
     end);
 end;

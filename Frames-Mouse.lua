@@ -93,30 +93,36 @@ do
 end;
 
 local function AdjustPoint(f)
-    local possibilities={
-        { 0,                     0,                   "bottomleft" },
-        { UIParent:GetRight()/2, 0,                   "bottom" },
-        { UIParent:GetRight(),   0,                   "bottomright" },
-        { UIParent:GetRight(),   UIParent:GetTop()/2, "right" },
-        { UIParent:GetRight(),   UIParent:GetTop(),   "topright" },
-        { UIParent:GetRight()/2, UIParent:GetTop(),   "top" },
-        { 0,                     UIParent:GetTop(),   "topleft" },
-        { 0,                     UIParent:GetTop()/2, "left" },
-        { UIParent:GetRight()/2, UIParent:GetTop()/2, "center" },
-    };
     local center={f:GetCenter()};
-    local bestDistance;
-    local best=Lists.Reduce(possibilities, nil, function(best, candidate)
+    -- Remove scale for our points so they can be accurately compared.
+    center[1]=  center[1]          *f:GetEffectiveScale();
+    center[2]=  center[2]          *f:GetEffectiveScale();
+    local right=UIParent:GetRight()*UIParent:GetEffectiveScale();
+    local top=  UIParent:GetTop()  *UIParent:GetEffectiveScale();
+    local possibilities={
+        { 0,       0,     "bottomleft" },
+        { right/2, 0,     "bottom" },
+        { right,   0,     "bottomright" },
+        { right,   top/2, "right" },
+        { right,   top,   "topright" },
+        { right/2, top,   "top" },
+        { 0,       top,   "topleft" },
+        { 0,       top/2, "left" },
+        { right/2, top/2, "center" },
+    };
+    local best, bestDistance;
+    for _, candidate in ipairs(possibilities) do
         local candidateDistance=Math.Distance(candidate, center);
         if bestDistance==nil or candidateDistance < bestDistance then
             bestDistance=candidateDistance;
-            return candidate;
-        else
-            return best;
+            best=candidate;
         end;
-    end);
+    end;
     f:ClearAllPoints();
-    f:SetPoint("center", UIParent, best[3], center[1]-best[1], center[2]-best[2]);
+    f:SetPoint("center", UIParent, best[3], 
+        (center[1]-best[1])/f:GetEffectiveScale(), 
+        (center[2]-best[2])/f:GetEffectiveScale()
+    );
 end;
 
 function Frames.ThresholdDraggable(f, threshold, ...)
@@ -142,11 +148,20 @@ function Frames.ThresholdDraggable(f, threshold, ...)
         end;
         local startX, startY=f:GetCenter();
         local moving=false;
-        local r=Callbacks.CursorOffset(function(x, y)
+        local r=Callbacks.CursorOffset(f, function(x, y)
             if not moving and math.abs(x) > threshold or math.abs(y) > threshold then
                 moving=true;
                 f:ClearAllPoints();
-                f:SetParent(UIParent);
+                if f:GetParent() ~= UIParent then
+                    -- Remove the local scale and re-add it once we've reparented. If we 
+                    -- don't do this, startX and startY will use an out-of-date scale and
+                    -- will cause the frame to "jump" once it's first moved.
+                    startX=startX*f:GetEffectiveScale();
+                    startY=startY*f:GetEffectiveScale();
+                    f:SetParent(UIParent);
+                    startX=startX/f:GetEffectiveScale();
+                    startY=startY/f:GetEffectiveScale();
+                end;
             end;
             if moving then
                 f:SetPoint("center", UIParent, "bottomleft", startX+x, startY+y);
