@@ -97,6 +97,25 @@ function Suite:TestVisibleFieldsCombinedWithFilteredIterator()
     counter.Assert(2);
 end;
 
+function Suite:TestConsumeEatsAValueIterator()
+    local a;
+    local function Feeder()
+        return table.remove(a,1);
+    end;
+    a={5,6,7};
+    Assert.Equals({5,6,7}, Iterators.Consume(Feeder));
+end;
+
+function Suite:TestConsumeEatsAPairIterator()
+    a={11,22,33};
+    local function PairFeeder()
+        if #a > 0 then
+            return #a, table.remove(a, 1);
+        end;
+    end;
+    Assert.Equals({11,22,33}, Iterators.Consume(PairFeeder));
+end;
+
 function Suite:TestCounter()
     Assert.Equals({1,2,3}, Iterators.Consume(Iterators.Counter(1,3)));
     Assert.Equals({3,2,1}, Iterators.Consume(Iterators.Counter(3,1)));

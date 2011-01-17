@@ -171,8 +171,11 @@ end;
 function Iterators.Consume(iterator, ...)
     iterator = Curry(iterator, ...);
     local items = {};
-    for value in iterator do
-        table.insert(items, value);
+    for k, v in iterator do
+        if v == nil then
+            v=k;
+        end;
+        table.insert(items, v);
     end;
     return items;
 end;
