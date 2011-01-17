@@ -227,16 +227,5 @@ function Mixins.TableTests(Suite, library)
         end));
     end;
 
-    function Suite:TestSliceIsAUsefulFilter()
-        local t=Suite:Table({
-            a=true,
-            b=true,
-            c=true,
-            d=true
-        });
-        local s=library.Slice(t,"b","c");
-        library.AssertEquals({b=true,c=true},s);
-    end;
-
     return Suite;
 end;
