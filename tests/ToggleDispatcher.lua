@@ -28,11 +28,9 @@ end;
 
 function Suite:TestInstallingDispatcher()
     local dispatcher=ToggleDispatcher:New();
-    local v=Tests.Value();
-    dispatcher.Install=Functions.Undoable(
-        Curry(v.Set, true),
-        Curry(v.Set, false)
-    );
+    local v=Tests.Value(false);
+    dispatcher:AddInstaller(v.Change, true);
+    v.Assert(false);
     local r=dispatcher:Add(Noop);
     v.Assert(true);
     r();

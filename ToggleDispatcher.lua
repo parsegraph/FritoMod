@@ -14,14 +14,28 @@ function ToggleDispatcher:Constructor()
     self.resetters={};
 end;
 
+function ToggleDispatcher:AddInstaller(func, ...)
+    self.installers=self.installers or {};
+    return Lists.Insert(self.installers, Curry(func, ...));
+end;
+
 function ToggleDispatcher:Install()
-    -- noop. Feel free to override this Undoable function.
+    if self.installers then
+        self.uninstallers=Lists.MapCall(self.installers, self);
+    end;
+end;
+
+function ToggleDispatcher:Uninstall()
+    if self.uninstallers then
+        Lists.CallEach(self.uninstallers, self);
+        self.uninstallers=nil;
+    end;
 end;
 
 function ToggleDispatcher:Add(listener, ...)
     listener=Curry(listener, ...);
-    if self.Install and #self.listeners - #self.deadListeners <= 0 then
-        self.Uninstall=self:Install() or self.Uninstall;
+    if #self.listeners - #self.deadListeners <= 0 then
+        self:Install();
     end;
     table.insert(self.listeners, listener);
     return Functions.OnlyOnce(function()
