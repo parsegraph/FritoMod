@@ -712,6 +712,12 @@ function Mixins.Iteration(library)
             end);
         end;
     end;
+    if nil == rawget(library, "Sub") then
+        library.Sub = CurryNamedFunction(library, "Slice");
+    end;
+    if nil == rawget(library, "Snippet") then
+        library.Snippet = CurryNamedFunction(library, "Slice");
+    end;
 
     if library.DefaultReduce == nil then
         -- A default reduce function that tries to do the right thing for various types.
