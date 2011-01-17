@@ -97,3 +97,21 @@ end;
 function StackTrace:Tail(count)
     return StackTrace:New(Lists.Tail(self:GetStack(), count));
 end;
+
+local filters={};
+
+function StackTrace:Filtered()
+    return StackTrace:New(Lists.FilterValues(self:GetStack(), function(level)
+        for _, filter in ipairs(filters) do
+            if filter(level)==false then
+                return false;
+            end;
+        end;
+        return true;
+    end));
+end;
+
+Tests=Tests or {};
+function Tests.AddStackFilter(func, ...)
+    return Lists.Insert(filters, Curry(func, ...));
+end;

@@ -24,6 +24,7 @@
 <Script file="ReflectiveTestSuite.lua"/>
 <Script file="Serializers-Data.lua"/>
 <Script file="Serializers-StringChunks.lua"/>
+<Script file="StackTrace.lua"/>
 <Script file="Strings-Split.lua"/>
 <Script file="Strings-Transform.lua"/>
 <Script file="Strings.lua"/>
