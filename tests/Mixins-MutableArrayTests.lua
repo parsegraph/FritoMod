@@ -132,5 +132,13 @@ function Mixins.MutableArrayTests(Suite, library)
         library.AssertEqual(Suite:Array(1,2), a);
     end;
 
+    function Suite:TestChange()
+        local a=Suite:Array(42);
+        local r=library.Change(a, 1, 99);
+        Assert.Equals(Suite:Array(99), a);
+        r();
+        Assert.Equals(Suite:Array(42), a);
+    end;
+
 	return Suite;
 end;

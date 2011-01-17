@@ -16,6 +16,14 @@ function Mixins.MutableTableTests(Suite, library)
 		Assert.Equals(3, library.Get(t, "a"));
 	end;
 
+    function Suite:TestChange()
+        local t=Suite:Table({a=42});
+        local r=library.Change(t, "a", 99);
+        Assert.Equals(Suite:Table({a=99}), t);
+        r();
+        Assert.Equals(Suite:Table({a=42}), t);
+    end;
+
     function Suite:TestDelete()
         local iterable = Suite:Table({
 			a=2,

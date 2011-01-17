@@ -75,6 +75,17 @@ function Mixins.MutableIteration(library, iteratorFunc)
         end;
     end;
 
+    -- An undoable Set
+    if library.Change == nil then
+        function library.Change(iterable, key, value)
+            local oldValue=library.Get(iterable, key);
+            library.Set(iterable, key, value);
+            return Functions.OnlyOnce(function()
+                library.Set(iterable, key, oldValue);
+            end);
+        end;
+    end;
+
     if library.Delete == nil then
         -- Deletes the specified key from the specified iterable.
         --
