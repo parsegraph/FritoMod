@@ -15,6 +15,7 @@
 <Script file="Assert.lua"/>
 <Script file="OOP-Class.lua"/>
 <Script file="Objects.lua"/>
+<Script file="StackTrace.lua"/>
 <Script file="Tests.lua"/>
 <Script file="TestSuite.lua"/>
 <Script file="MappedTestSuite.lua"/>

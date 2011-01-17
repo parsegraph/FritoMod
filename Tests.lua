@@ -4,6 +4,7 @@ if nil ~= require then
     require "Functions";
     require "Objects";
     require "Lists";
+    require "StackTrace";
 end;
 
 Tests = {};
@@ -30,35 +31,16 @@ do
 	);
 end;
 
--- Returns the full stack trace, or up to MAX_STACK_TRACE levels of stack trace information. Each
--- stack level is represented by a table containing information provided by debug.getinfo.
---
--- returns
---     a list of stack levels. Stack levels are in the format specified by debug.getinfo
--- throws
---     if debug.getinfo is not available
-local MAX_STACK_TRACE = 999;
 function Tests.FullStackTrace()
-    assert(debug, "FullStackTrace is not available without debug");
-    local stackTrace = {};
-	for i=1, MAX_STACK_TRACE do
-        local stackLevel = debug.getinfo(i);
-        if not stackLevel then
-            break;
-        end;
-        if nil == stackLevel.name then
-            stackLevel.name = ("<%s:%d>"):format(stackLevel.short_src, stackLevel.linedefined);
-            stackLevel.namewhat = "function";
-        end;
-        table.insert(stackTrace, stackLevel);
-    end;
-    return stackTrace;
+    return StackTrace:New():GetStack();
 end;
 
 -- Returns a partial stack trace. It returns the head of the stack, and the tail
 -- of the stack. The amount of stack levels contained by either element is determined
--- by numHead and numTail. You may also skip some of the head elements, since these
--- are typically associated with debugging output and not relevance to the stack trace.
+-- by numHead and numTail. 
+--
+-- Head elements are the most recent function invoked. As a result, you may also skip some of them,
+-- since these are typically associated with debugging output and not relevance to the stack trace.
 --
 -- The returned stacks will never overlap; if skip + numHead + numTail > the number of stacks, then
 -- the head stack will contain the overlapping stacks. Otherwise, the middle stack levels are
