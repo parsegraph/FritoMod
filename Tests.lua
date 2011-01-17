@@ -7,7 +7,7 @@ if nil ~= require then
     require "StackTrace";
 end;
 
-Tests = {};
+Tests = Tests or {};
 local Tests = Tests;
 
 do
