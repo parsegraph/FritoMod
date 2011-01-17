@@ -127,7 +127,7 @@ function Tests.FormatStackLevel(stackLevel)
         stackLevel.source = stackLevel.source:sub(2);
     else
         stackLevel.source = stackLevel.source:gsub("\n.*", "");
-        stackLevel.source = ("[string %s]"):format(stackLevel.source);
+        stackLevel.source = ('[string "%s"]'):format(stackLevel.source);
     end
     local name = stackLevel.name;
     if name == nil then
