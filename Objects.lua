@@ -52,6 +52,10 @@ function Objects.Value(value)
             return oldValue; 
         end,
 
+        Change = function(newValue)
+            return Functions.OnlyOnce(holder.Set, holder.Set(newValue));
+        end,
+
         -- Asserts the current value is equal to the expectedValue, as determined by
         -- Assert.Equals.
         --

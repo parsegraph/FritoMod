@@ -20,6 +20,13 @@ function Suite:TestValueAllowsMethodCalls()
     Assert.Equals(true, value:Get(), "Value allows method-style calls");
 end;
 
+function Suite:TestValueSupportsChange()
+    local value = Objects.Value(42);
+    local r=value:Change(true);
+    r();
+    value.Assert(42);
+end;
+
 function Suite:TestToggleManagesAValue()
     local t=Objects.Toggle();
     Assert.False(t:IsOn());
