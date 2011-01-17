@@ -201,6 +201,16 @@ function Mixins.ArrayTests(Suite, library)
         library.AssertEquals(Suite:Array("b","c"), library.Slice(a, 2, 3));
     end;
 
+    function Suite:TestHead()
+        library.AssertEquals(Suite:Array("a","b"), library.Head(Suite:Array("a","b","c","d"), 2));
+        library.AssertEquals(Suite:Array("b","c","d"), library.Head(Suite:Array("a","b","c","d"), -1));
+    end;
+
+    function Suite:TestTail()
+        library.AssertEquals(Suite:Array("c","d"), library.Tail(Suite:Array("a","b","c","d"), 2));
+        library.AssertEquals(Suite:Array("a","b","c"), library.Tail(Suite:Array("a","b","c","d"), -1));
+    end;
+
     function Suite:TestReduce()
         Assert.Equals(3, library.Reduce(Suite:Array(1,1,1), 0, Operator.Add));
     end;

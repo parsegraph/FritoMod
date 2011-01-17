@@ -38,6 +38,10 @@ function Iterators.Iterator(iterator)
     end
 end;
 
+function Iterators.Tail(iterable, ...)
+    return Lists.Tail(Iterators.Consume(iterable), ...);
+end;
+
 function Iterators.Iterate(value, ...)
     assert(value, "value is falsy");
     if IsCallable(value) then

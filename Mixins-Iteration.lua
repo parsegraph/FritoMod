@@ -167,37 +167,38 @@ function Mixins.Iteration(library)
         -- This optional function must be explicitly implemented by clients.
     end;
 
-    if library.Snippet == nil then
-        -- Snippet gets a sublist or subvalue from the given iterable.
-        --
-        -- This version doesn't do comparisions, only equality, so your anchors
-        -- must be exact. I might write one that works via comparisons, but I
-        -- haven't yet needed to.
-        --
-        -- This works similar to string's sub function, though negative index
-        -- support is optional.
-        function library.Snippet(iterable, first, last, testFunc, ...)
-            testFunc=library.NewEqualsTest(testFunc, ...);
-            if last==nil then
-                last=first;
-                first=nil;
+    if nil == rawget(library, "Head") then
+        function library.Head(iterable, count)
+            if count >= 0 then
+                local i=0;
+                return library.FilterPairs(iterable, function()
+                    i=i+1;
+                    return i <= count;
+                end);
+            else
+                local i=0;
+                count=-count;
+                return library.FilterPairs(iterable, function()
+                    i=i+1;
+                    return i > count;
+                end);
             end;
-            local pastFirst=first==nil;
-            local pastLast=false;
-            return library.FilterPairs(iterable, function(k, v)
-                if pastLast then
-                    -- We're dead, always return false.
-                    return false;
-                end;
-                if not pastFirst and testFunc(k, first) then
-                    pastFirst=true;
-                end;
-                if not pastFirst then
-                    return false;
-                end;
-                pastLast=testFunc(k, last);
-                return true;
-            end);
+        end;
+    end;
+
+    if nil == rawget(library, "Tail") then
+        function library.Tail(iterable, count)
+            local length=library.Size(iterable);
+            if count >= 0 then
+                local i=0;
+                return library.FilterPairs(iterable, function()
+                    i=i+1;
+                    return i > length - count;
+                end);
+            else
+                -- We add here because count is already negative.
+                return library.Head(iterable, length+count);
+            end;
         end;
     end;
 
@@ -686,14 +687,28 @@ function Mixins.Iteration(library)
         --     the comparator that is called for every value to compare with the indices.
         function library.Slice(iterable, first, last, compareFunc, ...)
             compareFunc=library.NewComparator(compareFunc, ...);
-            return library.FilterKeys(iterable, function(k)
-                if first ~= nil and compareFunc(k, first) < 0 then
+            local pastFirst=false;
+            local pastLast=false;
+            if last==nil then
+                -- If last isn't given, then we go from the start to last.
+                last=first;
+                first=nil;
+            end;
+            if first==nil then
+                pastLast=true;
+            end;
+            return library.FilterPairs(iterable, function(k)
+                if pastLast then
+                    -- We're dead, always return false.
                     return false;
                 end;
-                if last ~= nil and compareFunc(k, last) > 0 then
-                    return false;
+                if not pastFirst and compareFunc(k, first) >= 0 then
+                    pastFirst=true;
                 end;
-                return true;
+                if pastFirst and compareFunc(k, last) > 0 then
+                    pastLast=true;
+                end;
+                return pastFirst and not pastLast;
             end);
         end;
     end;
