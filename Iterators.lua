@@ -181,6 +181,18 @@ function Iterators.Consume(iterator, ...)
     return items;
 end;
 
+function Iterators.TableCounter(...)
+    local counter=Iterators.Counter(...);
+    local i=0;
+    return function()
+        local v=counter()
+        if v ~= nil then
+            i=i+1;
+            return i,v;
+        end;
+    end;
+end;
+
 function Iterators.Counter(startValue, endValue, step)
     if endValue == nil and step == nil then
         -- Intentionally make endValue the current startValue.
