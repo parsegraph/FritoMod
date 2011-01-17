@@ -15,6 +15,10 @@ local Iterators = Iterators;
 Mixins.Iteration(Iterators);
 Metatables.Defensive(Iterators);
 
+function Iterators.Bias()
+    return "array";
+end;
+
 -- Iterate over a function, repeatedly calling it until it returns nil. The iterator does not need to return
 -- keys; they will be provided automatically.
 function Iterators.Iterator(iterator)
