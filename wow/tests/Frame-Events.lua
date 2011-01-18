@@ -5,9 +5,6 @@ function Suite:TestSetScript()
 	local frame=CreateFrame("Frame");
 	frame:SetScript("OnEvent", flag.Raise);
     frame:FireEvent("OnEvent");
-    flag.AssertUnset();
-    frame:RegisterEvent("OnEvent");
-    frame:FireEvent("OnEvent");
     flag.Assert();
     flag.Reset();
     frame:SetScript("OnEvent", nil);

@@ -23,19 +23,11 @@ function Frame:GetHandlers(event)
     local handlers=self.eventHandlers[event];
     if not handlers then
         handlers={
-            registered=false,
             hooks={}
         };
         self.eventHandlers[event]=handlers;
     end;
     return handlers;
-end;
-
-function Frame:RegisterEvent(event)
-    local handlers=self:GetHandlers(event);
-    if handlers then
-        handlers.registered=true;
-    end;
 end;
 
 function Frame:GetScript(event)
@@ -59,18 +51,25 @@ function Frame:HookScript(event, handler)
     end;
 end;
 
+function Frame:FireEvent(event, ...)
+    local handlers=self:GetHandlers(event);
+    if handlers then
+        if handlers.handler then
+            handlers.handler(self, event, ...);
+        end;
+        Lists.CallEach(handlers.hooks, self, event, ...);
+    end;
+end;
+
 function Frame:IsEventRegistered(event)
     local handlers=self:GetHandlers(event);
     return handlers and handlers.registered;
 end;
 
-function Frame:FireEvent(event, ...)
+function Frame:RegisterEvent(event)
     local handlers=self:GetHandlers(event);
-    if handlers and handlers.registered then
-        if handlers.handler then
-            handlers.handler(self, event, ...);
-        end;
-        Lists.CallEach(handlers.hooks, self, event, ...);
+    if handlers then
+        handlers.registered=true;
     end;
 end;
 
