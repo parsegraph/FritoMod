@@ -1,14 +1,9 @@
 local Suite=UnitTest("StackTrace");
+if nil ~= require then
+    require "Operator";
+end;
 
 function Suite:TestFilter()
     local stack=StackTrace:New();
-    local f=Tests.Flag();
-    local r=Tests.AddStackFilter(function(level)
-        f.Raise();
-        return false;
-    end);
-    Assert.Equals(0, #stack:Filtered():GetStack());
-    f.Assert();
-    r();
-    Assert.Equals(#stack:GetStack(), #stack:Filtered():GetStack());
+    Assert.Equals(0, #stack:Filter(Operator.False));
 end;
