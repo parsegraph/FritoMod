@@ -18,9 +18,10 @@ update_simple_files() {
     get_file_list $1 | grep -e "^$1" | format_files >"$1/files.xml"
 }
 
-get_file_list . | format_files >files.xml
-update_simple_files tests
-update_simple_files labs
-
-get_file_list wow | format_files >wow/files.xml
-update_simple_files wow/tests
+case $* in 
+    wow_tests) update_simple_files wow/tests ;;
+    wow) get_file_list wow | format_files >wow/files.xml ;;
+    labs) update_simple_files labs ;;
+    tests) update_simple_files tests ;;
+    *) get_file_list . | format_files >files.xml ;;
+esac
