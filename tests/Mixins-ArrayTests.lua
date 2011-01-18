@@ -196,6 +196,18 @@ function Mixins.ArrayTests(Suite, library)
         end));
     end;
 
+    function Suite:TestFilterWithOperator()
+        Assert.Equals({3}, Lists.Filter({1,2,3}, Operator.GreaterThan, 2));
+    end;
+
+    function Suite:TestFilterWithMultipleFilters()
+        local a=Suite:Array(1,2,3,4,5);
+        library.AssertEquals(Suite:Array(3,5), library.FilterValues(a, { 
+            function(v) return v % 2 == 1 end,
+            Curry(Operator.GreaterThan, 2)
+        }));
+    end;
+
     function Suite:TestSliceReturnsAPortionOfTheOriginal() 
         local a=Suite:Array("a","b","c","d");
         library.AssertEquals(Suite:Array("b","c"), library.Slice(a, 2, 3));
