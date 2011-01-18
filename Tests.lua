@@ -236,14 +236,14 @@ function Tests.Flag(isSet)
     -- Aliases
     flag.Unset = flag.Clear;
     flag.Lower = flag.Clear;
+    flag.Reset = flag.Clear;
 
-    flag.Assert = flag.AssertSet;
-    flag.AssertTrue = flag.AssertSet;
+    flag.Assert =       flag.AssertSet;
+    flag.AssertTrue =   flag.AssertSet;
     flag.AssertRaised = flag.AssertSet;
 
-    flag.AssertFalse = flag.AssertUnset;
+    flag.AssertFalse =   flag.AssertUnset;
     flag.AssertUnraised= flag.AssertUnset;
-
 
     return flag;
 end
@@ -286,6 +286,8 @@ function Tests.Counter(count)
 	counter.Tick=counter.Hit;
 	counter.Count=counter.Hit;
     counter.Assert = counter.AssertEquals;
+
     getmetatable(counter).__call=counter.Hit;
+
     return counter;
 end;
