@@ -9,7 +9,7 @@ format_files() {
     echo '<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">'
     while read f; do
         f=`basename $f | sed -e 's#/#\\\\#g'`
-        echo '<Script file="'$f'"/>'
+        echo '    <Script file="'$f'"/>'
     done;
     echo "</Ui>"
 }
@@ -19,9 +19,9 @@ update_simple_files() {
 }
 
 case $* in 
-    wow_tests) update_simple_files wow/tests ;;
-    wow) get_file_list wow | format_files >wow/files.xml ;;
-    labs) update_simple_files labs ;;
-    tests) update_simple_files tests ;;
+    wow/tests/*) update_simple_files wow/tests ;;
+    wow/*) get_file_list wow | format_files >wow/files.xml ;;
+    labs/*) update_simple_files labs ;;
+    tests/*) update_simple_files tests ;;
     *) get_file_list . | format_files >files.xml ;;
 esac

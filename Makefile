@@ -5,17 +5,21 @@ test:
 	find tests wow/tests wow/api/tests -name '*.lua' -print0 | xargs -0 ./run-test
 .PHONY: test
 
+clean:
+	rm -f files.xml tests/files.xml wow/files.xml wow/tests/files.xml labs/files.xml
+.PHONY: clean
+
 files.xml: *.lua
-	./update
+	./update $@
 
 tests/files.xml: tests/*.lua
-	./update tests
+	./update $@
 
 wow/files.xml: wow/*.lua
-	./update wow
+	./update $@
 
 wow/tests/files.xml: wow/*.lua
-	./update wow_tests
+	./update $@
 
 labs/files.xml: labs/*.lua
-	./update labs
+	./update $@

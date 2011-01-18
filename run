@@ -1,4 +1,0 @@
-#!/bin/bash
-PATH=/bin:/usr/bin
-./update
-find tests wow/tests wow/api/tests -name '*.lua' -print0 | xargs -0 ./run-test
