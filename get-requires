@@ -53,7 +53,9 @@ local function RunFile(file)
 end;
 
 for i=1, #arg do
+    arg[i]=arg[i]:gsub("^\./", "");
 	RunFile(arg[i]);
+    arg[arg[i]]=true;
 end;
 
 local processed={};
@@ -99,6 +101,10 @@ for i=1, #processed do
     end;
 end;
 for i=1, #processed do
-    print(processed[i]);
+    if arg[processed[i]] then
+        print(processed[i]);
+    else
+        print("! "..processed[i]);
+    end;
 end;
 

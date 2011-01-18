@@ -2,20 +2,25 @@
 PATH=/bin:/usr/bin
 
 get_file_list() {
-    find * -name "*.lua" ! -name 'run-*' -print0 | xargs -0 ./get-requires | grep -v -e'^#';
+    find $* -maxdepth 1 -name "*.lua" ! -executable -print0 | xargs -0 ./get-requires | grep -v -e'^[#!]';
 }
 
-update_files() {
+format_files() {
     echo '<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">'
-    for f in `get_file_list | grep $*`; do
+    while read f; do
         f=`basename $f | sed -e 's#/#\\\\#g'`
         echo '<Script file="'$f'"/>'
     done;
     echo "</Ui>"
 }
 
-update_files -v -e'^labs' -e'^libs' -e'^wow' -e'^tests' >files.xml
-update_files -e'^tests' >tests/files.xml
-update_files -e'^labs' >labs/files.xml
-update_files -e'^wow' >labs/files.xml
-update_files -e'^wow/tests' >labs/files.xml
+update_simple_files() {
+    get_file_list $1 | grep -e "^$1" | format_files >"$1/files.xml"
+}
+
+get_file_list . | format_files >files.xml
+update_simple_files tests
+update_simple_files labs
+
+get_file_list wow | format_files >wow/files.xml
+update_simple_files wow/tests
