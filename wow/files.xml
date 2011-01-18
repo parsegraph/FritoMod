@@ -2,11 +2,11 @@
 <Script file="Cursor.lua"/>
 <Script file="World.lua"/>
 <Script file="Frame.lua"/>
-<Script file="Frame-Layout.lua"/>
-<Script file="Frame-Events.lua"/>
 <Script file="Button.lua"/>
 <Script file="FontString.lua"/>
 <Script file="Frame-Animation.lua"/>
+<Script file="Frame-Events.lua"/>
+<Script file="Frame-Layout.lua"/>
 <Script file="Unit.lua"/>
 <Script file="UnitManager.lua"/>
 <Script file="Units.lua"/>
