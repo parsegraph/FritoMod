@@ -34,9 +34,18 @@ function Cursor:Enter(frame)
     return Functions.OnlyOnce(self, "Leave", frame);
 end;
 
+function Cursor:Down(frame)
+    self:AssertWorld(frame);
+    self:Enter(frame);
+    self.hoveredFrame:FireEvent("OnMouseDown");
+    return Functions.OnlyOnce(function()
+        self.hoveredFrame:FireEvent("OnMouseUp");
+    end);
+end;
+
 function Cursor:Click(frame)
     self:AssertWorld(frame);
-    self:Hover(frame);
+    self:Enter(frame);
     self.hoveredFrame:FireEvent("OnClick");
 end;
 
