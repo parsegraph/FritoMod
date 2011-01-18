@@ -61,6 +61,10 @@ function Frame:FireEvent(event, ...)
     end;
 end;
 
+function Frame:EnableMouse(enabled)
+    -- XXX What does this function do in-game?
+end;
+
 function Frame:IsEventRegistered(event)
     local handlers=self:GetHandlers(event);
     return handlers and handlers.registered;
