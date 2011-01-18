@@ -199,6 +199,7 @@ function Tests.Flag(isSet)
         -- Raises the flag.
         Raise = function()
             isSet = true;
+            return Functions.OnlyOnce(flag.Lower);
         end,
 
         -- Returns whether the flag is raised.
@@ -228,8 +229,8 @@ function Tests.Flag(isSet)
         -- assertion:string
         --     specifies why the flag should not be raised or describes the significance of the 
         --     unraised flag
-        AssertUnset = function(...)
-            assert(not flag.IsSet(), ...);
+        AssertUnset = function(assertion)
+            assert(not flag.IsSet(), assertion or "Flag must be unset");
         end
     });
 
@@ -244,6 +245,8 @@ function Tests.Flag(isSet)
 
     flag.AssertFalse =   flag.AssertUnset;
     flag.AssertUnraised= flag.AssertUnset;
+
+    getmetatable(flag).__call=flag.Raise;
 
     return flag;
 end
