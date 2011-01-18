@@ -1,4 +1,6 @@
-all: test files.xml tests/files.xml wow/files.xml wow/tests/files.xml labs/files.xml
+manifests=files.xml tests/files.xml wow/files.xml wow/tests/files.xml labs/files.xml libs/files.xml
+
+all: test $(manifests)
 .PHONY: all
 
 test:
@@ -6,20 +8,15 @@ test:
 .PHONY: test
 
 clean:
-	rm -f files.xml tests/files.xml wow/files.xml wow/tests/files.xml labs/files.xml
+	rm -f $(manifests)
 .PHONY: clean
 
+$(manifests):
+	./update $@
+
 files.xml: *.lua
-	./update $@
-
 tests/files.xml: tests/*.lua
-	./update $@
-
 wow/files.xml: wow/*.lua
-	./update $@
-
 wow/tests/files.xml: wow/*.lua
-	./update $@
-
 labs/files.xml: labs/*.lua
-	./update $@
+libs/files.xml: libs/*.lua
