@@ -155,7 +155,7 @@ end;
 
 local function KeyListener(event)
     local frameEvent="_"..event;
-    Callbacks[event]=function(f, func, ...)
+    return function(f, func, ...)
         func=Curry(func, ...);
         if not f[frameEvent] then
             local listeners={};
@@ -173,6 +173,6 @@ local function KeyListener(event)
     end;
 end;
 
-KeyListener("Char");
-KeyListener("KeyUp");
-KeyListener("KeyDown");
+Callbacks.Char=KeyListener("Char");
+Callbacks.KeyUp=KeyListener("KeyUp");
+Callbacks.KeyDown=KeyListener("KeyDown");
