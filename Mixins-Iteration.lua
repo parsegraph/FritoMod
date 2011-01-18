@@ -662,7 +662,7 @@ function Mixins.Iteration(library)
     end);
 
     if library.Filter == nil then
-        library.Filter = CurryNamedFunction(library, "FilterValue");
+        library.Filter = CurryNamedFunction(library, "FilterValues");
     end;
 
     if library.Slice == nil then
