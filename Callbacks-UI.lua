@@ -15,48 +15,41 @@ end;
 
 Callbacks=Callbacks or {};
 
--- This helper function provides the backbone of our event listeners. It uses a
--- ToggleDispatcher to handle event dispatching whenver the onEvent or offEvent are
--- called.
-local function ToggledEvent(onEvent, offEvent, installer)
-    local uninstaller;
-    local eventListenerName=onEvent.."Listeners";
-    return function(frame, func, ...)
+-- Calls the specified callback whenever a click begins on a frame.
+local function ToggledEvent(event, setUp, ...)
+    setUp=Curry(setUp, ...);
+    local eventListenerName=event.."Listeners";
+    Callbacks[event]=function(frame, func, ...)
         func=Curry(func, ...);
-        if frame:GetScript(onEvent) then
-            assert(frame[eventListenerName],
-            "Callbacks refuses to overwrite an existing "..onEvent.." listener");
-        end;
         local dispatcher;
         if frame[eventListenerName] then
             dispatcher=frame[eventListenerName];
         else
             dispatcher=ToggleDispatcher:New();
-            function dispatcher:Install()
-                frame:SetScript(onEvent, function(_, ...)
-                    dispatcher:Fire(...);
-                end);
-                frame:SetScript(offEvent, function(_, ...)
-                    dispatcher:Reset(...);
-                end);
-                frame[eventListenerName]=dispatcher;
-                if installer then
-                    uninstaller=installer(frame);
-                end;
-            end;
-            function dispatcher:Uninstall()
-                if uninstaller then
-                    uninstaller();
-                    uninstaller=nil
-                end;
-                frame:SetScript(onEvent, nil);
-                frame:SetScript(offEvent, nil);
-                frame[eventListenerName]=nil;
-            end;
+            dispatcher:AddInstaller(Tables.Change, frame, eventListenerName, dispatcher);
+            setUp(dispatcher, frame);
         end;
         return dispatcher:Add(func);
     end;
+    return Callbacks[event];
 end;
+
+local function BasicEvent(onEvent, offEvent, dispatcher, frame)
+    dispatcher:AddInstaller(function()
+        assert(not frame:GetScript(onEvent), "Refusing to overwrite the existing script handler");
+        assert(not frame:GetScript(offEvent), "Refusing to overwrite the existing script handler");
+    end);
+    dispatcher:AddInstaller(Callbacks.Script, frame, onEvent, dispatcher, "Fire");
+    dispatcher:AddInstaller(Callbacks.Script, frame, offEvent, dispatcher, "Reset");
+end;
+
+-- Calls the specified callback whenever the mouse enters and leaves the specified frame.
+ToggledEvent("EnterFrame", BasicEvent, "OnEnter", "OnLeave");
+Callbacks.MouseEnter=Callbacks.EnterFrame;
+Callbacks.FrameEnter=Callbacks.EnterFrame;
+
+-- Calls the specified callback whenever the specified frame is shown.
+ToggledEvent("ShowFrame", BasicEvent, "OnShow", "OnHide");
 
 -- A helper function that ensures we only enable the mouse on a frame when
 -- necessary. This coordination is necessary since different callbacks all 
@@ -76,20 +69,46 @@ end;
 -- Calls the specified callback whenever dragging starts. You'll
 -- need to manually call Frame:RegisterForDrag along with this method in order to 
 -- receive drag events. Frames.Draggable helps with this.
-Callbacks.DragFrame=ToggledEvent("OnDragStart", "OnDragStop", enableMouse);
+ToggledEvent("DragFrame", function(dispatcher, frame)
+    BasicEvent("OnDragStart", "OnDragStop", dispatcher, frame);
+    dispatcher:AddInstaller(enableMouse, frame);
+end);
 
--- Calls the specified callback whenever a click begins on a frame.
-Callbacks.MouseDown=ToggledEvent("OnMouseDown", "OnMouseUp", enableMouse);
+ToggledEvent("MouseDown", function(dispatcher, frame)
+    local onEvent, offEvent="OnMouseDown", "OnMouseUp";
+    dispatcher:AddInstaller(function()
+        assert(not frame:GetScript(onEvent), "Refusing to overwrite the existing script handler");
+        assert(not frame:GetScript(offEvent), "Refusing to overwrite the existing script handler");
+    end);
+    dispatcher:AddInstaller(enableMouse, frame);
+    local remover;
+    local function Destroy()
+        remover();
+        dispatcher:Reset(observed);
+        observed=nil;
+    end;
+    dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseDown", function(button)
+        observed=button;
+        dispatcher:Fire(button);
+        remover=Timing.OnUpdate(function()
+            if observed ~= nil and not IsMouseButtonDown(observed) then
+                print("Observed undetected mouseup!");
+                Destroy();
+            end;
+        end);
+    end);
+    dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseUp", Destroy);
+end);
 
--- Calls the specified callback whenever the mouse enters and leaves the specified frame.
-Callbacks.EnterFrame=ToggledEvent("OnEnter", "OnLeave", enableMouse);
-Callbacks.MouseEnter=Callbacks.EnterFrame;
-Callbacks.FrameEnter=Callbacks.EnterFrame;
-
--- Calls the specified callback whenever the specified frame is shown.
-Callbacks.ShowFrame=ToggledEvent("OnShow", "OnHide");
+function Callbacks.MouseUp(frame, func, ...)
+    func=Curry(func, ...);
+    return Callbacks.MouseDown(frame, function()
+        return func;
+    end);
+end;
 
 local CLICK_TOLERANCE=.5;
+-- Calls the specified callback whenever a click begins on a frame.
 function Callbacks.Click(f, func, ...)
     func=Curry(func, ...);
     if f:HasScript("OnClick") then
