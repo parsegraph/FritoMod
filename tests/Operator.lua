@@ -35,3 +35,52 @@ function Suite:TestDivisionDividesNumbersFromOne()
     Assert.Equals(2/3/4, Operator.division(nil,2,3,4));
     Assert.Equals(2/3/4, Operator.division(nil,2,3,nil,4));
 end;
+
+function Suite:TestComparingOperations()
+    assert(Operator.GT(2, 4));
+    assert(Operator.GTE(2, 2));
+    assert(Operator.LT(2, 1));
+    assert(Operator.LTE(1, 1));
+    assert(Operator.E(1, 1));
+    assert(Operator.NE(1, 0));
+end;
+
+function Suite:TestComparingOperationsWithMultipleCandidates()
+    assert(not Operator.GT (2, 3, 1));
+    assert(not Operator.GTE(2, 2, 1));
+    assert(not Operator.LT (2, 1, 3));
+    assert(not Operator.LTE(1, 1, 2));
+    assert(not Operator.E  (2, 2, 1));
+    assert(not Operator.NE (1, 0, 1));
+end;
+
+function Suite:TestEvenAndOdd()
+    assert(Operator.Even(2));
+    assert(not Operator.Odd(2));
+
+    assert(Operator.Odd(1));
+    assert(not Operator.Even(1));
+
+    assert(Operator.Even(2,4,6));
+    assert(not Operator.Even(2,4,5));
+
+    assert(Operator.Odd(1,3,5));
+    assert(not Operator.Odd(1,3,4));
+end;
+
+function Suite:TestMultiple()
+    assert(Operator.Multiple(3, 3, 6, 9));
+    assert(not Operator.Multiple(3, 3, 6, 7));
+    assert(Operator.NotMultiple(3, 2, 5, 7));
+    assert(not Operator.NotMultiple(3, 2, 5, 9));
+end;
+
+function Suite:TestInclusiveRange()
+    assert(Operator.InclusiveRange(1, 5, 2, 3, 4, 5));
+    assert(not Operator.InclusiveRange(1, 5, 2, 3, 6));
+end;
+
+function Suite:TestExclusiveRange()
+    assert(Operator.ExclusiveRange(1, 5, 2, 3, 4));
+    assert(not Operator.ExclusiveRange(1, 5, 2, 3, 5));
+end;

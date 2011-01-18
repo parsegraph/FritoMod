@@ -1,16 +1,9 @@
 if nil ~= require then
+    require "currying";
     require "basic";
 end;
 
 Operator = setmetatable({
-    -- Theoretically, these could operate over an arbitrary number of values. I
-    -- haven't need to do so yet, so I'll leave this as-is until I do.
-    Equals =             function(a, b) return a == b end,
-    NotEquals =          function(a, b) return a ~= b end,
-    LessThan =           function(a, b) return a <  b end,
-    GreaterThan =        function(a, b) return a >  b end,
-    LessThanOrEqual =    function(a, b) return a <= b end,
-    GreaterThanOrEqual = function(a, b) return a >= b end,
 
 	Compare = function(a,b)
 		if a < b then
@@ -22,21 +15,58 @@ Operator = setmetatable({
 		return 0;
 	end,
 
-    InclusiveRange = function(min, max, num) return min <= num and num <= max end,
-    ExclusiveRange = function(min, max, num) return min <  num and num <  max end,
-
     True =  function() return true end,
     False = function() return false end,
 
     Not = function(value) return not value end,
-    Truth = function(value) return Bool(value) end
-
+    Truth = function(value) return Bool(value) end,
 }, {
 	__index = function(self, k,v)
 		error("Operation not supported: " .. tostring(k));
 	end
 });
 Operators=Operator;
+
+function Operator.Multiple(constant, ...)
+    for i=1, select("#", ...) do
+        if select(i, ...) % constant ~= 0 then
+            return false;
+        end;
+    end;
+    return true;
+end;
+
+function Operator.NotMultiple(constant, ...)
+    for i=1, select("#", ...) do
+        if select(i, ...) % constant == 0 then
+            return false;
+        end;
+    end;
+    return true;
+end;
+
+Operator.Even=Curry(Operator.Multiple, 2);
+Operator.Odd=Curry(Operator.NotMultiple, 2);
+
+function Operator.InclusiveRange(min, max, ...)
+    for i=1, select("#", ...) do
+        local v=select(i, ...);
+        if v < min or v > max then
+            return false;
+        end;
+    end;
+    return true;
+end;
+
+function Operator.ExclusiveRange(min, max, ...)
+    for i=1, select("#", ...) do
+        local v=select(i, ...);
+        if v <= min or v >= max then
+            return false;
+        end;
+    end;
+    return true;
+end;
 
 -- These mathematical operations support working over many numbers. I made them
 -- resilient in the face of nil values since they would otherwise require
@@ -69,15 +99,36 @@ Operator.Multiply=Operation(function(a,b) return a*b end);
 Operator.Divide=  Operation(function(a,b) return a/b end);
 Operator.Modulo=  Operation(function(a,b) return a%b end);
 
+local function ComparingOperation(op)
+    return function(constant, ...)
+        for i=1,select("#", ...) do
+            local v=select(i, ...);
+            if not op(constant, v) then
+                return false;
+            end;
+        end;
+        return true;
+    end;
+end;
+
+Operator.Equals             = ComparingOperation(function(a,b) return a == b end);
+Operator.NotEquals          = ComparingOperation(function(a,b) return a ~= b end);
+Operator.GreaterThan        = ComparingOperation(function(a,b) return a <  b end);
+Operator.GreaterThanOrEqual = ComparingOperation(function(a,b) return a <= b end);
+Operator.LessThan           = ComparingOperation(function(a,b) return a >  b end);
+Operator.LessThanOrEqual    = ComparingOperation(function(a,b) return a >= b end);
+
 -- I like aliases! Especially in a loosely typed language and in an environment where
 -- we're not pressed for space, I prefer having lots of options rather than punishing
 -- someone for not being me. Heck, even I use different names for the same operation.
 Operator.Equal=Operator.Equals;
 Operator.Is=Operator.Equals;
+Operator.E=Operator.Equals;
 
 Operator.NotEqual=Operator.NotEquals;
 Operator.Unequal=Operator.NotEquals;
 Operator.IsNot=Operator.NotEquals;
+Operator.NE=Operator.NotEquals;
 
 Operator.LT=Operator.LessThan;
 Operator.IsLess=Operator.LessThan;
