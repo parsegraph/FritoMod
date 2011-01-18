@@ -3,4 +3,6 @@
     <Include file="files.xml"/>
     <Include file="labs\files.xml"/>
     <Include file="tests\files.xml"/>
+    <Include file="wow\files.xml"/>
+    <Include file="wow\tests\files.xml"/>
 </Ui>
