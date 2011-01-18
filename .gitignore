@@ -1,2 +1,7 @@
 *.swp
 *~
+files.xml
+labs/files.xml
+tests/files.xml
+wow/files.xml
+wow/tests/files.xml
