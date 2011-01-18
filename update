@@ -1,26 +1,45 @@
 #!/bin/bash
 PATH=/bin:/usr/bin
 
-get_file_list() {
-    find $* -maxdepth 1 -name "*.lua" ! -executable -print0 | xargs -0 ./get-requires | grep -v -e'^[#!]';
+# If you're making a new XML file, follow these steps:
+#   1. Add your file to the XML_START commands
+#   2. Capture your files in the case statement. Put nested directories before their parents.
+#   3. Add your file to the XML_END commands.
+
+LIST=/tmp/files.$$
+trap 'rm -f $LIST' INT EXIT
+
+if ! find *.lua labs libs tests wow -name '*.lua' ! -executable -print0 | xargs -0 ./get-requires >$LIST; then
+    exit 1
+fi
+
+XML_START='<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">'
+echo $XML_START >files.xml
+echo $XML_START >wow/files.xml
+echo $XML_START >wow/tests/files.xml
+echo $XML_START >tests/files.xml
+
+script() {
+    local f=$1
+    f=`basename $f | sed -e 's#/#\\\\#g'`
+    echo '<Script file="'$f'"/>'
 }
 
-format_files() {
-    echo '<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">'
-    while read f; do
-        f=`basename $f | sed -e 's#/#\\\\#g'`
-        echo '<Script file="'$f'"/>'
-    done;
-    echo "</Ui>"
-}
+for f in `grep -v -e '^[#!]' $LIST`; do
+    case $f in
+        # Be sure to put nested directories before their parents
+        wow/api/*)     script $f >>/dev/null ;;
+        wow/tests/*)   script $f >>wow/tests/files.xml ;;
+        wow/*)         script $f >>wow/files.xml ;;
+        tests/*)       script $f >>tests/files.xml ;;
+        libs/*)        script $f >>/dev/null ;;
+        labs/*)        script $f >>/dev/null ;;
+        *)             script $f >>files.xml ;;
+    esac
+done;
 
-update_simple_files() {
-    get_file_list $1 | grep -e "^$1" | format_files >"$1/files.xml"
-}
-
-get_file_list . | format_files >files.xml
-update_simple_files tests
-update_simple_files labs
-
-get_file_list wow | format_files >wow/files.xml
-update_simple_files wow/tests
+XML_END='</Ui>'
+echo $XML_END >>files.xml
+echo $XML_END >>tests/files.xml
+echo $XML_END >>wow/files.xml
+echo $XML_END >>wow/tests/files.xml
