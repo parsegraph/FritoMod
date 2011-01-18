@@ -1,21 +1,82 @@
 if nil ~= require then
 	require "wow/Frame";
+
+	require "basic";
+	require "Lists";
 end;
 
+WoW=WoW or {};
 local Frame=WoW.Frame;
 
-function Frame:SetScript(event, handler)
-	
+Frame:AddConstructor(function(self)
+    self.eventHandlers={};
+end);
+
+function Frame:HasScript(event)
+    return true;
 end;
 
-function Frame:HookScript(event, handler)
-
+function Frame:GetHandlers(event)
+    if not self:HasScript(event) then
+        return;
+    end;
+    local handlers=self.eventHandlers[event];
+    if not handlers then
+        handlers={
+            registered=false,
+            hooks={}
+        };
+        self.eventHandlers[event]=handlers;
+    end;
+    return handlers;
 end;
 
 function Frame:RegisterEvent(event)
+    local handlers=self:GetHandlers(event);
+    if handlers then
+        handlers.registered=true;
+    end;
+end;
 
+function Frame:GetScript(event)
+    local handlers=self:GetHandlers(event);
+    if handlers then
+        return handlers.handler;
+    end;
+end;
+
+function Frame:SetScript(event, handler)
+    local handlers=self:GetHandlers(event);
+    if handlers then
+        handlers.handler=handler;
+    end;
+end;
+
+function Frame:HookScript(event, handler)
+    local handlers=self:GetHandlers(event);
+    if handlers then
+        table.insert(handlers.hooks, handler);
+    end;
+end;
+
+function Frame:IsEventRegistered(event)
+    local handlers=self:GetHandlers(event);
+    return handlers and handlers.registered;
+end;
+
+function Frame:FireEvent(event, ...)
+    local handlers=self:GetHandlers(event);
+    if handlers and handlers.registered then
+        if handlers.handler then
+            handlers.handler(self, event, ...);
+        end;
+        Lists.CallEach(handlers.hooks, self, event, ...);
+    end;
 end;
 
 function Frame:UnregisterEvent(event)
-
+    local handlers=self:GetHandlers(event);
+    if handlers then
+        handlers.registered=false;
+    end;
 end;
