@@ -1,9 +1,9 @@
 -- Handy development tool: shows info about the object under the cursor. 
 
 if nil ~= require then
-    require "wow/Frame";
     require "wow/Frame-Layout";
-    require "wow/UIParent";
+    require "wow/api/Frame";
+    require "wow/api/UIParent";
 
     require "Functions";
     require "OOP-Class";

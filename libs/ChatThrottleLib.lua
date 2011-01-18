@@ -22,13 +22,13 @@
 --
 
 if nil ~= require then
-    require "wow/hooking";
-    require "wow/Chat";
-    require "wow/Frame";
     require "wow/Frame-Events";
     require "wow/Frame-Layout";
-    require "wow/Timing";
 
+    require "wow/api/hooking";
+    require "wow/api/Chat";
+    require "wow/api/Frame";
+    require "wow/api/Timing";
 end;
 
 local CTL_VERSION = 21

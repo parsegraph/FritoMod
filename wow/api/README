@@ -1,0 +1,2 @@
+This directory contains a number of functions designed to emulate WoW's
+API. It should never be included in a real WoW environment.

@@ -1,8 +1,5 @@
 -- Automatic Item Selling
 if nil ~= require then
-	require "wow/Containers";
-	require "wow/Item";
-	
 	require "currying";
 	require "Events";
 end;

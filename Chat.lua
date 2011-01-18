@@ -51,7 +51,7 @@
 -- Chat[r]("This is sent to the guild again");
 
 if nil ~= require then
-    require "wow/Chat";
+    require "wow/api/Chat";
     require "currying";
     require "Tables";
     require "Strings";

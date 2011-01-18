@@ -17,3 +17,5 @@ update_files() {
 update_files -v -e'^labs' -e'^libs' -e'^wow' -e'^tests' >files.xml
 update_files -e'^tests' >tests/files.xml
 update_files -e'^labs' >labs/files.xml
+update_files -e'^wow' >labs/files.xml
+update_files -e'^wow/tests' >labs/files.xml

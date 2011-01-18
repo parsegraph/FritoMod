@@ -51,7 +51,8 @@
 
 if nil ~= require then
     require "wow/Frame-Events";
-    require "wow/Timing"
+    require "wow/api/Frame";
+    require "wow/api/Timing"
 
     require "basic";
     require "currying";

@@ -5,7 +5,6 @@
 -- end);
 -- assert(Containers.Contains("bags", "Hearthstone"), "You don't have a Hearthstone?!");
 if nil ~= require then
-    require "wow/Containers";
     require "currying";
     require "Metatables";
     require "Mixins-Iteration";

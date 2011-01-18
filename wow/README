@@ -1,0 +1,3 @@
+This directory contains any code used to construct a WoW-like environment.
+However, WoW's API is not emulated; this will not override any globals that
+WoW creates in-game. This allows us to use code created here in-game.

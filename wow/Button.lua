@@ -5,7 +5,6 @@ if nil ~= require then
 end;
 
 WoW.Button=OOP.Class(WoW.Frame);
-WoW.FrameTypes.button=WoW.Button;
 
 function WoW.Button:SetHighlightTexture()
 end;
