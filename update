@@ -14,14 +14,8 @@ format_files() {
     echo "</Ui>"
 }
 
-update_simple_files() {
-    get_file_list $1 | grep -e "^$1" | format_files >"$1/files.xml"
-}
-
 case $* in 
-    wow/tests/*) update_simple_files wow/tests ;;
-    wow/*) get_file_list wow | format_files >wow/files.xml ;;
-    labs/*) update_simple_files labs ;;
-    tests/*) update_simple_files tests ;;
-    *) get_file_list . | format_files >files.xml ;;
+    wow/files.xml) get_file_list wow | format_files >$* ;;
+    files.xml) get_file_list . | format_files >$* ;;
+    *) get_file_list `dirname $*` | grep -e "^`dirname $*`" | format_files >"$*" ;;
 esac
