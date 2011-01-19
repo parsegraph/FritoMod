@@ -45,8 +45,7 @@ local function RunFile(file)
     table.insert(dependencyStack, dependencies[file]);
     local env=setmetatable({}, {__index=_G});
     env._G=env;
-    env.__included={original=file};
-    env.__included[file=true;
+    env.__included={[file]=true};
     env.require=setfenv(Curry(Require, env, file), env);
     local runner=assert(loadfile(file));
     setfenv(runner, env);
