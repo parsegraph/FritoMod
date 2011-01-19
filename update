@@ -1,6 +1,14 @@
 #!/bin/bash
 PATH=/bin:/usr/bin
 
+# This error-correction stuff is necessary to ensure we don't overwrite our manifest until
+# we're sure everything worked out okay. Otherwise, we'll end up with a empty or corrupted
+# manifest.
+set -e
+set -o pipefail
+manifest=/tmp/requires.$$
+trap 'rm -f $manifest' INT EXIT
+
 get_file_list() {
     find $* -maxdepth 1 -name "*.lua" ! -executable -print0 | xargs -0 ./get-requires | grep -v -e'^[#!]';
 }
@@ -15,7 +23,10 @@ format_files() {
 }
 
 case $* in 
-    wow/files.xml) get_file_list wow | format_files >$* ;;
-    files.xml) get_file_list . | format_files >$* ;;
-    *) get_file_list `dirname $*` | grep -e "^`dirname $*`" | format_files >"$*" ;;
+    wow/files.xml) get_file_list wow | format_files >$manifest ;;
+    files.xml) get_file_list . | format_files >$manifest ;;
+    *) get_file_list `dirname $*` | grep -e "^`dirname $*`" | format_files >$manifest ;;
 esac
+
+# Finally, copy the new manifest.
+cp $manifest $*
