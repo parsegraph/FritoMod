@@ -43,6 +43,8 @@ function LuaEnvironment:LoadFile(file)
         local runner=loader(self, file);
         if IsCallable(runner) then
             return self:LoadFunction(runner);
+        elseif runner==false then
+            return Noop;
         end;
     end;
     error("Could not load: "..file);
@@ -50,19 +52,33 @@ end;
 
 function LuaEnvironment:Require(package)
     if self.loaded[package] then
+        self:OnRequireIgnored(package);
         return;
     end;
-    self:OnRequireStart(package);
-    self:LoadFile(package)();
-    self.loaded[package]=true;
-    self:OnRequireFinish(package);
+    local runner=self:LoadFile(package);
+    if runner ~= Noop then
+        self:OnRequireLoading(package);
+        runner();
+        self.loaded[package]=true;
+        self:OnRequireFinish(package);
+    else
+        self:OnRequireSkipped(package);
+    end;
 end;
 
-function LuaEnvironment:OnRequireStart(package)
+function LuaEnvironment:OnRequireLoading(package)
     -- Noop. Free to implement as a listener.
 end;
 
 function LuaEnvironment:OnRequireFinish(package)
+    -- Noop. Free to implement as a listener.
+end;
+
+function LuaEnvironment:OnRequireSkipped(package)
+    -- Noop. Free to implement as a listener.
+end;
+
+function LuaEnvironment:OnRequireIgnored(package)
     -- Noop. Free to implement as a listener.
 end;
 
@@ -102,7 +118,7 @@ function loaders.Ignore(...)
     return function(env, package)
         for i=1, #ignored do
             if package==ignored[i] then
-                return Noop;
+                return false;
             end;
         end;
     end;
