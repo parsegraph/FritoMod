@@ -10,4 +10,7 @@ if nil ~= require then
     require "MappedTestSuite";
 end;
 
-AllTests = MappedTestSuite:New();
+-- Be pessimistic when it comes to creating AllTests, since tests
+-- often create their own environments, and we don't want to overwrite
+-- their copy of AllTests.
+AllTests = AllTests or MappedTestSuite:New();
