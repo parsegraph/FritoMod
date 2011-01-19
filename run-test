@@ -9,40 +9,18 @@ end;
 
 require "lfs"
 require "currying";
+require "LuaEnvironment";
 require "AllTests";
-
-local function Require(env, original, file)
-    if env.__included[file] then
-        return;
-    end;
-    env.__included[file]=true;
-    file=file..".lua";
-    local runner, err=loadfile(file);
-    if not runner then
-        error(original..": "..err);
-    end;
-    setfenv(runner, env);
-    runner();
-end;
 
 if arg then
     for i=1,#arg do
-        local f=arg[i];
-        local env=setmetatable({}, {__index=pristine});
-        env.__included={
-            bit=true
-        };
-        env._G=env;
-        env.require=Curry(Require, env, f);
-        env.AllTests=AllTests;
-        env.require("global");
-
-        local runner,err=loadfile(f);
-        if not runner then
-            error(err);
-        end;
-        setfenv(runner, env);
-        runner();
+        arg[i]=arg[i]:gsub("^\./", "");
+        local env=LuaEnvironment:New(pristine);
+        env:AddLoader(LuaEnvironment.Loaders.Ignore("bit", "lfs"));
+        env:AddLoader(LuaEnvironment.Loaders.Filesystem(loadfile));
+        env:Set("AllTests", AllTests);
+        env:Require("global");
+        env:Require(arg[i]);
     end;
 end;
 

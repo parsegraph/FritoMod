@@ -3,63 +3,41 @@
 -- get-requires returns the dependencies of a given lua file. If multiple files are
 -- provided, then each of those file's dependencies will be listed.
 
-require "currying";
+-- Get and copy a clean environment.
+require "bit";
+local pristine={};
+for k,v in pairs(_G) do
+    pristine[k]=v;
+end;
 
-local env;
+require "currying";
+require "LuaEnvironment";
+
 local dependencies={};
 local dependencyStack={};
 
-local libs={
-	bit=true,
-	lfs=true
-};
+for i=1,#arg do
+    local file=arg[i]:gsub("^\./", "");
+    local env=LuaEnvironment:New(pristine);
+    env:AddLoader(LuaEnvironment.Loaders.Ignore("bit", "lfs"));
+    env:AddLoader(LuaEnvironment.Loaders.Filesystem(loadfile));
+    env:Require("global");
 
-local global=loadfile("global.lua") or Noop;
-global();
+    -- Register our listeners to construct our dependency tree.
+    function env:OnRequireStart(package)
+        if #dependencyStack > 0 then
+            local parent=dependencyStack[#dependencyStack]
+            dependencies[parent][package]=true;
+        end;
+        dependencies[package]=dependencies[package] or {};
+        table.insert(dependencyStack, package);
+    end;
+    function env:OnRequireFinish(package)
+        local expected=table.remove(dependencyStack);
+        assert(package==expected, "Unexpected dependency. Expected: "..expected.." Received: "..package);
+    end;
 
-ORIG_REQUIRE=require;
-local function Require(env, original, file)
-    if libs[file] then
-        return ORIG_REQUIRE(file);
-    end;
-    file=file..".lua";
-    if env.__included[file] then
-        return;
-    end;
-    env.__included[file]=true;
-    table.insert(dependencyStack[#dependencyStack], file);
-    local runner, err=loadfile(file);
-    if not runner then
-        error(original..": "..err);
-    end;
-    setfenv(runner, env);
-    if dependencies[file] then
-        runner();
-    else
-        dependencies[file]={};
-        table.insert(dependencyStack, dependencies[file]);
-        runner();
-        table.remove(dependencyStack);
-    end;
-end;
-
-local function RunFile(file)
-    dependencies[file]={};
-    table.insert(dependencyStack, dependencies[file]);
-    local env=setmetatable({}, {__index=_G});
-    env._G=env;
-    env.__included={[file]=true};
-    env.require=setfenv(Curry(Require, env, file), env);
-    local runner=assert(loadfile(file));
-    setfenv(runner, env);
-    runner();
-    table.remove(dependencyStack);
-end;
-
-for i=1, #arg do
-    arg[i]=arg[i]:gsub("^\./", "");
-	RunFile(arg[i]);
-    arg[arg[i]]=true;
+    env:Require(file);
 end;
 
 local processed={};
@@ -111,4 +89,3 @@ for i=1, #processed do
         print("! "..processed[i]);
     end;
 end;
-
