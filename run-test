@@ -11,7 +11,7 @@ require "lfs"
 require "currying";
 require "AllTests";
 
-local function Require(env, file)
+local function Require(env, original, file)
     if env.__included[file] then
         return;
     end;
@@ -19,7 +19,7 @@ local function Require(env, file)
     file=file..".lua";
     local runner, err=loadfile(file);
     if not runner then
-        error(file..": "..err);
+        error(original..": "..err);
     end;
     setfenv(runner, env);
     runner();
@@ -33,7 +33,7 @@ if arg then
             bit=true
         };
         env._G=env;
-        env.require=Curry(Require, env);
+        env.require=Curry(Require, env, f);
         env.AllTests=AllTests;
         env.require("global");
 

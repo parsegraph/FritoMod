@@ -15,7 +15,7 @@ local global=loadfile("global.lua") or Noop;
 global();
 
 ORIG_REQUIRE=require;
-local function Require(env, file)
+local function Require(env, original, file)
     if libs[file] then
         return ORIG_REQUIRE(file);
     end;
@@ -27,7 +27,7 @@ local function Require(env, file)
     table.insert(dependencyStack[#dependencyStack], file);
     local runner, err=loadfile(file);
     if not runner then
-        error(env.__included[1]..":"..err);
+        error(original..": "..err);
     end;
     setfenv(runner, env);
     if dependencies[file] then
@@ -44,8 +44,10 @@ local function RunFile(file)
     dependencies[file]={};
     table.insert(dependencyStack, dependencies[file]);
     local env=setmetatable({}, {__index=_G});
-    env.__included={file};
-    env.require=setfenv(Curry(Require, env), env);
+    env._G=env;
+    env.__included={original=file};
+    env.__included[file=true;
+    env.require=setfenv(Curry(Require, env, file), env);
     local runner=assert(loadfile(file));
     setfenv(runner, env);
     runner();
