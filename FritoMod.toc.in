@@ -1,6 +1,12 @@
+#!/bin/bash
+PATH=/bin:/usr/bin
+
+cat - <<EOF
 ## Interface: 40000
 ## Title: FritoMod
 ## Notes: A function-oriented library for Lua & WoW
-## Version: 1.4
+## Version: `git describe --tags`
 ## SavedVariables: _Persistence
-fritomod.xml
+EOF
+
+# vim: set filetype=sh :
