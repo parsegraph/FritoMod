@@ -1,7 +1,10 @@
 manifests=files.xml tests/files.xml wow/files.xml wow/tests/files.xml labs/files.xml libs/files.xml
 
-all: test $(manifests)
+all: test xml
 .PHONY: all
+
+xml: $(manifests)
+.PHONY: xml 
 
 test:
 	find -name '*.lua' ! -path './.git/*' -print0 | xargs -0 ./run-test
