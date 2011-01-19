@@ -1,6 +1,4 @@
 if nil ~= require then
-	require "Metatables";
-
 	require "wow/Frame";
 end;
 
