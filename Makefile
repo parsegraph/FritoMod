@@ -4,7 +4,7 @@ all: test $(manifests)
 .PHONY: all
 
 test:
-	find tests wow/tests wow/api/tests -name '*.lua' -print0 | xargs -0 ./run-test
+	find -name '*.lua' ! -path './.git/*' -print0 | xargs -0 ./run-test
 .PHONY: test
 
 clean:
