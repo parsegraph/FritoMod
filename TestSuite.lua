@@ -50,7 +50,13 @@ function TestSuite:AddRecursiveListener(listener, ...)
         if not test then
             break;
         end;
-        if OOP.InstanceOf(TestSuite, test) then
+        -- We don't use OOP.InstanceOf here because it's possible we'll encounter
+        -- TestSuites that are from a different global environment than the one
+        -- this TestSuite was created in. For example, if AllTests is created in a
+        -- global environment, but we run our test suites in a pristine environment
+        -- (with only a reference to AllTests), this will never be true since the
+        -- children have different "TestSuite" classes.
+        if type(test)=="table" and IsCallable(test.AddRecursiveListener) then
             Lists.Insert(removers, test:AddRecursiveListener(listener));
         end;
     end;
