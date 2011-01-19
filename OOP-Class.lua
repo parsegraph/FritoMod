@@ -76,13 +76,13 @@ local CLASS_METATABLE = {
 }
 
 -- Creates a new instance of this class.
-local function New(self, ...)
+local function New(class, ...)
 	local instance = { 
-		__index = self,
+		__index = class,
 		__tostring = function(self)
 			return self:ToString()
 		end,
-		class=self
+		class=class
 	};
 	setmetatable(instance, instance);
 
@@ -92,7 +92,7 @@ local function New(self, ...)
 		end;
 		class:ConstructObject(instance);
 	end;
-	Initialize(self);
+	Initialize(class);
 
 	instance:Constructor(...);
 	return instance;
