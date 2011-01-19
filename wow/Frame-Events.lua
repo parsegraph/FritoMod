@@ -5,7 +5,6 @@ if nil ~= require then
 	require "Lists";
 end;
 
-WoW=WoW or {};
 local Frame=WoW.Frame;
 
 Frame:AddConstructor(function(self)
