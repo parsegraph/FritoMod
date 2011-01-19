@@ -209,3 +209,7 @@ end;
 function TestSuite:GetTests(...)
     error("This method must be overridden by a subclass.");
 end;
+
+function TestSuite:GetCount(...)
+    return Iterators.Size(self, "GetTests", ...);
+end;

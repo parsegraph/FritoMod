@@ -1,15 +1,53 @@
 #!/usr/bin/lua
-require "lfs"
 
-for i=1,#arg do
-	local f=arg[i];
-	require("global");
-	dofile(f);
+-- Get and copy a clean environment.
+require "bit";
+local pristine={};
+for k,v in pairs(_G) do
+    pristine[k]=v;
 end;
 
-do
+require "lfs"
+require "currying";
+require "AllTests";
+
+local function Require(env, file)
+    if env.__included[file] then
+        return;
+    end;
+    env.__included[file]=true;
+    file=file..".lua";
+    local runner, err=loadfile(file);
+    if not runner then
+        error(file..": "..err);
+    end;
+    setfenv(runner, env);
+    runner();
+end;
+
+if arg then
+    for i=1,#arg do
+        local f=arg[i];
+        local env=setmetatable({}, {__index=pristine});
+        env.__included={
+            bit=true
+        };
+        env._G=env;
+        env.require=Curry(Require, env);
+        env.AllTests=AllTests;
+        env.require("global");
+
+        local runner,err=loadfile(f);
+        if not runner then
+            error(err);
+        end;
+        setfenv(runner, env);
+        runner();
+    end;
+end;
+
+if #arg > 0 and AllTests:GetCount() > 0 then
     local tests, numRan, numSuccessful, numCrashed, numFailed;
-    require("AllTests");
 
     AllTests:AddListener(Metatables.Noop({
         StartAllTests = function(self, suite, name, runner, reason)
