@@ -53,7 +53,7 @@ function Curry(...)
     if type(objOrFunc) == "function" then 
         return CurryFunction(...);
     end;
-    if type(objOrFunc) == "table" then 
+    if type(objOrFunc) == "table" or type(objOrFunc) == "userdata" then 
         local metatable = getmetatable(objOrFunc);
         if type(metatable) == "table" and IsCallable(metatable.__call) then
             -- Callable tables are too ambiguous to be implicitly curried. If you need to curry
@@ -246,7 +246,7 @@ function CurryMethod(object, func, ...)
     if not func then
         error("func is falsy");
     end;
-    if type(object) ~= "table" then
+    if type(object) ~= "table" and type(object) ~= "userdata" then
         error(("object is not a table. Received type: %s"):format(type(object)));
     end;
     local numArgs = select("#", ...);
