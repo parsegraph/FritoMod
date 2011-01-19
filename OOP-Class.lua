@@ -112,7 +112,6 @@ end
 --     if any provided argument is not either a mixin or a class
 --     if more than one super-class is provided (multiple inheritance in this manner is not supported)
 OOP.Class = function(...)
-	assert(IsCallable(New));
     local class = { 
 		__index = CLASS_METATABLE,
 		constructors = {},
