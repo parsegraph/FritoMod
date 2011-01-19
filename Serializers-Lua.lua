@@ -15,13 +15,13 @@ printer=setmetatable({
         end;
     end,
     ["boolean"]=function(out, v)
-        out(v);
+        out(tostring(v));
     end,
     ["string"]=function(out, v)
         out(("%q"):format(v));
     end,
     ["nil"]=function(out)
-        out(v);
+        out(tostring(v));
     end,
     ["table"]=function(out, t, newline)
         local indent="\t";
@@ -35,7 +35,7 @@ printer=setmetatable({
             out(indent);
             printer(out, t[i], indented);
             out(", -- [");
-            out(i);
+            out(tostring(i));
             out("]");
             out(newline);
             i=i+1;
