@@ -5,7 +5,6 @@ all: xml toc
 .PHONY: all
 
 test:
-	find -name '*.lua' ! -path './.git/*' -print0 | xargs -0 ./get-requires
 	find -name '*.lua' ! -path './.git/*' -print0 | xargs -0 ./run-test
 .PHONY: test
 
