@@ -1,0 +1,379 @@
+"assignee_id","assignee_name","component_id","component_name","created_at","description","due_on","hours_estimate_current","hours_estimate_initial","hours_actual","id","milestone_id","milestone_title","number","priority","project_id","project_title","reporter_id","reporter_name","resolution","resolution_description","severity_id","severity_name","status","summary","updated_at","version_id","version_name","field1_value_id","field1_value","field2_value_id","field2_value","field3_value_id","field3_value"
+"","<none>","4","Testing","Tue Sep 29 16:00:32 UTC 2009","A interface to run tests, see failures, and provide extensibility to show statistics. At the minimum, the UI should:
+* Show a list, preferably a tree, of all tests
+* Visually show which tests passed and failed.
+* Show the stack trace for any failed test.
+* Provide ability to run any test.","","0.0","0.0","0.00","25","","<none>","7","2","4","FritoMod","1","Aaron F.","","","4","New Feature","new","Testing UI","Wed Oct 21 05:05:21 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"","<none>","3","Project-Wide","Wed Oct 21 02:42:37 UTC 2009","FritoMod currently adds many, many values to the global namespace. While useful during development, we should, at some point, remove objects that do not need to be global. Ideally, FritoMod would only add one name to the namespace: ""FritoMod"". All other items that are globals would be members of this object.
+
+We should also allow developers to export FritoMod for ease-of-use. To enable this easily, there should be a FritoMod.ExportGlobals() function that exports all FritoMod components.","","0.0","0.0","0.00","34","","<none>","16","3","4","FritoMod","1","Aaron F.","","","3","Cleanup","new","Minimize FritoMod's use of globals","Wed Oct 21 03:02:00 UTC 2009","1","Release","","<none>","","<none>","","<none>"
+"","<none>","3","Project-Wide","Wed Oct 21 02:47:47 UTC 2009","FritoMod components should be friendly with respect to potentially newer versions. This sort of future proofing can be done without #16 if we version specific components, but it seems much more convenient and less error-prone if version protection is done with the FritoMod global itself.","","0.0","0.0","0.00","35","","<none>","17","3","4","FritoMod","1","Aaron F.","","","3","Cleanup","new","Future-Proof FritoMod components","Wed Oct 21 03:02:00 UTC 2009","1","Release","","<none>","","<none>","","<none>"
+"1","Aaron F.","4","Testing","Mon Oct 26 20:52:24 UTC 2009","Currently, we run all of our test cases in protected mode. If error handler is robust enough, we could simply daisy-chain across error handlers. I don't know if it's possible in practice, but it's a cool idea and it's a way to get a healthy stack trace for any test case.","","0.0","0.0","0.00","36","","<none>","18","2","4","FritoMod","1","Aaron F.","","","2","Enhancement","new","Explore possibility of error-handler-based test suites","Mon Oct 26 20:52:24 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Fri Oct 30 13:00:24 UTC 2009","","","0.0","0.0","0.00","41","","<none>","23","3","4","FritoMod","1","Aaron F.","","","6","Exploration","new","Explore Combat Log project","Fri Oct 30 13:00:24 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Sun Nov 01 13:32:40 UTC 2009","This would allow us to have a proper Equals method, which currently is next to useless. Would also be much more civilized in general.","","0.0","0.0","0.00","43","","<none>","25","3","4","FritoMod","1","Aaron F.","","","2","Enhancement","new","Explore: OOP instances share a metatable","Sun Nov 01 13:36:18 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Thu Sep 24 04:28:54 UTC 2009","* EventDispatcher should be removed. CompositeTable, Activator already provide cleaner solutions to EventDispatcher. Once the classes that use this class are revamped, it should be taken out
+* IterationManager should also be removed. Timing provides superior solutions to this monolith. However, UI makes use of IterationManager, so it should be updated to use Timing exclusively.","","0.0","0.0","0.00","19","7","Bootstrapping","1","3","4","FritoMod","1","Aaron F.","fixed","Both of these classes are removed, and with the changes with API, I can consider this closed.","","<none>","closed","Remove Events while retaining functionality","Tue Sep 29 15:48:35 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Thu Sep 24 04:31:14 UTC 2009","API provides a level of functionality, which isn't a very modular abstraction. It makes much more sense to distribute Blizzard-specific functionality to separate projects, instead of arbitrarily distributing that functionality between higher- and lower-level addons.","","0.0","0.0","0.00","20","7","Bootstrapping","2","3","4","FritoMod","1","Aaron F.","fixed","Changeset [fritomod:e2c46cb28b5747e89dc92a4ecf00a2e7d3212b42]:
+
+[resolves #2] Removed API project
+
+The GetTime function here is no longer used. Use either Blizzard
+default's, or higher-level work in Timing","","<none>","closed","Separate API into respective addons","Fri Sep 25 20:57:33 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","3","Project-Wide","Thu Sep 24 04:34:31 UTC 2009","Finish this process of uploading the framework and adding tickets.","","0.0","0.0","0.00","21","7","Bootstrapping","3","3","4","FritoMod","1","Aaron F.","fixed","Changeset [fritomod:724cdfeb148435b3c2388f6f5880839e0d374469]:
+
+[resolves #3] Removed TODO","","<none>","closed","Add FritoMod to Unfuddle","Thu Sep 24 05:27:29 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","3","Project-Wide","Thu Sep 24 05:16:41 UTC 2009","Unit tests are an integral part of development. A system needs to be imported or created that is:
+
+* Lightweight. A heavy system is difficult to use and discourages tests. Adding a new test should be a one-liner.
+* Centralized, with decentralized components. A centralized system allows easy, automatic testing. Decentralized components allows flexibility when necessary.
+* Automatic. It should test on start-up, running every test. It should be silent on success, and dump errors to the chat frame when it fails.
+* Offer points for extensibility. A graphical interface would be nice, statistics would be nice. These are definitely not required for this ticket.","","0.0","0.0","0.00","22","7","Bootstrapping","4","5","4","FritoMod","1","Aaron F.","fixed","The system currently built meets our requirements
+
+* It is lightweight. Tests are trivially easy to write, we use natural testing methods ( assert(), regular function calls)
+* It is centralized with decentralized components. Centralization is optional. All suites can be run naturally on their own.
+* It is automatic. A one-line Hack script can run a custom suite of tests on startup.
+* It offers points for extensibility. Listeners can be added recursively, and events are generated for all important moments in the testing life-cycle. TestSuites are also regular classes, so they offer all the power inherent in those. The GetTests abstract method affords an incredible amount of power, and the very flexible RunTests local function in TestSuite enables a wide slew of tests to be ran.
+","","<none>","closed","Integrate Unit Tests","Tue Sep 29 15:53:54 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","","<none>","Thu Sep 24 10:43:13 UTC 2009","Get all the errors to go away.
+
+- **FritoMod_Testing_Tests\TestCase.lua** line 1:
+   attempt to index global 'Environment' (a nil value)
+- **FritoMod_Testing_Tests\TestManager.lua** line 1:
+   attempt to index global 'Environment' (a nil value)
+- **FritoMod_Units\Units.lua** line 1:
+   attempt to index global 'API' (a nil value)
+- **FritoMod_OOP\OOP\Class.lua** line 107: (Actually in ReflectiveTestCase.lua)
+   Mixin or class is falsy. Index 1
+- **FritoMod_Testing\TestManager.lua** line 51:
+   attempt to call global 'TestCase' (a table value)
+- **[string ""Test Simple Frame Listener""]** line 4:
+   attempt to index global 'API' (a nil value)","","0.0","0.0","0.00","23","7","Bootstrapping","5","5","4","FritoMod","1","Aaron F.","fixed","Changeset [fritomod:41c9130ec980671c02c845dcdbaf59148fb3ba72]:
+
+[bugfixes, resolves #5] Fixed a couple remaining bugs","1","Showstopper","closed","Fix the Build","Fri Oct 02 02:07:57 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","5","Blizzard API Integration","Fri Sep 25 18:02:57 UTC 2009","This probably means spawning a new ""mediums"" in the separate language. Something like this that feels functional and not error-prone would be nice.","","0.0","0.0","0.00","24","","<none>","6","2","4","FritoMod","1","Aaron F.","will_not_fix","This is too esoteric and odd for us to do. Closing as 'will not fix' unless I actually ever need a different language.","2","Enhancement","closed","Chat supports different languages","Sat Oct 30 04:36:55 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","","<none>","Tue Sep 29 16:06:16 UTC 2009","Should Logging be retained? Is it useful? What features should it provide, if any. If there's no useful purpose for it, it should be removed.
+
+It likely should share the strengths of the testing framework:
+
+* Lightweight. Logging should not be difficult
+* Leverages natural strengths of Lua and the framework. It should use simple abstractions like lists and callables. It should not needlessly wrap functionality, though it should be rigid enough to imply good practices for its use","","0.0","0.0","0.00","26","","<none>","8","3","4","FritoMod","1","Aaron F.","will_not_fix","Logging was a useful debugging aid. However, this purpose is superseded by the testing framework, which acts as the primary tool for ensuring correctness. Other, more client-oriented purposes are probably at either a higher-level than this project, or better suited by ad-hoc solutions.
+
+Changeset [fritomod:5e6ce7df9f3f0b8bf07a9847d7a5543851307260]:
+
+[resolves #8] Removed Logging project","","<none>","closed","Evaluate the Logging project","Wed Oct 21 03:37:13 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","","<none>","Tue Sep 29 16:11:10 UTC 2009","Media has the potential to be a really useful suite, but currently it resembles a very old, manager-oriented design instead of a more flexible OOP design.
+
+A few thoughts:
+
+* Should we wrap sound files, music files, textures? Providing a useful abstraction is nice, but only if it's significantly easier to use than what currently exists.
+* SharedMediaLibrary integration should be retained
+
+If it turns out that this project is more trouble than it's worth, it may be scrapped entirely.","","0.0","0.0","0.00","27","","<none>","9","3","4","FritoMod","1","Aaron F.","fixed","Blew up MediaLibrary into a much leaner Media metatable. We retain most of the existing functionality, support SharedMedia, and don't force users to learn a new API.","","<none>","closed","Evaluate the Media project","Thu Sep 16 17:28:02 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","","<none>","Tue Sep 29 16:19:21 UTC 2009","* It corrupts the object it uses by adding fields relating to its use. It should operate exclusively through closure.
+* It has an unnecessary dependency with event-dispatching. This limits its actual purpose, which is rapidly creating objects. It should offer no event-dispatching functionality.","","0.0","0.0","0.00","28","","<none>","10","3","4","FritoMod","1","Aaron F.","fixed","Changeset [fritomod:f562f640ecfa30884b9a5d9ae5efdbde88498182]:
+
+[fixes #10] Removed Data project","","<none>","closed","Evaluate the Data project","Fri Oct 30 04:37:48 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","","<none>","Tue Sep 29 16:22:29 UTC 2009","This is heavily related to UI. Frame is an integral part of it, but we shouldn't unnecessarily wrap Frame unless we provide a significant benefit in clarity and/or functionality without sacrificing either.","","0.0","0.0","0.00","29","","<none>","11","3","4","FritoMod","1","Aaron F.","fixed","Changeset [fritomod:d8ac45bfe90a9240d988d2749a70a49c108fed85]:
+
+[resolves #11] Removed Frames project
+
+The Frames project reminds me of our initial attempts at writing
+collection frameworks with explict List objects. Instead, it seems more
+conducive, both to the functional nature of lua, and the pervasiveness
+of WoW's API that we shouldn't needlessly wrap frame objects unless we
+provide a significant advantage. While we certainly can make uses of
+frames much, much easier, we don't have anything that provides
+significant advantage to frames as a whole. As a result, this project is
+removed.","","<none>","closed","Evaluate the Frames project","Wed Oct 21 03:37:14 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Thu Oct 01 13:07:56 UTC 2009","These classes are similar enough that much of their shared features can be collapsed into one class. This also greatly minimizes the chances for errors since there's 1/3rd as much code, standardizes the features available to all iterable types, and makes testing much, much easier. We essentially magnify the impact of any new iteration operation by three.
+
+Specifically we want the following operations:
+
+# Abstract Operations
+
+These methods must be implemented by clients.
+
+* _Iterator_
+
+# Provided Methods
+These methods have suitable defaults.
+
+## Basic access
+
+* _Iterator_
+    * _KeyIterator_
+    * _ValueIterator_
+* _ReverseIterator_
+    * _ReverseValueIterator_
+    * _ReverseKeyIterator_
+* _Get_
+* _Keys_
+* _Values_
+* _Size_
+    * _IsEmpty_
+
+
+## Search and Comparison
+
+* _ContainsKey, ContainsValue_
+    * _ContainsAllKeys_, _ContainsAllValues_, _ContainsAllPairs_
+* _KeyFrequency_, _ValueFrequency_
+* _Equals_
+* _IndexOf_, _LastIndexOf_
+
+## Conventional iteration
+
+* _MapPairs_, _MapKeys_, _MapValues_
+    * _MapCall_
+* _EachPair_, _EachKey_, _EachValue_
+    * _CallEach_
+* _FilterPairs_, _FilterKeys_, _FilterValues_
+* _ReducePairs_, _ReduceKeys_, _ReduceValues_
+* _Union_
+* _Difference_
+
+# Optional Operations
+
+These are optional functions. Defaults are provided, but may not be suitable for a given library.
+
+## Creation methods
+
+* _New_
+    * _Clone_
+
+## Insertion and Modification
+
+* _Set_
+* _Update_
+* _Insert_
+    * _InsertAt_
+    * _InsertAll_
+    * _InsertAllAt_
+* _Reverse_
+
+## Removal
+
+* _Clear_
+* _RemoveValue_
+    * _RemoveAllValues_
+    * _RemoveLastValue_
+* _RemoveKey_
+    * _RemoveAllKeys_
+    * _RemoveLastKey_
+
+# Principles
+
+* Provide a wide range of iteration methods.
+* Allow extension. Capability for extension of custom iteration, access, or manipulation for specific iterables
+* Allow optimization. Optimized functions should be allowed for individual iterable libraries, and these optimized functions should be preferred over the standard set
+* Minimize time-to-market for new iterables. Almost all functions should have default implementations. It should be trivially easy to make a new iterable type have the full set of features above","","0.0","0.0","0.00","30","8","Collections","12","3","4","FritoMod","1","Aaron F.","fixed","see commit:6fe4c862692a168385408cc87671a0e5618c4d65 and the collections branch for the changes that resolve this ticket.","3","Cleanup","closed","Merge common functionality in Tables, Iterators, and Lists into a single class","Sat Oct 24 05:00:51 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","2","UI and Interface","Thu Oct 01 13:35:14 UTC 2009","This project should be updated to use modern idioms. Likely areas for improvment is small-scale utility improvements, abstraction of some stylesheet-related functionality.
+
+This ticket should be updated once we get more of a grasp of what needs changing.","","0.0","0.0","0.00","31","","<none>","13","3","4","FritoMod","1","Aaron F.","fixed","The old UI framework has been removed. Our new approach intentionally exposes WoW's API and widgets, while providing useful tools for their rapid construction and layout.","","<none>","closed","Evaluate the UI project and subsidiaries","Thu Sep 16 17:29:15 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Fri Oct 02 23:46:46 UTC 2009","State Machine is pretty hectic. Here's some problems:
+
+* It should deal in simple abstractions where possible. Specifically, it should not use non-intuitive table-based operations. It should use either functions directly or full-fledged classes.
+* It is not testable. Because of the above, states are not easily runnable. It's not necessarily clear where tests should begin.
+* Inheritance is limited by unconventional practices.
+
+Essentially, we want to reform State Machine to feel more like our testing framework:
+
+* Use native abstractions where possible. States should resemble functions. State Machine should be classes. A somewhat complicated function signature is easier to follow than a complicated table with simple functions. Using native or conventional abstractions allows clean design, effective testing, and extension.
+* Allow *scalable complexity*. We can write custom TestSuite classes trivially; there is no encouraged way to write a StateMachine test class. We should be able to write a StateMachine just as trivially. Specifically, the ad-hoc state machine we wrote for SplitByCase should have been a state machine. It should simply be that easy.
+* StateMachine should be a class, like TestSuite. This enables inheritance, ridiculously easy testing, and very obvious design.
+* Continue separating state-based functionality from the results. This separation is critical for ensuring StateMachines are useful for a wide range of tasks - coupling the processing of information with the targets of that processing blights the decomposition. It also has the negative consequence of making both difficult to test. This is subject to the scalable complexity rule: it should be possible for trivial objects to not need to separate their targets from the state machine.
+* As much as possible, keep the flow between states intuitive. The function signature for a state should be pretty intuitive. If it becomes too complex, that functionality should be pulled out into methods on the state machine.
+
+In essence, the logic behind a state machine should be evident in how state machines are built. The shared logic of ""Check all active states, act on data, refresh active states, repeat"" should be abstracted away, and the object-oriented ""I am a State. I am charged with X, Y, Z"" should be emphasized.
+
+We want to make the readme.txt not have to exist; that much documentation typically means our system is too complicated.","","0.0","0.0","0.00","32","","<none>","14","3","4","FritoMod","1","Aaron F.","will_not_fix","State machine is dead, for the reasons listed in the comment.","3","Cleanup","closed","Refactor State Machine","Sat Oct 30 04:36:00 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","12","Remote Communication","Mon Oct 05 06:06:43 UTC 2009","We should construct a framework that allows addon-based communication between multiple players. It should, at a minimum, abstract away Blizzard limits on message length and burst.
+
+### Blizzard's Method
+
+In order to send a message, you use SendAddonMessage, like so:
+
+    SendAddonMessage(""FritoMod"", ""Request Warsong Gulch"", ""WHISPER"", ""Threep"");
+
+Receiving messages is done through an event, CHAT_MSG_ADDON.
+
+    Events.CHAT_MSG_ADDON:Add(function(prefix, message, medium, source)
+        if prefix ~= ""FritoMod"" then return end;
+        local command, param = strsplit("" "", message, 2);
+        if command == ""Request"" then
+            SendAddonMessage(""FritoMod"", format(""Notify %s: %d"", param, GetMarksFor(param)), medium, source);
+        elseif command == ""Notify"" then
+            UpdateMarksFor(source, strsplit("":"", param));
+        end;
+    end);
+
+This request is very simple: Two clients exchanging mark quantities. If this was a local request, it would look like this:
+
+    local marks = GetMarksFor(""Threep"", ""Warsong Gulch"");
+    UpdateMarksFor(""Threep"", ""Warsong Gulch"", marks);
+
+A more object-oriented version would look like:
+
+    local player = Currency:New(""Threep"");
+    local marks = player:GetMarks(""Warsong Gulch"");
+
+Stripping away the code that deals with the protocol leaves us with a clean problem and a focused solution. Since there's minimal noise, we are able to refactor and build on our solution at ease. This is in contrast with the first example: any change involves consideration over the protocol, such as format, potential parsing issues, and how the other party should respond.
+
+Of course, with Lua, we're probably unable to erase every sign of a remote connection. Even if we were able to design such a solution, it may not be appropriate for all cases. I believe this area of weakness and inflexibility is the seam in our model.
+
+### Design Goals
+
+* Abstract Blizzard limitations. Message length and burst restrictions should be managed by the framework, not by the client.
+* Provide a pluggable way to parse and send messages.
+* Keep trivial cases trivial. ","","0.0","0.0","0.00","33","13","Remote Communication","15","4","4","FritoMod","1","Aaron F.","fixed","","4","New Feature","closed","Build Communication Framework","Wed Oct 27 19:13:27 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","6","Collections","Wed Oct 28 19:06:54 UTC 2009","","","0.0","0.0","0.00","37","","<none>","19","2","4","FritoMod","1","Aaron F.","fixed","","2","Enhancement","closed","Allow Override of MakeEqualityComparator and other equality tests","Tue May 18 04:05:21 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","6","Collections","Wed Oct 28 19:07:43 UTC 2009","","","0.0","0.0","0.00","38","8","Collections","20","3","4","FritoMod","1","Aaron F.","fixed","Changeset [fritomod:8ad991b3e8c9cbdc1f700f4350b05ec7b34c325c]:
+
+[resolves #20] Merge branch 'iteration_refactor'","2","Enhancement","closed","Refactor mutable functions for Mixins.Iteration into Mixins.MutableIteration","Wed Oct 28 22:00:29 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","5","Blizzard API Integration","Fri Oct 30 12:59:12 UTC 2009","Make the following script a one-liner:
+
+    local f = nil;
+    if GLOBAL_BRETT_FRAME == nil then
+       GLOBAL_BRETT_FRAME = CreateFrame(""FRAME"");
+       f = GLOBAL_BRETT_FRAME;
+    end;
+    
+    f:SetScript(""OnEvent"", function(self, event,arg1)
+          --  f:UnregisterEvent(""CHAT_MSG_SKILL"")
+          SendChatMessage(arg1,""GUILD"",nil,nil)
+          -- f:RegisterEvent(""CHAT_MSG_SKILL"")
+    end);
+    
+    --creating function that asks for the event
+    local function SkillSpamOn()
+       f:RegisterEvent(""CHAT_MSG_SKILL"")
+    end
+    
+    local function SkillSpamOff()
+       f:UnregisterEvent(""CHAT_MSG_SKILL"")
+    end
+    
+    local function SlashHandler(args)
+       if args == ""on"" then 
+          SkillSpamOn()
+       elseif args == ""off"" then
+          SkillSpamOff()
+       else
+          print(""usage: /skillspam on | off"")
+       end
+    end
+    
+    RegisterSlash(SlashHandler,""skillspam"")
+
+This is what we can currently do:
+
+    local r;
+    Slash.Register(""skillspam"", function(cmd)
+       if cmd == ""on"" and not r then 
+          r=Events.CHAT_MSG_SKILL(Chat.g);
+       elseif cmd == ""off"" and r then
+          r();
+          r=nil;
+       else
+          print(""usage: /skillspam on | off"")
+       end
+    end);
+
+This isn't too bad. I personally think FritoMod spoils us a little bit by doing so well at hiding details. ""Events.CHAT_MSG_SKILL(Chat.g)"" probably taps into a hundred or more lines of code.
+
+Initially, I wanted something like this:
+
+    SlashCommands.RegisterToggle(""skillspam"", Events.CHAT_MSG_SKILL, Mediums.Guild);
+
+Our style has changed a bit, so here's a more modern interpretation:
+
+    Slash.Toggle(""skillspam"", Events.CHAT_MSG_SKILL, Chat.g);
+
+Any time I write a ""register"" function that maps functionality to a name, I get the reflex to use a metatable instead:
+
+    local t=Objects.Toggle(Events.CHAT_MSG_SKILL, Chat.g)
+    Commands.skillspam=t.Set;
+
+Objects.Toggle creates a simple object that manages a toggled state. It's similar to Functions.Undoable, but it keeps track of its state which makes it useful to us here.
+
+I think we actually have a believable one-liner now:
+
+    Slash.Register(""skillspam"", Objects.Toggle(Events.CHAT_MSG_SKILL, Chat.g).Set); -- The current approach
+    Commands.skillspam=Objects.Toggle(Events.CHAT_MSG_SKILL, Chat.g).Set; -- An alternatve!
+
+I think I'll make this recognize value objects like Toggle and Value, so we don't need the easily forgettable "".Set"".","","0.0","0.0","0.00","39","","<none>","21","3","4","FritoMod","1","Aaron F.","fixed","With Slash being in labs, and Objects.Toggle now mature, this ticket can be safely closed.","6","Exploration","closed","Make SkillSpam a one-liner","Tue Oct 12 09:31:49 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Fri Oct 30 12:59:44 UTC 2009","","","0.0","0.0","0.00","40","","<none>","22","3","4","FritoMod","1","Aaron F.","works_for_me","Our current slash command stuff works. Slash.Register and RegisterSlash has worked well enough. Plus, we've kind-of moved away from crazy slash command stuff, so it's not as necessary now.","6","Exploration","closed","Explore Slash Command project","Sat Oct 30 04:40:28 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","4","Testing","Sun Nov 01 12:44:17 UTC 2009","","","0.0","0.0","0.00","42","","<none>","24","4","4","FritoMod","1","Aaron F.","fixed","Changeset [fritomod:590ec3a33f023d0aa8299f893dbf5b6986c80676]:
+
+[resolves #24] Merge branch 'testslash'","4","New Feature","closed","Integrate /test Hack script","Sun Nov 01 12:44:52 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Tue Nov 03 11:17:44 UTC 2009","","","0.0","0.0","0.00","44","","<none>","26","5","4","FritoMod","1","Aaron F.","fixed","Changeset [fritomod:476015a1564d95710403d5ecb599655bcdb10813]:
+
+[fix, resolves #26] Currying nil values is no longer supported
+
+We initially tried to support curried nil values, and went to great
+lengths to ensure correctness in the face of very unstable logic
+regarding array length. Sparse array length is, however, fundamentally
+broken and is about as unreliable and dangerous as you can get.
+
+As a result, I've removed the code that supported nil value currying and
+the tests that attempted to ensure its correctness. These have been
+replaced with checks (and accompanied test cases) that ensure nil values
+are not allowed with Curry.
+
+Some areas still do support passed nil values. Specifically, curried
+functions that do not also have curried arguments should eventually
+support passed nil values.
+
+For the most part, however, currying nil values is entirely disallowed.
+It's not safe. It's not efficient. It's not common. It's gone.","1","Showstopper","closed","Resolve Curry's limitations with nil values","Sun Nov 08 08:04:33 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","3","Project-Wide","Tue Nov 03 11:19:49 UTC 2009","","","0.0","0.0","0.00","45","","<none>","27","3","4","FritoMod","1","Aaron F.","fixed","","2","Enhancement","closed","FritoMod uses require and can function without WoW","Sat Nov 07 19:14:14 UTC 2009","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","3","Project-Wide","Sun Nov 08 22:56:15 UTC 2009","Require and .toc files are currently redundant, so generating one from the other would be preferable to keeping both up-to-date.","","0.0","0.0","0.00","46","","<none>","28","3","4","FritoMod","1","Aaron F.","fixed","Fully implemented and working.","4","New Feature","closed","Automatically generate toc files from require","Tue May 18 04:03:22 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Tue Nov 24 15:34:22 UTC 2009","At present, the entire Events project is not tested. It is also not testable, since it is closely integrated with Blizzard functionality. I'd like to pull out as much as we can such that:
+
+* Events has pervasive test coverage.
+* Events provides a very succinct, very functional-friendly syntax for event registration, without exposing activation/deactivation details to clients.
+* Events is composed of generic components, with pluggable non-generic drivers. This is similar to the TestSuite framework, though Events is more functionally oriented.
+* Events provides usable components that can be used elsewhere.","","0.0","0.0","0.00","47","","<none>","29","3","4","FritoMod","1","Aaron F.","will_not_fix","Events now works, and has been tested, but I won't do this ticket because I don't believe Events has enough use-cases to warrant making it generic. Events is also relatively simple, so there's not an obvious advantage of abstracting it to make it easier to understand.
+
+If another use-case comes up, I'll relook at this, but until then, I'm satisfied with the current implementation.","5","Refactoring","closed","Refactor Events to minimize Blizzard dependency","Mon Apr 19 12:50:07 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","12","Remote Communication","Thu Oct 21 21:06:08 UTC 2010","Blizzard limits addon messages to ~255 characters. I find this to be annoying, so I'd like to provide a system that handles the splitting of long messages automatically.
+
+I wish I could provide this as a builtin to Remote itself (I wish I could also provide a full-fledged serializer in Remote, too), but I just can't justify locking people into only one solution. So, instead, Remote will remain like Events, and I have found this to be a useful pattern.
+
+Converting the message is easy:
+
+    local str=""A really really long message...""
+    local strs=Serializers.WriteCroppedString(""NoTime.Chat"", str); -- Returns an array
+    Remote[""NoTime.Chat""].g(strs); -- Remote handles arrays naturally
+  
+ Handling the callback is more difficult:
+
+    Remote[""NoTime.Chat""](function(str, who)
+      Serializers.ReadCroppedString(str); -- What does this do? Where does the read data go to?
+    end);
+
+The problem is that reading the cropped string will require multiple invocations to receive all the necessary data. This means we'll need a callback.
+
+One thought is to basically provide a copy of Remote:
+
+    CroppingRemote[""NoTime.Chat""].g(longString);
+    CroppingRemote[""NoTime.Chat""](function(message, who)
+      print(message);
+    end);
+
+This seems okay at best. While we preserve the cleanliness of Remote, we also have a lot of duplication. Even if we abstracted the duplicated code (which we could likely do), I don't really like the precedent: every protocol must have it's own table. It's just ugly.
+
+    Callbacks.CroppedString(Remote[""NoTime.Chat""], function(message, who)
+      print(message);
+    end);
+
+This is better, in my opinion. The callback is made explicit. The fact that a function is passed implies that CroppedString manages the retrieval of this data on its own. While it's somewhat more verbose than the previous example, I think the use-cases make this satisfactory, if not preferable. This code describes the protocol, so it shouldn't rely on metatables and other magic to bury its intent.
+
+Though, we can still add this syntactic sugar to make the example terse:
+
+    Callbacks.CroppedString(""NoTime.Chat"", print);
+
+I think that this is very good.","","0.0","0.0","0.00","95","13","Remote Communication","30","3","4","FritoMod","1","Aaron F.","fixed","Finished!","4","New Feature","closed","Create a system to abstract remote message length","Wed Oct 27 00:27:35 UTC 2010","","<none>","","<none>","","<none>","","<none>"
+"1","Aaron F.","1","Functional and Utilities","Sat Oct 23 22:08:27 UTC 2010","Cursors are objects that are intended to be reused. They provide a view over data.
+
+To most people (and perhaps to a more alert me), they're just objects. The difference is that they are designed to be reused. They receive data that defines their behavior. This lets us use the flexibility and clarity of objects without feeling guilty about creating a large number of unnecessary objects. We started to use this pattern with our container code, but now we'll define these expressly here.","","0.0","0.0","0.00","96","13","Remote Communication","31","3","4","FritoMod","1","Aaron F.","fixed","Wrote our first cursor that operates over iterables. We use it when parsing strings for remote communication, and it works extremely well.","4","New Feature","closed","Cursors","Wed Oct 27 00:29:12 UTC 2010","","<none>","","<none>","","<none>","","<none>"
