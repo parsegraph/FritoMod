@@ -8,7 +8,9 @@ test:
 	find -name '*.lua' ! -path './.git/*' -print0 | xargs -0 ./run-test
 .PHONY: test
 
-clean: clean-toc clean-xml
+clean: 
+	rm -f $(manifests)
+	rm -f FritoMod.toc
 .PHONY: clean
 
 toc: FritoMod.toc
@@ -31,11 +33,3 @@ FritoMod.toc: $(manifests)
 	for f in $(manifests); do \
 		echo $$f | sed -e 's#^\./##' -e 's#/#\\#g'; \
 	done >>FritoMod.toc
-
-clean-xml:
-	rm -f $(manifests)
-.PHONY: clean-xml
-
-clean-toc:
-	rm -f FritoMod.toc
-.PHONY: clean-toc
