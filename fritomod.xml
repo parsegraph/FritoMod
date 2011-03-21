@@ -1,8 +1,0 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-    <Include file="libs\files.xml"/>
-    <Include file="files.xml"/>
-    <Include file="labs\files.xml"/>
-    <Include file="tests\files.xml"/>
-    <Include file="wow\files.xml"/>
-    <Include file="wow\tests\files.xml"/>
-</Ui>
