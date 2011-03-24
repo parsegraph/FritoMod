@@ -106,10 +106,9 @@ function loaders.Filesystem(loader, env, package)
             file=package..".lua";
         end;
         local runner, err=loader(file);
-        if not runner then
-            error(file..": "..err);
+        if runner then
+			return runner;
         end;
-        return runner;
     end;
 end;
 

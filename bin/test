@@ -1,7 +1,0 @@
-#!/bin/bash
-PATH=/bin:/usr/bin:$FM_ROOT
-source fm-load-settings.sh >/dev/null
-make_root
-cd $root
-
-fm get-all-tests | xargs lua runtests.lua
