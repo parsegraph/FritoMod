@@ -8,9 +8,10 @@ for k,v in pairs(_G) do
 end;
 
 require "lfs"
-require "currying";
-require "LuaEnvironment";
-require "AllTests";
+
+require "fritomod/currying";
+require "fritomod/LuaEnvironment";
+require "fritomod/AllTests";
 
 if arg then
     for i=1,#arg do
@@ -19,7 +20,7 @@ if arg then
         env:AddLoader(LuaEnvironment.Loaders.Ignore("bit", "lfs"));
         env:AddLoader(LuaEnvironment.Loaders.Filesystem(loadfile));
         env:Set("AllTests", AllTests);
-        env:Require("global");
+        env:Require("bin/global");
         env:Require(arg[i]);
     end;
 end;
