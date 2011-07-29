@@ -11,12 +11,12 @@ for k,v in pairs(_G) do
     pristine[k]=v;
 end;
 
-require "currying";
-require "LuaEnvironment";
-require "Strings";
-require "Tables";
-require "Lists";
-require "Serializers-Lua";
+require "fritomod/currying";
+require "fritomod/LuaEnvironment";
+require "fritomod/Strings";
+require "fritomod/Tables";
+require "fritomod/Lists";
+require "fritomod/Serializers-Lua";
 
 local dependencies={};
 local dependencyStack={};
@@ -62,7 +62,7 @@ for i=1,#files do
     local env=LuaEnvironment:New(pristine);
     env:AddLoader(LuaEnvironment.Loaders.Ignore("bit", "lfs"));
     env:AddLoader(LuaEnvironment.Loaders.Filesystem(loadfile));
-    env:Require("global");
+    env:Require("bin/global");
 
     -- Register our listeners to construct our dependency tree.
     function env:OnRequireLoading(package)

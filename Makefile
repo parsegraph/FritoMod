@@ -1,4 +1,4 @@
-dirs = . labs libs
+dirs = fritomod fritomod/labs deps
 ifndef NO_TEST
 dirs += tests
 endif
@@ -15,7 +15,7 @@ toc: FritoMod.toc
 
 FritoMod.toc:
 	./FritoMod.toc.in >FritoMod.toc
-	./get-requires $(dirs) >>FritoMod.toc
+	./bin/get-requires $(dirs) >>FritoMod.toc
 
 clean: 
 	rm -f FritoMod.toc
