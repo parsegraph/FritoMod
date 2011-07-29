@@ -1,7 +1,7 @@
 if nil ~= require then
-    require "basic";
-    require "currying";
-    require "OOP";
+    require "fritomod/basic";
+    require "fritomod/currying";
+    require "fritomod/OOP";
 end;
 
 local CLASS_METATABLE = {

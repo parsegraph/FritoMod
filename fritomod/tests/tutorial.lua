@@ -1,9 +1,9 @@
 -- In this tutorial, I explain arrays, maps, and for-loops. I use a built-in function
 -- called assert to prove my points:
 if nil ~= require then
-	require "Assert";
-	require "Tests";
-	require "ReflectiveTestSuite";
+	require "fritomod/Assert";
+	require "fritomod/Tests";
+	require "fritomod/ReflectiveTestSuite";
 end;
 
 local Suite=ReflectiveTestSuite:New("tutorial");

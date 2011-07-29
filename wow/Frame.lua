@@ -1,6 +1,6 @@
 if nil ~= require then
-	require "Metatables";
-	require "OOP-Class";
+	require "fritomod/Metatables";
+	require "fritomod/OOP-Class";
 
 	require "wow/World";
 end;

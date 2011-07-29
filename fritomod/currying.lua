@@ -6,7 +6,7 @@
 -- TODO Write more about currying, since we use it everywhere.
 
 if nil ~= require then
-    require "basic";
+    require "fritomod/basic";
 end;
 
 -- Curries the specified method or function using any specified arguments. This will make

@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("Events");
+local Suite=CreateTestSuite("fritomod.Events");
 
 function Suite:TestEvents()
 	local f=Tests.Flag();

@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("Serializers-Lua");
+local Suite=CreateTestSuite("fritomod.Serializers-Lua");
 
 function Suite:TestWriteAString()
     Assert.Equals('"No time"', Serializers.WriteLua("No time"));

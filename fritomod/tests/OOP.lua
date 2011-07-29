@@ -1,8 +1,8 @@
 if nil ~= require then
-    require "OOP-Class";
+    require "fritomod/OOP-Class";
 end;
 
-local Suite = CreateTestSuite("OOP");
+local Suite = CreateTestSuite("fritomod.OOP");
 
 function Suite:TestIsClass()
     assert(OOP.IsClass(OOP.Class()), "class is a class");

@@ -1,9 +1,9 @@
 if nil ~= require then
-    require "currying";
-    require "Lists";
-    require "AllTests";
-    require "Slash";
-    require "Persistence";
+    require "fritomod/currying";
+    require "fritomod/Lists";
+    require "fritomod/AllTests";
+    require "fritomod/Slash";
+    require "fritomod/Persistence";
 end;
 
 function TestingSlashCommand()

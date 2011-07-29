@@ -5,9 +5,9 @@
 -- end);
 -- assert(Containers.Contains("bags", "Hearthstone"), "You don't have a Hearthstone?!");
 if nil ~= require then
-    require "currying";
-    require "Metatables";
-    require "Mixins-Iteration";
+    require "fritomod/currying";
+    require "fritomod/Metatables";
+    require "fritomod/Mixins-Iteration";
 end;
 Containers=Mixins.Iteration();
 

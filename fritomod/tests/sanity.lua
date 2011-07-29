@@ -2,9 +2,9 @@
 -- lua-specific functionality, so test failures indicate an incompatible lua version.
 
 if nil ~= require then
-    require "ReflectiveTestSuite";
-    require "Assert";
-    require "Tests";
+    require "fritomod/ReflectiveTestSuite";
+    require "fritomod/Assert";
+    require "fritomod/Tests";
 end;
 
 local Suite = ReflectiveTestSuite:New("sanity");

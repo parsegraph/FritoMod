@@ -1,10 +1,10 @@
 if nil ~= require then
-    require "tests/Mixins-ArrayTests";
-    require "tests/Mixins-MutableArrayTests";
-    require "tests/Mixins-ComparableIteration";
+    require "fritomod/tests/Mixins-ArrayTests";
+    require "fritomod/tests/Mixins-MutableArrayTests";
+    require "fritomod/tests/Mixins-ComparableIteration";
 end;
 
-local Suite = CreateTestSuite("Lists");
+local Suite = CreateTestSuite("fritomod.Lists");
 
 function Suite:Array(...)
 	return {...};

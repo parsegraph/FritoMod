@@ -1,9 +1,9 @@
 if nil ~= require then
-    require "Lists";
-    require "Strings";
+    require "fritomod/Lists";
+    require "fritomod/Strings";
 end;
 
-local Suite=IntegrationTest("Iteration");
+local Suite=IntegrationTest("fritomod.Iteration");
 
 function Suite:TestContainsString()
     local buttons={"LeftButton", "RightButton"};

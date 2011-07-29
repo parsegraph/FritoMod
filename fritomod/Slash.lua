@@ -1,6 +1,6 @@
 if nil ~= require then
-	require "currying";
-	require "Functions";
+	require "fritomod/currying";
+	require "fritomod/Functions";
 end;
 Slash={
 	Registry={}

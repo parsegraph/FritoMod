@@ -1,5 +1,5 @@
 if nil ~= require then
-    require "Tables";
+    require "fritomod/Tables";
 end;
 
 Labs=Labs or {};

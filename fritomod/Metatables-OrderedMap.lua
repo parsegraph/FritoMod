@@ -1,7 +1,7 @@
 if nil ~= require then
-    require "currying";
-    require "Lists";
-    require "Metatables";
+    require "fritomod/currying";
+    require "fritomod/Lists";
+    require "fritomod/Metatables";
 end;
 
 function Metatables.OrderedMap(target)

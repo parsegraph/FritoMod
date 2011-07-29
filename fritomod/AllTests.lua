@@ -7,7 +7,7 @@
 -- this works.
 
 if nil ~= require then
-    require "MappedTestSuite";
+    require "fritomod/MappedTestSuite";
 end;
 
 -- Be pessimistic when it comes to creating AllTests, since tests

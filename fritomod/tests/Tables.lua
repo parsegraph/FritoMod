@@ -1,10 +1,10 @@
 if nil ~= require then
-    require "tests/Mixins-TableTests";
-    require "tests/Mixins-MutableTableTests";
-    require "tests/Mixins-ComparableIteration";
+    require "fritomod/tests/Mixins-TableTests";
+    require "fritomod/tests/Mixins-MutableTableTests";
+    require "fritomod/tests/Mixins-ComparableIteration";
 end;
 
-local Suite = CreateTestSuite("Tables");
+local Suite = CreateTestSuite("fritomod.Tables");
 
 Mixins.TableTests(Suite, Tables);
 Mixins.MutableTableTests(Suite, Tables);

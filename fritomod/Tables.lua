@@ -8,9 +8,9 @@
 -- tables. You don't need to create some special object to use these methods.
 
 if nil ~= require then
-    require "currying";
-    require "Metatables";
-    require "Mixins-MutableIteration";
+    require "fritomod/currying";
+    require "fritomod/Metatables";
+    require "fritomod/Mixins-MutableIteration";
 end;
 
 Tables = {}

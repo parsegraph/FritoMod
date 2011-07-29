@@ -35,8 +35,8 @@
 -- when a virtual frame actually fits well with what I'm doing. However, this 
 -- happens less often than you'd think.
 if nil ~= require then
-    require "Frames";
-    require "Media";
+    require "fritomod/Frames";
+    require "fritomod/Media";
 end;
 
 local buttons={};

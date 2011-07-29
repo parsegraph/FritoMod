@@ -44,9 +44,9 @@
 -- Which will print the "fail" picture to whatever medium you're using, such as guild, party, etc.
 
 if nil ~= require then
-    require "basic";
-    require "currying";
-    require "Strings-Transform";
+    require "fritomod/basic";
+    require "fritomod/currying";
+    require "fritomod/Strings-Transform";
 end;
 
 local function OutputTransform(set, picture, out, ...)

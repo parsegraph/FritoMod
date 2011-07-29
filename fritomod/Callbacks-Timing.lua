@@ -1,7 +1,7 @@
 -- Callbacks that deal with time.
 
 if nil ~= require then
-    require "Timing";
+    require "fritomod/Timing";
 end;
 
 Callbacks=Callbacks or {};

@@ -1,8 +1,8 @@
 if nil ~= require then
-    require "Strings";
+    require "fritomod/Strings";
 end;
 
-local Suite = CreateTestSuite("TestSuite");
+local Suite = CreateTestSuite("fritomod.TestSuite");
 
 function Suite:TestErrorStackTraceOutputsProperly()
     local suite = TestSuite:New();

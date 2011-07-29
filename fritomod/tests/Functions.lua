@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("Functions");
+local Suite = CreateTestSuite("fritomod.Functions");
 
 function Suite:TestReturn()
     local returned = {Functions.Return(1,2,3)};

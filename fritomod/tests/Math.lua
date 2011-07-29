@@ -1,1 +1,1 @@
-local MathTests = CreateTestSuite("Math");
+local MathTests = CreateTestSuite("fritomod.Math");

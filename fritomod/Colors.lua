@@ -3,10 +3,10 @@
 if nil ~= require then
     require "bit"
 
-    require "Metatables";
-    require "Math";
-    require "Lists";
-    require "Strings";
+    require "fritomod/Metatables";
+    require "fritomod/Math";
+    require "fritomod/Lists";
+    require "fritomod/Strings";
 end;
 
 Colors = Metatables.Defensive();

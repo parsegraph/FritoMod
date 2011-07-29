@@ -1,8 +1,8 @@
 if nil ~= require then
 	require "wow/Frame";
 
-	require "basic";
-	require "Lists";
+	require "fritomod/basic";
+	require "fritomod/Lists";
 end;
 
 local Frame=WoW.Frame;

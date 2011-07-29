@@ -1,9 +1,9 @@
 if nil ~= require then
     require "wow/Frame-Layout";
 
-    require "Serializers";
-    require "Persistence";
-    require "Frames";
+    require "fritomod/Serializers";
+    require "fritomod/Persistence";
+    require "fritomod/Frames";
 end;
 
 -- This is the name of the table we save in Persistence

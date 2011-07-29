@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("Tests");
+local Suite = CreateTestSuite("fritomod.Tests");
 
 function Suite:TestSimpleFlagMechanics()
     local flag = Tests.Flag();

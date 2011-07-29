@@ -1,8 +1,8 @@
 if nil~=require then
-    require "currying";
-    require "Functions";
-    require "Lists";
-    require "Events";
+    require "fritomod/currying";
+    require "fritomod/Functions";
+    require "fritomod/Lists";
+    require "fritomod/Events";
 end;
 
 local function AssertPersistence()

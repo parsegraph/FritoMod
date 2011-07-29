@@ -1,9 +1,8 @@
 if nil ~= require then
-    require "currying";
-    require "Functions";
-
-    require "OOP-Class";
-    require "Lists";
+    require "fritomod/currying";
+    require "fritomod/Functions";
+    require "fritomod/OOP-Class";
+    require "fritomod/Lists";
 end;
 
 ToggleDispatcher=OOP.Class();

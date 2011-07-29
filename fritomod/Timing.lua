@@ -54,11 +54,11 @@ if nil ~= require then
     require "wow/api/Frame";
     require "wow/api/Timing"
 
-    require "basic";
-    require "currying";
-    require "Functions";
-    require "Lists";
-    require "Callbacks-Frames";
+    require "fritomod/basic";
+    require "fritomod/currying";
+    require "fritomod/Functions";
+    require "fritomod/Lists";
+    require "fritomod/Callbacks-Frames";
 end;
 
 Timing = {};

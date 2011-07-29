@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("currying");
+local Suite = CreateTestSuite("fritomod.currying");
 
 local function Sum(...)
     local sum = 0;

@@ -1,10 +1,10 @@
 if nil ~= require then
-    require "basic";
-    require "currying";
-    require "Functions";
-    require "Objects";
-    require "Lists";
-    require "StackTrace";
+    require "fritomod/basic";
+    require "fritomod/currying";
+    require "fritomod/Functions";
+    require "fritomod/Objects";
+    require "fritomod/Lists";
+    require "fritomod/StackTrace";
 end;
 
 Tests = Tests or {};

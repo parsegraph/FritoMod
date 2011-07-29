@@ -1,7 +1,7 @@
 -- A library of operations that provide useful functional idioms.
 if nil ~= require then
-    require "basic";
-    require "currying";
+    require "fritomod/basic";
+    require "fritomod/currying";
 end;
 
 if nil == Functions then

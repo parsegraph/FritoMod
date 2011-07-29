@@ -1,7 +1,7 @@
 -- Some pictures we use commonly with Chatpic.
 
 if nil ~= require then
-    require "labs/Chatpic";
+    require "fritomod/labs/Chatpic";
 end;
 
 Chatpic.fail={

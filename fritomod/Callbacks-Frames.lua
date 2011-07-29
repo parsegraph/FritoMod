@@ -1,8 +1,8 @@
 if nil ~= require then
     require "wow/Frame-Events";
 
-    require "currying";
-    require "Functions";
+    require "fritomod/currying";
+    require "fritomod/Functions";
 end;
 
 Callbacks=Callbacks or {};

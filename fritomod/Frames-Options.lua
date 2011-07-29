@@ -1,7 +1,8 @@
 if nil ~= require then
     require "wow/Frame-Layout";
     require "wow/FontString";
-    require "Anchors"
+
+    require "fritomod/Anchors"
 end;
 
 Frames=Frames or {};

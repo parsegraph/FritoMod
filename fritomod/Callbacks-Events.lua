@@ -17,10 +17,10 @@
 -- callbacks that have two possible states.
 
 if nil ~= require then
-    require "currying";
-    require "Lists";
-    require "IdempotentToggleDispatcher";
-    require "ToggleDispatcher";
+    require "fritomod/currying";
+    require "fritomod/Lists";
+    require "fritomod/IdempotentToggleDispatcher";
+    require "fritomod/ToggleDispatcher";
 end;
 
 Callbacks=Callbacks or {};

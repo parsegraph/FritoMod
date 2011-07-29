@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "Tables";
-    require "Media";
+    require "fritomod/Tables";
+    require "fritomod/Media";
 end;
 
 local FRITOMOD="Interface/AddOns/FritoMod/media/";

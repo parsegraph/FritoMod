@@ -23,8 +23,8 @@
 -- an oversight than a design decision.
 
 if nil ~= require then
-    require "Metatables";
-    require "Strings";
+    require "fritomod/Metatables";
+    require "fritomod/Strings";
 end;
 
 local s = Strings.Pretty;

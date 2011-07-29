@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("Objects");
+local Suite = CreateTestSuite("fritomod.Objects");
 
 function Suite:TestValue()
     local value = Objects.Value();

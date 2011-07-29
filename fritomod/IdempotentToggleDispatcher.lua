@@ -4,7 +4,7 @@
 -- "fired" state.
 
 if nil ~= require then
-    require "ToggleDispatcher";
+    require "fritomod/ToggleDispatcher";
 end;
 
 IdempotentToggleDispatcher=OOP.Class(ToggleDispatcher);

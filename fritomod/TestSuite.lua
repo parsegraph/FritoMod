@@ -1,14 +1,14 @@
 if nil ~= require then
-    require "basic";
-    require "currying";
-    require "Metatables";
-    require "Functions";
-    require "OOP";
-    require "OOP-Class";
-    require "Metatables";
-    require "Lists";
-    require "Iterators";
-    require "Tests";
+    require "fritomod/basic";
+    require "fritomod/currying";
+    require "fritomod/Metatables";
+    require "fritomod/Functions";
+    require "fritomod/OOP";
+    require "fritomod/OOP-Class";
+    require "fritomod/Metatables";
+    require "fritomod/Lists";
+    require "fritomod/Iterators";
+    require "fritomod/Tests";
 end;
 
 TestSuite = OOP.Class();
@@ -19,7 +19,7 @@ function TestSuite:Constructor(name)
     self.name = name or "";
     if name then
         if require then
-            require("AllTests");
+            require("fritomod/AllTests");
         end;
         AllTests[name] = self;
     end;

@@ -1,7 +1,7 @@
 if nil ~= require then
-    require "Lists";
-    require "Events";
-    require "Containers";
+    require "fritomod/Lists";
+    require "fritomod/Events";
+    require "fritomod/Containers";
 end;
 
 Callbacks=Callbacks or {};

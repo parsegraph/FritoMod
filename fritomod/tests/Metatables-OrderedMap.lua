@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("Metatables-OrderedMap");
+local Suite = CreateTestSuite("fritomod.Metatables-OrderedMap");
 
 function Suite:TestMulticast()
     local comp = Metatables.Multicast();

@@ -14,9 +14,9 @@
 --
 -- Metatables.ForceFunctions and Metatables.ForceMethods will help you here.
 if nil ~= require then
-    require "Metatables";
-    require "Assert";
-    require "Strings";
+    require "fritomod/Metatables";
+    require "fritomod/Assert";
+    require "fritomod/Strings";
 end;
 Objects=Objects or {};
 

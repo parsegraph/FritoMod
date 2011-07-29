@@ -1,7 +1,7 @@
 if nil ~= require then
-    require "Assert";
-    require "Tests";
-    require "Operator";
+    require "fritomod/Assert";
+    require "fritomod/Tests";
+    require "fritomod/Operator";
 end;
 
 Mixins=Mixins or {};

@@ -1,10 +1,10 @@
 -- A bunch of colors for Media.color
 
 if nil ~= require then
-    require "Metatables";
-    require "Strings";
-    require "Colors";
-    require "Media";
+    require "fritomod/Metatables";
+    require "fritomod/Strings";
+    require "fritomod/Colors";
+    require "fritomod/Media";
 end;
 
 local colors=setmetatable({}, {

@@ -6,9 +6,9 @@ if nil ~= require then
     require "wow/Frame-Animation";
     require "wow/Frame-Layout";
 
-    require "Lists";
-    require "Frames";
-    require "Events";
+    require "fritomod/Lists";
+    require "fritomod/Frames";
+    require "fritomod/Events";
 end;
 
 Labs=Labs or {};

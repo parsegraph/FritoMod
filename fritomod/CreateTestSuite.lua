@@ -6,9 +6,9 @@ function CreateTestSuite(name, path)
 		path = name:gsub("[.]", "/");
 	end;
 	if nil ~= require then
-		require "ReflectiveTestSuite";
-		require "Assert";
-		require "Tests";
+		require "fritomod/ReflectiveTestSuite";
+		require "fritomod/Assert";
+		require "fritomod/Tests";
 
 		if path ~= false then
 			require(path);
@@ -20,9 +20,9 @@ UnitTest=CreateTestSuite;
 
 function IntegrationTest(name)
 	if nil ~= require then
-		require "ReflectiveTestSuite";
-		require "Assert";
-		require "Tests";
+		require "fritomod/ReflectiveTestSuite";
+		require "fritomod/Assert";
+		require "fritomod/Tests";
     end;
 	return ReflectiveTestSuite:New("Integration."..name);
 end;

@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "currying";
-    require "basic";
+    require "fritomod/currying";
+    require "fritomod/basic";
 end;
 
 Operator = setmetatable({

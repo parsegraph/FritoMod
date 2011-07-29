@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("Metatables");
+local Suite = CreateTestSuite("fritomod.Metatables");
 
 function Suite:TestDefault()
     local t = {};

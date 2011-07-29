@@ -1,7 +1,7 @@
 -- Automatic Item Selling
 if nil ~= require then
-	require "currying";
-	require "Events";
+	require "fritomod/currying";
+	require "fritomod/Events";
 end;
 
 Labs=Labs or {};

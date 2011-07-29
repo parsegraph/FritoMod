@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "Functions";
-    require "Lists";
+    require "fritomod/Functions";
+    require "fritomod/Lists";
 end;
 
 local stack={};

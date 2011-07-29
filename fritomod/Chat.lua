@@ -52,9 +52,10 @@
 
 if nil ~= require then
     require "wow/api/Chat";
-    require "currying";
-    require "Tables";
-    require "Strings";
+
+    require "fritomod/currying";
+    require "fritomod/Tables";
+    require "fritomod/Strings";
 end;
 
 Chat = {};

@@ -5,9 +5,9 @@
 -- Specifically, this mixin adds a set of generic accessors and modifiers, insertion
 -- and removal functions, cloning, updating, and reversing.
 if nil ~= require then
-    require "currying";
-    require "Operator";
-    require "Mixins-Iteration";
+    require "fritomod/currying";
+    require "fritomod/Operator";
+    require "fritomod/Mixins-Iteration";
 end;
 
 if Mixins == nil then

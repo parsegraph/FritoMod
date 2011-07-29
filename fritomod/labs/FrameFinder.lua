@@ -5,12 +5,12 @@ if nil ~= require then
     require "wow/api/Frame";
     require "wow/api/UIParent";
 
-    require "Functions";
-    require "OOP-Class";
-    require "Lists";
-    require "Frames";
-    require "Frames-Mouse";
-    require "Anchors";
+    require "fritomod/Functions";
+    require "fritomod/OOP-Class";
+    require "fritomod/Lists";
+    require "fritomod/Frames";
+    require "fritomod/Frames-Mouse";
+    require "fritomod/Anchors";
 end;
 
 Labs=Labs or {};

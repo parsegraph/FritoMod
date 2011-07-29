@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("Assert");
+local Suite = CreateTestSuite("fritomod.Assert");
 
 function Suite:TestAssertException()
     assert(not pcall(Assert.Exception, "Don't throw", Noop), "Assert.Exception throws on successful test");

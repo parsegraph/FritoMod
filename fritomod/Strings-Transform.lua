@@ -1,7 +1,7 @@
 if nil ~= require then
-    require "Strings";
-    require "Unicode";
-    require "Lists";
+    require "fritomod/Strings";
+    require "fritomod/Unicode";
+    require "fritomod/Lists";
 end;
 
 function Strings.Transform(str, set)

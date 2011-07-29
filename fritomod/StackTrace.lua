@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "OOP-Class";
-    require "Lists";
+    require "fritomod/OOP-Class";
+    require "fritomod/Lists";
 end;
 
 StackTrace=OOP.Class();

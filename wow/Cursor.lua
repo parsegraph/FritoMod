@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "Functions";
-    require "OOP-Class"
+    require "fritomod/Functions";
+    require "fritomod/OOP-Class"
 end;
 
 WoW=WoW or {};

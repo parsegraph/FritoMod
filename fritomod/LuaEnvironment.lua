@@ -1,9 +1,9 @@
 if nil ~= require then
-    require "basic";
-    require "currying";
-    require "OOP-Class";
-    require "Functions";
-    require "Lists";
+    require "fritomod/basic";
+    require "fritomod/currying";
+    require "fritomod/OOP-Class";
+    require "fritomod/Functions";
+    require "fritomod/Lists";
 end;
 
 LuaEnvironment=OOP.Class();

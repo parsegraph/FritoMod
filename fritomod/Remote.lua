@@ -21,7 +21,7 @@
 -- some metatable/closure magic to retain the original syntax.
 -- 
 if nil ~= require then
-    require "Tables";
+    require "fritomod/Tables";
 end;
 
 local mediums={};

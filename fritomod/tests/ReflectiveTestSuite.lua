@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("ReflectiveTestSuite");
+local Suite = CreateTestSuite("fritomod.ReflectiveTestSuite");
 
 function Suite:TestReflectiveTestSuiteIgnoresNonTestFunctions()
     local suite = ReflectiveTestSuite:New();

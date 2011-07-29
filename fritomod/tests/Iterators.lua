@@ -1,9 +1,9 @@
 if nil ~= require then
-    require "tests/Mixins-ArrayTests";
-    require "tests/Mixins-TableTests";
+    require "fritomod/tests/Mixins-ArrayTests";
+    require "fritomod/tests/Mixins-TableTests";
 end;
 
-local Suite=CreateTestSuite("Iterators");
+local Suite=CreateTestSuite("fritomod.Iterators");
 
 local arraySuite = ReflectiveTestSuite:New("Iterators (arrays)");
 Mixins.ArrayTests(arraySuite, Iterators);

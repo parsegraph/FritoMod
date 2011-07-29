@@ -1,11 +1,11 @@
 if nil ~= require then
-    require "currying";
+    require "fritomod/currying";
 
-    require "tests/Mixins-ArrayTests";
-    require "tests/Mixins-ComparableIteration";
+    require "fritomod/tests/Mixins-ArrayTests";
+    require "fritomod/tests/Mixins-ComparableIteration";
 end;
 
-local Suite=CreateTestSuite("Strings");
+local Suite=CreateTestSuite("fritomod.Strings");
 
 function Suite:TestStringGet()
     local s="abcde";

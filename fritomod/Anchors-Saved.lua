@@ -21,9 +21,9 @@ if nil ~= require then
     require "wow/Frame-Layout";
     require "wow/FontString";
 
-    require "PersistentAnchor";
-    require "Anchors";
-    require "Callbacks-UI";
+    require "fritomod/PersistentAnchor";
+    require "fritomod/Anchors";
+    require "fritomod/Callbacks-UI";
 end;
 
 -- A mapping of anchor names to PersistentAnchor objects.

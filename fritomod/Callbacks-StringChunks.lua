@@ -1,7 +1,7 @@
 -- A callback that handles the receiving end of Serializers.StringChunks.
 
 if nil ~= require then
-    require "currying";
+    require "fritomod/currying";
 end;
 
 Callbacks=Callbacks or {};

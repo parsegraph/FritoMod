@@ -1,7 +1,7 @@
 if nil ~= require then
 	require "wow/Frame";
 
-	require "OOP-Class";
+	require "fritomod/OOP-Class";
 end;
 
 WoW.FontString=OOP.Class(WoW.Frame);

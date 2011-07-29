@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("Chat");
+local Suite = CreateTestSuite("fritomod.Chat");
 
 Suite:AddListener(Metatables.Noop({
 	TestStarted = function(self, suite)

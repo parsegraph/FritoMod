@@ -1,11 +1,11 @@
 if nil ~= require then
-    require "basic";
-    require "Metatables";
-    require "Mixins-Iteration";
-    require "Lists";
-    require "Tables";
-    require "Iterators";
-    require "OOP";
+    require "fritomod/basic";
+    require "fritomod/Metatables";
+    require "fritomod/Mixins-Iteration";
+    require "fritomod/Lists";
+    require "fritomod/Tables";
+    require "fritomod/Iterators";
+    require "fritomod/OOP";
 end;
 
 Strings=Mixins.Iteration();

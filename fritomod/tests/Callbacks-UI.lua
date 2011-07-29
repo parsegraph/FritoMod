@@ -1,8 +1,8 @@
 if nil ~= require then
     require "wow/Frame-Events";
-    require "Frames";
+    require "fritomod/Frames";
 end;
-local Suite=CreateTestSuite("Callbacks-UI");
+local Suite=CreateTestSuite("fritomod.Callbacks-UI");
 
 function Suite:TestEnterFrame()
     local world=WoW.World:New();

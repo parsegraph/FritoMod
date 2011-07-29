@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("basic");
+local Suite = CreateTestSuite("fritomod.basic");
 
 function Suite:TestUnpackAll()
     local a, b, c = UnpackAll({1,2,3});

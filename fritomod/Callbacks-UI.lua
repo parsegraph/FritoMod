@@ -7,10 +7,10 @@
 if nil ~= require then
     require "wow/Frame-Events";
 
-    require "currying";
-    require "Lists";
-    require "Timing";
-    require "ToggleDispatcher";
+    require "fritomod/currying";
+    require "fritomod/Lists";
+    require "fritomod/Timing";
+    require "fritomod/ToggleDispatcher";
 end;
 
 Callbacks=Callbacks or {};

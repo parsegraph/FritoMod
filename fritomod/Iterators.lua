@@ -1,8 +1,8 @@
 if nil ~= require then
-    require "basic";
-    require "currying";
-    require "Metatables";
-    require "Mixins-Iteration";
+    require "fritomod/basic";
+    require "fritomod/currying";
+    require "fritomod/Metatables";
+    require "fritomod/Mixins-Iteration";
 end;
 
 -- A collection of functions dealing with iterators. Iterators are functions that accept no arguments and

@@ -1,7 +1,7 @@
 -- Functions that deal with metatables.
 
 if nil ~= require then
-    require "currying";
+    require "fritomod/currying";
 end;
 
 Metatables=Metatables or {};

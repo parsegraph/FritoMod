@@ -30,9 +30,9 @@
 if nil ~= require then
 	require "wow/Frame-Events";
 
-    require "basic";
-    require "Functions";
-    require "Lists";
+    require "fritomod/basic";
+    require "fritomod/Functions";
+    require "fritomod/Lists";
 end;
 
 Events = {};

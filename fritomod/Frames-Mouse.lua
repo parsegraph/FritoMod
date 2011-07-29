@@ -1,7 +1,8 @@
 if nil ~= require then
     require "wow/Frame-Events";
-    require "Functions";
-    require "Callbacks-UI";
+
+    require "fritomod/Functions";
+    require "fritomod/Callbacks-UI";
 end;
 
 Frames=Frames or {};

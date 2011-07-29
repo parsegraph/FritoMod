@@ -1,9 +1,9 @@
 -- Sets up fonts for Media.font
 
 if nil ~= require then
-    require "Frames";
-    require "currying";
-    require "Media";
+    require "fritomod/Frames";
+    require "fritomod/currying";
+    require "fritomod/Media";
 end;
 
 local fonts={

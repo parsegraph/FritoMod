@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("OOP-Class");
+local Suite = CreateTestSuite("fritomod.OOP-Class");
 
 function Suite:TestSimpleClass()
     local Base = OOP.Class();

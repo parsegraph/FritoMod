@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("Mixins");
+local Suite=CreateTestSuite("fritomod.Mixins");
 
 function Suite:TestOverridable()
     local t={};

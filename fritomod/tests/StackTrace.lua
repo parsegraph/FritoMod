@@ -1,6 +1,6 @@
-local Suite=UnitTest("StackTrace");
+local Suite=UnitTest("fritomod.StackTrace");
 if nil ~= require then
-    require "Operator";
+    require "fritomod/Operator";
 end;
 
 function Suite:TestFilter()

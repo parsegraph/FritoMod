@@ -1,4 +1,4 @@
-local Suite=CreateTestSuite("Timing");
+local Suite=CreateTestSuite("fritomod.Timing");
 
 function Suite:Tick(value)
     self.time=self.time+value;

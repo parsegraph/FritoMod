@@ -1,7 +1,7 @@
 if nil ~= require then
-    require "OOP-Class";
-    require "Metatables-OrderedMap";
-    require "TestSuite";
+    require "fritomod/OOP-Class";
+    require "fritomod/Metatables-OrderedMap";
+    require "fritomod/TestSuite";
 end;
 
 ReflectiveTestSuite = OOP.Class(TestSuite);
