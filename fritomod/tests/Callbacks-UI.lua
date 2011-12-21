@@ -4,7 +4,14 @@ if nil ~= require then
 end;
 local Suite=CreateTestSuite("fritomod.Callbacks-UI");
 
+function Suite:ShouldIgnore()
+	return not WoW;
+end;
+
 function Suite:TestEnterFrame()
+	if self:ShouldIgnore() then
+		return;
+	end;
     local world=WoW.World:New();
     local frame=WoW.Frame:New(world);
     local flag=Tests.Flag();
@@ -16,6 +23,9 @@ function Suite:TestEnterFrame()
 end;
 
 function Suite:TestShow()
+	if self:ShouldIgnore() then
+		return;
+	end;
     local world=WoW.World:New();
     local frame=WoW.Frame:New(world);
     local flag=Tests.Flag();
@@ -28,6 +38,9 @@ function Suite:TestShow()
 end;
 
 function Suite:TestMouseDown()
+	if self:ShouldIgnore() then
+		return;
+	end;
     local world=WoW.World:New();
     local frame=WoW.Frame:New(world);
     local flag=Tests.Flag();
@@ -39,6 +52,9 @@ function Suite:TestMouseDown()
 end;
 
 function Suite:TestMouseDown()
+	if self:ShouldIgnore() then
+		return;
+	end;
     local world=WoW.World:New();
     local frame=WoW.Frame:New(world);
     local flag=Tests.Flag();
