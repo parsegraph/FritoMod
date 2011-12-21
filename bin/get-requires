@@ -122,7 +122,9 @@ function modes.text()
         Insert(files[i]);
     end;
 
-    Lists.Each(orderedDependencies, print);
+    Lists.Each(
+        Lists.Map(orderedDependencies, "gsub", "/", "\\"),
+        print);
 end;
 
 function modes.lua()
