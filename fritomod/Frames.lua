@@ -50,6 +50,12 @@ function Frames.Square(f, size)
 end;
 Frames.Squared=Frames.Square;
 
+function Frames.DumpPoints(f)
+    for i=1,f:GetNumPoints() do
+        print(f:GetPoint(i));
+    end;
+end;
+
 -- Sets the dimensions for the specified frame.
 function Frames.Rectangle(f, w, h)
     if h==nil then
