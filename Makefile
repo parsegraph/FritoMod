@@ -13,11 +13,12 @@ test:
 toc: FritoMod.toc
 .PHONY: toc
 
-FritoMod.toc:
-	./FritoMod.toc.in >FritoMod.toc
-	./bin/get-requires $(dirs) >>FritoMod.toc
+FritoMod.toc: $(dirs) bin/get-requires FritoMod.toc.in
+	./FritoMod.toc.in >.FritoMod.toc
+	./bin/get-requires $(dirs) >>.FritoMod.toc
+	mv .FritoMod.toc FritoMod.toc
 
 clean:
-	rm -f FritoMod.toc
+	rm -f FritoMod.toc .FritoMod.toc
 .PHONY: clean
 
