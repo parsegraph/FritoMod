@@ -92,7 +92,12 @@ ToggledEvent("MouseDown", function(dispatcher, frame)
         dispatcher:Fire(button);
         remover=Timing.OnUpdate(function()
             if observed ~= nil and not IsMouseButtonDown(observed) then
-                print("Observed undetected mouseup!");
+                -- Ideally, this would never be needed, since OnMouseUp should always
+                -- fire. However, reparenting a frame causes the OnMouseUp event to be
+                -- lost. As a result, we need to simulate that event using OnUpdate.
+                --
+                -- This workaround is even used by Blizzard in FloatingChatFrame.xml.
+                -- If their workaround disappears, then ours can afford to go as well.
                 Destroy();
             end;
         end);
