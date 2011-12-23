@@ -7,7 +7,7 @@ StackTrace=OOP.Class();
 
 local function BlizzardStackTrace()
     assert(debugstack, "BlizzardStackTrace requires debugstack() to be available");
-    return Lists.Map(("\n"):split(debugstack(4)), function(stackLevel)
+    return Lists.Map({("\n"):split(debugstack(4))}, function(stackLevel)
         local level={};
         local what, lineNum, funcInfo=(":"):split(stackLevel, 3);
         if what:find("^\\[C\\]$") then
