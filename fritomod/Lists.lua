@@ -87,6 +87,18 @@ do
     end;
 end;
 
+--[[
+-- Check where the specified iterable contains the specified target value. If
+-- testFunc is provided, it will be used to determine equality. Otherwise, lua's
+-- equality operator will be used.
+--
+-- testFunc should expect an element from the iterable as its first argument and
+-- the specified target as its second. Any truthy value will be interpreted as a
+-- "equal" result.
+--
+-- ContainsValue will return true if any element is found equal to target, otherwise
+-- it will return false.
+--]]
 function Lists.ContainsValue(iterable, target, testFunc, ...)
     if testFunc then
         testFunc=Curry(testFunc, ...);
