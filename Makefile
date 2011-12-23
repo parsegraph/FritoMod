@@ -3,7 +3,7 @@ ifndef NO_TEST
 dirs += fritomod/tests
 endif
 
-all: test toc
+all: toc
 .PHONY: all
 
 test:
