@@ -119,3 +119,14 @@ function Anchors.Toggle()
         Anchors.Show();
     end;
 end;
+
+function Anchors.Names()
+	return Tables.Keys(anchors);
+end;
+
+function Anchors.Reset(name)
+	if not anchors[name] then
+		return;
+	end
+	anchors[name]:Reset();
+end;

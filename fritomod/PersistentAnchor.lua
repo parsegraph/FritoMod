@@ -42,3 +42,8 @@ end;
 function PersistentAnchor:Save()
     return Serializers.SavePoint(self.frame, 1);
 end;
+
+function PersistentAnchor:Reset()
+    self.frame:ClearAllPoints();
+	self.frame:SetPoint("center");
+end;
