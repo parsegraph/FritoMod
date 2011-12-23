@@ -1,6 +1,6 @@
 -- Remote lets you listen for and dispatch remote events.
 --
--- Slash.Register("notime", Remote["NoTime.Chat"].g);
+-- Slash.notime = Remote["NoTime.Chat"].g;
 -- Remote["NoTime.Chat"](function(message, who)
 --     print(("%s said %q"):format(who, message));
 -- end);
