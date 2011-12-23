@@ -113,13 +113,13 @@ function Strings.Snippet(str, first, last)
 end;
 
 function Strings.StartsWith(str, match)
-	assert(type(match) == "string", "match must be a string");
+	assert(type(match) == "string", "match must be a string, got: " .. type(match));
 	assert(#match > 0, "match must contain at least one character");
 	return match==str:sub(1, #match);
 end;
 
 function Strings.EndsWith(str, match)
-	assert(type(match) == "string", "match must be a string");
+	assert(type(match) == "string", "match must be a string, got:" .. type(match));
 	assert(#match > 0, "match must contain at least one character");
 	return match==str:sub(#str-#match+1);
 end;
