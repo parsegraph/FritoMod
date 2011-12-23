@@ -65,8 +65,9 @@ Remote=setmetatable({}, {
                         return sender(message());
                     elseif type(message)=="table" then
                         for i=1,#message do
-                            sender(message());
+                            sender(message[i]);
                         end;
+                        return;
                     elseif IsPrimitive(message) then
                         return SendMessage(medium, prefix, tostring(message));
                     end;
