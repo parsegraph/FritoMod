@@ -46,4 +46,5 @@ end;
 function PersistentAnchor:Reset()
     self.frame:ClearAllPoints();
 	self.frame:SetPoint("center");
+	self:Save();
 end;
