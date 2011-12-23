@@ -1,6 +1,6 @@
 if nil ~= require then
-	require "fritomod/currying";
-	require "fritomod/Functions";
+    require "fritomod/currying";
+    require "fritomod/Functions";
 end;
 
 Slash = setmetatable({}, {
