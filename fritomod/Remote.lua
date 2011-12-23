@@ -80,6 +80,7 @@ Remote=setmetatable({}, {
             end,
             __call=function(self, func, ...)
                 func=Curry(func, ...);
+                RegisterAddonMessagePrefix(prefix);
                 return Events.CHAT_MSG_ADDON(function(msgPrefix, message, medium, source)
                     if prefix~=msgPrefix then
                         return;
