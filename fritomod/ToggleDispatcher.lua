@@ -20,13 +20,13 @@ end;
 
 function ToggleDispatcher:Install()
     if self.installers then
-        self.uninstallers=Lists.MapCall(self.installers, self);
+        self.uninstallers=Lists.MapCall(self.installers);
     end;
 end;
 
 function ToggleDispatcher:Uninstall()
     if self.uninstallers then
-        Lists.CallEach(self.uninstallers, self);
+        Lists.CallEach(self.uninstallers);
         self.uninstallers=nil;
     end;
 end;

@@ -36,3 +36,26 @@ function Suite:TestInstallingDispatcher()
     r();
     v.Assert(false);
 end;
+
+function Suite:TestDispatcherDoesntAddAnyArgumentsToInstallers()
+    local dispatcher=ToggleDispatcher:New();
+	local installerFlag = Tests.Flag();
+	local removerFlag = Tests.Flag();
+	local installer = function(a, b, c)
+		installerFlag.Raise();
+		assert(a == nil);
+		assert(b == nil);
+		assert(c == nil);
+		return function(d, e, f)
+			removerFlag.Raise();
+			assert(d == nil);
+			assert(e == nil);
+			assert(f == nil);
+		end;
+	end;
+	dispatcher:AddInstaller(installer);
+	local r = dispatcher:Add(Noop);
+	r();
+	installerFlag.AssertRaised();
+	removerFlag.AssertRaised();
+end;
