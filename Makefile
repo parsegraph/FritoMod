@@ -7,7 +7,7 @@ all: toc
 .PHONY: all
 
 test:
-	find -name '*.lua' ! -path './.git/*' -print0 | xargs -0 ./bin/run-test
+	./bin/run-test.sh
 .PHONY: test
 
 toc: FritoMod.toc
