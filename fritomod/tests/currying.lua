@@ -23,6 +23,19 @@ function Suite:TestCurry()
     Assert.Equals(3, Curry(Do, 1)(2), "Curry handles split arguments properly");
 end;
 
+function Suite:TestCurryMethod()
+	local t = {};
+	local flag = Tests.Flag();
+	function t:hello(arg)
+		assert(self == t);
+		assert(arg == "No time");
+		flag.Raise();
+	end;
+	local f = CurryMethod(t, "hello")
+	f("No time");
+	flag.Assert();
+end;
+
 function Suite:TestCurryDoesntCurryPlainFunctions()
     local function Do(x, y)
         return x + y;
