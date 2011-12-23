@@ -190,6 +190,8 @@ function Frames.ThresholdDraggable(f, threshold, ...)
             end;
         end);
         return function()
+            -- Seal is not used here because r will be redefined once
+            -- the threshold has been exceeded.
             r();
         end;
     end);
