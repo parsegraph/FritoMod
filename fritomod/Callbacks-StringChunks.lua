@@ -15,7 +15,11 @@ local DELIMITER_BYTE=(":"):byte(1);
 --     printf("%s said %q", who, msg);
 -- end);
 --
--- You'll pretty much always use this in tandem with Serializers.StringChunks.
+-- You'll pretty much always use this in tandem with Serializers.StringChunks,
+-- who would send:
+--
+-- local prefix = "FritoMod.Chat";
+-- Remote[prefix].g(Serializers.WriteStringChunks(aSuperLongString, prefix));
 --
 -- source
 --     A function that provides data to registered callbacks. Remote is
