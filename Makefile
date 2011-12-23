@@ -17,7 +17,7 @@ FritoMod.toc:
 	./FritoMod.toc.in >FritoMod.toc
 	./bin/get-requires $(dirs) >>FritoMod.toc
 
-clean: 
+clean:
 	rm -f FritoMod.toc
 .PHONY: clean
 
