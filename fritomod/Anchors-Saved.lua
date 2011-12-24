@@ -16,6 +16,10 @@
 --
 -- Don't use named anchors as parents, as they will be hidden when Anchors.Lock() is
 -- called. You also shouldn't modify an anchor, as these changes won't be persisted.
+--
+-- See also:
+-- PersistentAnchor.lua
+-- Frames-Mouse.lua
 
 if nil ~= require then
     require "wow/Frame-Layout";

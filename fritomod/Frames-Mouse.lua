@@ -1,3 +1,30 @@
+-- Allows frames to be repositioned across the screen using the mouse
+--
+-- This file contains two useful functions for dragging frames: Frames.InstantDraggable
+-- and Frames.ThresholdDraggable. Here's a quick example:
+--
+-- local r = Frames.ThresholdDraggable(frame, 10, "Middle");
+-- ... -- drag the frame around!
+-- r(); -- Stop dragging
+--
+-- In the above example, the frame will start moving once you've moved your cursor at least
+-- 10 pixels away from the start of the drag. This behaves similarly to WoW's dragging functions.
+--
+-- Sometimes, you'd prefer a frame to be dragged immediately. Frames.InstantDraggable does just that:
+--
+-- local r = Frames.InstantDraggable(frame, "Middle");
+-- ... -- drag the frame around!
+-- r(); -- Stop dragging
+--
+-- This works identically to the above, except the frame begins dragging immediately, rather than
+-- waiting for a threshold to be exceeded.
+--
+-- If you omit button names, then the left and right buttons will be used as the defaults.
+--
+-- See also:
+-- PersistentAnchor.lua
+-- Anchors-Saved.lua
+
 if nil ~= require then
     require "wow/Frame-Events";
 
