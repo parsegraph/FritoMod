@@ -45,6 +45,7 @@ local function ShowAnchor(name, anchor)
     if not showing then
         return;
     end;
+    trace("Showing anchor: "..name);
     Lists.InsertAll(removers,
         anchor:Show(),
         Callbacks.EnterFrame(anchor.frame, function()
@@ -75,8 +76,10 @@ end;
 function Anchors.Named(name)
     local anchor;
     if anchors[name] then
+        trace("Retrieving existing anchor: "..name);
         anchor=anchors[name];
     else
+        trace("Creating new anchor for name: "..name);
         anchor=PersistentAnchor:New(anchorFrame);
         Frames.Position(anchor.frame, name);
         anchors[name]=anchor;
@@ -94,6 +97,7 @@ Anchors.Persisted=Anchors.Named;
 Anchors.Persist=Anchors.Named;
 
 function Anchors.Show()
+    trace("Showing all anchors");
     if showing then
         return;
     end;
@@ -104,6 +108,7 @@ end;
 Anchors.Unlock=Anchors.Show;
 
 function Anchors.Hide()
+    trace("Hiding all anchors");
     if not showing then
         return;
     end;
@@ -113,6 +118,7 @@ end;
 Anchors.Lock=Anchors.Hide;
 
 function Anchors.Toggle()
+    trace("Toggling anchor visibility");
     if showing then
         Anchors.Hide();
     else
