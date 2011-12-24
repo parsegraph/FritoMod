@@ -1,3 +1,33 @@
+-- Serializes Lua objects into code that represents them.
+--[[
+
+local t = {
+    foo = "Notime",
+    bar = {
+        baz = "Hello!",
+        num = 42
+    }
+};
+
+local retrieved = Serializers.ReadLua(Serializers.WriteLua(t));
+
+assert(retrieved.foo == "Notime");
+assert(retrieved.bar.baz == "Hello!");
+assert(retrieved.bar.num == 42);
+
+--]]
+-- This serializer will convert Lua primitives and tables into
+-- a string that, when executed by the Lua interpreter, will reproduce
+-- the original string.
+--
+-- This class is useful if you want to save Lua data to disk while still
+-- keeping it human-readable. While it's suitable to be sent over a
+-- network connection, its representation is not very efficient. You should
+-- use Serializers.Data for serialization over a network.
+--
+-- See Also:
+-- Serializers-Data.lua
+
 if nil ~= require then
     require "fritomod/Metatables";
     require "fritomod/Cursors-Iterable";

@@ -39,3 +39,19 @@ function Suite:TestWriteATableWithANestedTable()
         }
     }));
 end;
+
+function Suite:TestReadingLuaData()
+    local t = {
+        foo = "Notime",
+        bar = {
+            baz = "Hello!",
+            num = 42
+        }
+    };
+
+    local retrieved = Serializers.ReadLua(Serializers.WriteLua(t));
+
+    assert(retrieved.foo == "Notime");
+    assert(retrieved.bar.baz == "Hello!");
+    assert(retrieved.bar.num == 42);
+end;

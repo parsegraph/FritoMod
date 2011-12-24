@@ -1,3 +1,27 @@
+-- Serializes Lua data into a compressed string.
+--[[
+
+local t = {
+    foo = "Notime",
+    bar = {
+        baz = "Hello!",
+        num = 42
+    }
+};
+
+Remote["FritoMod.Data"]["Khthon"](
+    Serializers.WriteStringChunks(
+        Serializers.WriteData(t),
+        retrieved),
+    "FritoMod.Data"));
+
+-- On Khthon:
+Callbacks.StringChunks(Remote["FritoMod.Data], function(msg)
+    Serializers.
+end);
+
+--]]
+
 if nil ~= require then
     require "fritomod/Metatables";
     require "fritomod/Cursors-Iterable";
