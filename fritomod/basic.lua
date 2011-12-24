@@ -169,3 +169,12 @@ end;
 function printf(str, ...)
     print(str:format(...));
 end
+
+-- A boolean value that determines whether trace debug messages should be shown.
+DEBUG_TRACE=true;
+
+function trace(str, ...)
+    if DEBUG_TRACE then
+        return printf(str, ...);
+    end;
+end;
