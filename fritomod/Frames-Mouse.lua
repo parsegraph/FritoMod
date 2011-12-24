@@ -204,7 +204,6 @@ function Frames.ThresholdDraggable(f, threshold, ...)
             return Lists.Contains(buttons, button, Strings.StartsWith);
         end;
     end;
-    local startX, startY=f:GetCenter();
     return Callbacks.MouseDown(f, function(button)
         if not conditional(button) then
             return;
@@ -213,7 +212,7 @@ function Frames.ThresholdDraggable(f, threshold, ...)
         r=Callbacks.CursorOffset(f, function(x, y)
             if math.abs(x) > threshold or math.abs(y) > threshold then
                 r();
-                r=Frames.StartMovingFrame(f, startX, startY);
+                r=Frames.StartMovingFrame(f);
             end;
         end);
         return function()
