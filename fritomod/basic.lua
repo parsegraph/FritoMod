@@ -171,7 +171,7 @@ function printf(str, ...)
 end
 
 -- A boolean value that determines whether trace debug messages should be shown.
-DEBUG_TRACE=true;
+DEBUG_TRACE=false;
 
 function trace(str, ...)
     if DEBUG_TRACE then
