@@ -1,4 +1,32 @@
-local Suite=CreateTestSuite("fritomod.Callbacks-StringChunks");
+local Suite=CreateTestSuite("fritomod.StringChunkReader");
+
+function Suite:TestStringChunkReader()
+    local reader = StringChunkReader:New();
+    local f = Tests.Flag();
+    reader:Add(function(msg, who)
+        Assert.Equals("Foo", msg);
+        Assert.Equals("Frito", who);
+        f.Raise();
+    end);
+    reader:Read(":Foo", "Frito");
+    f.Assert();
+end;
+
+function Suite:TestStringChunkReaderWithChunkedString()
+    local reader = StringChunkReader:New();
+    local f = Tests.Flag();
+    reader:Add(function(msg, who)
+        f.AssertUnraised();
+        Assert.Equals("Fooderbug", msg);
+        Assert.Equals("Frito", who);
+        f.Raise();
+    end);
+    reader:Read("1:Foo", "Frito");
+    reader:Read("1:der", "Frito");
+    reader:Read("1:bug", "Frito");
+    reader:Read("1:", "Frito");
+    f.Assert();
+end;
 
 function Suite:TestChunkStringCallback()
     local callback=Objects.Value();
