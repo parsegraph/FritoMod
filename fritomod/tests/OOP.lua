@@ -33,7 +33,7 @@ function Suite:TestInstanceOf()
     assert(OOP.InstanceOf(Base, bar), "bar is an instance of Base");
     assert(OOP.InstanceOf(Derived, bar), "bar is an instance of Derived");
 
-end; 
+end;
 
 function Suite:TestInstanceOfThrowsOnBadClass()
     local Base = OOP.Class();

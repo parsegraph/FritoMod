@@ -159,10 +159,10 @@ function Suite:TestAbsurdArrayLengthWithPrimedLengthTable()
         for removalIndex=1, intendedLength-1 do
             -- Creates a list that seems to be primed such that its length is more consistent
             -- than one created by table.insert alone.
-            local code = ("return { %s }"):format(("true, "):rep(intendedLength)); 
+            local code = ("return { %s }"):format(("true, "):rep(intendedLength));
             local list = assert(loadstring(code))();
             list[removalIndex] = nil;
-            if #list ~= intendedLength then 
+            if #list ~= intendedLength then
                 table.insert(inconsistencies, {insertions, removalIndex, #list});
             end;
         end;

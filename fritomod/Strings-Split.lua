@@ -5,7 +5,7 @@ if nil ~= require then
     require "fritomod/Cursors-Iterable";
 end;
 
--- Splits a camelCase'd or ProperCase'd string into lower-case words. Acronyms will be 
+-- Splits a camelCase'd or ProperCase'd string into lower-case words. Acronyms will be
 -- treated as single words.
 --
 -- Observe that camelCase's passed into this method will be parsed correctly; the list
@@ -50,7 +50,7 @@ function Strings.JoinSnakeCase(words)
     return Strings.JoinArray("_", words):lower();
 end;
 
--- Converts AProperCase to aProperCase. 
+-- Converts AProperCase to aProperCase.
 function Strings.ProperToCamelCase(properString)
     return Strings.JoinCamelCase(Strings.SplitByCase(properString));
 end;
@@ -60,7 +60,7 @@ function Strings.ProperToSnakeCase(properString)
     return Strings.JoinSnakeCase(Strings.SplitByCase(properString));
 end;
 
--- Converts aProperCase to AProperCase. 
+-- Converts aProperCase to AProperCase.
 function Strings.CamelToProperCase(camelString)
     return Strings.JoinProperCase(Strings.SplitByCase(camelString));
 end;

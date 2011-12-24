@@ -1,4 +1,4 @@
--- Objects contains simple objects. These objects are simple in that they typically 
+-- Objects contains simple objects. These objects are simple in that they typically
 -- don't do a whole lot. They're also not metatable-based. The quintessential simple
 -- object is a value object. It supports a few useful methods to talk to it, but the
 -- object is ultimately humble in its pursuits.
@@ -39,17 +39,17 @@ function Objects.Value(value)
         Get = function()
             return value;
         end,
-        
+
         -- Sets the holder to contain the specified value.
         --
         -- newValue:*
         --     the new value to hold
         -- returns:*
-        --     the old value 
+        --     the old value
         Set = function(newValue)
             local oldValue = value;
             value = newValue;
-            return oldValue; 
+            return oldValue;
         end,
 
         Change = function(newValue)
@@ -241,12 +241,12 @@ function Objects.Toggle(func, ...)
             expectedState=true;
         end;
         expectedState=InterpretState(expectedState);
-        if expectedState=="on" then 
+        if expectedState=="on" then
             expectedState=true;
         else
             expectedState=false;
         end;
-        assert(expectedState==toggle.State(), 
+        assert(expectedState==toggle.State(),
             ("Toggle must be %s, but was %s%s"):format(tostring(expectedState), tostring(toggle.State()), assertion));
     end;
 
@@ -259,7 +259,7 @@ function Objects.Toggle(func, ...)
         return toggle.Assert(false, assertion);
     end;
     toggle.AssertOff=toggle.AssertFalse;
-    
+
     getmetatable(toggle).__call=toggle.State;
 
     return toggle;

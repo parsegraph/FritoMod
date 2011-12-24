@@ -10,8 +10,8 @@ format_files() {
     echo "</Ui>"
 }
 
-case $* in 
+case $* in
     wow/files.xml) ./get-requires wow ;;
-    files.xml) ./get-requires . ;; 
+    files.xml) ./get-requires . ;;
     *) ./get-requires `dirname $*` | grep -e "^`dirname $*`" ;;
 esac | format_files >$*

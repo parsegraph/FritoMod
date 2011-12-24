@@ -21,11 +21,11 @@ Serializers=Serializers or {};
 --
 -- header:data
 --
--- The header identifies the chunk's group. All chunks with the same group comprise 
+-- The header identifies the chunk's group. All chunks with the same group comprise
 -- the same logical message. Blizzard ensures that messages arrive in the same order
 -- as they are sent.
 --
--- The data is a slice of the logical message. There are no restrictions over the 
+-- The data is a slice of the logical message. There are no restrictions over the
 -- content of the message, except those placed by Blizzard: no \0.
 
 -- The maximum sendable message is 255 characters. We exclude two characters beyond this, to
@@ -40,7 +40,7 @@ local MAX_CHUNK_SIZE=255-1-1;
 -- If a message is of a sufficiently small size, we will send it without a header. This should
 -- occur regardless of what header scheme we're using.
 
--- Our current header system is simple but inefficient. It consists of an integer, represented 
+-- Our current header system is simple but inefficient. It consists of an integer, represented
 -- plainly as a string, between 1 and MAX_CHUNK_GROUP.
 
 -- One beneath a hundred thousand groups should be sufficient for now. Once we exceed this amount,
@@ -51,7 +51,7 @@ local MAX_HEADER_SIZE=#tostring(MAX_CHUNK_GROUP);
 
 local chunkGroup=-1;
 
--- message 
+-- message
 --     the data we want to send.
 -- padding
 --     strings that reduce the chunk size of our message. Typically, this will be the string value

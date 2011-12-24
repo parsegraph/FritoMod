@@ -36,7 +36,7 @@ if #arg > 0 and AllTests:GetCount() > 0 then
             numFailed = 0;
             numCrashed = 0;
         end,
-                    
+
         FinishAllTests = function(self, suite, successful, report)
             if successful then
                 print(("Cumulative: All %d tests ran successfully."):format(numRan));

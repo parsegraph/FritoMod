@@ -14,7 +14,7 @@ if Mixins == nil then
     Mixins = {};
 end;
 
--- The specified library must provide an Iterator function, as required by 
+-- The specified library must provide an Iterator function, as required by
 -- Mixins.Iteration. Other methods should be provided for various parts of this mixin:
 --
 -- * New - used for cloning, reversing
@@ -22,7 +22,7 @@ end;
 -- * Delete - will default to Set(iterable, key, nil);
 -- * Insert - required for Insert* functions
 --
--- These functions, except for Insert, have defaults, but these assume a table-like 
+-- These functions, except for Insert, have defaults, but these assume a table-like
 -- iterable.
 --
 -- library
@@ -144,7 +144,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
     --
     -- iterable
     --     an iterable usable by this library
-    -- key 
+    -- key
     --     the key that will be inserted into this library. It may be discarded.
     -- value
     --     the value that will be inserted into this library
@@ -263,7 +263,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
 	if library.Swap == nil then
 		library.Swap = CurryNamedFunction(library, "SwapKeys");
 	end;
-	
+
     if library.Remove == nil then
         -- Removes the first matching value from the specified iterable, according to the specified
         -- test and specified target value.
@@ -281,7 +281,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
 				testFunc = library.NewEqualsTest(testFunc, ...);
 			end;
             for key, candidate in library.Iterator(iterable) do
-				if testFunc then 
+				if testFunc then
 					if testFunc(candidate, targetValue) then
 						return library.Delete(iterable, key);
 					end;
@@ -307,7 +307,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- test and specified value.
         --
         -- This function does not modify the iterable until every item has been iterated. While
-        -- this minimizes the chance of corrupted iteration, it is also potentially more 
+        -- this minimizes the chance of corrupted iteration, it is also potentially more
         -- inefficient than a safe, iterable-specific solution.
         --
         -- iterable
@@ -393,7 +393,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- test and specified target key.
         --
         -- This function does not modify the iterable until every item has been iterated. While
-        -- this minimizes the chance of corrupted iteration, it is also potentially more 
+        -- this minimizes the chance of corrupted iteration, it is also potentially more
         -- inefficient than a safe, iterable-specific solution.
         --
         -- This is an optional operation.
@@ -426,7 +426,7 @@ function Mixins.MutableIteration(library, iteratorFunc)
         -- test and specified target key.
         --
         -- This is an optional operation.
-        -- 
+        --
         -- iterable
         --     an iterable usable by this library.
         -- targetKey

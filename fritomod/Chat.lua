@@ -40,7 +40,7 @@
 -- Chat.Channel("Threep", "This is always sent to the 'threep' channel");
 --
 -- You can even batch-send a message to many mediums:
--- 
+--
 -- Chat[{"g", "p"}]("Hello to my party and my guild");
 --
 -- If necessary, you can even use functions as keys:
@@ -84,7 +84,7 @@ local function SendTargetedMessage(medium, target, ...)
     end;
     if select("#", ...)==1 then
         -- We handle single arguments specially if they're tables. If so,
-        -- we recurse for each value in the table. 
+        -- we recurse for each value in the table.
         local str=...;
         while IsCallable(str) do
             str=str();
@@ -130,7 +130,7 @@ function Chat.whisper(target, ...)
 end;
 
 -- Sends a message to the appropriate group. This uses IsInInstance
--- to send messages, so battlegrounds and arenas work as intended. 
+-- to send messages, so battlegrounds and arenas work as intended.
 -- Otherwise, it will send to raid or party. If you're not in a group,
 -- this function will raise an error.
 function Chat.group(...)
@@ -189,7 +189,7 @@ setmetatable(Chat, {
                 end;
             elseif #medium > 0 then
                 return function(...)
-                    for i=1, #medium do 
+                    for i=1, #medium do
                         childMedium = medium[i];
                         Chat[childMedium](...);
                     end;

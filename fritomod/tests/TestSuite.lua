@@ -19,7 +19,7 @@ function Suite:TestErrorStackTraceOutputsProperly()
         TestFailed = function(self, suite, testName, testRunner, reason)
             local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
             Assert.Equals("Assertion failed: \"Intentional error\"", reason);
-            assert(trace:match(".*tests[/\\]TestSuite\.lua:[0-9]+"), 
+            assert(trace:match(".*tests[/\\]TestSuite\.lua:[0-9]+"),
                 "First line of stack trace is relevant. Trace: " .. trace);
         end,
         TestFinished = Noop,
@@ -43,7 +43,7 @@ function Suite:TestAssertStackTraceOutputsProperly()
         TestFailed = function(self, suite, testName, testRunner, reason)
             local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
             Assert.Equals("Assertion failed: \"Intentional false assertion\"", reason);
-            assert(trace:match(".*tests[/\\]TestSuite\.lua:[0-9]+"), 
+            assert(trace:match(".*tests[/\\]TestSuite\.lua:[0-9]+"),
                 "First line of stack trace is relevant. Trace: " .. trace);
         end,
         TestFinished = Noop,
@@ -88,7 +88,7 @@ function Suite:TestListenersDuringSuccess()
         Lists.Insert(order, eventName);
     end));
     local expected = {
-        "StartAllTests", 
+        "StartAllTests",
         "TestStarted",
         "TestSuccessful",
         "TestFinished",
@@ -108,7 +108,7 @@ function Suite:TestListenersDuringFailure()
         Lists.Insert(order, eventName);
     end));
     local expected = {
-        "StartAllTests", 
+        "StartAllTests",
         "TestStarted",
         "TestFailed",
         "TestFinished",
@@ -162,10 +162,10 @@ function Suite:TestThatTestSuiteHandlesChildTests()
     function suite:GetTests()
         local child = TestSuite:New();
         function child:GetTests()
-            return { 
-                function() 
+            return {
+                function()
                     assert(true);
-                end 
+                end
             };
         end;
         return { child };

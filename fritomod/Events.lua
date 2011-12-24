@@ -9,7 +9,7 @@
 -- remover = Events.UNIT_SPELLMISS(function(unitId, reason)
 --     count = count + 1;
 --     Chatf.s("%s missed. Reason: %s", reason, UnitName(unitId));
---     if count > 5 then 
+--     if count > 5 then
 --         remover();
 --     end;
 -- end);
@@ -21,7 +21,7 @@
 -- Only event arguments are passed to event listeners; the original frame reference and the event
 -- name are stripped. The arguments are not changed or enhanced in any way.
 --
--- Frame-specific and graphical events are not supported, so events like OnUpdate and mouse clicks are 
+-- Frame-specific and graphical events are not supported, so events like OnUpdate and mouse clicks are
 -- not emitted. Use Timing for update events.
 --
 -- The event registry is designed to be as lazy as possible, so please remove listeners when you're finished

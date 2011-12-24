@@ -84,7 +84,7 @@ function Frames.Insets(f)
     return INSETS_ZERO;
 end;
 
--- Sets the alpha for a frame. 
+-- Sets the alpha for a frame.
 --
 -- You don't need to use this function: we have it here when we use
 -- Frames as a headless table.

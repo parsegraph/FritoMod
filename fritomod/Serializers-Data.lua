@@ -72,7 +72,7 @@ function readers.s(c)
     c:MarkNext(); -- Skip the 's'
     c:PeekWhile(Strings.IsNumber);
     local len=tonumber(c:MarkSnippet());
-    c:MarkNext(); 
+    c:MarkNext();
     c:Move(math.max(0, len-1));
     return c:MarkSnippet();
 end;
@@ -105,7 +105,7 @@ function readers.t(c)
     return t;
 end;
 
--- Version. We allow this to be anywhere in the string, but we 
+-- Version. We allow this to be anywhere in the string, but we
 -- usually just ignore it.
 function readers.v(c)
     c:Next() -- Skip the 'v'

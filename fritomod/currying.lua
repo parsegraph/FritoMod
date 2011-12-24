@@ -22,15 +22,15 @@ end;
 --     b. A non-callable table. CurryMethod will be used.
 --     c. A string that is the name of a method. CurryHeadlessMethod will be used.
 -- funcOrName:*
---     If objOrFunc is a table, then this is a string referring to a method, or a method 
+--     If objOrFunc is a table, then this is a string referring to a method, or a method
 --     reference.
 --     If objOrfunc is a function, then this is simply the first argument.
 -- ...
---     optional. Any number of non-nil arguments that are curried to the specified method 
+--     optional. Any number of non-nil arguments that are curried to the specified method
 --     or function.
 -- returns
---     a partially applied method that, when invoked, will call the specified function or method, 
---     passing along partially-applied arguments and subsequent arguments, in that order. It will 
+--     a partially applied method that, when invoked, will call the specified function or method,
+--     passing along partially-applied arguments and subsequent arguments, in that order. It will
 --     return the value returned by the specified function or method
 -- throws
 --     if objOrFunc is a callable table
@@ -50,10 +50,10 @@ function Curry(...)
     if not objOrFunc then
         error("objOrFunc is falsy");
     end;
-    if type(objOrFunc) == "function" then 
+    if type(objOrFunc) == "function" then
         return CurryFunction(...);
     end;
-    if type(objOrFunc) == "table" or type(objOrFunc) == "userdata" then 
+    if type(objOrFunc) == "table" or type(objOrFunc) == "userdata" then
         local metatable = getmetatable(objOrFunc);
         if type(metatable) == "table" and IsCallable(metatable.__call) then
             -- Callable tables are too ambiguous to be implicitly curried. If you need to curry
@@ -86,7 +86,7 @@ end;
 -- For example, all examples are equivalent:
 -- a.) Naive call
 -- foo(a, b, c, d)
--- 
+--
 -- b.) Curried call
 -- curried = CurryFunction(foo, a, b)
 -- curried(c, d) -- invokes foo(a, b, c, d)
@@ -160,7 +160,7 @@ end
 -- ...
 --     optional. Any number of non-nil arguments that are partially applied to the specified function
 -- returns:function
---     a function that, when invoked, invokes the specified named function on the specified 
+--     a function that, when invoked, invokes the specified named function on the specified
 --     object
 -- throws
 --     if obj or name is falsy
@@ -297,8 +297,8 @@ function CurryMethod(object, func, ...)
     error("func is not callable and is not a string. Received type: " .. type(func));
 end
 
--- Curries the specified headless method using the specified arguments, returning a callable 
--- that represents the curried headless method. On invocation, the returned callable will use 
+-- Curries the specified headless method using the specified arguments, returning a callable
+-- that represents the curried headless method. On invocation, the returned callable will use
 -- the first argument as the "self" for the headless method.
 --
 -- This is useful for times where you want a method to be called on a group of objects. Many methods
@@ -315,7 +315,7 @@ end
 -- func:*
 --     A reference to a method, or a string representing the name of the method, that is curried.
 -- ...
---     Any arguments that should be passed, in order, before subsequent arguments, to 
+--     Any arguments that should be passed, in order, before subsequent arguments, to
 --     func. These are optional.
 -- returns:function
 --     a partially applied method that, when invoked, will call the specified method. The first argument

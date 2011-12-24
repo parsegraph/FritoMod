@@ -8,9 +8,9 @@ if Mixins == nil then
 end;
 local Mixins = Mixins;
 
--- Transforms the specified table into a mixin. When the class is initialized, 
+-- Transforms the specified table into a mixin. When the class is initialized,
 -- all methods on the library are added to the initializing class.
--- 
+--
 -- library
 --     Optional. A table that is the source of the mixed-in functions. If
 --     nil, then a empty table is used. You may omit this entirely, and just
@@ -31,7 +31,7 @@ Mixins.Library = function(library, constructorFunc, ...)
         library = library or {};
     end;
     setmetatable(library, {
-        __call = function(library, class) 
+        __call = function(library, class)
             OOP.IntegrateLibrary(library, class);
             return constructorFunc;
         end;

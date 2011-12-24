@@ -5,17 +5,17 @@ if nil ~= require then
 end;
 
 local CLASS_METATABLE = {
-    GetMethodIterator = function(self) 
+    GetMethodIterator = function(self)
     end,
 
-    -- A default constructor. This is called after all constructors are used, 
-    -- and will only be called on the immediate class that's being created; 
-    -- it is each constructor's responsibility to either call their parent's 
-    -- constructor, or perform any action that the parent constructor is tasked 
+    -- A default constructor. This is called after all constructors are used,
+    -- and will only be called on the immediate class that's being created;
+    -- it is each constructor's responsibility to either call their parent's
+    -- constructor, or perform any action that the parent constructor is tasked
     -- to do.
     --
-    -- This should be overridden in most cases by whatever construction you wish 
-    -- to do, and the signature used here does not need to be preserved. Any 
+    -- This should be overridden in most cases by whatever construction you wish
+    -- to do, and the signature used here does not need to be preserved. Any
     -- return value is ignored.
     Constructor = function(self)
         -- noop
@@ -45,7 +45,7 @@ local CLASS_METATABLE = {
     --     The function that performs the work of the mixin. It is called immediately.
     --
     --     If the mixinFunc returns a callable, then that callable will be invoked
-    --     for every instance of the class. It should expect the signature 
+    --     for every instance of the class. It should expect the signature
     --     "callable(object)"
     -- ...
     --     any arguments that are curried to mixinFunc
@@ -77,7 +77,7 @@ local CLASS_METATABLE = {
 
 -- Creates a new instance of this class.
 local function New(class, ...)
-	local instance = { 
+	local instance = {
 		__index = class,
 		__tostring = function(self)
 			return self:ToString()
@@ -112,7 +112,7 @@ end
 --     if any provided argument is not either a mixin or a class
 --     if more than one super-class is provided (multiple inheritance in this manner is not supported)
 OOP.Class = function(...)
-    local class = { 
+    local class = {
 		__index = CLASS_METATABLE,
 		constructors = {},
 		New=New

@@ -15,7 +15,7 @@ function TestingSlashCommand()
 
     local errorColor = 0xE34234;
     local testCrashedColor = "E34234";
-    local crashedReasonColor = "FA8072"; 
+    local crashedReasonColor = "FA8072";
 
     local failureColor = 0xe1a95f;
     local testFailedColor = "EF9B0F";
@@ -70,7 +70,7 @@ function TestingSlashCommand()
                     table.insert(Persistence[N], report);
                 end;
             end,
-                    
+
             FinishAllTests = function(self, suite, successful, reason)
                 report.finishTime=GetTime();
                 if successful then

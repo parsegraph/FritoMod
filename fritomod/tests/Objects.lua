@@ -30,7 +30,7 @@ end;
 function Suite:TestToggleManagesAValue()
     local t=Objects.Toggle();
     Assert.False(t:IsOn());
-    t:On();        
+    t:On();
     t:AssertTrue();
     t:Off();
     t:AssertFalse();

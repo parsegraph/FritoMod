@@ -1,7 +1,7 @@
 -- Parameters are higher-order functions that behave similar to curried functions. The difference is that
 -- while currying attaches constant references or values, parametrics defer to functions.
 --
--- While I liked the idea of parameters, these haven't lived up to their purpose yet. The examples that I 
+-- While I liked the idea of parameters, these haven't lived up to their purpose yet. The examples that I
 -- came up with to demonstrate them ended up being more confusing than their primitive-only equivalents.
 --
 -- For example, here's an example of the Fibonacci sequence, using parametrics:

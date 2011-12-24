@@ -155,7 +155,7 @@ end;
 -- ...
 --     Optional. These arguments are forwarded to GetTests, so they may be used to configure
 --     either the number of tests or the way tests are run. Semantics of these arguments
---     are defined by subclasses. If a suite does not have any filtering or customizing 
+--     are defined by subclasses. If a suite does not have any filtering or customizing
 --     abilitiy, these arguments are silently ignored.
 -- returns
 --     false if this test suite failed
@@ -180,7 +180,7 @@ function TestSuite:Run(...)
         report = ("All %d tests ran successfully."):format(testResults.All:Get());
     else
         report = ("%d of %d tests ran successfully, %d failed, %d crashed"):format(
-            testResults.Successful:Get(), 
+            testResults.Successful:Get(),
             testResults.All:Get(),
             testResults.Failed:Get(),
             testResults.Crashed:Get());
@@ -191,7 +191,7 @@ end;
 
 -- Returns all tests that this test suite contains. A test may be one of the following:
 --
--- * A function or callable table. The function is called with no arguments, and its 
+-- * A function or callable table. The function is called with no arguments, and its
 -- returned value is ignored.
 -- * A table with a Run function. The Run function is called like a regular function with
 -- the proper self argument.

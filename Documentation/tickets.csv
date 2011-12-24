@@ -237,24 +237,24 @@ Of course, with Lua, we're probably unable to erase every sign of a remote conne
        GLOBAL_BRETT_FRAME = CreateFrame(""FRAME"");
        f = GLOBAL_BRETT_FRAME;
     end;
-    
+
     f:SetScript(""OnEvent"", function(self, event,arg1)
           --  f:UnregisterEvent(""CHAT_MSG_SKILL"")
           SendChatMessage(arg1,""GUILD"",nil,nil)
           -- f:RegisterEvent(""CHAT_MSG_SKILL"")
     end);
-    
+
     --creating function that asks for the event
     local function SkillSpamOn()
        f:RegisterEvent(""CHAT_MSG_SKILL"")
     end
-    
+
     local function SkillSpamOff()
        f:UnregisterEvent(""CHAT_MSG_SKILL"")
     end
-    
+
     local function SlashHandler(args)
-       if args == ""on"" then 
+       if args == ""on"" then
           SkillSpamOn()
        elseif args == ""off"" then
           SkillSpamOff()
@@ -262,14 +262,14 @@ Of course, with Lua, we're probably unable to erase every sign of a remote conne
           print(""usage: /skillspam on | off"")
        end
     end
-    
+
     RegisterSlash(SlashHandler,""skillspam"")
 
 This is what we can currently do:
 
     local r;
     Slash.Register(""skillspam"", function(cmd)
-       if cmd == ""on"" and not r then 
+       if cmd == ""on"" and not r then
           r=Events.CHAT_MSG_SKILL(Chat.g);
        elseif cmd == ""off"" and r then
           r();
@@ -345,7 +345,7 @@ Converting the message is easy:
     local str=""A really really long message...""
     local strs=Serializers.WriteCroppedString(""NoTime.Chat"", str); -- Returns an array
     Remote[""NoTime.Chat""].g(strs); -- Remote handles arrays naturally
-  
+
  Handling the callback is more difficult:
 
     Remote[""NoTime.Chat""](function(str, who)

@@ -20,7 +20,7 @@ function Labs.IconSpellCounts()
        Builders.Square(frame, size);
        frame:SetBackdrop({
              edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-             tile = true, tileSize = 16, edgeSize = 16, 
+             tile = true, tileSize = 16, edgeSize = 16,
              insets = { left = 2, right = 2, top = 2, bottom = 2 }
        });
        local icon=frame:CreateTexture(nil, "BACKGROUND");
@@ -30,25 +30,25 @@ function Labs.IconSpellCounts()
        local iconTexture=select(3, GetSpellInfo(spell));
        icon:SetTexture(iconTexture);
        icon:SetTexCoord(.03,.97,.03,.97);
-       
-       
+
+
        local tint=frame:CreateTexture(nil, "BORDER");
        tint:SetAllPoints(icon);
        Builders.Color(tint, "red");
-       
+
        local count=frame:CreateFontString();
        count:SetFont("Fonts\\FRIZQT__.TTF", 24, "outline");
        count:SetPoint("center");
-       
+
        local maxCount=frame:CreateFontString();
        maxCount:SetFont("Fonts\\FRIZQT__.TTF", 10, "outline");
        Anchors.Share(maxCount, frame, "bottomright", -4);
-       
+
        local progress=frame:CreateTexture();
        progress:SetHeight(8);
        progress:SetAlpha(.6);
        progress:SetPoint("bottomleft", frame, "topleft");
-       
+
        table.insert(counters, function()
              local cost=select(4, GetSpellInfo(spell));
              local mana=UnitPower("player");
@@ -92,7 +92,7 @@ function Labs.IconSpellCounts()
                 end;
              end;
        end);
-       
+
        return frame;
     end;
 

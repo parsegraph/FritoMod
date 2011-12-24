@@ -37,7 +37,7 @@ local backdrops=setmetatable({}, {
 
 backdrops.goldDialog={
     edgeFile="Interface/DialogFrame/UI-DialogBox-Gold-Border",
-    bgFile  ="Interface/DialogFrame/UI-DialogBox-Gold-Background", 
+    bgFile  ="Interface/DialogFrame/UI-DialogBox-Gold-Background",
     edgeSize = 32,
     tile=true,
     tileSize=32,
@@ -47,7 +47,7 @@ backdrops.gold=backdrops.goldDialog;
 
 backdrops.blackdialog={
     edgeFile="Interface/DialogFrame/UI-DialogBox-Border",
-    bgFile  ="Interface/DialogFrame/UI-DialogBox-Background", 
+    bgFile  ="Interface/DialogFrame/UI-DialogBox-Background",
     edgeSize = 32,
     tile=true,
     tileSize=32,
@@ -78,10 +78,10 @@ backdrops.default=backdrops.tooltip;
 
 backdrops.slider={
     edgeFile="Interface/Buttons/UI-SliderBar-Border",
-    bgFile  ="Interface/Buttons/UI-SliderBar-Background", 
+    bgFile  ="Interface/Buttons/UI-SliderBar-Background",
     edgeSize=8,
     tile=true,
-    tileSize=8, 
+    tileSize=8,
     insets = insets.slider
 };
 

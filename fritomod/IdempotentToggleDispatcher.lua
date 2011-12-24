@@ -1,6 +1,6 @@
 -- IdempotentToggleDispatcher is a ToggleDispatcher that
 -- ensures Fire and Reset only fire once. It also immediately
--- calls listeners when added, if the dispatcher is in a 
+-- calls listeners when added, if the dispatcher is in a
 -- "fired" state.
 
 if nil ~= require then

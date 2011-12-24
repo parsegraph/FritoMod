@@ -71,14 +71,14 @@ end;
 -- |ref|---+
 -- |   |
 -- +---+
--- 
+--
 -- Anchors.HorizontalFlip(f, "right", ref);
 -- +---+
 -- |   |---+
 -- |ref| f |
 -- |   |---+
 -- +---+
--- 
+--
 -- Anchors.HorizontalFlip(f, "bottomright", ref);
 -- +---+
 -- |   |
@@ -99,7 +99,7 @@ end;
 -- | f |ref|
 -- +---|   |
 --     +---+
--- 
+--
 -- Anchors.HorizontalFlip(f, "bottomleft", ref);
 --     +---+
 --     |   |
@@ -126,7 +126,7 @@ FlipAnchor("Horizontal", {
 -- +-------+
 -- | f |
 -- +---+
--- 
+--
 -- Anchors.VerticalFlip(f, "bottom", ref);
 -- +-------+
 -- |  ref  |
@@ -188,7 +188,7 @@ FlipAnchor("Vertical",
 --
 -- The centers will form a line that passes through the anchor; diagonal anchor
 -- points will cause the frames to separate diagonally.
--- 
+--
 -- Anchors.DiagonalFlip(f, "topleft", ref);
 -- +---+
 -- | f |
@@ -241,7 +241,7 @@ FlipAnchor("Vertical",
 -- +---+---+
 -- | f |ref|
 -- +---+---+
-FlipAnchor("Diagonal", 
+FlipAnchor("Diagonal",
     {
         top      = "bottom",
         right    = "left",

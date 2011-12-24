@@ -91,7 +91,7 @@ function Containers.Iterator(bag)
             -- We couldn't find a slot, so punt.
             return;
         end;
-        -- XXX This should use a metatable, and these should possibly be 
+        -- XXX This should use a metatable, and these should possibly be
         -- functions.
         slot.id=GetContainerItemID(bag, slotNum);
         if slot.id then
@@ -116,7 +116,7 @@ do
          if type(prim)=="string" then
             prim=prim:lower();
             local name=slot.name;
-            if name then 
+            if name then
                 name=name:lower()
             end;
             return name==prim;
@@ -127,10 +127,10 @@ do
         end;
     end;
     -- This equality test lets us do things like:
-    -- assert(Containers.Contains("all", "Hearthstone"), 
+    -- assert(Containers.Contains("all", "Hearthstone"),
     --     "You don't have a hearthstone?!");
     -- We support comparisons by item name and by item ID. You can also compare
-    -- returned slots to one another. Beware, however, that an iterator will operate 
+    -- returned slots to one another. Beware, however, that an iterator will operate
     -- on the same table throughout its iteration.
     function Containers.NewEqualsTest(testFunc, ...)
         if testFunc then

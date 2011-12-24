@@ -64,7 +64,7 @@ do
         thumb2= "Button5",
     };
     -- Returns the "proper" button name for a given alias. This lets
-    -- us use plenty of different names without needing to remember the 
+    -- us use plenty of different names without needing to remember the
     -- One True Way.
     function Frames.GetButtonName(button)
         button=tostring(button);
@@ -81,7 +81,7 @@ end;
 -- -- Same as the above. Note that we don't have to use the remover here.
 -- Frames.Draggable(f, true);
 -- Frames.Draggable(f, false);
-do 
+do
     local function StartDrag(f, buttons)
         f:SetMovable(true);
         f:RegisterForDrag(unpack(buttons));
@@ -147,8 +147,8 @@ local function AdjustPoint(f)
         end;
     end;
     f:ClearAllPoints();
-    f:SetPoint("center", UIParent, best[3], 
-        (center[1]-best[1])/f:GetEffectiveScale(), 
+    f:SetPoint("center", UIParent, best[3],
+        (center[1]-best[1])/f:GetEffectiveScale(),
         (center[2]-best[2])/f:GetEffectiveScale()
     );
 end;
@@ -163,7 +163,7 @@ function Frames.StartMovingFrame(f, startX, startY)
         end;
         f:ClearAllPoints();
         if f:GetParent() ~= UIParent then
-            -- Remove the local scale and re-add it once we've reparented. If we 
+            -- Remove the local scale and re-add it once we've reparented. If we
             -- don't do this, startX and startY will use an out-of-date scale and
             -- will cause the frame to "jump" once it's first moved.
             startX=startX*f:GetEffectiveScale();

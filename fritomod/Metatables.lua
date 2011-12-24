@@ -219,14 +219,14 @@ do
 
     -- Creates a "composite" table. The returned table forwards all method calls
     -- to all of its registered observers. This allows for very clean event dispatching,
-    -- and for adaptability in the future, since one, regular table acts almost identical 
-    -- to the composite table created here. 
+    -- and for adaptability in the future, since one, regular table acts almost identical
+    -- to the composite table created here.
     --
     -- For example, assume we want to receive Bar events from an object "foo". To accomplish
     -- this, we write:
     --
     -- foo:Add(listener);
-    -- 
+    --
     -- Now, in foo, when we wish to dispatch Bar events, we simply call "Bar":
     --
     -- foo:Bar();

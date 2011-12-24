@@ -49,15 +49,15 @@ function Mixins.TableTests(Suite, library)
 			b=2,
 			c=3
 		})), "Size reports three for three-element table");
-        Assert.Equals(1, library.Size(Suite:Table({[false]=false})), 
+        Assert.Equals(1, library.Size(Suite:Table({[false]=false})),
 			"Size reports one for iterable with one false pair");
     end;
 
 	function Suite:TestIsEmpty()
         assert(library.IsEmpty(Suite:Table()), "IsEmpty returns true for empty iterable");
         assert(not library.IsEmpty(Suite:Table({a=1})), "IsEmpty returns false for non-empty iterable");
-        assert(not library.IsEmpty(Suite:Table({[false]=false})), 
-			"IsEmpty returns false for an iterable with falsy pairs"); 
+        assert(not library.IsEmpty(Suite:Table({[false]=false})),
+			"IsEmpty returns false for an iterable with falsy pairs");
     end;
 
 	function Suite:TestContainsKey()

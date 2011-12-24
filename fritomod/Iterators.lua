@@ -172,7 +172,7 @@ end;
 -- iterator, ...
 --     the iterator that returns results
 -- returns
---     a list of all results 
+--     a list of all results
 function Iterators.Consume(iterator, ...)
     iterator = Curry(iterator, ...);
     local items = {};
@@ -211,7 +211,7 @@ function Iterators.Counter(startValue, endValue, step)
     end;
     assert(step ~= 0, "A step of zero does not make sense");
     if endValue ~= nil then
-        assert((step > 0 and startValue < endValue) or (step < 0 and startValue > endValue), 
+        assert((step > 0 and startValue < endValue) or (step < 0 and startValue > endValue),
             ("Step is not valid for the range. Start: %d, End: %d, Step: %d"):format(startValue, endValue, step)
         );
     end;

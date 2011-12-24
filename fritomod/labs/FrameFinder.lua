@@ -1,4 +1,4 @@
--- Handy development tool: shows info about the object under the cursor. 
+-- Handy development tool: shows info about the object under the cursor.
 
 if nil ~= require then
     require "wow/Frame-Layout";

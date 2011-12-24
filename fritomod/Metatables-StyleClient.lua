@@ -28,7 +28,7 @@ function Metatables.StyleClient(t)
 	assert(type(t) == "table", "t must be a table. Type: " .. type(t));
 	assert(getmetatable(t) == nil, "t must not have a metatable");
 	local styles = {};
-	do 
+	do
 		local trash={};
 		for k,v in pairs(t) do
 			local name = StyleName(k);

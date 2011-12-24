@@ -7,11 +7,11 @@ Serializers=Serializers or {};
 function Serializers.VerifyPoint(location)
     assert(location, "location must not be nil");
     assert(type(location) == "table", "location must be a table. Type: "..type(location));
-    assert(type(location.anchor)=="string", 
+    assert(type(location.anchor)=="string",
         "location.anchor must be a string, but it was: "..tostring(location.anchor));
-    assert(tonumber(location.x) or location.x==nil, 
+    assert(tonumber(location.x) or location.x==nil,
         "location.x looks invalid (not a number or nil): "..tostring(location.x));
-    assert(tonumber(location.y) or location.y==nil, 
+    assert(tonumber(location.y) or location.y==nil,
         "location.y looks invalid (not a number or nil): "..tostring(location.y));
 end;
 

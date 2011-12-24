@@ -101,9 +101,9 @@ Functions.Rotate=Functions.Cycle;
 
 -- Toggles between calling the specified function and the function returned by it (henceforth referred
 -- to as the second function). The first function's returned value always replaces the second function.
--- The second function's return values, however, are ignored. 
+-- The second function's return values, however, are ignored.
 --
--- Typically, the second function should undo some action performed by the specified first function, though 
+-- Typically, the second function should undo some action performed by the specified first function, though
 -- this is not required.
 --
 -- func, ...
@@ -126,7 +126,7 @@ function Functions.Toggle(func, ...)
 end;
 
 -- Group two functions together. When called, the returned function will call both functions.
--- 
+--
 -- Return values are ignored, unless both return values are callable. If they are callable, they are
 -- called in reverse-order.
 --
@@ -168,16 +168,16 @@ function Functions.HookGlobal(name, hookFunc, ...)
     end;
 end;
 
--- Combines the two specified functions, creating an undoable. The performer should do something, and the 
--- undoFunc should undo that action. 
+-- Combines the two specified functions, creating an undoable. The performer should do something, and the
+-- undoFunc should undo that action.
 --
 -- Both functions receive the varargs passed here. This is different than most other operations.
 --
 -- performer:function
---     performs some action. It is given the arguments passed into Undoable, as well as arguments passed 
+--     performs some action. It is given the arguments passed into Undoable, as well as arguments passed
 --     to the returned function. Its return value is ignored.
 -- undoFunc:function
---     undoes the action performed by performer. It is given the arguments passed into Undoable, as well 
+--     undoes the action performed by performer. It is given the arguments passed into Undoable, as well
 --     as arguments passed to the returned function. Its return value is ignored.
 -- ...:*
 --     arguments that are curried to both the performer and the undoFunc
@@ -253,7 +253,7 @@ end;
 
 -- Spies on the specified function, observing it without affecting its behavior.
 --
--- This function is very similar to Group, but Spy is more specialized in how its functions should behave. 
+-- This function is very similar to Group, but Spy is more specialized in how its functions should behave.
 -- Spy also always uses the observed function's return values, instead of ignoring them.
 --
 -- If the spy and the observed function are undoables, the spy's undoable will be called after the observed's.
@@ -262,9 +262,9 @@ end;
 --     the original function that is the target of this function.
 -- spy, ...
 --	   a callable that observes invocations to the original function. It should not affect the behavior
---	   of the observed function. 
---	   
---	   If its return value is a callable, it will be treated as an undoable. Otherwise, the return value will be 
+--	   of the observed function.
+--
+--	   If its return value is a callable, it will be treated as an undoable. Otherwise, the return value will be
 --	   ignored.
 -- returns:function
 --     a function that wraps the observed function, invoking the observer first.
@@ -296,23 +296,23 @@ function Functions.ReturnSpy(observedFunc, spy, ...)
 end;
 Functions.SpyReturn=Functions.ReturnSpy;
 
--- Manages invocation of one-time setup and tear-down functionality. The setup function is called during the 
--- first invocation of the returned function, returning a function that tears down any initialization. 
+-- Manages invocation of one-time setup and tear-down functionality. The setup function is called during the
+-- first invocation of the returned function, returning a function that tears down any initialization.
 --
--- The activator's returned function should undo any action performed by the activator. This function is 
+-- The activator's returned function should undo any action performed by the activator. This function is
 -- called when all tear-down functions have been called.
 --
 -- The benefit is that this operation keeps track of how many set-up and tear-down invocations have been made. The
 -- activator is called on the first set-up call, but subsequent set-up calls do nothing. Tear-down calls also do
--- nothing until the final tear-down call is made. At this point, the returned deactivator is called and the 
+-- nothing until the final tear-down call is made. At this point, the returned deactivator is called and the
 -- activator should return to its initial state.
 --
 -- setUp, ...
 --     a callable that, when invokes, performs some one-time initialization or set-up. It must return a function
 --     that tears down any initialization previously performed.
 -- returns:function
---     a function that, when called, could perform set-up functionality. It returns a function that, 
---     when called, could perform tear-down functionality. What action is actually performed is determined by 
+--     a function that, when called, could perform set-up functionality. It returns a function that,
+--     when called, could perform tear-down functionality. What action is actually performed is determined by
 --     the specified activator.
 function Functions.Install(setUp, ...)
     setUp = Curry(setUp, ...);

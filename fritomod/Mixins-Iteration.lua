@@ -50,7 +50,7 @@ function Mixins.Iteration(library)
             return t;
         end;
     end;
-            
+
     local function InsertInto(iterable, key, value)
         if library.Bias() == "table" then
             return library.InsertPair(iterable, key, value);
@@ -73,7 +73,7 @@ function Mixins.Iteration(library)
 
     if library.Bias == nil then
         -- Returns the bias of the library - whether the iterable is expected to behave like
-        -- an array or like a list. This will affect the behavior of some functions, so it's 
+        -- an array or like a list. This will affect the behavior of some functions, so it's
         -- important to get this right. I think most libraries will be biased towards arrays.
         --
         -- Only use this function to disambiguate an otherwise unclear situation. For example,
@@ -209,9 +209,9 @@ function Mixins.Iteration(library)
     -- iterable, otherIterable
     --     the two values that are compared against
     -- testFunc, ...
-    --     optional. the function that performs the comparison, with the signature 
+    --     optional. the function that performs the comparison, with the signature
     --     testFunc(item, otherItem) where the items are the keys, values.
-    --     It should return a truthy value if the two values match. If it returns a numeric 
+    --     It should return a truthy value if the two values match. If it returns a numeric
     --     value, then only zero indicates a match.
     -- returns
     --     true if the iterables contain equal items in the same order, otherwise false
@@ -237,9 +237,9 @@ function Mixins.Iteration(library)
     -- iterable, otherIterable
     --     the two values that are compared against
     -- testFunc, ...
-    --     optional. the function that performs the comparison, with the signature 
-    --     testFunc(otherKey, otherValue, key, value) where the items are the keys, 
-    --     values. It should return a truthy value if the two values match. If it 
+    --     optional. the function that performs the comparison, with the signature
+    --     testFunc(otherKey, otherValue, key, value) where the items are the keys,
+    --     values. It should return a truthy value if the two values match. If it
     --     returns a numeric value, then only zero indicates a match.
     -- returns
     --     true if the iterables contain equal pairs in the same order, otherwise false
@@ -397,7 +397,7 @@ function Mixins.Iteration(library)
     end;
 
     -- Returns an iterator that returns decorated items from the specified iterable. The
-    -- items are decorated using the specified decorator function. This does not affect the 
+    -- items are decorated using the specified decorator function. This does not affect the
     -- underlying iterable.
     --
     -- This operation is applicable to keys, values, or pairs.
@@ -565,7 +565,7 @@ function Mixins.Iteration(library)
 
     if library.CallEach == nil then
         -- Calls every function in the specified iterable.
-        -- 
+        --
         -- iterable
         --     a value that is iterable using library.Iterator
         -- ...
@@ -583,7 +583,7 @@ function Mixins.Iteration(library)
     if library.SafeCallEach == nil then
         -- Calls every function in the specified iterable. The iteration is done over a clone,
         -- rather than the original iterable.
-        -- 
+        --
         -- iterable
         --     a value that is iterable using library.Iterator
         -- ...
@@ -597,7 +597,7 @@ function Mixins.Iteration(library)
 
     if library.MapCall == nil then
         -- Runs every function in the specified iterable, returning the results of each.
-        -- 
+        --
         -- iterable
         --     a value that is iterable using library.Iterator
         -- ...
@@ -618,7 +618,7 @@ function Mixins.Iteration(library)
     if library.SafeMapCall == nil then
         -- Runs every function in the specified iterable, returning the results of each. The
         -- iterable used is a clone, so removals are safe.
-        -- 
+        --
         -- iterable
         --     a value that is iterable using library.Iterator
         -- ...
@@ -638,7 +638,7 @@ function Mixins.Iteration(library)
     -- This operation creates and modifies a iterable. If the underlying library does not
     -- support mutable iterables, then a table is created and returned.
     --
-    -- The subset should be in a form most appropriate for the library's iterable type. For 
+    -- The subset should be in a form most appropriate for the library's iterable type. For
     -- example, a library that handles lists should not leave gaps between elements.
     --
     -- This operation is applicable for either keys, values, or pairs.
@@ -741,10 +741,10 @@ function Mixins.Iteration(library)
         --     Optional. The starting aggregate value.
         -- value
         --     the value that is added to the specified aggregate
-        -- return 
+        -- return
         --     the new aggregate
         -- throws
-        --     if value is an unsupported type, or if the types of aggregate and value are 
+        --     if value is an unsupported type, or if the types of aggregate and value are
         --     incompatible
         function library.DefaultReduce(aggregate, value, ...)
             assert(value ~= nil, "Value is nil");
@@ -815,7 +815,7 @@ function Mixins.Iteration(library)
     -- reduce function is used.
     --
     -- This operation is valid for either keys or values.
-    -- 
+    --
     -- iterable
     --     a value that is iterable using library.Iterator
     -- initial
@@ -869,7 +869,7 @@ function Mixins.Iteration(library)
         --
         -- This function is useful for allowing a process to be constructed dynamically. Since the process
         -- uses a plain iterable, it may be accessed freely. Since the initial value is passed in when this
-        -- method is called, it may be used to construct many objects. 
+        -- method is called, it may be used to construct many objects.
         --
         -- I believe the flexibility of this function makes it the preferred glue for builder functions,
         -- greatly surpassing the object in ease-of-use and extensibility.
@@ -949,7 +949,7 @@ function Mixins.Iteration(library)
 
     if library.IsEmpty == nil then
         -- Returns whether the specified iterable is empty.
-        -- 
+        --
         -- iterable
         --     a value that is iterable using library.Iterator
         -- returns
@@ -970,9 +970,9 @@ function Mixins.Iteration(library)
     -- target
     --     the searched value
     -- testFunc, ...
-    --     optional. the function that performs the search, with the signature 
-    --     testFunc(candidate, target). It should return a truthy value if the two 
-    --     values match. If it returns a numeric value, then only zero indicates 
+    --     optional. the function that performs the search, with the signature
+    --     testFunc(candidate, target). It should return a truthy value if the two
+    --     values match. If it returns a numeric value, then only zero indicates
     --     a match.
     -- returns
     --     true if the specified iterable contains the specified item, according to the
@@ -1001,10 +1001,10 @@ function Mixins.Iteration(library)
         -- targetValue
         --     the corresponding value
         -- testFunc, ...
-        --     optional. the function that performs the search, with the signature 
-        --     testFunc(candidateKey, candidateValue, targetKey, targetValue). 
+        --     optional. the function that performs the search, with the signature
+        --     testFunc(candidateKey, candidateValue, targetKey, targetValue).
         --     It should return a truthy value if, and only if, both the keys and the values
-        --     match. If the comparator returns a numeric value, then only zero indicates 
+        --     match. If the comparator returns a numeric value, then only zero indicates
         --     a match.
         -- returns
         --     true if the specified iterable contains the specified pair, according to the
@@ -1027,7 +1027,7 @@ function Mixins.Iteration(library)
     end;
 
     if library.KeyFor == nil then
-        -- Returns the first key found for the specified value. Comparison is defined by the 
+        -- Returns the first key found for the specified value. Comparison is defined by the
         -- specified test
         --
         -- This is an optional operation.
@@ -1037,12 +1037,12 @@ function Mixins.Iteration(library)
         -- targetValue
         --     the value that is searched for
         -- testFunc, ...
-        --     optional. the function that performs the search, with the signature 
-        --     testFunc(candidate, target). It should return a truthy value if the two 
-        --     values match. If it returns a numeric value, then only zero indicates 
+        --     optional. the function that performs the search, with the signature
+        --     testFunc(candidate, target). It should return a truthy value if the two
+        --     values match. If it returns a numeric value, then only zero indicates
         --     a match.
         -- returns
-        --     the first key that corresponds to to a value that matches the specified value, 
+        --     the first key that corresponds to to a value that matches the specified value,
         --     according to testFunc
         function library.KeyFor(iterable, value, testFunc, ...)
             if testFunc then
@@ -1063,7 +1063,7 @@ function Mixins.Iteration(library)
     end;
 
     if library.LastKeyFor == nil then
-        -- Returns the last key for the specified value. Comparison is defined by the specified 
+        -- Returns the last key for the specified value. Comparison is defined by the specified
         -- testFunc.
         --
         -- This is an optional operation.
@@ -1073,12 +1073,12 @@ function Mixins.Iteration(library)
         -- targetValue
         --     the value that is searched for
         -- testFunc, ...
-        --     optional. the function that performs the search, with the signature 
-        --     testFunc(candidate, target). It should return a truthy value if the two 
-        --     values match. If it returns a numeric value, then only zero indicates 
+        --     optional. the function that performs the search, with the signature
+        --     testFunc(candidate, target). It should return a truthy value if the two
+        --     values match. If it returns a numeric value, then only zero indicates
         --     a match.
         -- returns
-        --     the last key that corresponds to to a value that matches the specified value, 
+        --     the last key that corresponds to to a value that matches the specified value,
         --     according to testFunc
         function library.LastKeyFor(iterable, targetValue, testFunc, ...)
             if testFunc then
@@ -1107,9 +1107,9 @@ function Mixins.Iteration(library)
         -- controlIterable
         --     the itearble that contains the values to search for
         -- testFunc, ...
-        --     the function that performs the search, with the signature 
-        --     testFunc(candidate, target). It should return a truthy value if the two 
-        --     values match. If it returns a numeric value, then only zero indicates 
+        --     the function that performs the search, with the signature
+        --     testFunc(candidate, target). It should return a truthy value if the two
+        --     values match. If it returns a numeric value, then only zero indicates
         --     a match.
         -- returns
         --     true if searchedIterable contains every value in the control iterable, otherwise false
@@ -1136,9 +1136,9 @@ function Mixins.Iteration(library)
         -- controlIterable
         --     the itearble that contains the keys to search for
         -- testFunc, ...
-        --     the function that performs the search, with the signature 
-        --     testFunc(candidate, target). It should return a truthy value if the two 
-        --     values match. If it returns a numeric value, then only zero indicates 
+        --     the function that performs the search, with the signature
+        --     testFunc(candidate, target). It should return a truthy value if the two
+        --     values match. If it returns a numeric value, then only zero indicates
         --     a match.
         -- returns
         --     true if searchedIterable contains every value in the control iterable, otherwise false
@@ -1181,9 +1181,9 @@ function Mixins.Iteration(library)
     -- iterable, otherIterable
     --     the iterables that are used for comparison
     -- testFunc, ...
-    --     optional. the function that performs the search, with the signature 
-    --     testFunc(candidate, otherCandidate). It should return a truthy value if the two 
-    --     values match. If it returns a numeric value, then only zero indicates 
+    --     optional. the function that performs the search, with the signature
+    --     testFunc(candidate, otherCandidate). It should return a truthy value if the two
+    --     values match. If it returns a numeric value, then only zero indicates
     --     a match.
     -- returns
     --     a new iterable containing all items contained in both iterables
@@ -1211,9 +1211,9 @@ function Mixins.Iteration(library)
     -- iterable, otherIterable
     --     the iterables that are used for comparison
     -- testFunc, ...
-    --     optional. the function that performs the search, with the signature 
-    --     testFunc(candidate, otherCandidate). It should return a truthy value if the two 
-    --     values match. If it returns a numeric value, then only zero indicates 
+    --     optional. the function that performs the search, with the signature
+    --     testFunc(candidate, otherCandidate). It should return a truthy value if the two
+    --     values match. If it returns a numeric value, then only zero indicates
     --     a match.
     -- returns
     --     a new iterable containing all items contained in only one of the iterables
@@ -1247,9 +1247,9 @@ function Mixins.Iteration(library)
     -- target
     --     the searched item
     -- testFunc, ...
-    --     the function that performs the search, with the signature 
-    --     testFunc(candidate, target). It should return a truthy value if the two 
-    --     values match. If it returns a numeric value, then only zero indicates 
+    --     the function that performs the search, with the signature
+    --     testFunc(candidate, target). It should return a truthy value if the two
+    --     values match. If it returns a numeric value, then only zero indicates
     --     a match.
     -- returns
     --     the number of times the specified item was found, according to the specified
@@ -1349,6 +1349,6 @@ function Mixins.Iteration(library)
 	if library.Mean == nil then
 		library.Mean = CurryNamedFunction(library, "Average");
 	end;
-    
+
     return library;
 end;

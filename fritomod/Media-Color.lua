@@ -75,7 +75,7 @@ if MATERIAL_TEXT_COLOR_TABLE then
 end;
 
 if RAID_CLASS_COLORS then
-    for className, classColor in pairs(RAID_CLASS_COLORS) do 
+    for className, classColor in pairs(RAID_CLASS_COLORS) do
         colors[className]=BreakColorTable(classColor);
     end;
 end;
@@ -101,7 +101,7 @@ Media.SetAlias("color", "colors", "colour", "colours");
 
 Frames=Frames or {};
 
--- Sets the color for a frame. This handles Frames, FontStrings, and 
+-- Sets the color for a frame. This handles Frames, FontStrings, and
 -- Textures. The color can be a name, which will be retrieved using
 -- Media.color
 --

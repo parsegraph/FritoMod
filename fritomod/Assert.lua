@@ -1,6 +1,6 @@
 -- Assert contains a bunch of functions that perform assertions. These functions will error
 -- if their tested conditions are false. I use them in testingo
--- 
+--
 -- Most functions in Assert follow this pattern:
 --
 -- Assert.Equals(expected, actual, reason)
@@ -12,11 +12,11 @@
 -- Assertions can optionally take reasons. If the assertion fails, the reason is shown:
 --
 -- -- Raises the error "Value was not truthy for assertion 'Whoops!', value was false"
--- Assert.True(false, "Whoops!"); 
--- Assert.True(true, "This is never shown"); 
+-- Assert.True(false, "Whoops!");
+-- Assert.True(true, "This is never shown");
 --
 -- You can use these in your code, but their emphasis is verbosity and error message accuracy,
--- rather than performance. I usually don't use them outside of tests and debugging since I 
+-- rather than performance. I usually don't use them outside of tests and debugging since I
 -- don't like introducing dependencies if I don't need to.
 --
 -- These functions behave like assert, but they don't return their passed value. This is more of
@@ -48,7 +48,7 @@ local function DoCall(objOrFunc, ...)
 	else
 		assert(type(objOrFunc)=="table", "Exception must be passed a callable, or a table");
 		local f=objOrFunc[select(1,...)];
-		assert(IsCallable(f), 
+		assert(IsCallable(f),
 			"Exception's passed object must contain a callable value for key: " .. tostring(select(1, ...)));
 		return pcall(f, objOrFunc, select(2, ...));
 	end;
@@ -254,7 +254,7 @@ function Assert.TablesEqual(expected, actual, assertion)
     end;
 end;
 
--- Asserts that the two values are equal. 
+-- Asserts that the two values are equal.
 --
 -- The method of testing for equivalence depends on the expected value:
 --  * If the expected value is a table and it has an __eq method, identity(==) is used
@@ -282,7 +282,7 @@ Assert.Same=Assert.Equals
 Assert.Equal=Assert.Equals
 
 function Assert.NotEquals(control,variable,assertion)
-	assert(not pcall(Assert.Equals, control, variable), 
+	assert(not pcall(Assert.Equals, control, variable),
 		("Values must not be equal '%s'%s"):format(s(control), FormatName(assertion)));
 end;
 Assert.NotEqual=Assert.NotEquals

@@ -36,7 +36,7 @@ do
             return Lists.Insert(listeners, func);
         end,
         Functions.Install(function()
-            lastInstance=select(2, IsInInstance()); 
+            lastInstance=select(2, IsInInstance());
             return Events.PLAYER_ENTERING_WORLD(function()
                 if removers then
                     Lists.CallEach(removers);

@@ -4,7 +4,7 @@
 -- local r=Timing.OnUpdate(print, "This is printed every frame!");
 -- r() -- Remove the timer
 --
--- Timing also lets you call a function periodically. All periods in Timing are specified 
+-- Timing also lets you call a function periodically. All periods in Timing are specified
 -- in seconds:
 --
 -- Timing.Every(1, print, "Print every 1 second");
@@ -16,7 +16,7 @@
 -- * Periodic - Call function one period after now. Invocations can be lost, and the actual
 -- time will drift from the scheduled time. However, time between invocations will stay fairly
 -- constant.
--- * Rhythmic - Compensate for drift, so delayed invocations will not delay subsequent 
+-- * Rhythmic - Compensate for drift, so delayed invocations will not delay subsequent
 -- invocations. Invocations can be lost. Time between individual invocations will vary.
 -- * Burst - Compensate for delays. Invocations are never lost, but time between invocations
 -- can be extremely inconsistent.
@@ -106,7 +106,7 @@ do
     --     a function that removes the specified listener
     Timing.OnUpdate = Functions.Spy(
         function(func, ...)
-            -- We can't just remove a listener at any given time because we may be 
+            -- We can't just remove a listener at any given time because we may be
             -- iterating over our list. Instead, any listeners that are removed must be
             -- saved, so they can be removed at a safe time later on.
             func=Curry(func, ...);
@@ -115,7 +115,7 @@ do
                 table.insert(deadListeners, func);
             end);
         end,
-        Functions.Install(Callbacks.OnUpdate, timingFrame, function(elapsed) 
+        Functions.Install(Callbacks.OnUpdate, timingFrame, function(elapsed)
             Timing._Tick(elapsed);
         end)
     );
@@ -162,8 +162,8 @@ function Timing.Every(...)
     end;
 end;
 
--- Calls the specified function rhythmically. This timer will maintain a rhythm; actual 
--- times will stay close to scheduled times, but distances between individual iterations 
+-- Calls the specified function rhythmically. This timer will maintain a rhythm; actual
+-- times will stay close to scheduled times, but distances between individual iterations
 -- will vary.
 --
 -- This rhythm is local to this function. You'll have to do synchronizing on your own to
@@ -203,7 +203,7 @@ function Timing.CycleValues(period, value, ...)
     local values={value, ...};
     local time=GetTime();
     return function()
-        -- First, get the total elapsed time. 
+        -- First, get the total elapsed time.
         --
         -- Imagine a 2 second period with 3 values and our elapsed time is 9 seconds.
         local elapsed=GetTime()-time;
@@ -224,8 +224,8 @@ end;
 -- will only yield one invocation of the specified function. Subsequent calls will be
 -- ignored until the cooldown time has passed.
 --
--- This is not a timer; the function is always invoked directly and never as a result 
--- of an event. If the returned function is never called, the specified function will 
+-- This is not a timer; the function is always invoked directly and never as a result
+-- of an event. If the returned function is never called, the specified function will
 -- never be invoked.
 --
 -- cooldownTime
@@ -267,7 +267,7 @@ end;
 -- postponing them.
 --
 -- This function is not undoable, but it can be poisoned.
--- 
+--
 -- waitTime
 --     time to wait between invocations, in seconds
 -- func, ...

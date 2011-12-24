@@ -12,7 +12,7 @@ if nil ~= require then
     require "fritomod/Mixins-MutableIteration";
 end;
 
-Lists = {}; 
+Lists = {};
 local Lists = Lists;
 
 -- Iteration functionality for lists.

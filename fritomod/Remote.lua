@@ -16,10 +16,10 @@
 --
 -- I'm still against the idea because including a serializer means that using Remote locks
 -- people into FritoMod. People with foreign serializing solutions would be out of luck.
--- 
+--
 -- Plus, it seems easy to just write parsers separately and call them explicitly. We can do
 -- some metatable/closure magic to retain the original syntax.
--- 
+--
 if nil ~= require then
     require "fritomod/Tables";
 end;

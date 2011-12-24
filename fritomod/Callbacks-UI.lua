@@ -52,7 +52,7 @@ Callbacks.FrameEnter=Callbacks.EnterFrame;
 ToggledEvent("ShowFrame", BasicEvent, "OnShow", "OnHide");
 
 -- A helper function that ensures we only enable the mouse on a frame when
--- necessary. This coordination is necessary since different callbacks all 
+-- necessary. This coordination is necessary since different callbacks all
 -- require an enabled mouse.
 local function enableMouse(f)
     f.mouseListenerTypes=f.mouseListenerTypes or 0;
@@ -67,7 +67,7 @@ local function enableMouse(f)
 end;
 
 -- Calls the specified callback whenever dragging starts. You'll
--- need to manually call Frame:RegisterForDrag along with this method in order to 
+-- need to manually call Frame:RegisterForDrag along with this method in order to
 -- receive drag events. Frames.Draggable helps with this.
 ToggledEvent("DragFrame", function(dispatcher, frame)
     BasicEvent("OnDragStart", "OnDragStop", dispatcher, frame);

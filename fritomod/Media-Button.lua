@@ -2,7 +2,7 @@
 --
 -- Each value is a table containing textures to map a Button or CheckButton.
 --
--- Ideally, virtual frames would make this sort of thing obsolete. Most of 
+-- Ideally, virtual frames would make this sort of thing obsolete. Most of
 -- this code is actually from virtual frames. However, Blizzard's virtual
 -- frames usually carry a lot of unwanted baggage that we'd have to prune.
 -- We also can't use virtual frames if our frame already exists. These two
@@ -15,7 +15,7 @@
 -- approach takes us is poor: we're not really writing anything powerful, just
 -- "fixing bugs."
 --
--- A pure approach would be to do nothing. Anything we write that uses virtual 
+-- A pure approach would be to do nothing. Anything we write that uses virtual
 -- frames will be competing with them. Our solution would be to basically say
 -- "Write and use XML when you want to create complicated UIs." Since creating
 -- complicated UIs is one of the biggest reasons for creating FritoMod, this
@@ -32,7 +32,7 @@
 -- copying it.
 --
 -- Of course, you can mix virtual frames with FritoMod all you want. I do this
--- when a virtual frame actually fits well with what I'm doing. However, this 
+-- when a virtual frame actually fits well with what I'm doing. However, this
 -- happens less often than you'd think.
 if nil ~= require then
     require "fritomod/Frames";
@@ -118,10 +118,10 @@ local function AdjustTexCoords(layout, texture)
 
     local textureWidth =layout.textureWidth;
     local textureHeight=layout.textureHeight;
-    
+
     if texture then
         texture:SetTexCoord(
-            leftEdge/textureWidth, rightEdge/textureWidth, 
+            leftEdge/textureWidth, rightEdge/textureWidth,
             topEdge/textureHeight, bottomEdge/textureHeight
         );
     end;
@@ -205,10 +205,10 @@ local function HorizontalFixedButton(name, layout)
             );
 
             center:SetTexCoord(
-                (leftEdge+leftSlice)/textureWidth, (rightEdge-rightSlice)/textureWidth, 
+                (leftEdge+leftSlice)/textureWidth, (rightEdge-rightSlice)/textureWidth,
                 topEdge/textureHeight,  bottomEdge/textureHeight
             );
-    
+
             button:SetHighlightTexture(layout.highlight);
 
             Callbacks.MouseDown(button, function()

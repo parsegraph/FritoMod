@@ -45,7 +45,7 @@
 -- Animations.Origin(scale, "left");
 --
 -- -- Finally, play our animation. Once the animation is complete, it will reset to its original shape.
--- -- You can tweak this by setting the looping behavior, or by adding a handler for the OnFinished 
+-- -- You can tweak this by setting the looping behavior, or by adding a handler for the OnFinished
 -- -- event.
 -- ag:Play();
 

@@ -46,7 +46,7 @@ function Suite:TestNaiveSplit()
             startOfWord=i;
         elseif not isLetter then
             table.insert(parts, s:sub(startOfWord, i-1));
-            startOfWord=nil;   
+            startOfWord=nil;
         end;
     end;
     if startOfWord then

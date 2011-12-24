@@ -39,7 +39,7 @@ end;
 function Suite:TestConstructedValueIsPickyAboutNilValues()
     local t = {};
     Assert.Exception("ConstructedValue throws when given nil table", Metatables.ConstructedValue, nil, Noop);
-    Assert.Exception("ConstructedValue throws when given nil constructor", 
+    Assert.Exception("ConstructedValue throws when given nil constructor",
         Metatables.ConstructedValue, t, nil);
     Assert.Nil(Metatables.ConstructedValue(t, Tables.New), "ConstructedValue does not return anything");
 end;

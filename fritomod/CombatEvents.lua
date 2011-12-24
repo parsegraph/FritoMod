@@ -7,7 +7,7 @@ if nil ~= require then
 end;
 
 CombatEvents = {};
-local eventListeners = {}; 
+local eventListeners = {};
 CombatEvents._eventListeners = eventListeners;
 
 CombatEvents._call = function(timestamp, event, ...)

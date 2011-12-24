@@ -42,7 +42,7 @@
 --         startOfWord=i;
 --     elseif not isLetter then
 --         table.insert(parts, s:sub(startOfWord, i-1));
---         startOfWord=nil;   
+--         startOfWord=nil;
 --     end;
 -- end;
 -- if startOfWord then
@@ -231,7 +231,7 @@ cursor.PeekPrevious=Headless("Peek", -1);
 
 local function MoveWhile(self, steps, func, ...)
     func=Curry(func, ...);
-    while true do 
+    while true do
         self:Move(steps);
         local k,v=self:Pair();
         if k==nil or not func(v, k) then
@@ -250,7 +250,7 @@ end;
 
 local function SneakWhile(self, steps, func, ...)
     func=Curry(func, ...);
-    while true do 
+    while true do
         local k,v=self:Pair();
         if k==nil or not func(v, k) then
             return k~=nil;

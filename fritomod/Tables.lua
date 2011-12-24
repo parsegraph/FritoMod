@@ -1,5 +1,5 @@
 -- Tables provides a number of iteration functions for lua tables, viewed as a
--- map or dictionary. 
+-- map or dictionary.
 --
 -- Most of the code for iteration is actually found in Mixins.Iteration or
 -- Mixins.MutableIteration; Lists is merely an implementation of that mixin.
@@ -133,7 +133,7 @@ function Tables.DecorateMetatable(originalTable, metatable)
     end;
 end;
 
--- Adds a metatable to the given table such that before the table is used, the 
+-- Adds a metatable to the given table such that before the table is used, the
 -- initializerFunc provided will be called. Once this is done, the oldMetatable
 -- of the given table is restored.
 --

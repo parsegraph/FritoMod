@@ -9,7 +9,7 @@ end;
 local Suite=ReflectiveTestSuite:New("tutorial");
 
 function Suite:TestAssert()
-	-- assert takes a boolean value, and that boolean is false, throws an error. Because 
+	-- assert takes a boolean value, and that boolean is false, throws an error. Because
 	-- of this, I can "assert" things to be true.
 	assert(true);
 end;
@@ -72,7 +72,7 @@ function Suite:TestForLoop()
 	local array={"A","B","C"};
 	-- Iteration can be done using C-style for loops
 	local s="";
-	for index=1, #array do 
+	for index=1, #array do
 		s=s..array[index];
 	end;
 	Assert.Equals("ABC",s);
@@ -126,7 +126,7 @@ function Suite:TestGenericFor()
 end;
 
 function Suite:TestMap()
-	-- Tables also can have named values. The name is called a key; this is how 
+	-- Tables also can have named values. The name is called a key; this is how
 	-- you refer to that value.
 	local map = {
 	   a = 2,

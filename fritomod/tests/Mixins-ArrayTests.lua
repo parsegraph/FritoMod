@@ -74,11 +74,11 @@ function Mixins.ArrayTests(Suite, library)
 	end;
 
     function Suite:TestEquals()
-		assert(library.Equals(Suite:Array(), Suite:Array()), 
+		assert(library.Equals(Suite:Array(), Suite:Array()),
 			"Equals returns true for empty iterables");
-		assert(library.Equals(Suite:Array(1,2,3), Suite:Array(1,2,3)), 
+		assert(library.Equals(Suite:Array(1,2,3), Suite:Array(1,2,3)),
 			"Equals returns true for equal iterables");
-		assert(not library.Equals(Suite:Array(1,2,3), Suite:Array(1,2,2)), 
+		assert(not library.Equals(Suite:Array(1,2,3), Suite:Array(1,2,2)),
 			"Equals returns false for equal iterables");
 		assert(not library.Equals(Suite:Array(1,2,3), Suite:Array(1)),
 			"Equals returns false for unequally sized iterables");
@@ -202,13 +202,13 @@ function Mixins.ArrayTests(Suite, library)
 
     function Suite:TestFilterWithMultipleFilters()
         local a=Suite:Array(1,2,3,4,5);
-        library.AssertEquals(Suite:Array(3,5), library.FilterValues(a, { 
+        library.AssertEquals(Suite:Array(3,5), library.FilterValues(a, {
             function(v) return v % 2 == 1 end,
             Curry(Operator.GreaterThan, 2)
         }));
     end;
 
-    function Suite:TestSliceReturnsAPortionOfTheOriginal() 
+    function Suite:TestSliceReturnsAPortionOfTheOriginal()
         local a=Suite:Array("a","b","c","d");
         library.AssertEquals(Suite:Array("b","c"), library.Slice(a, 2, 3));
     end;

@@ -37,7 +37,7 @@ end;
 
 -- Returns a partial stack trace. It returns the head of the stack, and the tail
 -- of the stack. The amount of stack levels contained by either element is determined
--- by numHead and numTail. 
+-- by numHead and numTail.
 --
 -- Head elements are the most recent function invoked. As a result, you may also skip some of them,
 -- since these are typically associated with debugging output and not relevance to the stack trace.
@@ -52,14 +52,14 @@ end;
 --
 -- skip:number
 --     the number of stack levels to skip. These levels are ignored, but are not subtracted from
---     numHead. Defaults to 1, meaning the most-recent stack level returned is the one that was 
+--     numHead. Defaults to 1, meaning the most-recent stack level returned is the one that was
 --     active when this function was called.
 -- numHead:number
 --     the number of stack levels to contain in the head stack trace. If this is greater than the
 --     size of the stack, all stack levels are contained in that trace. The head stack trace is
 --     offset by skip, but the skipped levels are not subtracted from numHead. Defaults to 10.
 -- numTail:number
---     the number of stack levels to contain in the tail stack trace. The head stack has 
+--     the number of stack levels to contain in the tail stack trace. The head stack has
 --     precedence over the tail stack; overlapping values will be added to the head stack and not
 --     the tail stack. If they are not overlapping, then the tail stack will contain numTail stack
 --     levels. Defaults to 10
@@ -128,7 +128,7 @@ end;
 
 -- Formats a stack trace, emulating the way debugstack formats it. As a result,
 -- this function is redundant if debugstack is available.
--- 
+--
 -- stackTrace:table
 --     a list of stack levels. Each level should be in the form as returned by debug.getinfo
 -- tailStackTrace:table
@@ -148,7 +148,7 @@ function Tests.FormatStackTrace(stackTrace, tailStackTrace)
     return stackString;
 end;
 
--- Alias for formatting a partial stack trace. The arguments 
+-- Alias for formatting a partial stack trace. The arguments
 --
 -- This function is identical in functionality to debugstack. In fact, if debugstack is available
 -- that function is directly called.
@@ -227,7 +227,7 @@ function Tests.Flag(isSet)
         -- Asserts that the flag is not raised.
         --
         -- assertion:string
-        --     specifies why the flag should not be raised or describes the significance of the 
+        --     specifies why the flag should not be raised or describes the significance of the
         --     unraised flag
         AssertUnset = function(assertion)
             assert(not flag.IsSet(), assertion or "Flag must be unset");

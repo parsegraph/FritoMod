@@ -18,11 +18,11 @@ end;
 --     The boolean representation of the specified value
 function Bool(value)
 	return not not value;
-end	
+end
 
 -- A value that is used to signal the death of some operations. This is used where a remover
 -- cannot easily be provided.
--- 
+--
 -- Never change, edit, or use this value.
 --
 -- see
@@ -53,17 +53,17 @@ end;
 --     True if the specfied value is callable, otherwise false
 function IsCallable(value)
     local valueType = type(value);
-    if valueType == "function" then 
+    if valueType == "function" then
         return true;
     end;
-    if valueType ~= "table" then 
+    if valueType ~= "table" then
         return false;
     end;
     local mt = getmetatable(value);
     return mt and IsCallable(mt.__call);
 end;
 
--- Returns whether the specified value is a boolean, string, or number. Nil values are 
+-- Returns whether the specified value is a boolean, string, or number. Nil values are
 -- not primitive.
 --
 -- value
@@ -76,7 +76,7 @@ function IsPrimitive(value)
 end;
 
 -- Returns an unpacked table that contains all elements in the specified tables.
--- 
+--
 -- WARNING: While this function goes above and beyond when handling nil values, it
 -- is VERY dangerous to be passing them around. You should minimize your use of them
 -- when unpacking, as they can cause arguments to be lost. Use them at your own risk.
@@ -90,7 +90,7 @@ end;
 -- returns
 --     A list that represents a single list containing all entries in the specified
 --     list of lists.
-do 
+do
     local tableCreators = {
         [1] = function() return {nil} end,
         [2] = function() return {nil,nil} end,
@@ -115,7 +115,7 @@ do
             end;
             for i=1, #argumentGroup do
                 cumulative = cumulative + 1;
-                local value = argumentGroup[i]; 
+                local value = argumentGroup[i];
                 if value == nil then
                     local msg="";
                     for j=1,#collectedValues do

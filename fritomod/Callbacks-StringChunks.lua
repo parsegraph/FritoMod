@@ -38,7 +38,7 @@ function Callbacks.StringChunks(source, callback, ...)
         if chunk:byte(1)==DELIMITER_BYTE then
             -- It's a headless chunk, so dispatch it directly.
             callback(chunk:sub(2), who, ...);
-        else    
+        else
             local header, data=unpack(Strings.Split(":", chunk, 2));
             local id=who..header;
             if not messages[id] then

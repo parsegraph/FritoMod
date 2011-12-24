@@ -1,4 +1,4 @@
--- Media is a common area for providing sources of media, like fonts, textures, 
+-- Media is a common area for providing sources of media, like fonts, textures,
 -- colors, and so forth. It's similar to LibSharedMedia and other mods, though
 -- it does not pretend to be the sole provider of media. It also doesn't require
 -- you to learn a custom API for accessing tabular data. For these reasons, I

@@ -22,15 +22,15 @@
 --
 -- We don't need to provide a picture if we have a set. In the above case, we could
 -- also do this:
--- 
+--
 -- Chatpic.set.banner("_0_0_0_0_", Chat.g);
 --
 -- which will yield the same result.
--- 
+--
 -- Most of Chatpic's grunt work is actually done by String.Transform. Chatpic just provides
 -- a place to store sets and pictures, along with some metatable magic to make it convenient
 -- to use. To continue our example, we could have just done this:
--- 
+--
 -- Chat.g(String.Transform("_0_0_0_0_", Chatpic.set.banner));
 --
 -- which also prints the same thing.
@@ -40,7 +40,7 @@
 -- Slash.Register("cp", function(msg, editbox)
 --     Chatpic[msg](Chat[editbox]);
 -- end);
--- 
+--
 -- Which will print the "fail" picture to whatever medium you're using, such as guild, party, etc.
 
 if nil ~= require then
