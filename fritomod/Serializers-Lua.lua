@@ -21,7 +21,7 @@ printer=setmetatable({
         out(("%q"):format(v));
     end,
     ["nil"]=function(out)
-        out(tostring(v));
+        out("nil");
     end,
     ["table"]=function(out, t, newline)
         local indent="\t";
