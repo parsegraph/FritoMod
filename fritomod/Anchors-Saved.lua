@@ -45,7 +45,7 @@ local function ShowAnchor(name, anchor)
     if not showing then
         return;
     end;
-    Lists.InsertAll(removers, 
+    Lists.InsertAll(removers,
         anchor:Show(),
         Callbacks.EnterFrame(anchor.frame, function()
             if not anchor.frame:IsDragging() then
