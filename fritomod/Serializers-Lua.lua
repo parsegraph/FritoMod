@@ -127,5 +127,6 @@ function Serializers.WriteLua(v, out, ...)
 end;
 
 function Serializers.ReadLua(str)
-    return loadstring(str);
+    local producer = assert(loadstring("return " .. str));
+    return producer();
 end;
