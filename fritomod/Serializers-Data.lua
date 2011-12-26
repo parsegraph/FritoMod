@@ -17,7 +17,8 @@ Remote["FritoMod.Data"]["Khthon"](
 
 -- On Khthon:
 Callbacks.StringChunks(Remote["FritoMod.Data], function(msg)
-    Serializers.
+    local received = Serializers.ReadData(msg);
+	-- ... do whatever you want with the received table.
 end);
 
 --]]
