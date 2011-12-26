@@ -118,13 +118,16 @@ function readers.n(c)
 end;
 
 function readers.t(c)
+    trace("Reading table");
     c:Next() -- Skip the 't'
     local t={};
     while c:Get()=="k" do
         c:Next();
         local k=Read(c);
+        trace("Reading key %q", tostring(k));
         c:Next();
         local v=Read(c);
+        trace("Reading value %q", tostring(v));
         t[k]=v;
         c:Next();
     end;
@@ -151,7 +154,9 @@ function readers.l(c)
 end;
 
 Read=function(c)
-    return readers[c:Get()](c)
+    local dataType = c:Get();
+    trace("Reading next value %q", dataType);
+    return readers[dataType](c);
 end;
 
 function Serializers.ReadData(c)
