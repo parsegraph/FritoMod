@@ -461,6 +461,12 @@ function Mixins.MutableIteration(library, iteratorFunc)
         end;
     end;
 
+    if library.PopOne==nil then
+        function library.PopOne(iterable)
+            return library.RemoveAt(iterable, library.Size(iterable));
+        end;
+    end;
+
     if library.Shift==nil then
         function library.Shift(iterable, count)
             count=count or 1;

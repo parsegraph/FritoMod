@@ -27,8 +27,11 @@ Frames.ThresholdDraggable(frame, 10, "Middle");
 
 if nil ~= require then
     require "wow/Frame-Events";
+    require "wow/api/Bindings";
 
     require "fritomod/Functions";
+    require "fritomod/Lists";
+    require "fritomod/Tables";
     require "fritomod/Callbacks-UI";
 end;
 
@@ -36,39 +39,103 @@ Frames=Frames or {};
 
 do
     local buttons={
-        leftbutton="LeftButton",
-        left=      "LeftButton",
-        leftmouse= "LeftButton",
-        mouse1=    "LeftButton",
+        [{   "leftbutton",
+            "left",
+            "leftmouse",
+            "mouse1"}]="LeftButton",
 
-        rightbutton="RightButton",
-        right=      "RightButton",
-        rightmouse= "RightButton",
-        mouse2=     "RightButton",
+        [{   "rightbutton",
+            "right",
+            "rightmouse",
+            "mouse2"}]="RightButton",
 
-        middlebutton="MiddleButton",
-        middle=      "MiddleButton",
-        middlemouse= "MiddleButton",
-        mouse3=      "MiddleButton",
+        [{   "middlebutton",
+            "center",
+            "mid",
+            "middle",
+            "middlemouse",
+            "mouse3"}]="MiddleButton",
 
-        button4="Button4",
-        mouse4= "Button4",
-        thumb=  "Button4",
-        thumb1= "Button4",
-        side1=  "Button4",
-        side=   "Button4",
+        [{   "button4",
+            "mouse4",
+            "thumb",
+            "thumb1",
+            "side1",
+            "side"}]="Button4",
 
-        button5="Button5",
-        mouse5= "Button5",
-        side2=  "Button5",
-        thumb2= "Button5",
+        [{   "button5",
+            "mouse5",
+            "side2",
+            "thumb2"}]="Button5"
     };
+    for k, v in pairs(buttons) do
+        buttons[k] = function(candidate)
+            return candidate == v;
+        end;
+    end;
+    Tables.Expand(buttons);
+
     -- Returns the "proper" button name for a given alias. This lets
     -- us use plenty of different names without needing to remember the
     -- One True Way.
-    function Frames.GetButtonName(button)
+    function Frames.SimpleButtonTester(button)
         button=tostring(button);
-        return buttons[button:lower()] or button;
+        return assert(buttons[button:lower()], "Unknown button: " .. button);
+    end;
+
+    local modifiers={
+        shift = Seal(IsShiftKeyDown),
+        alt = Seal(IsAltKeyDown),
+        control = Seal(IsControlKeyDown),
+    };
+    modifiers.meta = modifiers.alt;
+    modifiers.ctrl = modifiers.control;
+    modifiers["^"] = modifiers.control;
+
+    function Frames.SimpleModifierTester(modifier)
+        modifier=tostring(modifier);
+        return assert(modifiers[modifier:lower()], "Unknown modifier: " .. modifier);
+    end;
+end;
+
+do
+    local function ConvertOneButton(button)
+        if IsCallable(button) then
+            return button;
+        end;
+        if type(button) == "table" then
+            return Frames.ButtonTester(unpack(button));
+        end;
+        if not button then
+            return Noop;
+        end;
+        button = tostring(button);
+        local parts = Strings.Split("[-_+.: ]", button);
+        local buttonTester = Frames.SimpleButtonTester(Lists.PopOne(parts));
+        parts = Lists.Map(parts, Frames.SimpleModifierTester);
+        return function(button)
+            for i=1, #parts do
+                if not parts[i]() then
+                    return false;
+                end;
+            end;
+            return buttonTester(button);
+        end;
+    end;
+
+    function Frames.ButtonTester(...)
+        local buttons={...};
+        for i=1, #buttons do
+            buttons[i] = ConvertOneButton(buttons[i]);
+        end;
+        return function(button)
+            for i=1, #buttons do
+                if buttons[i](button) then
+                    return true;
+                end;
+            end;
+            return false;
+        end;
     end;
 end;
 
@@ -110,10 +177,6 @@ do
                 StopDrag(f);
             end;
             return;
-        else
-            for i,btn in ipairs(buttons) do
-                buttons[i]=Frames.GetButtonName(btn);
-            end;
         end;
         StartDrag(f, buttons);
         return Functions.OnlyOnce(StopDrag, f);
@@ -191,24 +254,15 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
     end);
 end;
 
-function Frames.ThresholdDraggable(f, threshold, ...)
-    local buttons={...};
+function Frames.ThresholdDraggable(f, threshold, first, ...)
     local conditional;
-    if type(buttons[1])=="function" or type(buttons[1])=="table" then
-        conditional=Curry(...);
+    if type(first)=="function" or type(first)=="table" then
+        conditional=Curry(first, ...);
     else
-        if #buttons==0 then
-            buttons={"LeftButton", "RightButton"};
-        else
-            for i,btn in ipairs(buttons) do
-                buttons[i]=Frames.GetButtonName(btn);
-            end;
-        end;
-        conditional=function(button)
-            return Lists.Contains(buttons, button, Strings.StartsWith);
-        end;
+        conditional=Frames.ButtonTester(first, ...);
     end;
     return Callbacks.MouseDown(f, function(button)
+        trace("Button down: " ..button);
         if not conditional(button) then
             return;
         end;
