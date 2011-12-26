@@ -1,24 +1,22 @@
 -- Serializes Lua data into a compressed string.
 --[[
 
-local t = {
-    foo = "Notime",
-    bar = {
-        baz = "Hello!",
-        num = 42
-    }
-};
+-- /ntg hello, world!
 
-Remote["FritoMod.Data"]["Khthon"](
-    Serializers.WriteStringChunks(
-        Serializers.WriteData(t),
-        retrieved),
-    "FritoMod.Data"));
+function Slash.ntg(what)
+   local msg = {
+      message = tostring(what),
+      who = GetUnitName("player"),
+      when = time()
+   };
+   Remote["ntg"].g(Serializers.WriteStringChunks(
+         Serializers.WriteData(msg),
+   "ntg"));
+end;
 
--- On Khthon:
-Callbacks.StringChunks(Remote["FritoMod.Data], function(msg)
-    local received = Serializers.ReadData(msg);
-	-- ... do whatever you want with the received table.
+Callbacks.StringChunks(Remote["ntg"], function(msg)
+      msg = Serializers.ReadData(msg);
+      printf("%s said %q", msg.who, msg.message);
 end);
 
 --]]
