@@ -153,14 +153,12 @@ local function AdjustPoint(f)
     );
 end;
 
-function Frames.StartMovingFrame(f, startX, startY)
+function Frames.StartMovingFrame(f, offsetX, offsetY)
     if f.dragging then
         f.dragging=f.dragging+1;
     else
         f.dragging=1;
-        if not startX or not startY then
-            startX, startY=f:GetCenter();
-        end;
+        local startX, startY = f:GetCenter();
         f:ClearAllPoints();
         if f:GetParent() ~= UIParent then
             -- Remove the local scale and re-add it once we've reparented. If we
@@ -171,6 +169,12 @@ function Frames.StartMovingFrame(f, startX, startY)
             f:SetParent(UIParent);
             startX=startX/f:GetEffectiveScale();
             startY=startY/f:GetEffectiveScale();
+        end;
+        if offsetX then
+            startX = startX + offsetX;
+        end;
+        if offsetY then
+            startY = startY + offsetY;
         end;
         f.dragBehavior=Callbacks.CursorOffset(f, function(x, y)
             f:SetPoint("center", UIParent, "bottomleft", startX+x, startY+y);
@@ -212,7 +216,7 @@ function Frames.ThresholdDraggable(f, threshold, ...)
         r=Callbacks.CursorOffset(f, function(x, y)
             if math.abs(x) > threshold or math.abs(y) > threshold then
                 r();
-                r=Frames.StartMovingFrame(f);
+                r=Frames.StartMovingFrame(f, x, y);
             end;
         end);
         return function()
