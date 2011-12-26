@@ -1,4 +1,4 @@
--- Serializes Lua objects into code that represents them.
+-- Serializes Lua objects into source code that represents them.
 --[[
 
 local t = {
@@ -9,7 +9,7 @@ local t = {
     }
 };
 
-local retrieved = Serializers.ReadLua(Serializers.WriteLua(t));
+local retrieved = Serializers.ReadSource(Serializers.WriteSource(t));
 
 assert(retrieved.foo == "Notime");
 assert(retrieved.bar.baz == "Hello!");
@@ -112,7 +112,7 @@ printer=setmetatable({
     end
 });
 
-function Serializers.WriteLua(v, out, ...)
+function Serializers.WriteSource(v, out, ...)
     if out or select("#", ...) > 0 then
         out=Curry(out, ...);
         return printer(out, v);
@@ -126,7 +126,7 @@ function Serializers.WriteLua(v, out, ...)
     end;
 end;
 
-function Serializers.ReadLua(str)
+function Serializers.ReadSource(str)
     local producer = assert(loadstring("return " .. str));
     return producer();
 end;

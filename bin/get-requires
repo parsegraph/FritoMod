@@ -16,7 +16,7 @@ require "fritomod/LuaEnvironment";
 require "fritomod/Strings";
 require "fritomod/Tables";
 require "fritomod/Lists";
-require "fritomod/Serializers-Lua";
+require "fritomod/Serializers-Source";
 
 local dependencies={};
 local dependencyStack={};
@@ -128,7 +128,7 @@ function modes.text()
 end;
 
 function modes.lua()
-    Serializers.WriteLua(dependencies, io.stdout, "write");
+    Serializers.WriteSource(dependencies, io.stdout, "write");
     print("");
 end;
 
