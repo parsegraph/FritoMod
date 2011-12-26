@@ -126,6 +126,7 @@ function readers.t(c)
         c:Next();
         local v=Read(c);
         t[k]=v;
+        c:Next();
     end;
     return t;
 end;

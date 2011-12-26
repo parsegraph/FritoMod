@@ -59,3 +59,12 @@ function Suite:TestReadANestedTable()
     }, Serializers.ReadData("tks6nestedtks4deeptks6answern42"));
 end;
 
+function Suite:TestReadHandlesTablesWithMultipleKeys()
+    local original = {
+        name = "My name!",
+        index = 23,
+        data = "Some content."
+    };
+    local retrieved = Serializers.ReadData(Serializers.WriteData(original));
+    Assert.Equals(original, retrieved);
+end;
