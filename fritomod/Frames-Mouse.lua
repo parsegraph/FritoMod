@@ -1,12 +1,12 @@
 -- Allows frames to be repositioned across the screen using the mouse
+--[[
+
+Frames.ThresholdDraggable(frame, 10, "Middle");
+
+--]]
 --
 -- This file contains two useful functions for dragging frames: Frames.InstantDraggable
 -- and Frames.ThresholdDraggable. Here's a quick example:
---
--- local r = Frames.ThresholdDraggable(frame, 10, "Middle");
--- ... -- drag the frame around!
--- r(); -- Stop dragging
---
 -- In the above example, the frame will start moving once you've moved your cursor at least
 -- 10 pixels away from the start of the drag. This behaves similarly to WoW's dragging functions.
 --
