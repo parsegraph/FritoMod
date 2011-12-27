@@ -21,7 +21,12 @@ end;
 
 function Serializers.LoadPoint(location, frame)
     Serializers.VerifyPoint(location);
-    frame:SetPoint(location.anchor, nil, location.anchorTo, location.x, location.y);
+    frame:SetPoint(
+        location.anchor,
+        nil,
+        location.anchorTo or location.anchor,
+        location.x,
+        location.y);
 end;
 
 function Serializers.SavePoint(frame, pointNum)
