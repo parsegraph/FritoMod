@@ -88,6 +88,7 @@ end;
 
 function ToggleDispatcher:CleanUp()
 	assert(not self.iterating, "Cannot clean during iteration");
+	trace("Cleaning up dispatcher %q", self.name);
 	for _, deadListener in ipairs(self.deadListeners) do
 		Lists.Remove(self.listeners, deadListener);
 		if self.resetters[deadListener] then
