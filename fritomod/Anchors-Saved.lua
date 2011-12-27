@@ -22,12 +22,12 @@
 -- Frames-Mouse.lua
 
 if nil ~= require then
-    require "wow/Frame-Layout";
-    require "wow/FontString";
+	require "wow/Frame-Layout";
+	require "wow/FontString";
 
-    require "fritomod/PersistentAnchor";
-    require "fritomod/Anchors";
-    require "fritomod/Callbacks-UI";
+	require "fritomod/PersistentAnchor";
+	require "fritomod/Anchors";
+	require "fritomod/Callbacks-UI";
 end;
 
 -- A mapping of anchor names to PersistentAnchor objects.
@@ -46,55 +46,55 @@ anchorNameFrame:SetFont("Fonts\\FRIZQT__.TTF", 11);
 local removers={};
 local showing=false;
 local function ShowAnchor(name, anchor)
-    if not showing then
-        return;
-    end;
-    trace("Showing anchor: "..name);
-    local dragging = false;
-    Lists.InsertAll(removers,
-        anchor:Show(),
-        Callbacks.EnterFrame(anchor.frame, function()
-            if not dragging then
-                anchorNameFrame:Show();
-                anchorNameFrame:ClearAllPoints();
-                Anchors.Over(anchorNameFrame, anchor.frame, "top", 4);
-                anchorNameFrame:SetText(name);
-            end;
-            return Curry(anchorNameFrame, "Hide");
-        end),
-        Callbacks.MouseDown(anchor.frame, function()
-            dragging = true;
-            anchorNameFrame:Hide();
-            return function()
-                dragging = false;
-                anchorNameFrame:Show();
-            end;
-        end),
-        Callbacks.Click(anchor.frame, function(b)
-            if b~="MiddleButton" then
-                return;
-            end;
-            -- Remove our frame.
-            Frames.Position(nil, name);
-            anchors[name]:Hide();
-            anchors[name]=nil;
-        end)
-    );
+	if not showing then
+		return;
+	end;
+	trace("Showing anchor: "..name);
+	local dragging = false;
+	Lists.InsertAll(removers,
+		anchor:Show(),
+		Callbacks.EnterFrame(anchor.frame, function()
+			if not dragging then
+				anchorNameFrame:Show();
+				anchorNameFrame:ClearAllPoints();
+				Anchors.Over(anchorNameFrame, anchor.frame, "top", 4);
+				anchorNameFrame:SetText(name);
+			end;
+			return Curry(anchorNameFrame, "Hide");
+		end),
+		Callbacks.MouseDown(anchor.frame, function()
+			dragging = true;
+			anchorNameFrame:Hide();
+			return function()
+				dragging = false;
+				anchorNameFrame:Show();
+			end;
+		end),
+		Callbacks.Click(anchor.frame, function(b)
+			if b~="MiddleButton" then
+				return;
+			end;
+			-- Remove our frame.
+			Frames.Position(nil, name);
+			anchors[name]:Hide();
+			anchors[name]=nil;
+		end)
+	);
 end;
 
 function Anchors.Named(name)
-    local anchor;
-    if anchors[name] then
-        trace("Retrieving existing anchor: "..name);
-        anchor=anchors[name];
-    else
-        trace("Creating new anchor for name: "..name);
-        anchor=PersistentAnchor:New(anchorFrame);
-        Frames.Position(anchor.frame, name);
-        anchors[name]=anchor;
-        ShowAnchor(name, anchor)
-    end;
-    return anchor.frame;
+	local anchor;
+	if anchors[name] then
+		trace("Retrieving existing anchor: "..name);
+		anchor=anchors[name];
+	else
+		trace("Creating new anchor for name: "..name);
+		anchor=PersistentAnchor:New(anchorFrame);
+		Frames.Position(anchor.frame, name);
+		anchors[name]=anchor;
+		ShowAnchor(name, anchor)
+	end;
+	return anchor.frame;
 end;
 Anchors.Saved=Anchors.Named;
 Anchors.Save=Anchors.Named;
@@ -106,33 +106,33 @@ Anchors.Persisted=Anchors.Named;
 Anchors.Persist=Anchors.Named;
 
 function Anchors.Show()
-    if showing then
-        return;
-    end;
-    showing=true;
-    trace("Showing all anchors");
-    Tables.EachPair(anchors, ShowAnchor);
-    return Anchors.Hide;
+	if showing then
+		return;
+	end;
+	showing=true;
+	trace("Showing all anchors");
+	Tables.EachPair(anchors, ShowAnchor);
+	return Anchors.Hide;
 end;
 Anchors.Unlock=Anchors.Show;
 
 function Anchors.Hide()
-    if not showing then
-        return;
-    end;
-    showing=false;
-    trace("Hiding all anchors");
-    Lists.CallEach(removers);
+	if not showing then
+		return;
+	end;
+	showing=false;
+	trace("Hiding all anchors");
+	Lists.CallEach(removers);
 end;
 Anchors.Lock=Anchors.Hide;
 
 function Anchors.Toggle()
-    trace("Toggling anchor visibility");
-    if showing then
-        Anchors.Hide();
-    else
-        Anchors.Show();
-    end;
+	trace("Toggling anchor visibility");
+	if showing then
+		Anchors.Hide();
+	else
+		Anchors.Show();
+	end;
 end;
 
 function Anchors.Names()

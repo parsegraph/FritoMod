@@ -5,5 +5,5 @@ function SendAddonMessage(...)
 end;
 
 function GetDefaultLanguage()
-    return "Common";
+	return "Common";
 end;

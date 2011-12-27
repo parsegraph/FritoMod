@@ -1,8 +1,8 @@
 if nil ~= require then
-    require "fritomod/OOP-Class"
-    require "fritomod/Metatables";
+	require "fritomod/OOP-Class"
+	require "fritomod/Metatables";
 
-    require "wow/Cursor";
+	require "wow/Cursor";
 end;
 
 WoW=WoW or Metatables.Defensive();
@@ -11,9 +11,9 @@ WoW.World=OOP.Class();
 local World=WoW.World;
 
 function World:Constructor()
-    self.cursor=WoW.Cursor:New(self);
+	self.cursor=WoW.Cursor:New(self);
 end;
 
 function World:GetCursor()
-    return self.cursor;
+	return self.cursor;
 end;

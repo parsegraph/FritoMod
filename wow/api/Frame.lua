@@ -7,8 +7,8 @@ if nil ~= require then
 end;
 
 local frameTypes={
-    frame=WoW.Frame,
-    button=WoW.Button,
+	frame=WoW.Frame,
+	button=WoW.Button,
 };
 
 function CreateFrame(fType, name, parent, inherited)

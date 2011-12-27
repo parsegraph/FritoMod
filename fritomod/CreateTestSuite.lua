@@ -23,6 +23,6 @@ function IntegrationTest(name)
 		require "fritomod/ReflectiveTestSuite";
 		require "fritomod/Assert";
 		require "fritomod/Tests";
-    end;
+	end;
 	return ReflectiveTestSuite:New("Integration."..name);
 end;

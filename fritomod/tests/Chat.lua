@@ -4,11 +4,11 @@ Suite:AddListener(Metatables.Noop({
 	TestStarted = function(self, suite)
 		suite.messages = {};
 		self.oldSend=Chat.__Send;
-        Chat.__Send=function(message, medium, language, target)
-            assert(message~=nil, "Message must not be nil");
-            assert(medium~=nil, "Medium must not be nil");
-            assert(language~=nil, "Language must not be nil");
-            assert(target~=nil, "Target must not be nil");
+		Chat.__Send=function(message, medium, language, target)
+			assert(message~=nil, "Message must not be nil");
+			assert(medium~=nil, "Medium must not be nil");
+			assert(language~=nil, "Language must not be nil");
+			assert(target~=nil, "Target must not be nil");
 			table.insert(suite.messages, {message, medium, language, target});
 		end;
 		self.oldChannelName = Chat.__ChannelName;
@@ -36,8 +36,8 @@ Suite:AddListener(Metatables.Noop({
 		end;
 	end,
 	TestFinished = function(self, suite)
-        Chat.__Send = self.oldSend;
-        Chat.__ChannelName = self.oldChannelName;
+		Chat.__Send = self.oldSend;
+		Chat.__ChannelName = self.oldChannelName;
 	end
 }));
 

@@ -2,16 +2,16 @@
 PATH=/bin:/usr/bin
 
 format_files() {
-    echo '<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">'
-    while read f; do
-        f=`basename $f | sed -e 's#/#\\\\#g'`
-        echo '    <Script file="'$f'"/>'
-    done;
-    echo "</Ui>"
+	echo '<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">'
+	while read f; do
+		f=`basename $f | sed -e 's#/#\\\\#g'`
+		echo '	<Script file="'$f'"/>'
+	done;
+	echo "</Ui>"
 }
 
 case $* in
-    wow/files.xml) ./get-requires wow ;;
-    files.xml) ./get-requires . ;;
-    *) ./get-requires `dirname $*` | grep -e "^`dirname $*`" ;;
+	wow/files.xml) ./get-requires wow ;;
+	files.xml) ./get-requires . ;;
+	*) ./get-requires `dirname $*` | grep -e "^`dirname $*`" ;;
 esac | format_files >$*

@@ -35,223 +35,223 @@
 -- when a virtual frame actually fits well with what I'm doing. However, this
 -- happens less often than you'd think.
 if nil ~= require then
-    require "fritomod/Frames";
-    require "fritomod/Media";
+	require "fritomod/Frames";
+	require "fritomod/Media";
 end;
 
 local buttons={};
 
 local function BlendHighlights(button)
-    if button.GetHighlightTexture then
-        button:GetHighlightTexture():SetBlendMode("ADD");
-    end;
-    if button.GetCheckedTexture then
-        button:GetCheckedTexture():SetBlendMode("ADD");
-    end;
+	if button.GetHighlightTexture then
+		button:GetHighlightTexture():SetBlendMode("ADD");
+	end;
+	if button.GetCheckedTexture then
+		button:GetCheckedTexture():SetBlendMode("ADD");
+	end;
 end;
 
 buttons.slot={
-    normal         ="Interface\\Buttons\\UI-Quickslot2",
-    pushed         ="Interface\\Buttons\\UI-Quickslot-Depress",
-    highlight      ="Interface\\Buttons\\ButtonHilight-Square",
-    checked        ="Interface\\Buttons\\CheckButtonHilight",
-    Finish         =function(button)
-        if button.GetNormalTexture then
-            local t=button:GetNormalTexture();
-            -- Ensure the textures' visible portion fills the size.
-            t:SetTexCoord(12/64, 51/64, 12/64, 51/64);
-        end;
-        BlendHighlights(button);
-    end
+	normal		 ="Interface\\Buttons\\UI-Quickslot2",
+	pushed		 ="Interface\\Buttons\\UI-Quickslot-Depress",
+	highlight	  ="Interface\\Buttons\\ButtonHilight-Square",
+	checked		="Interface\\Buttons\\CheckButtonHilight",
+	Finish		 =function(button)
+		if button.GetNormalTexture then
+			local t=button:GetNormalTexture();
+			-- Ensure the textures' visible portion fills the size.
+			t:SetTexCoord(12/64, 51/64, 12/64, 51/64);
+		end;
+		BlendHighlights(button);
+	end
 };
 buttons.default=buttons.slot;
 
 local function ApplyStandardButton(layout, button)
-    if button:GetObjectType():find("Button$") then
-        button:SetNormalTexture(layout.normal);
-        button:SetPushedTexture(layout.pushed);
-        button:SetHighlightTexture(layout.highlight);
-        if button:GetObjectType():find("CheckButton$") then
-            button:SetCheckedTexture(layout.checked);
-            button:SetDisabledCheckedTexture(layout.disabledChecked);
-        end;
-    elseif button:GetObjectType() == "Texture" then
-        button:SetTexture(layout.normal);
-    else
-        local t=button:CreateTexture();
-        t:SetAllPoints();
-        t:SetTexture(layout.normal);
-        button=t;
-    end;
-    if layout.Finish then
-        layout.Finish(button, layout);
-    end;
-    return button;
+	if button:GetObjectType():find("Button$") then
+		button:SetNormalTexture(layout.normal);
+		button:SetPushedTexture(layout.pushed);
+		button:SetHighlightTexture(layout.highlight);
+		if button:GetObjectType():find("CheckButton$") then
+			button:SetCheckedTexture(layout.checked);
+			button:SetDisabledCheckedTexture(layout.disabledChecked);
+		end;
+	elseif button:GetObjectType() == "Texture" then
+		button:SetTexture(layout.normal);
+	else
+		local t=button:CreateTexture();
+		t:SetAllPoints();
+		t:SetTexture(layout.normal);
+		button=t;
+	end;
+	if layout.Finish then
+		layout.Finish(button, layout);
+	end;
+	return button;
 end;
 
 local function StandardButton(name, layout)
-    if not layout then
-        layout={};
-    end;
-    layout.normal         =name.."-Up";
-    layout.pushed         =name.."-Down";
-    layout.highlight      =name.."-Highlight";
-    Metatables.Callable(layout, function(layout, button)
-        ApplyStandardButton(layout, button);
-        BlendHighlights(button);
-    end);
-    return layout;
+	if not layout then
+		layout={};
+	end;
+	layout.normal		 =name.."-Up";
+	layout.pushed		 =name.."-Down";
+	layout.highlight	  =name.."-Highlight";
+	Metatables.Callable(layout, function(layout, button)
+		ApplyStandardButton(layout, button);
+		BlendHighlights(button);
+	end);
+	return layout;
 end;
 
 local function StandardCheckButton(name, layout)
-    layout=StandardButton(name, layout);
-    layout.checked=name.."-Check";
-    layout.disabledChecked=name.."-Check-Disabled";
-    return layout;
+	layout=StandardButton(name, layout);
+	layout.checked=name.."-Check";
+	layout.disabledChecked=name.."-Check-Disabled";
+	return layout;
 end;
 
 local function AdjustTexCoords(layout, texture)
-    local topEdge   =layout.dimensions.top;
-    local leftEdge  =layout.dimensions.left;
-    local rightEdge =layout.dimensions.right;
-    local bottomEdge=layout.dimensions.bottom;
+	local topEdge   =layout.dimensions.top;
+	local leftEdge  =layout.dimensions.left;
+	local rightEdge =layout.dimensions.right;
+	local bottomEdge=layout.dimensions.bottom;
 
-    local textureWidth =layout.textureWidth;
-    local textureHeight=layout.textureHeight;
+	local textureWidth =layout.textureWidth;
+	local textureHeight=layout.textureHeight;
 
-    if texture then
-        texture:SetTexCoord(
-            leftEdge/textureWidth, rightEdge/textureWidth,
-            topEdge/textureHeight, bottomEdge/textureHeight
-        );
-    end;
+	if texture then
+		texture:SetTexCoord(
+			leftEdge/textureWidth, rightEdge/textureWidth,
+			topEdge/textureHeight, bottomEdge/textureHeight
+		);
+	end;
 end;
 
 buttons.check=StandardCheckButton("Interface/Buttons/UI-CheckBox");
 buttons.close=StandardButton("Interface/Buttons/UI-Panel-MinimizeButton", {
-    dimensions={
-        left=6,
-        right=25,
-        top=7,
-        bottom=25
-    },
-    textureWidth=32,
-    textureHeight=32
+	dimensions={
+		left=6,
+		right=25,
+		top=7,
+		bottom=25
+	},
+	textureWidth=32,
+	textureHeight=32
 });
 Metatables.OverloadCallable(buttons.close, function(layout, button)
-    AdjustTexCoords(layout, button:GetNormalTexture());
-    AdjustTexCoords(layout, button:GetPushedTexture());
-    AdjustTexCoords(layout, button:GetDisabledTexture());
+	AdjustTexCoords(layout, button:GetNormalTexture());
+	AdjustTexCoords(layout, button:GetPushedTexture());
+	AdjustTexCoords(layout, button:GetDisabledTexture());
 
-    return button;
+	return button;
 end);
 
 local function HorizontalFixedButton(name, layout)
-    layout.normal   =name.."-Up";
-    layout.pushed   =name.."-Down";
-    layout.highlight=name.."-Highlight";
+	layout.normal   =name.."-Up";
+	layout.pushed   =name.."-Down";
+	layout.highlight=name.."-Highlight";
 
-    assert(layout.textureWidth, "textureWidth must be provided");
-    assert(layout.textureHeight, "textureWidth must be provided");
+	assert(layout.textureWidth, "textureWidth must be provided");
+	assert(layout.textureHeight, "textureWidth must be provided");
 
-    if layout.dimensions then
-        layout.dimensions.left  =layout.dimensions.left   or 0;
-        layout.dimensions.right =layout.dimensions.right  or layout.textureWidth;
-        layout.dimensions.top   =layout.dimensions.top    or 0;
-        layout.dimensions.bottom=layout.dimensions.bottom or layout.textureHeight;
-    end;
+	if layout.dimensions then
+		layout.dimensions.left  =layout.dimensions.left   or 0;
+		layout.dimensions.right =layout.dimensions.right  or layout.textureWidth;
+		layout.dimensions.top   =layout.dimensions.top	or 0;
+		layout.dimensions.bottom=layout.dimensions.bottom or layout.textureHeight;
+	end;
 
-    setmetatable(layout, {
-        __call=function(self, button)
-            local leftSlice =layout.slices.left;
-            local rightSlice=layout.slices.right;
+	setmetatable(layout, {
+		__call=function(self, button)
+			local leftSlice =layout.slices.left;
+			local rightSlice=layout.slices.right;
 
-            local topEdge   =layout.dimensions.top;
-            local leftEdge  =layout.dimensions.left;
-            local rightEdge =layout.dimensions.right;
-            local bottomEdge=layout.dimensions.bottom;
+			local topEdge   =layout.dimensions.top;
+			local leftEdge  =layout.dimensions.left;
+			local rightEdge =layout.dimensions.right;
+			local bottomEdge=layout.dimensions.bottom;
 
-            local textureWidth =layout.textureWidth;
-            local textureHeight=layout.textureHeight;
+			local textureWidth =layout.textureWidth;
+			local textureHeight=layout.textureHeight;
 
-            local left  =button:CreateTexture();
-            local right =button:CreateTexture();
-            local center=button:CreateTexture();
+			local left  =button:CreateTexture();
+			local right =button:CreateTexture();
+			local center=button:CreateTexture();
 
-            Anchors.ShareLeft(left);
-            Anchors.ShareRight(right);
-            Anchors.HFlipLeft(center, right);
-            Anchors.HFlipRight(center, left);
+			Anchors.ShareLeft(left);
+			Anchors.ShareRight(right);
+			Anchors.HFlipLeft(center, right);
+			Anchors.HFlipRight(center, left);
 
-            left  :SetWidth(leftSlice);
-            right :SetWidth(rightSlice);
+			left  :SetWidth(leftSlice);
+			right :SetWidth(rightSlice);
 
-            left  :SetTexture(layout.normal);
-            right :SetTexture(layout.normal);
-            center:SetTexture(layout.normal);
+			left  :SetTexture(layout.normal);
+			right :SetTexture(layout.normal);
+			center:SetTexture(layout.normal);
 
-            left  :SetDrawLayer("BORDER");
-            right :SetDrawLayer("BORDER");
-            center:SetDrawLayer("BACKGROUND");
+			left  :SetDrawLayer("BORDER");
+			right :SetDrawLayer("BORDER");
+			center:SetDrawLayer("BACKGROUND");
 
-            left:SetTexCoord(
-                leftEdge/textureWidth, (leftEdge+leftSlice)/textureWidth,
-                topEdge/textureHeight,  bottomEdge/textureHeight
-            );
+			left:SetTexCoord(
+				leftEdge/textureWidth, (leftEdge+leftSlice)/textureWidth,
+				topEdge/textureHeight,  bottomEdge/textureHeight
+			);
 
-            right:SetTexCoord(
-                (rightEdge-rightSlice)/textureWidth, rightEdge/textureWidth,
-                topEdge/textureHeight,  bottomEdge/textureHeight
-            );
+			right:SetTexCoord(
+				(rightEdge-rightSlice)/textureWidth, rightEdge/textureWidth,
+				topEdge/textureHeight,  bottomEdge/textureHeight
+			);
 
-            center:SetTexCoord(
-                (leftEdge+leftSlice)/textureWidth, (rightEdge-rightSlice)/textureWidth,
-                topEdge/textureHeight,  bottomEdge/textureHeight
-            );
+			center:SetTexCoord(
+				(leftEdge+leftSlice)/textureWidth, (rightEdge-rightSlice)/textureWidth,
+				topEdge/textureHeight,  bottomEdge/textureHeight
+			);
 
-            button:SetHighlightTexture(layout.highlight);
+			button:SetHighlightTexture(layout.highlight);
 
-            Callbacks.MouseDown(button, function()
-                left  :SetTexture(layout.pushed);
-                right :SetTexture(layout.pushed);
-                center:SetTexture(layout.pushed);
-                return function()
-                    left  :SetTexture(layout.normal);
-                    right :SetTexture(layout.normal);
-                    center:SetTexture(layout.normal);
-                end;
-            end);
+			Callbacks.MouseDown(button, function()
+				left  :SetTexture(layout.pushed);
+				right :SetTexture(layout.pushed);
+				center:SetTexture(layout.pushed);
+				return function()
+					left  :SetTexture(layout.normal);
+					right :SetTexture(layout.normal);
+					center:SetTexture(layout.normal);
+				end;
+			end);
 
-            if layout.Finish then
-                layout.Finish(button, layout, left, right, center);
-            end;
-        end
-    });
+			if layout.Finish then
+				layout.Finish(button, layout, left, right, center);
+			end;
+		end
+	});
 
-    return layout;
+	return layout;
 end;
 
 buttons.dialog=HorizontalFixedButton("Interface/Buttons/UI-DialogBox-Button", {
-    slices={
-        left=8,
-        right=8,
-    },
-    dimensions={
-        bottom=23
-    },
-    textureWidth=128,
-    textureHeight=32,
+	slices={
+		left=8,
+		right=8,
+	},
+	dimensions={
+		bottom=23
+	},
+	textureWidth=128,
+	textureHeight=32,
 });
 function buttons.dialog.Finish(button, layout, left, right, center)
-    local ht=button:GetHighlightTexture();
-    ht:SetBlendMode("ADD");
-    ht:SetAlpha(.75);
-    ht:SetTexCoord(0, 1, 0, layout.dimensions.bottom/layout.textureHeight);
+	local ht=button:GetHighlightTexture();
+	ht:SetBlendMode("ADD");
+	ht:SetAlpha(.75);
+	ht:SetTexCoord(0, 1, 0, layout.dimensions.bottom/layout.textureHeight);
 
-    local texCoords={center:GetTexCoord()};
-    texCoords[5]=110/layout.textureWidth;
-    texCoords[7]=texCoords[5];
-    center:SetTexCoord(unpack(texCoords));
+	local texCoords={center:GetTexCoord()};
+	texCoords[5]=110/layout.textureWidth;
+	texCoords[7]=texCoords[5];
+	center:SetTexCoord(unpack(texCoords));
 end;
 
 Media.button(buttons);
@@ -260,15 +260,15 @@ Media.SetAlias("button", "buttons", "buttontexture");
 Frames=Frames or {};
 
 function Frames.ButtonTexture(button, layout)
-    if type(layout)=="string" or not layout then
-        layout=Media.button[layout];
-    end;
-    if IsCallable(layout) then
-        layout(button);
-    else
-        ApplyStandardButton(button);
-    end;
-    return f;
+	if type(layout)=="string" or not layout then
+		layout=Media.button[layout];
+	end;
+	if IsCallable(layout) then
+		layout(button);
+	else
+		ApplyStandardButton(button);
+	end;
+	return f;
 end;
 Frames.Button=Frames.ButtonTexture;
 

@@ -7,11 +7,11 @@
 -- local count = 0;
 -- local remover;
 -- remover = Events.UNIT_SPELLMISS(function(unitId, reason)
---     count = count + 1;
---     Chatf.s("%s missed. Reason: %s", reason, UnitName(unitId));
---     if count > 5 then
---         remover();
---     end;
+--	 count = count + 1;
+--	 Chatf.s("%s missed. Reason: %s", reason, UnitName(unitId));
+--	 if count > 5 then
+--		 remover();
+--	 end;
 -- end);
 --
 -- The event listener passed will be called every time that event is emitted. A function is returned
@@ -30,9 +30,9 @@
 if nil ~= require then
 	require "wow/Frame-Events";
 
-    require "fritomod/basic";
-    require "fritomod/Functions";
-    require "fritomod/Lists";
+	require "fritomod/basic";
+	require "fritomod/Functions";
+	require "fritomod/Lists";
 end;
 
 Events = {};
@@ -62,21 +62,21 @@ eventsFrame:SetScript("OnEvent", function(frame, event, ...)
 end);
 
 setmetatable(Events, {
-    -- A metatable that allows the succinct Events.EVENT_NAME(eventListener) syntax. This creates new
-    -- registries for new events on-demand. There are no errors emitted if an event name is not valid.
-    __index = function(self, key)
-        if type(key)=="table" and #key>0 then
-            return function(func, ...)
-                func=Curry(func, ...);
-                local removers={};
-                for _, v in ipairs(key) do
-                    table.insert(removers, Events[v](func));
-                end;
-                return Functions.OnlyOnce(Lists.CallEach, removers);
-            end;
-        end;
+	-- A metatable that allows the succinct Events.EVENT_NAME(eventListener) syntax. This creates new
+	-- registries for new events on-demand. There are no errors emitted if an event name is not valid.
+	__index = function(self, key)
+		if type(key)=="table" and #key>0 then
+			return function(func, ...)
+				func=Curry(func, ...);
+				local removers={};
+				for _, v in ipairs(key) do
+					table.insert(removers, Events[v](func));
+				end;
+				return Functions.OnlyOnce(Lists.CallEach, removers);
+			end;
+		end;
 		eventListeners[key] = {};
-        self[key] = Functions.Spy(
+		self[key] = Functions.Spy(
 			function(func, ...)
 				return Lists.Insert(eventListeners[key], Curry(func, ...));
 			end,
@@ -85,6 +85,6 @@ setmetatable(Events, {
 				return CurryMethod(eventsFrame, "UnregisterEvent", key);
 			end)
 		);
-        return rawget(self, key);
-    end
+		return rawget(self, key);
+	end
 });

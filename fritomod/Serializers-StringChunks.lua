@@ -11,7 +11,7 @@
 -- as a string. It wouldn't be too difficult to compress it into the bytes of the characters.
 
 if nil ~= require then
-    require "fritomod/basic";
+	require "fritomod/basic";
 end;
 
 Serializers=Serializers or {};
@@ -52,73 +52,73 @@ local MAX_HEADER_SIZE=#tostring(MAX_CHUNK_GROUP);
 local chunkGroup=-1;
 
 -- message
---     the data we want to send.
+--	 the data we want to send.
 -- padding
---     strings that reduce the chunk size of our message. Typically, this will be the string value
---     of the prefix.
+--	 strings that reduce the chunk size of our message. Typically, this will be the string value
+--	 of the prefix.
 function Serializers.WriteStringChunks(message, padding)
-    if IsCallable(message) then
-        return Serializers.WriteStringChunks(message(), padding);
-    elseif type(message)=="table" then
-        if #message==1 then
-            return Serializers.WriteStringChunks(message[1], padding);
-        end;
-        local chunks={};
-        for i=1, #message do
-            local v=Serializers.WriteStringChunks(message[i], padding);
-            if type(v)=="table" then
-                Lists.InsertAll(chunks, v);
-            else
-                table.insert(chunks, v);
-            end;
-        end;
-        return chunks
-    elseif not IsPrimitive(message) then
-        error("Unsupported "..type(message).." value: "..tostring(message));
-    end;
-    while type(padding)~="number" do
-        if IsCallable(padding) then
-            padding=padding();
-        elseif IsPrimitive(padding) then
-            padding=#tostring(padding);
-        elseif padding==nil then
-            padding=0;
-        else
-            error("Unsupported "..type(padding).." value: "..tostring(padding));
-        end;
-    end;
-    assert(padding>=0, "Negative padding does not make sense. Padding was: "..padding);
-    -- Check if we can actually make progress sending our message. If the padding is too big, then
-    -- we can't send the message.
-    --
-    -- We're intentionally pessimistic here. I don't want messages being able to send at some points,
-    -- then failing to send later because our header became too big. I'd rather they always fail.
-    if MAX_CHUNK_SIZE-MAX_HEADER_SIZE-padding < 1 then
-        error("Padding is too big. Padding size is "..padding.." but "..
-            "MAX_CHUNK_SIZE is "..MAX_CHUNK_SIZE.." and "..
-            "MAX_HEADER_SIZE is "..MAX_HEADER_SIZE);
-    end;
+	if IsCallable(message) then
+		return Serializers.WriteStringChunks(message(), padding);
+	elseif type(message)=="table" then
+		if #message==1 then
+			return Serializers.WriteStringChunks(message[1], padding);
+		end;
+		local chunks={};
+		for i=1, #message do
+			local v=Serializers.WriteStringChunks(message[i], padding);
+			if type(v)=="table" then
+				Lists.InsertAll(chunks, v);
+			else
+				table.insert(chunks, v);
+			end;
+		end;
+		return chunks
+	elseif not IsPrimitive(message) then
+		error("Unsupported "..type(message).." value: "..tostring(message));
+	end;
+	while type(padding)~="number" do
+		if IsCallable(padding) then
+			padding=padding();
+		elseif IsPrimitive(padding) then
+			padding=#tostring(padding);
+		elseif padding==nil then
+			padding=0;
+		else
+			error("Unsupported "..type(padding).." value: "..tostring(padding));
+		end;
+	end;
+	assert(padding>=0, "Negative padding does not make sense. Padding was: "..padding);
+	-- Check if we can actually make progress sending our message. If the padding is too big, then
+	-- we can't send the message.
+	--
+	-- We're intentionally pessimistic here. I don't want messages being able to send at some points,
+	-- then failing to send later because our header became too big. I'd rather they always fail.
+	if MAX_CHUNK_SIZE-MAX_HEADER_SIZE-padding < 1 then
+		error("Padding is too big. Padding size is "..padding.." but "..
+			"MAX_CHUNK_SIZE is "..MAX_CHUNK_SIZE.." and "..
+			"MAX_HEADER_SIZE is "..MAX_HEADER_SIZE);
+	end;
 
-    -- If our message with its padding is less than MAX_CHUNK_SIZE, we don't need a header whatsoever.
-    if #message + padding <= MAX_CHUNK_SIZE then
-        return ":"..message;
-    end;
-    chunkGroup=chunkGroup+1;
-    if chunkGroup > MAX_CHUNK_GROUP then
-        -- We overflowed, so reset to 0.
-        chunkGroup=0;
-    end;
-    local header=chunkGroup..":";
-    -- Observe that even though we're pessimistic in the above assertion, we still send the maximum
-    -- possible data.
-    local messageSize=MAX_CHUNK_SIZE-#header-padding;
-    local chunks={};
-    for i=1,#message,messageSize do
-        table.insert(chunks, header..message:sub(i, i+messageSize-1));
-    end;
-    if #chunks[#chunks]==messageSize then
-        -- Our last message was completely full, so we need to send another one to indicate we've finished.
-        table.insert(chunks, header);
-    end;
-    return chunks;
+	-- If our message with its padding is less than MAX_CHUNK_SIZE, we don't need a header whatsoever.
+	if #message + padding <= MAX_CHUNK_SIZE then
+		return ":"..message;
+	end;
+	chunkGroup=chunkGroup+1;
+	if chunkGroup > MAX_CHUNK_GROUP then
+		-- We overflowed, so reset to 0.
+		chunkGroup=0;
+	end;
+	local header=chunkGroup..":";
+	-- Observe that even though we're pessimistic in the above assertion, we still send the maximum
+	-- possible data.
+	local messageSize=MAX_CHUNK_SIZE-#header-padding;
+	local chunks={};
+	for i=1,#message,messageSize do
+		table.insert(chunks, header..message:sub(i, i+messageSize-1));
+	end;
+	if #chunks[#chunks]==messageSize then
+		-- Our last message was completely full, so we need to send another one to indicate we've finished.
+		table.insert(chunks, header);
+	end;
+	return chunks;
 end;

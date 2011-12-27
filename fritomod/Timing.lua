@@ -30,14 +30,14 @@
 -- -- Cycle a myPowerText between purple and orange
 -- local color=Timing.CycleValues(1, "purple", "orange");
 -- Timing.Every(.2, function()
---     Frames.Color(myPowerText, color);
---     myPowerText:SetText(UnitPower("player");
+--	 Frames.Color(myPowerText, color);
+--	 myPowerText:SetText(UnitPower("player");
 -- end);
 --
 -- -- Spam guild with "FAIL" five times, streaming every .1 seconds.
 -- local out=Timing.Throttle(.1, Chat.g);
 -- for i=1, 5 do
---     Chatpic.fail(out);
+--	 Chatpic.fail(out);
 -- end;
 
 -- I don't try to have FritoMod cover every possible case. If your timing strategy is sufficiently
@@ -50,75 +50,75 @@
 -- Prefer callbacks over timers, as callbacks will only fire on changes. These saved frames add up.
 
 if nil ~= require then
-    require "wow/Frame-Events";
-    require "wow/api/Frame";
-    require "wow/api/Timing"
+	require "wow/Frame-Events";
+	require "wow/api/Frame";
+	require "wow/api/Timing"
 
-    require "fritomod/basic";
-    require "fritomod/currying";
-    require "fritomod/Functions";
-    require "fritomod/Lists";
-    require "fritomod/Callbacks-Frames";
+	require "fritomod/basic";
+	require "fritomod/currying";
+	require "fritomod/Functions";
+	require "fritomod/Lists";
+	require "fritomod/Callbacks-Frames";
 end;
 
 Timing = {};
 local Timing = Timing;
 
 do
-    local updateListeners = {};
-    local deadListeners = {};
-    local timingFrame = CreateFrame("Frame", nil, UIParent);
+	local updateListeners = {};
+	local deadListeners = {};
+	local timingFrame = CreateFrame("Frame", nil, UIParent);
 
-    -- Replace our listener tables with new ones.
-    --
-    -- You'll never call this function unless you're developing this addon.
-    Timing._Mask = function(newUpdate, newDead)
-        local oldUpdate, oldDead=updateListeners, deadListeners;
-        updateListeners=newUpdate;
-        deadListeners=newDead;
-        return function()
-            updateListeners=oldUpdate;
-            deadListeners=oldDead;
-        end;
-    end;
+	-- Replace our listener tables with new ones.
+	--
+	-- You'll never call this function unless you're developing this addon.
+	Timing._Mask = function(newUpdate, newDead)
+		local oldUpdate, oldDead=updateListeners, deadListeners;
+		updateListeners=newUpdate;
+		deadListeners=newDead;
+		return function()
+			updateListeners=oldUpdate;
+			deadListeners=oldDead;
+		end;
+	end;
 
-    -- Iterate our timers.
-    --
-    -- You'll never call this function unless you're developing this addon.
-    Timing._Tick = function(elapsed)
-        for i=1, #updateListeners do
-            local listener=updateListeners[i];
-            if not Lists.Contains(deadListeners, listener) then
-                listener(elapsed);
-            end;
-        end;
-        while #deadListeners > 0 do
-            Lists.Remove(updateListeners, table.remove(deadListeners));
-        end;
-    end;
+	-- Iterate our timers.
+	--
+	-- You'll never call this function unless you're developing this addon.
+	Timing._Tick = function(elapsed)
+		for i=1, #updateListeners do
+			local listener=updateListeners[i];
+			if not Lists.Contains(deadListeners, listener) then
+				listener(elapsed);
+			end;
+		end;
+		while #deadListeners > 0 do
+			Lists.Remove(updateListeners, table.remove(deadListeners));
+		end;
+	end;
 
-    -- Adds a function that is fired every update. This is the highest-precision timing
-    -- function though its precision is dependent on framerate.
-    --
-    -- listener, ...
-    --     the function that is fired every update
-    -- returns
-    --     a function that removes the specified listener
-    Timing.OnUpdate = Functions.Spy(
-        function(func, ...)
-            -- We can't just remove a listener at any given time because we may be
-            -- iterating over our list. Instead, any listeners that are removed must be
-            -- saved, so they can be removed at a safe time later on.
-            func=Curry(func, ...);
-            table.insert(updateListeners, func);
-            return Functions.OnlyOnce(function()
-                table.insert(deadListeners, func);
-            end);
-        end,
-        Functions.Install(Callbacks.OnUpdate, timingFrame, function(elapsed)
-            Timing._Tick(elapsed);
-        end)
-    );
+	-- Adds a function that is fired every update. This is the highest-precision timing
+	-- function though its precision is dependent on framerate.
+	--
+	-- listener, ...
+	--	 the function that is fired every update
+	-- returns
+	--	 a function that removes the specified listener
+	Timing.OnUpdate = Functions.Spy(
+		function(func, ...)
+			-- We can't just remove a listener at any given time because we may be
+			-- iterating over our list. Instead, any listeners that are removed must be
+			-- saved, so they can be removed at a safe time later on.
+			func=Curry(func, ...);
+			table.insert(updateListeners, func);
+			return Functions.OnlyOnce(function()
+				table.insert(deadListeners, func);
+			end);
+		end,
+		Functions.Install(Callbacks.OnUpdate, timingFrame, function(elapsed)
+			Timing._Tick(elapsed);
+		end)
+	);
 end;
 
 -- Helper function to construct timers. tickFuncs are called every update, and should
@@ -140,11 +140,11 @@ end;
 -- though, this behavior is tolerable, if not expected.
 --
 -- period
---     the length in between calls, in seconds
+--	 the length in between calls, in seconds
 -- func, ...
---     the function that is invoked periodically
+--	 the function that is invoked periodically
 -- returns
---     a function that, when invoked, stops this timer.
+--	 a function that, when invoked, stops this timer.
 Timing.Periodic = Timer(function(period, elapsed, func)
 	if elapsed >= period then
 		func();
@@ -155,11 +155,11 @@ end);
 
 
 function Timing.Every(...)
-    if type(select(1, ...))=="number" then
-        return Timing.Periodic(...);
-    else
-        return Timing.OnUpdate(...);
-    end;
+	if type(select(1, ...))=="number" then
+		return Timing.Periodic(...);
+	else
+		return Timing.OnUpdate(...);
+	end;
 end;
 
 -- Calls the specified function rhythmically. This timer will maintain a rhythm; actual
@@ -196,28 +196,28 @@ end);
 -- This function has no remover since it does not use a timer.
 --
 -- period
---     the amount of time for which any given value will be returned.
+--	 the amount of time for which any given value will be returned.
 -- value, ...
---     the values that will, over time, be used
+--	 the values that will, over time, be used
 function Timing.CycleValues(period, value, ...)
-    local values={value, ...};
-    local time=GetTime();
-    return function()
-        -- First, get the total elapsed time.
-        --
-        -- Imagine a 2 second period with 3 values and our elapsed time is 9 seconds.
-        local elapsed=GetTime()-time;
-        -- Then, use modulus to get our elapsed time in the scope of a single period.
-        --
-        -- elapsed is now 3, due to 9 % ( 3 * 2)
-        elapsed=elapsed % (#values * period);
-        -- Since elapsed is now in the range [0,#values * period), we can use it to
-        -- find which value to return.
-        --
-        -- math.ceil(3 / 2) == math.ceil(1.5) == 2
-        elapsed=math.ceil(elapsed / period);
-        return values[math.min(math.max(1, elapsed), #values)];
-    end;
+	local values={value, ...};
+	local time=GetTime();
+	return function()
+		-- First, get the total elapsed time.
+		--
+		-- Imagine a 2 second period with 3 values and our elapsed time is 9 seconds.
+		local elapsed=GetTime()-time;
+		-- Then, use modulus to get our elapsed time in the scope of a single period.
+		--
+		-- elapsed is now 3, due to 9 % ( 3 * 2)
+		elapsed=elapsed % (#values * period);
+		-- Since elapsed is now in the range [0,#values * period), we can use it to
+		-- find which value to return.
+		--
+		-- math.ceil(3 / 2) == math.ceil(1.5) == 2
+		elapsed=math.ceil(elapsed / period);
+		return values[math.min(math.max(1, elapsed), #values)];
+	end;
 end;
 
 -- Throttles invocations for the specified function. Multiple calls to this function
@@ -229,36 +229,36 @@ end;
 -- never be invoked.
 --
 -- cooldownTime
---     the minimum amount of time between calls to the specified function
+--	 the minimum amount of time between calls to the specified function
 -- returns
---     a function that throttles invocations of function
+--	 a function that throttles invocations of function
 -- see
---     Timing.Throttle
+--	 Timing.Throttle
 function Timing.Cooldown(cooldownTime, func, ...)
-    func = Curry(func, ...);
-    local lastCall;
-    local waitingInvocation;
-    return function(poison)
-        if poison==POISON then
-           lastCall=nil;
-           waitingInvocation();
-           waitingInvocation=nil;
-           return;
-        end;
-        local current = GetTime();
-        if lastCall and lastCall + cooldownTime > current then
-            if not waitingInvocation then
-                waitingInvocation=Timing.After(cooldownTime - (current - lastCall), function()
-                    waitingInvocation=nil;
-                    lastCall=GetTime();
-                    func();
-                end);
-            end;
-            return;
-        end;
-        lastCall = current;
-        func();
-    end;
+	func = Curry(func, ...);
+	local lastCall;
+	local waitingInvocation;
+	return function(poison)
+		if poison==POISON then
+		   lastCall=nil;
+		   waitingInvocation();
+		   waitingInvocation=nil;
+		   return;
+		end;
+		local current = GetTime();
+		if lastCall and lastCall + cooldownTime > current then
+			if not waitingInvocation then
+				waitingInvocation=Timing.After(cooldownTime - (current - lastCall), function()
+					waitingInvocation=nil;
+					lastCall=GetTime();
+					func();
+				end);
+			end;
+			return;
+		end;
+		lastCall = current;
+		func();
+	end;
 end;
 
 -- Saves invocations so that func is only called periodically. Excess invocations are
@@ -269,40 +269,40 @@ end;
 -- This function is not undoable, but it can be poisoned.
 --
 -- waitTime
---     time to wait between invocations, in seconds
+--	 time to wait between invocations, in seconds
 -- func, ...
---     func that is eventually called
+--	 func that is eventually called
 -- returns
---     a function that receives invocations. The arguments passed to the returned function
---     will eventually be passed to func.
+--	 a function that receives invocations. The arguments passed to the returned function
+--	 will eventually be passed to func.
 -- see
---     Timing.Cooldown
+--	 Timing.Cooldown
 function Timing.Throttle(waitTime, func, ...)
-    func=Curry(func, ...);
-    local invocations={};
-    local r;
-    return function(p, ...)
-        if p == POISON then
-            if r then
-                r();
-                r=nil;
-            end;
-            invocations={};
-            return;
-        end;
-        table.insert(invocations, {p,...});
-        if not r then
-            r=Timing.Rhythmic(waitTime, function()
-                if #invocations > 0 then
-                    func(unpack(table.remove(invocations, 1)));
-                end;
-                if #invocations==0 then
-                    r();
-                    r=nil;
-                end;
-            end);
-        end;
-    end;
+	func=Curry(func, ...);
+	local invocations={};
+	local r;
+	return function(p, ...)
+		if p == POISON then
+			if r then
+				r();
+				r=nil;
+			end;
+			invocations={};
+			return;
+		end;
+		table.insert(invocations, {p,...});
+		if not r then
+			r=Timing.Rhythmic(waitTime, function()
+				if #invocations > 0 then
+					func(unpack(table.remove(invocations, 1)));
+				end;
+				if #invocations==0 then
+					r();
+					r=nil;
+				end;
+			end);
+		end;
+	end;
 end;
 
 -- Return a timer that, after `wait` seconds, will call `func`.
@@ -318,11 +318,11 @@ end;
 -- at least `wait` seconds before calling `func`.
 --
 -- wait
---     the initial wait time, in seconds
+--	 the initial wait time, in seconds
 -- func, ...
---     the function that may be eventually called
+--	 the function that may be eventually called
 -- returns
---     a timer that responds to the values listed above
+--	 a timer that responds to the values listed above
 function Timing.After(wait, func, ...)
 	func=Curry(func,...);
 	local elapsed=0;
@@ -331,21 +331,21 @@ function Timing.After(wait, func, ...)
 		elapsed=elapsed+delta;
 		if elapsed >= wait then
 			r();
-            r=nil;
+			r=nil;
 			func();
 		end;
 	end);
 	return function(delay)
-        if not r then
-            return;
-        end
-        if delay==POISON then
-            r();
-            r=nil;
-        elseif delay==nil then
-            elapsed=math.min(0, elapsed);
-        else
-            elapsed=elapsed-delay;
-        end;
-    end;
+		if not r then
+			return;
+		end
+		if delay==POISON then
+			r();
+			r=nil;
+		elseif delay==nil then
+			elapsed=math.min(0, elapsed);
+		else
+			elapsed=elapsed-delay;
+		end;
+	end;
 end;

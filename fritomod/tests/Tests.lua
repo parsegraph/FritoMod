@@ -1,78 +1,78 @@
 local Suite = CreateTestSuite("fritomod.Tests");
 
 function Suite:TestSimpleFlagMechanics()
-    local flag = Tests.Flag();
-    assert(not flag.IsSet(), "Flag starts unset");
-    flag.Raise();
-    assert(flag.IsSet(), "Flag raises");
+	local flag = Tests.Flag();
+	assert(not flag.IsSet(), "Flag starts unset");
+	flag.Raise();
+	assert(flag.IsSet(), "Flag raises");
 end;
 
 function Suite:TestFlagCanBeSetOnConstruction()
-    local flag = Tests.Flag(true);
-    assert(flag.IsSet(), "Flag can be set to raised");
+	local flag = Tests.Flag(true);
+	assert(flag.IsSet(), "Flag can be set to raised");
 end;
 
 function Suite:TestCounterCanBeSetOnConstruction()
-    local counter = Tests.Counter(2);
-    Assert.Equals(2, counter.Get(), "Counter accepts an optional initial value");
-    Assert.Exception("Counter rejects non-numeric initial values", Tests.Counter, true);
+	local counter = Tests.Counter(2);
+	Assert.Equals(2, counter.Get(), "Counter accepts an optional initial value");
+	Assert.Exception("Counter rejects non-numeric initial values", Tests.Counter, true);
 end;
 
 function Suite:TestFlagIgnoresSpuriousRaiseCalls()
-    local flag = Tests.Flag();
-    flag.Raise();
-    assert(flag.IsSet(), "Flag raises");
-    flag.Raise();
-    assert(flag.IsSet(), "Flag remains raised");
+	local flag = Tests.Flag();
+	flag.Raise();
+	assert(flag.IsSet(), "Flag raises");
+	flag.Raise();
+	assert(flag.IsSet(), "Flag remains raised");
 end;
 
 function Suite:TestFlagClears()
-    local flag = Tests.Flag();
-    flag.Raise();
-    assert(flag.IsSet(), "Flag raises");
-    flag.Clear();
-    assert(not flag.IsSet(), "Flag clears");
+	local flag = Tests.Flag();
+	flag.Raise();
+	assert(flag.IsSet(), "Flag raises");
+	flag.Clear();
+	assert(not flag.IsSet(), "Flag clears");
 end;
 
 function Suite:TestFlagClearsWithMethodCalls()
-    local flag = Tests.Flag();
-    flag:Raise();
-    assert(flag:IsSet(), "Flag raises");
-    flag:Clear();
-    assert(not flag:IsSet(), "Flag clears");
+	local flag = Tests.Flag();
+	flag:Raise();
+	assert(flag:IsSet(), "Flag raises");
+	flag:Clear();
+	assert(not flag:IsSet(), "Flag clears");
 end;
 
 function Suite:TestFlagAsserts()
-    local flag = Tests.Flag();
-    flag.Raise();
-    assert(flag.IsSet(), "Flag raises");
-    flag.Assert();
+	local flag = Tests.Flag();
+	flag.Raise();
+	assert(flag.IsSet(), "Flag raises");
+	flag.Assert();
 end;
 
 function Suite:TestFlagAssertUnset()
-    local flag = Tests.Flag();
-    Assert.Succeeds("Flag asserts unset on initial state", flag.AssertUnset);
-    flag.Raise();
-    Assert.Exception("Flag fails unset-assertion when flag is raised", flag.AssertUnset);
+	local flag = Tests.Flag();
+	Assert.Succeeds("Flag asserts unset on initial state", flag.AssertUnset);
+	flag.Raise();
+	Assert.Exception("Flag fails unset-assertion when flag is raised", flag.AssertUnset);
 end;
 
 function Suite:TestFlagAssertCanFail()
-    local flag = Tests.Flag();
-    assert(not pcall(flag.Assert), "Assert fails on unset flag");
+	local flag = Tests.Flag();
+	assert(not pcall(flag.Assert), "Assert fails on unset flag");
 end;
 
 function Suite:TestSimpleCounter()
-    local counter = Tests.Counter();
-    Assert.Equals(0, counter:Get(), "Counter starts at zero");
-    counter:Hit();
-    Assert.Equals(1, counter:Get(), "Counter increments to one");
+	local counter = Tests.Counter();
+	Assert.Equals(0, counter:Get(), "Counter starts at zero");
+	counter:Hit();
+	Assert.Equals(1, counter:Get(), "Counter increments to one");
 end;
 
 function Suite:TestCounterAsserts()
-    local counter = Tests.Counter();
-    Assert.Equals(0, counter:Get(), "Counter starts at zero");
-    counter:Hit();
-    counter:Assert(1, "Counter asserts that it's at one");
+	local counter = Tests.Counter();
+	Assert.Equals(0, counter:Get(), "Counter starts at zero");
+	counter:Hit();
+	counter:Assert(1, "Counter asserts that it's at one");
 end;
 
 function Suite:TestDebugStackHandlesHeadProperly()
@@ -89,27 +89,27 @@ function Suite:TestDebugStackHandlesHeadProperly()
 end;
 
 function Suite:TestFullStackTrace()
-    if not debug then
-        return;
-    end;
-    local stackTrace = Tests.FullStackTrace();
-    assert(stackTrace[1].name:match("FullStackTrace"),
-        "First stack level is FullStackTrace. Level was: " .. Strings.Pretty(stackTrace[1].name));
+	if not debug then
+		return;
+	end;
+	local stackTrace = Tests.FullStackTrace();
+	assert(stackTrace[1].name:match("FullStackTrace"),
+		"First stack level is FullStackTrace. Level was: " .. Strings.Pretty(stackTrace[1].name));
 end;
 
 local TEST_FILE=".*tests[/\\]Tests\.lua";
 
 function Suite:TestPartialStackTrace()
-    if not debug then
-        return;
-    end;
-    local stackTrace = Tests.PartialStackTrace();
+	if not debug then
+		return;
+	end;
+	local stackTrace = Tests.PartialStackTrace();
 	assert(stackTrace[1].name:match(TEST_FILE),
 		"First stack level is the site of the stack-trace call. Level was: " .. stackTrace[1].name);
 end;
 
 function Suite:TestDebugStackWithoutCallingBuiltInFunction()
-    if debug and debugstack then
+	if debug and debugstack then
 		local strace=debugstack();
 		local D=debugstack;
 		debugstack=nil;
@@ -162,9 +162,9 @@ function Suite:TestDebugStack()
 end;
 
 function Suite:TestFormattedPartialStackTrace()
-    local stackTrace = Tests.FormattedPartialStackTrace();
-    local firstLine, _ = unpack(Strings.SplitByDelimiter("\n", stackTrace, 2));
-    assert(firstLine:match(TEST_FILE),
-        "First line of default stack trace refers to the site of the stack-trace call. Line was: " ..
-        Strings.Pretty(firstLine));
+	local stackTrace = Tests.FormattedPartialStackTrace();
+	local firstLine, _ = unpack(Strings.SplitByDelimiter("\n", stackTrace, 2));
+	assert(firstLine:match(TEST_FILE),
+		"First line of default stack trace refers to the site of the stack-trace call. Line was: " ..
+		Strings.Pretty(firstLine));
 end;

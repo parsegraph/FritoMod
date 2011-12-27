@@ -10,13 +10,13 @@ WoW.Frame=OOP.Class();
 local Frame=WoW.Frame;
 
 function Frame:Constructor(world)
-    self.world=world;
+	self.world=world;
 end;
 
 function Frame:GetObjectType()
-    return "Frame";
+	return "Frame";
 end;
 
 function Frame:GetWorld()
-    return self.world;
+	return self.world;
 end;

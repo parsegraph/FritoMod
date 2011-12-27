@@ -1,15 +1,15 @@
 if nil ~= require then
-    require "fritomod/Media";
+	require "fritomod/Media";
 end;
 
 local sounds={};
 for _, v in ipairs({
-    "onoes",
-    "eep",
-    "hello",
-    "silenced",
+	"onoes",
+	"eep",
+	"hello",
+	"silenced",
 }) do
-    sounds[v]=("Interface\\Addons\\FritoMod\\media\\%s.wav"):format(v);
+	sounds[v]=("Interface\\Addons\\FritoMod\\media\\%s.wav"):format(v);
 end;
 
 Media.sound(sounds);

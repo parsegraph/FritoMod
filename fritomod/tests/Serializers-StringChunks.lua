@@ -1,6 +1,6 @@
 local Suite=CreateTestSuite("fritomod.Serializers-StringChunks");
 if nil ~= require then
-    require "fritomod/Strings";
+	require "fritomod/Strings";
 end;
 
 local RANDOM_MEANINGLESS_TEXT=[[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin et tellus ut ante ornare tincidunt eget ac diam. Nam quam erat, sollicitudin eget suscipit vitae, commodo id erat. Vestibulum vel condimentum nibh. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus sollicitudin blandit nisl, vitae consectetur purus vehicula sit amet. Vivamus mauris eros, dapibus et aliquam ut, molestie at dui. Integer faucibus, risus vel rutrum aliquet, purus magna hendrerit odio, vel suscipit diam diam in nunc. Suspendisse molestie egestas hendrerit. Pellentesque porta odio nec eros convallis rutrum. Curabitur venenatis tempor metus sit amet pharetra. Nunc ultricies condimentum est nec vulputate. Maecenas a quam velit. Vivamus tristique interdum felis, vel tempor sapien vulputate quis. Fusce ligula enim, consequat vitae faucibus ac, consequat nec dui. Sed ut dui a odio semper porta. Vivamus at tortor a arcu congue accumsan. In sit amet convallis massa. Sed sagittis dictum mollis. Nullam euismod lorem sit amet nisl elementum ac iaculis arcu tempus.
@@ -14,13 +14,13 @@ Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia
 Aenean eu risus vel massa ornare egestas. Integer nec scelerisque ante. Duis varius porta neque, suscipit pretium risus molestie ut. Sed eget neque eget eros laoreet rutrum in ut orci. Vestibulum sit amet velit ligula, non consectetur odio. Suspendisse laoreet fringilla est, non suscipit neque aliquet in. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam erat volutpat. Duis sed risus ante, sed accumsan tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed dui a lectus consequat adipiscing non id metus. Etiam euismod nibh a tortor ornare sed ullamcorper mauris laoreet. Duis in leo arcu, vitae porta risus. Phasellus nec condimentum risus. Aenean ut tellus elit, ut fringilla dui. Nunc placerat semper magna, in accumsan velit porttitor sit amet. Suspendisse et posuere elit. Curabitur neque orci, pellentesque quis dapibus eu, dapibus ut sapien. Maecenas velit enim, elementum eu sagittis vitae, semper ac nibh.]]
 
 function Suite:TestWritingStringChunks()
-    Assert.Equals(":Notime", Serializers.WriteStringChunks("Notime"));
-    local chunks=Serializers.WriteStringChunks(RANDOM_MEANINGLESS_TEXT);
-    local message="";
-    for i=1, #chunks do
-        local chunk=chunks[i];
-        local data=Strings.Split(":", chunk, 2)[2];
-        message=message..data;
-    end;
-    Assert.Equals(RANDOM_MEANINGLESS_TEXT, message);
+	Assert.Equals(":Notime", Serializers.WriteStringChunks("Notime"));
+	local chunks=Serializers.WriteStringChunks(RANDOM_MEANINGLESS_TEXT);
+	local message="";
+	for i=1, #chunks do
+		local chunk=chunks[i];
+		local data=Strings.Split(":", chunk, 2)[2];
+		message=message..data;
+	end;
+	Assert.Equals(RANDOM_MEANINGLESS_TEXT, message);
 end;

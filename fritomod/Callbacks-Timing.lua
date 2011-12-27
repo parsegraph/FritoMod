@@ -1,7 +1,7 @@
 -- Callbacks that deal with time.
 
 if nil ~= require then
-    require "fritomod/Timing";
+	require "fritomod/Timing";
 end;
 
 Callbacks=Callbacks or {};
@@ -11,11 +11,11 @@ Callbacks=Callbacks or {};
 -- propagate immediately.
 --
 function Callbacks.Later(func, ...)
-    func=Curry(func, ...);
-    local remover;
-    remover=Timing.OnUpdate(function()
-        func();
-        remover();
-    end);
-    return remover;
+	func=Curry(func, ...);
+	local remover;
+	remover=Timing.OnUpdate(function()
+		func();
+		remover();
+	end);
+	return remover;
 end;

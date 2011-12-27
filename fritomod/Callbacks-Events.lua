@@ -17,54 +17,54 @@
 -- callbacks that have two possible states.
 
 if nil ~= require then
-    require "fritomod/currying";
-    require "fritomod/Lists";
-    require "fritomod/IdempotentToggleDispatcher";
-    require "fritomod/ToggleDispatcher";
+	require "fritomod/currying";
+	require "fritomod/Lists";
+	require "fritomod/IdempotentToggleDispatcher";
+	require "fritomod/ToggleDispatcher";
 end;
 
 Callbacks=Callbacks or {};
 
 do
-    local lastInstance;
-    local listeners={};
-    local removers;
-    Callbacks.ChangedInstance=Functions.Spy(
-        function(func, ...)
-            func=Curry(func, ...);
-            func(select(2, IsInInstance()));
-            return Lists.Insert(listeners, func);
-        end,
-        Functions.Install(function()
-            lastInstance=select(2, IsInInstance());
-            return Events.PLAYER_ENTERING_WORLD(function()
-                if removers then
-                    Lists.CallEach(removers);
-                end;
-                removers=Lists.MapCall(listeners, select(2, IsInInstance()));
-            end);
-        end)
-    );
-    Callbacks.InstanceChange=Callbacks.ChangedInstance;
-    Callbacks.InstanceChanged=Callbacks.ChangedInstance;
-    Callbacks.ChangeInstance=Callbacks.ChangedInstance;
+	local lastInstance;
+	local listeners={};
+	local removers;
+	Callbacks.ChangedInstance=Functions.Spy(
+		function(func, ...)
+			func=Curry(func, ...);
+			func(select(2, IsInInstance()));
+			return Lists.Insert(listeners, func);
+		end,
+		Functions.Install(function()
+			lastInstance=select(2, IsInInstance());
+			return Events.PLAYER_ENTERING_WORLD(function()
+				if removers then
+					Lists.CallEach(removers);
+				end;
+				removers=Lists.MapCall(listeners, select(2, IsInInstance()));
+			end);
+		end)
+	);
+	Callbacks.InstanceChange=Callbacks.ChangedInstance;
+	Callbacks.InstanceChanged=Callbacks.ChangedInstance;
+	Callbacks.ChangeInstance=Callbacks.ChangedInstance;
 end;
 
 local function InstanceWatcher(watchedType, specialName)
-    local dispatcher=IdempotentToggleDispatcher:New();
-    function dispatcher:Install()
-        return Callbacks.ChangedInstance(function(instanceType)
-            if instanceType:lower()==watchedType then
-                dispatcher:Fire();
-            else
-                dispatcher:Reset();
-            end;
-        end);
-    end;
-    Callbacks[specialName]=Curry(dispatcher, "Add");
-    Callbacks["Enter"..specialName]=Callbacks[specialName];
-    Callbacks["Entering"..specialName]=Callbacks[specialName];
-    Callbacks["Entered"..specialName]=Callbacks[specialName];
+	local dispatcher=IdempotentToggleDispatcher:New();
+	function dispatcher:Install()
+		return Callbacks.ChangedInstance(function(instanceType)
+			if instanceType:lower()==watchedType then
+				dispatcher:Fire();
+			else
+				dispatcher:Reset();
+			end;
+		end);
+	end;
+	Callbacks[specialName]=Curry(dispatcher, "Add");
+	Callbacks["Enter"..specialName]=Callbacks[specialName];
+	Callbacks["Entering"..specialName]=Callbacks[specialName];
+	Callbacks["Entered"..specialName]=Callbacks[specialName];
 end;
 
 InstanceWatcher("arena", "Arena");
@@ -78,34 +78,34 @@ InstanceWatcher("none", "World");
 
 -- Callbacks.Resting fires the specified callback whenever the player is resting.
 do
-    local dispatcher=ToggleDispatcher:New();
-    function dispatcher:Install()
-        return Events.PLAYER_UPDATE_RESTING(function()
-            if IsResting() then
-                dispatcher:Fire();
-            else
-                dispatcher:Reset();
-            end;
-        end);
-    end;
-    Callbacks.Resting=Curry(dispatcher, "Add");
-    Callbacks.Rest=Callbacks.Resting;
-    Callbacks.RestState=Callbacks.Resting;
+	local dispatcher=ToggleDispatcher:New();
+	function dispatcher:Install()
+		return Events.PLAYER_UPDATE_RESTING(function()
+			if IsResting() then
+				dispatcher:Fire();
+			else
+				dispatcher:Reset();
+			end;
+		end);
+	end;
+	Callbacks.Resting=Curry(dispatcher, "Add");
+	Callbacks.Rest=Callbacks.Resting;
+	Callbacks.RestState=Callbacks.Resting;
 end;
 
 -- Callbacks.Combat fires the specified callback whenever the player enters combat.
 do
-    local dispatcher=ToggleDispatcher:New();
-    function dispatcher:Install()
-        local r1=Events.PLAYER_REGEN_DISABLED(Seal(dispatcher, "Fire"));
-        local r2=Events.PLAYER_REGEN_ENABLED(Seal(dispatcher, "Reset"));
-        return Functions.OnlyOnce(function()
-            r1();
-            r2();
-        end);
-    end;
-    Callbacks.Combat=Curry(dispatcher, "Add");
-    Callbacks.InCombat=Callbacks.Combat;
+	local dispatcher=ToggleDispatcher:New();
+	function dispatcher:Install()
+		local r1=Events.PLAYER_REGEN_DISABLED(Seal(dispatcher, "Fire"));
+		local r2=Events.PLAYER_REGEN_ENABLED(Seal(dispatcher, "Reset"));
+		return Functions.OnlyOnce(function()
+			r1();
+			r2();
+		end);
+	end;
+	Callbacks.Combat=Curry(dispatcher, "Add");
+	Callbacks.InCombat=Callbacks.Combat;
 end;
 
 -- Callbacks.Experience fires the specified callback whenever the player gains experience.
@@ -113,13 +113,13 @@ end;
 -- The callback is called like so:
 -- callback(currentXP, maxXP, currentLevel)
 do
-    function Callbacks.Experience(func, ...)
-        func=Curry(func, ...);
-        Events.PLAYER_XP_UPDATE(function(who)
-            if who:lower()=="player" then
-                func(UnitXP("player"), UnitXPMax("player"), UnitLevel("player"));
-            end;
-        end);
-    end;
-    Callbacks.XP=Callbacks.Experience;
+	function Callbacks.Experience(func, ...)
+		func=Curry(func, ...);
+		Events.PLAYER_XP_UPDATE(function(who)
+			if who:lower()=="player" then
+				func(UnitXP("player"), UnitXPMax("player"), UnitLevel("player"));
+			end;
+		end);
+	end;
+	Callbacks.XP=Callbacks.Experience;
 end;

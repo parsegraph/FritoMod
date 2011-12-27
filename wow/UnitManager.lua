@@ -1,17 +1,17 @@
 if nil ~= require then
-    -- This file requires WoW-specific functionality
+	-- This file requires WoW-specific functionality
 end;
 
 UnitManager = {
-    registry = {}
+	registry = {}
 };
 local UnitManager = UnitManager;
 
 function UnitManager:FetchByID(unitID, fetch_only)
-    return self:Fetch(UnitGUID(unitID), fetch_only);
+	return self:Fetch(UnitGUID(unitID), fetch_only);
 end;
 
 function UnitManager:Fetch(unitID)
-    local guid = UnitGUID(unitID);
-    return self.registry[guid]
+	local guid = UnitGUID(unitID);
+	return self.registry[guid]
 end;

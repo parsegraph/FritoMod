@@ -58,7 +58,7 @@ Animations={};
 
 local function GetGroup(agOrFrame)
    if agOrFrame.CreateAnimationGroup then
-      return agOrFrame:CreateAnimationGroup();
+	  return agOrFrame:CreateAnimationGroup();
    end;
    return agOrFrame;
 end;
@@ -66,13 +66,13 @@ end;
 -- This function lets us define offsets using one number. It also lets
 -- us omit offsets - this is something that Blizzard's animation can't do.
 function Animations.Origin(animation, anchor, xOffset, yOffset)
-    if xOffset==nil then
-        xOffset=0;
-    end;
-    if yOffset==nil then
-        xOffset, yOffset=Anchors.RadialGap(anchor, xOffset);
-    end;
-    animation:SetOrigin(anchor, xOffset, yOffset);
+	if xOffset==nil then
+		xOffset=0;
+	end;
+	if yOffset==nil then
+		xOffset, yOffset=Anchors.RadialGap(anchor, xOffset);
+	end;
+	animation:SetOrigin(anchor, xOffset, yOffset);
 end;
 
 function Animations.Scale(ag, duration, xscale, yscale)
@@ -80,7 +80,7 @@ function Animations.Scale(ag, duration, xscale, yscale)
    local scale=ag:CreateAnimation("scale");
    scale:SetDuration(duration);
    if yscale==nil then
-      yscale=xscale;
+	  yscale=xscale;
    end;
    scale:SetScale(xscale, yscale);
    return scale, ag;
@@ -109,7 +109,7 @@ Animations.Opacity=Animations.Alpha;
 
 function Animations.Translate(ag, duration, xOffset, yOffset)
    if yOffset==nil then
-      yOffset=xOffset;
+	  yOffset=xOffset;
    end;
    ag=GetGroup(ag);
    local translation=ag:CreateAnimation("translation");

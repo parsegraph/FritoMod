@@ -27,6 +27,6 @@ setmetatable(CombatEvents, {
 			end,
 			setUp
 		);
-        return rawget(self, key);
+		return rawget(self, key);
 	end
 });

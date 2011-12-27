@@ -1,78 +1,78 @@
 if nil ~= require then
-    require "fritomod/basic";
-    require "fritomod/currying";
-    require "fritomod/OOP";
+	require "fritomod/basic";
+	require "fritomod/currying";
+	require "fritomod/OOP";
 end;
 
 local CLASS_METATABLE = {
-    GetMethodIterator = function(self)
-    end,
+	GetMethodIterator = function(self)
+	end,
 
-    -- A default constructor. This is called after all constructors are used,
-    -- and will only be called on the immediate class that's being created;
-    -- it is each constructor's responsibility to either call their parent's
-    -- constructor, or perform any action that the parent constructor is tasked
-    -- to do.
-    --
-    -- This should be overridden in most cases by whatever construction you wish
-    -- to do, and the signature used here does not need to be preserved. Any
-    -- return value is ignored.
-    Constructor = function(self)
-        -- noop
-    end,
+	-- A default constructor. This is called after all constructors are used,
+	-- and will only be called on the immediate class that's being created;
+	-- it is each constructor's responsibility to either call their parent's
+	-- constructor, or perform any action that the parent constructor is tasked
+	-- to do.
+	--
+	-- This should be overridden in most cases by whatever construction you wish
+	-- to do, and the signature used here does not need to be preserved. Any
+	-- return value is ignored.
+	Constructor = function(self)
+		-- noop
+	end,
 
 
-    -- Calls all constructors on the specified object.
-    --
-    -- object
-    --     the object that is constructed
-    -- throws
-    --     if object is falsy
-    ConstructObject = function(self, object)
-        if not object then
-            error("Object is falsy");
-        end;
-        for i=1, #self.constructors do
-            local constructor = self.constructors[i];
-            constructor(object);
-        end;
-    end,
+	-- Calls all constructors on the specified object.
+	--
+	-- object
+	--	 the object that is constructed
+	-- throws
+	--	 if object is falsy
+	ConstructObject = function(self, object)
+		if not object then
+			error("Object is falsy");
+		end;
+		for i=1, #self.constructors do
+			local constructor = self.constructors[i];
+			constructor(object);
+		end;
+	end,
 
-    -- Add a mixin to this class. A mixin is a callable should expect the signature
-    -- mixinFunc(class). A mixin is expected to add some functionality to a class.
-    --
-    -- mixinFunc
-    --     The function that performs the work of the mixin. It is called immediately.
-    --
-    --     If the mixinFunc returns a callable, then that callable will be invoked
-    --     for every instance of the class. It should expect the signature
-    --     "callable(object)"
-    -- ...
-    --     any arguments that are curried to mixinFunc
-    AddMixin = function(self, mixinFunc, ...)
-        mixinFunc = Curry(mixinFunc, ...);
-        local constructor = mixinFunc(self);
-        if constructor then
-            self:AddConstructor(constructor);
-        end;
-    end,
+	-- Add a mixin to this class. A mixin is a callable should expect the signature
+	-- mixinFunc(class). A mixin is expected to add some functionality to a class.
+	--
+	-- mixinFunc
+	--	 The function that performs the work of the mixin. It is called immediately.
+	--
+	--	 If the mixinFunc returns a callable, then that callable will be invoked
+	--	 for every instance of the class. It should expect the signature
+	--	 "callable(object)"
+	-- ...
+	--	 any arguments that are curried to mixinFunc
+	AddMixin = function(self, mixinFunc, ...)
+		mixinFunc = Curry(mixinFunc, ...);
+		local constructor = mixinFunc(self);
+		if constructor then
+			self:AddConstructor(constructor);
+		end;
+	end,
 
-    -- Adds the specified constructor function to this class. The constructor will be called
-    -- for all created instances of this class, but before the instance's actual constructor
-    -- is invoked.
-    AddConstructor = function(self, constructorFunc, ...)
-        constructorFunc = Curry(constructorFunc, ...);
-        self.constructors = self.constructors or {};
-        table.insert(self.constructors, constructorFunc);
-    end,
+	-- Adds the specified constructor function to this class. The constructor will be called
+	-- for all created instances of this class, but before the instance's actual constructor
+	-- is invoked.
+	AddConstructor = function(self, constructorFunc, ...)
+		constructorFunc = Curry(constructorFunc, ...);
+		self.constructors = self.constructors or {};
+		table.insert(self.constructors, constructorFunc);
+	end,
 
-    ToString = function(self)
-        local reference = Reference(self);
-        if self.class then
-            return "Instance@" .. reference;
-        end;
-        return "Class@" .. reference;
-    end
+	ToString = function(self)
+		local reference = Reference(self);
+		if self.class then
+			return "Instance@" .. reference;
+		end;
+		return "Class@" .. reference;
+	end
 }
 
 -- Creates a new instance of this class.
@@ -107,39 +107,39 @@ end
 -- invoked on every instance of this class.
 --
 -- ...
---     Any mixins, and up to one super class, that should be integrated into this class.
+--	 Any mixins, and up to one super class, that should be integrated into this class.
 -- throws
---     if any provided argument is not either a mixin or a class
---     if more than one super-class is provided (multiple inheritance in this manner is not supported)
+--	 if any provided argument is not either a mixin or a class
+--	 if more than one super-class is provided (multiple inheritance in this manner is not supported)
 OOP.Class = function(...)
-    local class = {
+	local class = {
 		__index = CLASS_METATABLE,
 		constructors = {},
 		New=New
 	};
-    setmetatable(class, class);
+	setmetatable(class, class);
 
-    for n = 1, select('#', ...) do
-        local mixinOrClass = select(n, ...);
-        if not mixinOrClass then
-            error("Mixin or class is falsy. Index " .. n);
-        end;
-        if OOP.IsClass(mixinOrClass) then
-            --  It's a class, so make it our super class.
-            if class.super then
-                error("Class cannot have more than one super class");
-            end;
-            class.super = mixinOrClass;
-            class.__index = class.super;
-        elseif IsCallable(mixinOrClass) then
-            local constructor = mixinOrClass(class);
-            if IsCallable(constructor) then
-                class:AddConstructor(constructor);
-            end;
-        else
-            error(("Object is not a mixin or super-class: %s"):format(tostring(mixinOrClass)));
-        end;
-    end
+	for n = 1, select('#', ...) do
+		local mixinOrClass = select(n, ...);
+		if not mixinOrClass then
+			error("Mixin or class is falsy. Index " .. n);
+		end;
+		if OOP.IsClass(mixinOrClass) then
+			--  It's a class, so make it our super class.
+			if class.super then
+				error("Class cannot have more than one super class");
+			end;
+			class.super = mixinOrClass;
+			class.__index = class.super;
+		elseif IsCallable(mixinOrClass) then
+			local constructor = mixinOrClass(class);
+			if IsCallable(constructor) then
+				class:AddConstructor(constructor);
+			end;
+		else
+			error(("Object is not a mixin or super-class: %s"):format(tostring(mixinOrClass)));
+		end;
+	end
 
-    return class;
+	return class;
 end;

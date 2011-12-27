@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "fritomod/currying";
-    require "fritomod/basic";
+	require "fritomod/currying";
+	require "fritomod/basic";
 end;
 
 Operator = setmetatable({
@@ -15,11 +15,11 @@ Operator = setmetatable({
 		return 0;
 	end,
 
-    True =  function() return true end,
-    False = function() return false end,
+	True =  function() return true end,
+	False = function() return false end,
 
-    Not = function(value) return not value end,
-    Truth = function(value) return Bool(value) end,
+	Not = function(value) return not value end,
+	Truth = function(value) return Bool(value) end,
 }, {
 	__index = function(self, k,v)
 		error("Operation not supported: " .. tostring(k));
@@ -28,44 +28,44 @@ Operator = setmetatable({
 Operators=Operator;
 
 function Operator.Multiple(constant, ...)
-    for i=1, select("#", ...) do
-        if select(i, ...) % constant ~= 0 then
-            return false;
-        end;
-    end;
-    return true;
+	for i=1, select("#", ...) do
+		if select(i, ...) % constant ~= 0 then
+			return false;
+		end;
+	end;
+	return true;
 end;
 
 function Operator.NotMultiple(constant, ...)
-    for i=1, select("#", ...) do
-        if select(i, ...) % constant == 0 then
-            return false;
-        end;
-    end;
-    return true;
+	for i=1, select("#", ...) do
+		if select(i, ...) % constant == 0 then
+			return false;
+		end;
+	end;
+	return true;
 end;
 
 Operator.Even=Curry(Operator.Multiple, 2);
 Operator.Odd=Curry(Operator.NotMultiple, 2);
 
 function Operator.InclusiveRange(min, max, ...)
-    for i=1, select("#", ...) do
-        local v=select(i, ...);
-        if v < min or v > max then
-            return false;
-        end;
-    end;
-    return true;
+	for i=1, select("#", ...) do
+		local v=select(i, ...);
+		if v < min or v > max then
+			return false;
+		end;
+	end;
+	return true;
 end;
 
 function Operator.ExclusiveRange(min, max, ...)
-    for i=1, select("#", ...) do
-        local v=select(i, ...);
-        if v <= min or v >= max then
-            return false;
-        end;
-    end;
-    return true;
+	for i=1, select("#", ...) do
+		local v=select(i, ...);
+		if v <= min or v >= max then
+			return false;
+		end;
+	end;
+	return true;
 end;
 
 -- These mathematical operations support working over many numbers. I made them
@@ -80,43 +80,43 @@ end;
 -- math function, my advice is to write the simple function yourself. It should
 -- be noted that these will all work as expected if only given two values.
 local function Operation(op)
-    return function(...)
-        local total;
-        for i=1,select("#", ...) do
-            local v=select(i, ...);
-            if total==nil then
-                total=v;
-            elseif v ~= nil then
-                total=op(total, v);
-            end;
-        end;
-        return total;
-    end;
+	return function(...)
+		local total;
+		for i=1,select("#", ...) do
+			local v=select(i, ...);
+			if total==nil then
+				total=v;
+			elseif v ~= nil then
+				total=op(total, v);
+			end;
+		end;
+		return total;
+	end;
 end;
-Operator.Add=     Operation(function(a,b) return a+b end);
+Operator.Add=	 Operation(function(a,b) return a+b end);
 Operator.Subtract=Operation(function(a,b) return a-b end);
 Operator.Multiply=Operation(function(a,b) return a*b end);
 Operator.Divide=  Operation(function(a,b) return a/b end);
 Operator.Modulo=  Operation(function(a,b) return a%b end);
 
 local function ComparingOperation(op)
-    return function(constant, ...)
-        for i=1,select("#", ...) do
-            local v=select(i, ...);
-            if not op(constant, v) then
-                return false;
-            end;
-        end;
-        return true;
-    end;
+	return function(constant, ...)
+		for i=1,select("#", ...) do
+			local v=select(i, ...);
+			if not op(constant, v) then
+				return false;
+			end;
+		end;
+		return true;
+	end;
 end;
 
-Operator.Equals             = ComparingOperation(function(a,b) return a == b end);
-Operator.NotEquals          = ComparingOperation(function(a,b) return a ~= b end);
-Operator.GreaterThan        = ComparingOperation(function(a,b) return a <  b end);
+Operator.Equals			 = ComparingOperation(function(a,b) return a == b end);
+Operator.NotEquals		  = ComparingOperation(function(a,b) return a ~= b end);
+Operator.GreaterThan		= ComparingOperation(function(a,b) return a <  b end);
 Operator.GreaterThanOrEqual = ComparingOperation(function(a,b) return a <= b end);
-Operator.LessThan           = ComparingOperation(function(a,b) return a >  b end);
-Operator.LessThanOrEqual    = ComparingOperation(function(a,b) return a >= b end);
+Operator.LessThan		   = ComparingOperation(function(a,b) return a >  b end);
+Operator.LessThanOrEqual	= ComparingOperation(function(a,b) return a >= b end);
 
 -- I like aliases! Especially in a loosely typed language and in an environment where
 -- we're not pressed for space, I prefer having lots of options rather than punishing
@@ -167,5 +167,5 @@ Operator.Multiplication=Operator.Multiply;
 Operator.Division=Operator.Divide;
 
 for k,v in pairs(Operator) do
-    Operator[k:lower()]=v;
+	Operator[k:lower()]=v;
 end;

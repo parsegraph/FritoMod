@@ -1,6 +1,6 @@
 if nil ~= require then
-    require "fritomod/Assert";
-    require "fritomod/Tests";
+	require "fritomod/Assert";
+	require "fritomod/Tests";
 end;
 
 Mixins=Mixins or {};
@@ -8,7 +8,7 @@ Mixins=Mixins or {};
 function Mixins.TableTests(Suite, library)
 	assert(not rawget(Suite, "Array"), "TableTests is not compatible with ArrayTests");
 
-    function Suite:TestSuiteHasTable()
+	function Suite:TestSuiteHasTable()
 		Assert.Type("function", Suite.Table, "Suite has an 'Table' function");
 		assert(Suite:Table({a=1,b=2,c=3}), "Table returns a truthy value");
 		assert(Suite:Table(), "Table handles empty arguments");
@@ -30,7 +30,7 @@ function Mixins.TableTests(Suite, library)
 			"Equals returns false for unequal keys");
 		assert(not library.Equals(Suite:Table({a=1}), Suite:Table({a=1, b=1})),
 			"Equals returns false for unequal subset");
-    end;
+	end;
 
 	function Suite:TestAssertEquals()
 		local a=Suite:TableCreator({a=1,b=2});
@@ -42,31 +42,31 @@ function Mixins.TableTests(Suite, library)
 		Assert.Exception(library.AssertEqual, Suite:Table({a=1}), a());
 	end;
 
-    function Suite:TestSize()
-        Assert.Equals(0, library.Size(Suite:Table()), "Size reports zero for empty table");
-        Assert.Equals(3, library.Size(Suite:Table({
+	function Suite:TestSize()
+		Assert.Equals(0, library.Size(Suite:Table()), "Size reports zero for empty table");
+		Assert.Equals(3, library.Size(Suite:Table({
 			a=1,
 			b=2,
 			c=3
 		})), "Size reports three for three-element table");
-        Assert.Equals(1, library.Size(Suite:Table({[false]=false})),
+		Assert.Equals(1, library.Size(Suite:Table({[false]=false})),
 			"Size reports one for iterable with one false pair");
-    end;
+	end;
 
 	function Suite:TestIsEmpty()
-        assert(library.IsEmpty(Suite:Table()), "IsEmpty returns true for empty iterable");
-        assert(not library.IsEmpty(Suite:Table({a=1})), "IsEmpty returns false for non-empty iterable");
-        assert(not library.IsEmpty(Suite:Table({[false]=false})),
+		assert(library.IsEmpty(Suite:Table()), "IsEmpty returns true for empty iterable");
+		assert(not library.IsEmpty(Suite:Table({a=1})), "IsEmpty returns false for non-empty iterable");
+		assert(not library.IsEmpty(Suite:Table({[false]=false})),
 			"IsEmpty returns false for an iterable with falsy pairs");
-    end;
+	end;
 
 	function Suite:TestContainsKey()
-        local tc = Curry(Suite, "Table", {a=true,c=false,[false]=false});
+		local tc = Curry(Suite, "Table", {a=true,c=false,[false]=false});
 		assert(library.ContainsKey(tc(), "a"), "ContainsKey finds a contained key");
 		assert(not library.ContainsKey(tc(), "b"), "ContainsKey does not find a missing key");
-        assert(library.ContainsKey(tc(), "c"), "ContainsKey finds a key with a falsy value");
-        assert(library.ContainsKey(tc(), false), "ContainsKey finds a falsy key");
-        assert(not library.ContainsKey(tc(), nil), "ContainsKey doesn't find nil, but doesn't throw");
+		assert(library.ContainsKey(tc(), "c"), "ContainsKey finds a key with a falsy value");
+		assert(library.ContainsKey(tc(), false), "ContainsKey finds a falsy key");
+		assert(not library.ContainsKey(tc(), nil), "ContainsKey doesn't find nil, but doesn't throw");
 	end;
 
 	function Suite:TestKeyIterator()
@@ -77,7 +77,7 @@ function Mixins.TableTests(Suite, library)
 		};
 		local c={};
 		local choke=Tests.Choke(3);
-        for k in library.KeyIterator(Suite:Table(ref)) do
+		for k in library.KeyIterator(Suite:Table(ref)) do
 			choke();
 			assert(c[k] == nil, "Key must not be iterated twice");
 			c[k]=ref[k];
@@ -93,13 +93,13 @@ function Mixins.TableTests(Suite, library)
 		};
 		local keys={};
 		local choke=Tests.Choke(3);
-        for k in library.KeyIterator(Suite:Table(ref)) do
+		for k in library.KeyIterator(Suite:Table(ref)) do
 			choke();
 			table.insert(keys, k);
 		end;
 		local c={};
 		choke=Tests.Choke(3);
-        for k in library.KeyIterator(Suite:Table(ref)) do
+		for k in library.KeyIterator(Suite:Table(ref)) do
 			choke();
 			table.insert(c, k);
 		end;
@@ -107,19 +107,19 @@ function Mixins.TableTests(Suite, library)
 	end;
 
 	function Suite:TestKeyIteratorHandlesFalsyKey()
-        local i=library.KeyIterator(Suite:Table({
+		local i=library.KeyIterator(Suite:Table({
 			[false]=false
 		}));
 		Assert.Equals(false, i());
 	end;
 
 	function Suite:TestKeyIteratorHandlesEmptyIterable()
-        i = library.KeyIterator(Suite:Table());
+		i = library.KeyIterator(Suite:Table());
 		Assert.Equals(nil, i(), "Iterator returns nil for empty table");
 	end;
 
 	function Suite:TestValueIterator()
-        local i = library.ValueIterator(Suite:Table({[1]="a",[2]="b"}));
+		local i = library.ValueIterator(Suite:Table({[1]="a",[2]="b"}));
 		Assert.Equals("a", i(), "Iterator finds first key");
 		Assert.Equals("b", i(), "Iterator finds last key");
 		Assert.Equals(nil, i(), "Iterator returns nil beyond last key");
@@ -127,26 +127,26 @@ function Mixins.TableTests(Suite, library)
 	end;
 
 	function Suite:TestValueIteratorHandlesRepeatedElements()
-        local i = library.ValueIterator(Suite:Table({a=true, b=true}));
+		local i = library.ValueIterator(Suite:Table({a=true, b=true}));
 		Assert.Equals(true, i(), "Iterator finds first element");
 		Assert.Equals(true, i(), "Iterator finds second, repeated element");
 		Assert.Equals(nil, i(), "Iterator returns nil beyond last key");
 	end;
 
 	function Suite:TestValueIteratorHandlesRepeatedElements()
-        local i = library.ValueIterator(Suite:Table({a=true, b=true}));
+		local i = library.ValueIterator(Suite:Table({a=true, b=true}));
 		Assert.Equals(true, i(), "Iterator finds first element");
 		Assert.Equals(true, i(), "Iterator finds second, repeated element");
 		Assert.Equals(nil, i(), "Iterator returns nil beyond last key");
 	end;
 
 	function Suite:TestValueIteratorHandlesEmptyIterable()
-        local i = library.ValueIterator(Suite:Table());
+		local i = library.ValueIterator(Suite:Table());
 		Assert.Equals(nil, i(), "Iterator returns nil for empty table");
 	end;
 
-    function Suite:TestBidiIteratorBehavesLikeIterator()
-        local tc = Curry(Suite, "Table", {
+	function Suite:TestBidiIteratorBehavesLikeIterator()
+		local tc = Curry(Suite, "Table", {
 			a=2,
 			b=3,
 			c=4
@@ -163,10 +163,10 @@ function Mixins.TableTests(Suite, library)
 				break;
 			end;
 		end;
-    end;
+	end;
 
-    function Suite:TestBidiIteratorCanGoBackwards()
-        local t = Suite:Table({
+	function Suite:TestBidiIteratorCanGoBackwards()
+		local t = Suite:Table({
 			a=2,
 			b=3,
 			c=4
@@ -184,7 +184,7 @@ function Mixins.TableTests(Suite, library)
 		});
 		local i=library.BidiKeyIterator(t);
 		Assert.Equals(nil, i:Previous());
-    end;
+	end;
 
 	function Suite:TestBidiIteratorIsSafeOnBadPrevious()
 		local t=Suite:Table({
@@ -192,7 +192,7 @@ function Mixins.TableTests(Suite, library)
 		});
 		local i=library.BidiKeyIterator(t);
 		Assert.Equals(nil, i:Previous());
-    end;
+	end;
 
 	function Suite:TestBidiIteratorIgnoresRedundantNextCalls()
 		local t=Suite:Table({
@@ -203,7 +203,7 @@ function Mixins.TableTests(Suite, library)
 		Assert.Equals(nil, i());
 		Assert.Equals(nil, i(), "BidiIterator is idempotent");
 		Assert.Equals("a", i:Previous(), "BidiIterator ignores redundant calls and keeps it place");
-    end;
+	end;
 
 	function Suite:TestBidiIteratorIgnoresRedundantPreviousCalls()
 		local t=Suite:Table({
@@ -213,19 +213,19 @@ function Mixins.TableTests(Suite, library)
 		Assert.Equals(nil, i:Previous());
 		Assert.Equals(nil, i:Previous(), "BidiIterator is idempotent");
 		Assert.Equals("a", i(), "BidiIterator ignores redundant calls and keeps it place");
-    end;
+	end;
 
-    function Suite:TestFilterReturnsASubset()
-        local t=Suite:Table({
-            a=true,
-            b=true,
-            c=true,
-            d=true
-        });
-        library.AssertEquals(Suite:Table({c=true,d=true}), library.FilterKeys(t, function(v)
-            return v > "b";
-        end));
-    end;
+	function Suite:TestFilterReturnsASubset()
+		local t=Suite:Table({
+			a=true,
+			b=true,
+			c=true,
+			d=true
+		});
+		library.AssertEquals(Suite:Table({c=true,d=true}), library.FilterKeys(t, function(v)
+			return v > "b";
+		end));
+	end;
 
-    return Suite;
+	return Suite;
 end;

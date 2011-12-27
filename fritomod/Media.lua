@@ -23,14 +23,14 @@
 -- if I want to support LibSharedMedia, this is how I would do it:
 --
 --  Media.color(function(name)
---      if not LibStub then
---          return;
---      end;
---      local sharedMedia = LibStub("LibSharedMedia-3.0");
---      if not sharedMedia then
---          return;
---      end;
---      return sharedMedia:Fetch("color", name);
+--	  if not LibStub then
+--		  return;
+--	  end;
+--	  local sharedMedia = LibStub("LibSharedMedia-3.0");
+--	  if not sharedMedia then
+--		  return;
+--	  end;
+--	  return sharedMedia:Fetch("color", name);
 --  end);
 --
 -- As you can see, most of our code is ensuring we actually have SharedMedia. Once this
@@ -50,70 +50,70 @@
 
 local registry={};
 Media = setmetatable({
-    registry=registry,
-    SharedMedia=function(mediaType, mediaName)
-        if not LibStub then
-            return;
-        end;
-        local sharedMedia = LibStub("LibSharedMedia-3.0");
-        if not sharedMedia then
-            return;
-        end;
-        return sharedMedia:Fetch("color", name);
-    end
-    }, {
-    __newindex=function(self,k,v)
-        error("Media is not directly settable: use Media['"..k.."'](v) instead");
-    end;
-    __index=function(self,mediaType)
-        if type(mediaType) == "string" then
-            mediaType=mediaType:lower();
-        end;
-        if not registry[mediaType] then
-            rawset(self,mediaType, setmetatable({}, {
-                __call=function(self, provider)
-                    assert(provider, "provider must not be nil");
-                    if not registry[mediaType] then
-                        registry[mediaType] = {};
-                    end;
-                    table.insert(registry[mediaType], provider);
-                    return provider;
-                end,
-                __index=function(self, k)
-                    if type(k) == "string" then
-                        k=k:lower();
-                    end;
-                    local reg=registry[mediaType];
-                    if reg==nil then
-                        return nil;
-                    end;
-                    for i=1, #reg do
-                        local provider=reg[i];
-                        local v;
-                        if type(provider) == "function" then
-                            v=provider(k);
-                        elseif type(provider) == "table" then
-                            v=provider[k];
-                        end;
-                        if v ~= nil then
-                            return v;
-                        end;
-                    end;
-                    if k ~= "default" then
-                        return self.default
-                    end;
-                end,
-                __newindex=function(self)
-                    error(mediaType.." table is not directly editable");
-                end
-            }));
-        end;
-        return self[mediaType];
-    end
+	registry=registry,
+	SharedMedia=function(mediaType, mediaName)
+		if not LibStub then
+			return;
+		end;
+		local sharedMedia = LibStub("LibSharedMedia-3.0");
+		if not sharedMedia then
+			return;
+		end;
+		return sharedMedia:Fetch("color", name);
+	end
+	}, {
+	__newindex=function(self,k,v)
+		error("Media is not directly settable: use Media['"..k.."'](v) instead");
+	end;
+	__index=function(self,mediaType)
+		if type(mediaType) == "string" then
+			mediaType=mediaType:lower();
+		end;
+		if not registry[mediaType] then
+			rawset(self,mediaType, setmetatable({}, {
+				__call=function(self, provider)
+					assert(provider, "provider must not be nil");
+					if not registry[mediaType] then
+						registry[mediaType] = {};
+					end;
+					table.insert(registry[mediaType], provider);
+					return provider;
+				end,
+				__index=function(self, k)
+					if type(k) == "string" then
+						k=k:lower();
+					end;
+					local reg=registry[mediaType];
+					if reg==nil then
+						return nil;
+					end;
+					for i=1, #reg do
+						local provider=reg[i];
+						local v;
+						if type(provider) == "function" then
+							v=provider(k);
+						elseif type(provider) == "table" then
+							v=provider[k];
+						end;
+						if v ~= nil then
+							return v;
+						end;
+					end;
+					if k ~= "default" then
+						return self.default
+					end;
+				end,
+				__newindex=function(self)
+					error(mediaType.." table is not directly editable");
+				end
+			}));
+		end;
+		return self[mediaType];
+	end
 });
 
 rawset(Media, "SetAlias", function(root, ...)
-    for i=1,select("#", ...) do
-        rawset(Media, select(i, ...), Media[root]);
-    end;
+	for i=1,select("#", ...) do
+		rawset(Media, select(i, ...), Media[root]);
+	end;
 end);
