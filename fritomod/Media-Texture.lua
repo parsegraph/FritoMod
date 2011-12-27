@@ -26,6 +26,7 @@ end;
 
 Media.SetAlias("texture", "textures", "background", "backgrounds");
 
+Frames=Frames or {};
 function Frames.Texture(f, texture)
     texture = Media.texture[texture];
     local coords;
