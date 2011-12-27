@@ -106,8 +106,8 @@ ToggledEvent("MouseDown", function(dispatcher, frame)
     CheckForOverwrites("OnMouseDown", "OnMouseUp", dispatcher, frame);
     dispatcher:AddInstaller(enableMouse, frame);
     local remover;
-    local function Destroy()
-        trace("Mouse-up detected; destroying");
+    local function OnMouseUp(reason)
+        trace("MouseUp detected (%s)", reason);
         if remover then
             remover();
             remover=nil;
@@ -116,7 +116,7 @@ ToggledEvent("MouseDown", function(dispatcher, frame)
         observed=nil;
     end;
     dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseDown", function(button)
-        trace("Mousedown detected");
+        trace("MouseDown detected");
         observed=button;
         dispatcher:Fire(button);
         remover=Timing.OnUpdate(function()
@@ -127,11 +127,12 @@ ToggledEvent("MouseDown", function(dispatcher, frame)
                 --
                 -- This workaround is even used by Blizzard in FloatingChatFrame.xml.
                 -- If their workaround disappears, then ours can afford to go as well.
-                Destroy();
+                OnMouseUp("OnUpdate listener detected button was no longer pressed");
             end;
         end);
     end);
-    dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseUp", Destroy);
+    dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseUp", OnMouseUp, "OnMouseUp event was fired");
+    dispatcher:AddInstaller(Callbacks.HideFrame, frame, OnMouseUp, "Frame was hidden");
 end);
 ReversedEvent("MouseUp", "MouseDown");
 
