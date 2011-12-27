@@ -25,13 +25,17 @@ function PersistentAnchor:Show()
         self.frame:SetPoint("center");
     end;
     self.frame:Show();
-    Frames.Draggable(self.frame);
+    if self.draggable then
+        self.draggable();
+    end;
+    self.draggable=Frames.Draggable(self.frame);
     return Functions.OnlyOnce(self, "Hide");
 end;
 
 function PersistentAnchor:Hide()
     self.frame:Hide();
-    Frames.Draggable(self.frame, false);
+    self.draggable();
+    self.draggable=nil;
 end;
 
 function PersistentAnchor:Load(location)
