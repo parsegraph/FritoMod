@@ -12,4 +12,16 @@ textures.tooltip="Interface/Tooltips/UI-Tooltip-Background";
 textures.chat   ="Interface/Tooltips/ChatBubble-Background";
 
 Media.texture(textures);
+
+do
+    local coords = {12/64, 51/64, 12/64, 51/64};
+    Media.texture(function(spell)
+        local texture = select(3, GetSpellInfo(spell));
+        return {
+            name = texture,
+            coords = coords
+        };
+    end);
+end;
+
 Media.SetAlias("texture", "textures", "background", "backgrounds");
