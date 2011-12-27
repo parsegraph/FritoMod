@@ -20,6 +20,7 @@ function ToggleDispatcher:AddInstaller(func, ...)
 end;
 
 function ToggleDispatcher:Install()
+	self:Uninstall();
 	trace("Installing dispatcher %q", self.name);
 	if self.installers then
 		self.uninstallers=Lists.MapCall(self.installers);
@@ -27,8 +28,8 @@ function ToggleDispatcher:Install()
 end;
 
 function ToggleDispatcher:Uninstall()
-	trace("Uninstalling dispatcher %q", self.name);
 	if self.uninstallers then
+		trace("Uninstalling dispatcher %q", self.name);
 		Lists.CallEach(self.uninstallers);
 		self.uninstallers=nil;
 	end;
