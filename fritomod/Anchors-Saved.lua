@@ -106,22 +106,22 @@ Anchors.Persisted=Anchors.Named;
 Anchors.Persist=Anchors.Named;
 
 function Anchors.Show()
-    trace("Showing all anchors");
     if showing then
         return;
     end;
     showing=true;
+    trace("Showing all anchors");
     Tables.EachPair(anchors, ShowAnchor);
     return Anchors.Hide;
 end;
 Anchors.Unlock=Anchors.Show;
 
 function Anchors.Hide()
-    trace("Hiding all anchors");
     if not showing then
         return;
     end;
     showing=false;
+    trace("Hiding all anchors");
     Lists.CallEach(removers);
 end;
 Anchors.Lock=Anchors.Hide;

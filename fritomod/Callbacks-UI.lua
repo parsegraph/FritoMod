@@ -36,8 +36,8 @@ end;
 
 local function BasicEvent(onEvent, offEvent, dispatcher, frame)
     dispatcher:AddInstaller(function()
-        assert(not frame:GetScript(onEvent), "Refusing to overwrite the existing script handler");
-        assert(not frame:GetScript(offEvent), "Refusing to overwrite the existing script handler");
+        assert(not frame:GetScript(onEvent), "Refusing to overwrite the existing script handler for "..onEvent);
+        assert(not frame:GetScript(offEvent), "Refusing to overwrite the existing script handler for "..offEvent);
     end);
     dispatcher:AddInstaller(Callbacks.Script, frame, onEvent, dispatcher, "Fire");
     dispatcher:AddInstaller(Callbacks.Script, frame, offEvent, dispatcher, "Reset");
@@ -77,8 +77,8 @@ end);
 ToggledEvent("MouseDown", function(dispatcher, frame)
     local onEvent, offEvent="OnMouseDown", "OnMouseUp";
     dispatcher:AddInstaller(function()
-        assert(not frame:GetScript(onEvent), "Refusing to overwrite the existing script handler");
-        assert(not frame:GetScript(offEvent), "Refusing to overwrite the existing script handler");
+        assert(not frame:GetScript(onEvent), "Refusing to overwrite the existing script handler for "..onEvent);
+        assert(not frame:GetScript(offEvent), "Refusing to overwrite the existing script handler for "..offEvent);
     end);
     dispatcher:AddInstaller(enableMouse, frame);
     local remover;
