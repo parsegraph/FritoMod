@@ -106,9 +106,10 @@ do
         if type(button) == "table" then
             return Frames.ButtonTester(unpack(button));
         end;
-        if not button then
+        if button == nil then
             return Noop;
         end;
+        assert(type(button)=="string", "button must be a string, got "..type(button));
         button = tostring(button);
         local parts = Strings.Split("[-_+.: ]", button);
         local buttonTester = Frames.SimpleButtonTester(Lists.PopOne(parts));
@@ -259,7 +260,7 @@ function Frames.ThresholdDraggable(f, threshold, first, ...)
     local conditional;
     if type(first)=="function" or type(first)=="table" then
         conditional=Curry(first, ...);
-    elseif first or select("#", ...) > 0 then
+    elseif first ~= nil or select("#", ...) > 0 then
         conditional=Frames.ButtonTester(first, ...);
 	else
 		conditional=Frames.ButtonTester("left", "right");
