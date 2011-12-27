@@ -125,6 +125,7 @@ do
 
     function Frames.ButtonTester(...)
         local buttons={...};
+		assert(#buttons > 0, "At least one button must be provided.");
         for i=1, #buttons do
             buttons[i] = ConvertOneButton(buttons[i]);
         end;
@@ -258,8 +259,10 @@ function Frames.ThresholdDraggable(f, threshold, first, ...)
     local conditional;
     if type(first)=="function" or type(first)=="table" then
         conditional=Curry(first, ...);
-    else
+    elseif first or select("#", ...) > 0 then
         conditional=Frames.ButtonTester(first, ...);
+	else
+		conditional=Frames.ButtonTester("left", "right");
     end;
     return Callbacks.MouseDown(f, function(button)
         trace("Button down: " ..button);
