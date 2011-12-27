@@ -1,4 +1,4 @@
-dirs = fritomod fritomod/labs deps
+dirs = fritomod labs deps
 ifndef NO_TEST
 dirs += fritomod/tests
 endif
