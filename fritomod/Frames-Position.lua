@@ -13,6 +13,7 @@ local positionedFrames={};
 
 local function LoadPoint(name, frame, savedPosition)
     if not savedPosition then
+        trace("No saved position; using default for %q", name);
         frame:SetPoint("center");
     end;
     if type(savedPosition)=="table" and savedPosition.error then
