@@ -174,6 +174,9 @@ end
 DEBUG_TRACE=false;
 
 function trace(str, ...)
+	if select("#", ...) == 0 then
+		return print(tostring(str));
+	end;
     if DEBUG_TRACE then
         return printf(str, ...);
     end;
