@@ -107,7 +107,11 @@ ToggledEvent("MouseDown", function(dispatcher, frame)
     dispatcher:AddInstaller(enableMouse, frame);
     local remover;
     local function Destroy()
-        remover();
+        trace("Mouse-up detected; destroying");
+        if remover then
+            remover();
+            remover=nil;
+        end;
         dispatcher:Reset(observed);
         observed=nil;
     end;
