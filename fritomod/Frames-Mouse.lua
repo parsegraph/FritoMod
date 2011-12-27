@@ -126,7 +126,7 @@ do
 
     function Frames.ButtonTester(...)
         local buttons={...};
-		assert(#buttons > 0, "At least one button must be provided.");
+        assert(#buttons > 0, "At least one button must be provided.");
         for i=1, #buttons do
             buttons[i] = ConvertOneButton(buttons[i]);
         end;
@@ -262,8 +262,8 @@ function Frames.ThresholdDraggable(f, threshold, first, ...)
         conditional=Curry(first, ...);
     elseif first ~= nil or select("#", ...) > 0 then
         conditional=Frames.ButtonTester(first, ...);
-	else
-		conditional=Frames.ButtonTester("left", "right");
+    else
+        conditional=Frames.ButtonTester("left", "right");
     end;
     return Callbacks.MouseDown(f, function(button)
         trace("Button down: " ..button);
