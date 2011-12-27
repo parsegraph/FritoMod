@@ -25,3 +25,26 @@ do
 end;
 
 Media.SetAlias("texture", "textures", "background", "backgrounds");
+
+function Frames.Texture(f, texture)
+    texture = Media.texture[texture];
+    local coords;
+    if type(texture) == "table" then
+        coords = texture.coords;
+        texture = texture.name;
+    end;
+    if f:GetObjectType():find("Button$") then
+        f:SetNormalTexture(texture);
+    elseif f:GetObjectType() == "Texture" then
+        f:SetTexture(texture);
+    else
+        local t=f:CreateTexture();
+        Anchors.ShareAll(t, f);
+        t:SetTexture(texture);
+        f=t;
+    end;
+    if coords then
+        f:SetTexCoord(unpack(coords));
+    end;
+    return f;
+end;
