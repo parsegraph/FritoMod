@@ -29,6 +29,7 @@
 
 if nil ~= require then
 	require "wow/Frame-Events";
+	require "wow/api/Frame";
 
 	require "fritomod/basic";
 	require "fritomod/Functions";
@@ -47,15 +48,7 @@ Events._call = function(event, ...)
 end;
 
 local eventsFrame;
-if nil ~= CreateFrame then
-	eventsFrame = CreateFrame("Frame");
-else
-	eventsFrame = Metatables.Defensive({
-		RegisterEvent = Noop,
-		UnregisterEvent = Noop,
-		SetScript = Noop
-	});
-end;
+eventsFrame = CreateFrame("Frame");
 
 eventsFrame:SetScript("OnEvent", function(frame, event, ...)
 	Events._call(event, ...);
