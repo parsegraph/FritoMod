@@ -7,7 +7,8 @@ end;
 
 ToggleDispatcher=OOP.Class();
 
-function ToggleDispatcher:Constructor()
+function ToggleDispatcher:Constructor(name)
+    self.name=name or tostring(self);
     self.listeners={};
     self.deadListeners={};
     self.resetters={};
@@ -19,12 +20,14 @@ function ToggleDispatcher:AddInstaller(func, ...)
 end;
 
 function ToggleDispatcher:Install()
+    trace("Installing dispatcher %q", self.name);
     if self.installers then
         self.uninstallers=Lists.MapCall(self.installers);
     end;
 end;
 
 function ToggleDispatcher:Uninstall()
+    trace("Uninstalling dispatcher %q", self.name);
     if self.uninstallers then
         Lists.CallEach(self.uninstallers);
         self.uninstallers=nil;
@@ -51,6 +54,7 @@ end;
 
 function ToggleDispatcher:Fire(...)
     self.iterating=true;
+    trace("Firing dispatcher %q", self.name);
     for _, listener in ipairs(self.listeners) do
         self:_FireListener(listener, ...);
     end;

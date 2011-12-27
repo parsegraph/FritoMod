@@ -20,12 +20,16 @@ local function ToggledEvent(event, setUp, ...)
     setUp=Curry(setUp, ...);
     local eventListenerName=event.."Listeners";
     Callbacks[event]=function(frame, func, ...)
+        assert(Frames.IsFrame(frame), "Listener for "..event.." was not passed a frame, type was: "..type(frame));
         func=Curry(func, ...);
         local dispatcher;
+        trace("Listening for frame event %q", event);
         if frame[eventListenerName] then
             dispatcher=frame[eventListenerName];
+            trace("Using existing dispatcher %q", dispatcher.name);
         else
-            dispatcher=ToggleDispatcher:New();
+            dispatcher=ToggleDispatcher:New(("%s (%s)"):format(event, tostring(frame)));
+            trace("Creating new dispatcher %q", dispatcher.name);
             dispatcher:AddInstaller(Tables.Change, frame, eventListenerName, dispatcher);
             setUp(dispatcher, frame);
         end;
@@ -88,6 +92,7 @@ ToggledEvent("MouseDown", function(dispatcher, frame)
         observed=nil;
     end;
     dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseDown", function(button)
+        trace("Mousedown detected");
         observed=button;
         dispatcher:Fire(button);
         remover=Timing.OnUpdate(function()
