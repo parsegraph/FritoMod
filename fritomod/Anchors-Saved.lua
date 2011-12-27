@@ -50,10 +50,11 @@ local function ShowAnchor(name, anchor)
         return;
     end;
     trace("Showing anchor: "..name);
+    local dragging = false;
     Lists.InsertAll(removers,
         anchor:Show(),
         Callbacks.EnterFrame(anchor.frame, function()
-            if not anchor.frame:IsDragging() then
+            if not dragging then
                 anchorNameFrame:Show();
                 anchorNameFrame:ClearAllPoints();
                 Anchors.Over(anchorNameFrame, anchor.frame, "top", 4);
@@ -61,9 +62,13 @@ local function ShowAnchor(name, anchor)
             end;
             return Curry(anchorNameFrame, "Hide");
         end),
-        Callbacks.DragFrame(anchor.frame, function()
+        Callbacks.MouseDown(anchor.frame, function()
+            dragging = true;
             anchorNameFrame:Hide();
-            return Curry(anchorNameFrame, "Show");
+            return function()
+                dragging = false;
+                anchorNameFrame:Show();
+            end;
         end),
         Callbacks.Click(anchor.frame, function(b)
             if b~="MiddleButton" then
