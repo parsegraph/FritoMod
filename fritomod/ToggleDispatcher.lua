@@ -19,6 +19,18 @@ function ToggleDispatcher:AddInstaller(func, ...)
 	return Lists.Insert(self.installers, Curry(func, ...));
 end;
 
+function ToggleDispatcher:GetListenerCount()
+	assert(#self.deadListeners <= #self.listeners,
+		("Dead listeners should never exceed live listeners (dead: %d, live: %d)"):format(
+		#self.deadListeners,
+		#self.listeners));
+	for i=1, #self.deadListeners do
+		assert(Lists.Contains(self.listeners, self.deadListeners[i]),
+			"deadListeners must not contain listeners that have already been reclaimed");
+	end;
+	return #self.listeners - #self.deadListeners;
+end;
+
 function ToggleDispatcher:Install()
 	self:Uninstall();
 	trace("Installing dispatcher %q", self.name);
@@ -37,7 +49,9 @@ end;
 
 function ToggleDispatcher:Add(listener, ...)
 	listener=Curry(listener, ...);
-	if #self.listeners - #self.deadListeners <= 0 then
+	trace("Adding listener to dispatcher. %d live and %d dead listener(s) on %q",
+		#self.listeners , #self.deadListeners, self.name);
+	if self:GetListenerCount() == 0 then
 		self:Install();
 	end;
 	table.insert(self.listeners, listener);
@@ -47,10 +61,6 @@ function ToggleDispatcher:Add(listener, ...)
 			self:CleanUp();
 		end;
 	end);
-end;
-
-function ToggleDispatcher:HasListeners()
-	return #self.listeners > 0;
 end;
 
 function ToggleDispatcher:Fire(...)
@@ -87,7 +97,9 @@ function ToggleDispatcher:CleanUp()
 			self.resetters[resetter]=nil;
 		end;
 	end;
-	if #self.listeners == 0 and self.Uninstall then
+	self.deadListeners={};
+	trace("Dispatcher %q has %d remaining listener(s)", self.name, #self.listeners);
+	if self:GetListenerCount() == 0 then
 		self:Uninstall();
 	end;
 end;
