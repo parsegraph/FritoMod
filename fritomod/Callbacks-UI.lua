@@ -38,11 +38,15 @@ local function ToggledEvent(event, setUp, ...)
     return Callbacks[event];
 end;
 
-local function BasicEvent(onEvent, offEvent, dispatcher, frame)
+local function CheckForOverwrites(onEvent, offEvent, dispatcher, frame)
     dispatcher:AddInstaller(function()
         assert(not frame:GetScript(onEvent), "Refusing to overwrite the existing script handler for "..onEvent);
         assert(not frame:GetScript(offEvent), "Refusing to overwrite the existing script handler for "..offEvent);
     end);
+end;
+
+local function BasicEvent(onEvent, offEvent, dispatcher, frame)
+    CheckForOverwrites(onEvent, offEvent, dispatcher, frame);
     dispatcher:AddInstaller(Callbacks.Script, frame, onEvent, dispatcher, "Fire");
     dispatcher:AddInstaller(Callbacks.Script, frame, offEvent, dispatcher, "Reset");
 end;
@@ -79,11 +83,7 @@ ToggledEvent("DragFrame", function(dispatcher, frame)
 end);
 
 ToggledEvent("MouseDown", function(dispatcher, frame)
-    local onEvent, offEvent="OnMouseDown", "OnMouseUp";
-    dispatcher:AddInstaller(function()
-        assert(not frame:GetScript(onEvent), "Refusing to overwrite the existing script handler for "..onEvent);
-        assert(not frame:GetScript(offEvent), "Refusing to overwrite the existing script handler for "..offEvent);
-    end);
+    CheckForOverwrites("OnMouseDown", "OnMouseUp", dispatcher, frame);
     dispatcher:AddInstaller(enableMouse, frame);
     local remover;
     local function Destroy()
