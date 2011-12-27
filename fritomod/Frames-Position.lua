@@ -46,6 +46,12 @@ function Frames.Position(frame, name)
     end);
 end;
 
+function Frames.DumpPosition(name)
+    if Persistence.Loaded() and Persistence[PERSISTENCE_KEY] then
+        return Persistence[PERSISTENCE_KEY][name];
+    end;
+end;
+
 Callbacks.PersistentValue(PERSISTENCE_KEY, function(persistedFrames)
     if persistedFrames then
         -- Load the persisted value, if available, for any positioned frame.
