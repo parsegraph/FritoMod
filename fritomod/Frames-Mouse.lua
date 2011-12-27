@@ -141,15 +141,6 @@ do
 	end;
 end;
 
--- Registers the frame to be draggable. This uses Frames.GetButtonName, so mouse buttons can
--- be specified freely.
---
--- local r=Frames.Draggable(f); -- f is now draggable with the left and right mouse buttons.
--- r(); -- f is no longer draggable.
---
--- -- Same as the above. Note that we don't have to use the remover here.
--- Frames.Draggable(f, true);
--- Frames.Draggable(f, false);
 do
 	local function StartDrag(f, buttons)
 		f:SetMovable(true);
