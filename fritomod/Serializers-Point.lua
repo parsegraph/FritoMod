@@ -33,7 +33,7 @@ function Serializers.SavePoint(frame, pointNum)
     local location={};
     local anchor,_,anchorTo,x,y=frame:GetPoint(pointNum);
     location.anchor=anchor;
-    location.anchorTo=anchorTo;
+    location.anchorTo=anchorTo or anchor;
     location.x=x;
     location.y=y;
     Serializers.VerifyPoint(location);
