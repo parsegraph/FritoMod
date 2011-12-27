@@ -174,10 +174,10 @@ end
 DEBUG_TRACE=false;
 
 function trace(str, ...)
-	if select("#", ...) == 0 then
-		return print(tostring(str));
-	end;
     if DEBUG_TRACE then
+        if select("#", ...) == 0 then
+            return print(tostring(str));
+        end;
         return printf(str, ...);
     end;
 end;
