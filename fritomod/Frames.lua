@@ -9,6 +9,10 @@ end;
 
 Frames=Frames or {};
 
+function Frames.IsFrame(frame)
+	return frame and type(frame)=="table" and type(frame.GetObjectType)=="function";
+end;
+
 function Frames.Inject(frame)
     if Frames.IsInjected(frame) then
         return;
