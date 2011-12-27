@@ -53,6 +53,7 @@ function ToggleDispatcher:HasListeners()
 end;
 
 function ToggleDispatcher:Fire(...)
+    self:Reset();
     self.iterating=true;
     trace("Firing dispatcher %q", self.name);
     for _, listener in ipairs(self.listeners) do
@@ -91,13 +92,12 @@ function ToggleDispatcher:CleanUp()
 end;
 
 function ToggleDispatcher:Reset(...)
-    if #self.resetters then
-        for _, resetter in ipairs(self.resetters) do
-            if self.resetters[resetter] then
-                resetter(...);
-            end;
+    trace("Resetting dispatcher %q", self.name);
+    for _, resetter in ipairs(self.resetters) do
+        if self.resetters[resetter] then
+            resetter(...);
         end;
-        self.resetters={};
-        self:CleanUp();
     end;
+    self.resetters={};
+    self:CleanUp();
 end;
