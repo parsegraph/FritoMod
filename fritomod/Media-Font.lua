@@ -25,7 +25,20 @@ Media.font(fonts);
 Media.font(Curry(Media.SharedMedia, "font"));
 Media.SetAlias("font", "fonts", "text", "fontface", "fontfaces");
 
+local outlines = {
+	[{
+		"thick",
+		"heavy",
+		"bold"}] = "THICKOUTLINE",
+	outline = "OUTLINE",
+	[{
+		"mono",
+		"monochrome"}] = "MONOCHROME"
+};
+Tables.Expand(outlines);
+
 function Frames.Text(parent, font, size, ...)
+	font=font or "default";
 	local text;
 	if type(parent) ~= "table" then
 		text=parent;
@@ -42,7 +55,25 @@ function Frames.Text(parent, font, size, ...)
 	if not font:match("\\") then
 		font=Media.font[font];
 	end;
-	f:SetFont(font, size, ...);
+	local options = {...};
+	local color;
+	local flags;
+	for i=1, #options do
+		local option = options[i]:lower();
+		if outlines[option] then
+			if flags then
+				flags=flags..","..outlines[option];
+			else
+				flags=outlines[option];
+			end;
+		else
+			color=Media.color[option];
+		end;
+	end;
+	f:SetFont(font, size, flags);
+	if color then
+		Frames.Color(f, color);
+	end;
 	if text then
 		f:SetText(text);
 	end;
