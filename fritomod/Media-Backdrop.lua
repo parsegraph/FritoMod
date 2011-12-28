@@ -1,6 +1,7 @@
 if nil ~= require then
 	require "fritomod/Tables";
 	require "fritomod/Media";
+	require "fritomod/Frames";
 end;
 
 local FRITOMOD="Interface/AddOns/FritoMod/media/";
@@ -110,7 +111,20 @@ function Frames.Backdrop(f, backdrop, bg)
 		usedBackdrop.bgFile=bg;
 		backdrop=usedBackdrop;
 	end;
+	local insettedRegions = {};
+	local oldInsets = Frames.Insets(f);
+	do
+		local regions = {f:GetRegions()};
+		for _, region in ipairs(regions) do
+			if Frames.IsInsetted(region, f) then
+				trace("Found insetted region!");
+				Frames.DumpPoints(region);
+				table.insert(insettedRegions, region);
+			end;
+		end;
+	end;
 	f:SetBackdrop(backdrop);
+	Lists.Each(insettedRegions, Headless(Frames.AdjustInsets, f, oldInsets));
 	return f;
 end;
 
