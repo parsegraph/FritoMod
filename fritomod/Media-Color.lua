@@ -93,8 +93,14 @@ Media.color(colors);
 Media.color(function(grayShade)
 	if tonumber(grayShade) then
 		grayShade=tonumber(grayShade);
+		return {grayShade, grayShade, grayShade, 1.0};
 	end;
-	return {grayShade, grayShade, grayShade, 1.0};
+end);
+
+Media.color(function(color)
+	if type(color)=="table" then
+		return color;
+	end;
 end);
 
 Media.SetAlias("color", "colors", "colour", "colours");
