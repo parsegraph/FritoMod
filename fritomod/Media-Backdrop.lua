@@ -118,7 +118,6 @@ function Frames.Backdrop(f, backdrop, bg)
 		for _, region in ipairs(regions) do
 			if Frames.IsInsetted(region, f) then
 				trace("Found insetted region!");
-				Frames.DumpPoints(region);
 				table.insert(insettedRegions, region);
 			end;
 		end;

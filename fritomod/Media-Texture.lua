@@ -15,12 +15,61 @@ Media.texture(textures);
 
 do
 	local coords = {12/64, 51/64, 12/64, 51/64};
-	Media.texture(function(spell)
+
+	Media.spell(function(spell)
 		local texture = select(3, GetSpellInfo(spell));
-		return {
-			name = texture,
-			coords = coords
-		};
+		if texture then
+			return {
+				name = texture,
+				coords = coords
+			};
+		end;
+	end);
+
+	Media.SetAlias("spell", "ability", "cast", "action");
+
+	Media.item(function(item)
+		if type(item) ~= "number" then
+			return;
+		end;
+		item = GetItemIcon(item);
+		if item then
+			return {
+				name = item,
+				coords = coords
+			};
+		end;
+	end);
+
+	Media.item(function(item)
+		item = select(10, GetItemInfo(item));
+		if item then
+			return {
+				name = item,
+				coords = coords
+			};
+		end;
+	end);
+
+	Media.SetAlias("item", "icon", "loot", "drop", "treasure");
+
+	Media.texture(function(name)
+		if type(name) ~= "string" then
+			return;
+		end;
+		name = name:lower();
+		local spell = name:lower():match("^%s*s%a*%s*(%d+)%s*$");
+		if spell then
+			return Media.spell[tonumber(spell)];
+		end;
+		local item = name:lower():match("^%s*i%a*%s*(%d+)%s*$");
+		if item then
+			return Media.item[tonumber(item)];
+		end;
+	end);
+
+	Media.texture(function(name)
+		return Media.item[name] or Media.spell[name];
 	end);
 end;
 
