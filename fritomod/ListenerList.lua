@@ -19,7 +19,23 @@ end;
 --]]
 --
 -- ListenerList is a list of functions that can be called. Its benefit is that
--- listeners can be removed as the list is called. 
+-- listeners can be removed as the list is called; a plain table does not handle
+-- removal during iteration in a predictable manner. Specifically, ListenerList
+-- provides two guarantees beyond a plain table list:
+--
+-- 1. Iteration will operate predictably when listeners are removed, even if they
+-- are removed during a firing operation.
+-- 1. The order of functions is dependent only on the time they were inserted; the
+-- returned remover will always remove the correct element, even if the removed
+-- function has duplicates in the listener list.
+--
+-- If you need to provide an observer-like interface, you should use ListenerList.
+-- It is too easy to violate the above guarantees when you roll your own.
+--
+-- ListenerList is designed to be extended by overriding Install and Uninstall. If you
+-- need special behavior when a listener is fired, override FireListener. If you need
+-- special behavior when a listener is removed, override RemoveListener. In all cases,
+-- call ListenerList's method first before adding your own behavior.
 
 if nil ~= require then
 	require "fritomod/basic";
@@ -44,18 +60,7 @@ function ListenerList:GetListenerCount()
 	if not self.listeners then
 		return 0;
 	end;
-	if not self.deadListeners then
-		return #self.listeners;
-	end;
-	assert(#self.deadListeners <= #self.listeners,
-		("Dead listeners should never exceed live listeners (dead: %d, live: %d)"):format(
-		#self.deadListeners,
-		#self.listeners));
-	for i=1, #self.deadListeners do
-		assert(Lists.Contains(self.listeners, self.deadListeners[i]),
-			"deadListeners must not contain listeners that have already been reclaimed");
-	end;
-	return #self.listeners - #self.deadListeners;
+	return #self.listeners;
 end;
 
 function ListenerList:HasListeners()
@@ -63,35 +68,35 @@ function ListenerList:HasListeners()
 end;
 
 function ListenerList:Add(listener, ...)
+	local given=listener;
 	listener=Curry(listener, ...);
-	trace("Adding listener to list %q. %d live and %d dead listener(s)",
+	if given==listener then
+		-- Ensure that the functions in our list are always
+		-- unique. This ensures the returned remover will remove exactly
+		-- the expected function, instead of removing some potential
+		-- duplicate.
+		listener=Functions.Clone(listener);
+	end;
+	trace("Adding listener %s to list %q. Currently %d listener(s)",
+		tostring(listener),
 		self.name,
-		self:ImmediateListenerCount(),
-		self:DeadListenerCount());
+		self:GetListenerCount());
 	if not self:HasListeners() then
 		self:Install();
 	end;
-	table.insert(self.listeners, listener);
-	return Functions.OnlyOnce(function()
-		self:RemoveListener(listener);
-		if not self:IsFiring() and not self:HasListeners() then
-			self:Uninstall();
-		end;
-	end);
+	table.insert(self.listeners, 1, listener);
+	return Functions.OnlyOnce(self, "RemoveListener", listener);
 end;
 
 function ListenerList:Fire(...)
-	self:CleanUp();
 	self.firing=true;
 	trace("Firing all listeners on list %q", self.name);
-	for i=1, self:ImmediateListenerCount() do
-		if self.deadListeners and Lists.Contains(self.deadListeners, listener) then
-			return;
-		end;
+	local i=self:GetListenerCount();
+	while i > 0 do
 		self:FireListener(self.listeners[i], ...);
+		i = i - 1;
 	end;
 	self.firing=false;
-	self:CleanUp();
 end;
 
 function ListenerList:FireListener(listener, ...)
@@ -99,60 +104,34 @@ function ListenerList:FireListener(listener, ...)
 end;
 
 function ListenerList:RemoveListener(listener)
+	trace("Removing listener %s", tostring(listener));
 	if not self.listeners then
 		return;
 	end;
-	if not self:IsFiring() then
-		Lists.Remove(self.listeners, listener);
-	else
-		if not self.deadListeners then
-			self.deadListeners = {};
-		end;
-		table.insert(self.deadListeners, listener);
+	Lists.RemoveLast(self.listeners, listener);
+	if not self:HasListeners() then
+		self:Uninstall();
 	end;
-end;
-
-function ListenerList:CleanUp()
-	assert(not self.firing, "Refusing to clean list while firing");
-	trace("Cleaning up list %q", self.name);
-	if self.deadListeners then
-		Lists.Map(self.deadListeners, self, "RemoveListener");
-		self.deadListeners=nil;
-		if not self:HasListeners() then
-			self:Uninstall();
-		end;
-	end;
-	trace("%d listener(s) remaining on list %q",
-		self:ImmediateListenerCount(),
-		self.name);
 end;
 
 function ListenerList:Uninstall()
 	assert(not self:HasListeners(), "Refusing to uninstall a non-empty list");
 	self.listeners = nil;
-	self.deadListeners = nil;
 end;
 
 function ListenerList:IsFiring()
 	return self.firing;
 end;
 
-function ListenerList:IsAlive(func)
-	return self.listeners and Lists.Contains(self.listeners, func) and
-		(not self.deadListeners or
-		not Lists.Contains(self.deadListeners, func));
-end;
-
-function ListenerList:ImmediateListenerCount()
-	if not self.listeners then
-		return 0;
+function ListenerList:DumpListeners()
+	if self.listeners then
+		trace("%d listener(s) in %q", #self.listeners, self.name);
+		local i=#self.listeners;
+		while i > 0 do
+			trace("%d: %s", #self.listeners - i + 1, tostring(self.listeners[i]));
+			i = i - 1;
+		end;
+	else
+		trace("No listeners in %q", self.name);
 	end;
-	return #self.listeners;
-end;
-
-function ListenerList:DeadListenerCount()
-	if not self.deadListeners then
-		return 0;
-	end;
-	return #self.deadListeners;
 end;

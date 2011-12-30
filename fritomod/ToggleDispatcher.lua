@@ -88,7 +88,6 @@ function ToggleDispatcher:Reset(...)
 			end;
 		end;
 		self.resetters=nil;
-		self:CleanUp();
 	end;
 	self.fired=false;
 end;
