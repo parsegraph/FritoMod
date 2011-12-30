@@ -75,6 +75,15 @@ function Suite:TestForcedFunctionsCleansPreexistingArguments()
 	foo.Bar(1);
 end;
 
+function Suite:TestForcedMetatableReturnsEqualFunctionsForEqualKeys()
+	local foo = {};
+	function foo.Bar(a, b)
+		return a + b;
+	end;
+	Metatables.ForceFunctions(foo);
+	Assert.Equals(foo.Bar, foo.Bar);
+end;
+
 function Suite:TestForcedMethods()
 	local foo = Metatables.ForceMethods();
 	function foo:Bar(first)
