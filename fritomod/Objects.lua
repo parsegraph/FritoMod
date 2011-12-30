@@ -31,6 +31,7 @@ Objects=Objects or {};
 --	 a holder for the specified value.
 function Objects.Value(value)
 	local holder;
+	local initial = value;
 	holder = Metatables.ForceFunctions({
 		-- Returns the current value.
 		--
@@ -89,7 +90,7 @@ function Objects.Value(value)
 		end,
 
 		Clear = function()
-			return holder.Set(nil);
+			return holder.Set(initial);
 		end
 	});
 

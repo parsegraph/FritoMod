@@ -27,6 +27,15 @@ function Suite:TestValueSupportsChange()
 	value.Assert(42);
 end;
 
+function Suite:TestObjectsResetReturnsToInitialValue()
+	local t = Objects.Value(42);
+	t.Assert(42);
+	t.Set(40);
+	t.Assert(40);
+	t.Reset();
+	t.Assert(42);
+end;
+
 function Suite:TestToggleManagesAValue()
 	local t=Objects.Toggle();
 	Assert.False(t:IsOn());
