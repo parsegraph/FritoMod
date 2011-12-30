@@ -33,6 +33,15 @@ function Suite:TestToggle()
 	value.Assert(true);
 end;
 
+function Suite:TestClone()
+	local function sum(a, b)
+		return a + b;
+	end;
+	local sumclone = Functions.Clone(sum);
+	Assert.Equals(4, sumclone(2, 2));
+	Assert.Unequal(sumclone, sum);
+end;
+
 function Suite:TestUndoable()
 	local flag = Tests.Flag();
 	local undoable = Functions.Undoable(flag.Raise, flag.Clear);

@@ -40,6 +40,20 @@ function Functions.Return(...)
 	return ...;
 end;
 
+-- Returns a function that behaves identically to the specified function without
+-- being strictly equal to that function.
+--
+-- This is useful if you always want to guarantee uniqueness among your functions,
+-- like in a list of listeners.
+--
+-- See Also:
+-- ListenerList.lua
+function Functions.Clone(func)
+	return function(...)
+		return func(...);
+	end;
+end;
+
 -- Returns a function that returns the specified values as-is.
 --
 -- ...:*
