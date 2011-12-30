@@ -191,6 +191,29 @@ Timing.Burst = Timer(function(period, elapsed, func)
 	return elapsed % period;
 end);
 
+-- Count down from the specified value, in seconds. The specified function will be
+-- called each second, starting with seconds - 1 until zero, inclusively.
+--
+-- The returned remover will immediately stop the countdown with no further function
+-- invocations.
+function Timing.Countdown(seconds, func, ...)
+	seconds=assert(tonumber(seconds), "Seconds must be a number. Given: "..type(seconds));
+	assert(seconds > 0, "seconds must be positive. Given: "..tostring(seconds));
+	func=Curry(func, ...);
+	local r;
+	r=Timing.Rhythmic(1, function()
+		seconds = seconds - 1;
+		if seconds >= 0 then
+			func(seconds);
+		else
+			r();
+		end;
+	end);
+	return r;
+end;
+Timing.CountDown=Timing.Countdown;
+Timing.Count=Timing.Countdown;
+
 -- Cycle between a series of values, based on when this function is called.
 --
 -- This function has no remover since it does not use a timer.
