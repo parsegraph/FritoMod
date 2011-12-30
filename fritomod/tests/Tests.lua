@@ -75,6 +75,21 @@ function Suite:TestCounterAsserts()
 	counter:Assert(1, "Counter asserts that it's at one");
 end;
 
+function Suite:TestCounterResetsToInitialValue()
+	local c = Tests.Counter(42);
+	c.Assert(42);
+	c.Reset();
+	c.Assert(42);
+end;
+
+function Suite:TestCounterAssertsCorrectly()
+	local c = Tests.Counter(0);
+	c.Assert(0);
+	c.Hit();
+	c.Assert(1);
+	Assert.Exception("Counter fails on bad number", c.Assert, 42);
+end;
+
 function Suite:TestDebugStackHandlesHeadProperly()
 	if not debug then
 		return;

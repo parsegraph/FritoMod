@@ -259,6 +259,7 @@ function Tests.Counter(count)
 			count = assert(tonumber(count), "Initial is not a number. Initial value: " .. tostring(count));
 		end;
 	end;
+	local initial=count;
 	local counter = Metatables.ForceFunctions({
 		Hit = function()
 			count = count + 1;
@@ -267,7 +268,7 @@ function Tests.Counter(count)
 			return count;
 		end,
 		Clear = function()
-			count = 0;
+			count = initial;
 		end,
 		AssertGreaterThan = function(num)
 			assert(count > num, ("Count was %d, but assertion requires strictly more than %d"):format(count, num));
