@@ -100,6 +100,12 @@ function Mixins.MutableArrayTests(Suite, library)
 		Assert.Equals(8, library.Build(a, 1));
 	end;
 
+	function Suite:TestRemoveRemovesOnlyTheFirstElement()
+		local a=Suite:Array(2,3,4,2);
+		Assert.Equals(2, library.Remove(a, 2));
+		library.AssertEqual(Suite:Array(3,4,2), a);
+	end;
+
 	function Suite:TestRemoveAtRemovesAValueAtALocation()
 		local a=Suite:Array(1,2,3);
 		Assert.Equals(2, library.RemoveAt(a, 2));
