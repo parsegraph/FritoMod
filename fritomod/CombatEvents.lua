@@ -28,5 +28,8 @@ setmetatable(CombatEvents, {
 			setUp
 		);
 		return rawget(self, key);
+	end,
+	__call = function(self, ...)
+		return Events.COMBAT_LOG_EVENT_UNFILTERED(...);
 	end
 });
