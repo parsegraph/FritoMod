@@ -5,13 +5,13 @@ end;
 CombatObjects=CombatObjects or {};
 
 local SpellEvent = OOP.Class();
-CombatObjects.SpellEvent= SpellEvent;
+CombatObjects.Spell = SpellEvent;
 
 function SpellEvent:Constructor(...)
-	self:SetSpell(...);
+	self:Set(...);
 end;
 
-function SpellEvent:SetSpell(id, name, school)
+function SpellEvent:Set(id, name, school)
 	self.id = id;
 	self.name = name;
 	self.school = school;

@@ -15,6 +15,7 @@ end);
 ]]
 
 if nil ~= require then
+	require "fritomod/currying";
 	require "fritomod/Functions";
 	require "fritomod/CombatEvents";
 	require "fritomod/CombatObjects-Target";
@@ -24,13 +25,11 @@ end;
 
 Callbacks=Callbacks or {};
 
-local function Reporter(baseName)
+local function Reporter(eventName)
 	local event;
-	local setName = "Set"..baseName;
-	local eventName = baseName.."Event";
 	return function(...)
 		if event then
-			event[setName](event, ...);
+			event:Set(...);
 		else
 			event=CombatObjects[eventName]:New(...);
 		end;
@@ -39,30 +38,80 @@ local function Reporter(baseName)
 end;
 
 local ReportDamage = Reporter("Damage");
-local ReportDamagingSpell = Reporter("Spell");
+local ReportActivatingSpell = Reporter("Spell");
 local ReportSourceTarget = Reporter("Target");
 local ReportDestTarget = Reporter("Target");
+local ReportMiss = Reporter("Miss");
+local ReportHeal = Reporter("Heal");
 
 local handlers={};
 
-function handlers.SPELL_DAMAGE(...)
-	return ReportDamagingSpell(...),
-			ReportDamage(select(4, ...));
+local function MagicTypesHandler(suffix, func, ...)
+	func=Curry(func, ...);
+	handlers["RANGE_"..suffix] = func;
+	handlers["SPELL_"..suffix] = func;
+	handlers["SPELL_PERIODIC_"..suffix] = func;
+	handlers["SPELL_BUILDING_"..suffix] = func;
+	handlers["ENVIRONMENTAL_"..suffix] = func;
 end;
-handlers.RANGE_DAMAGE=handlers.SPELL_DAMAGE;
-handlers.SPELL_PERIODIC_DAMAGE=handlers.SPELL_DAMAGE;
-handlers.SPELL_BUILDING_DAMAGE=handlers.SPELL_DAMAGE;
+
+local function AllTypesHandler(suffix, func, ...)
+	func=Curry(func, ...);
+	handlers["SWING_"..suffix] = func;
+	MagicTypesHandler(suffix, func);
+end;
+
+AllTypesHandler("DAMAGE", function(...)
+	return ReportActivatingSpell(...),
+			ReportDamage(select(4, ...));
+end);
 
 function handlers.SWING_DAMAGE(...)
 	local school = select(3, ...);
-	return ReportDamagingSpell(nil, "SWING", school),
+	return ReportActivatingSpell(nil, "SWING", school),
 			ReportDamage(...);
 end;
 
 function handlers.ENVIRONMENTAL_DAMAGE(envType, ...)
 	local school = select(3, ...);
-	return ReportDamagingSpell(nil, envType, school),
+	return ReportActivatingSpell(nil, envType, school),
 		ReportDamage(...);
+end;
+
+AllTypesHandler("MISSED", function(...)
+	return ReportActivatingSpell(...),
+			ReportMiss(select(4, ...));
+end);
+
+function handlers.SWING_MISSED(...)
+	-- XXX This uses WoW-specific functionality, but I don't know where
+	-- the underlying code should belong.
+	return ReportActivatingSpell(nil, "SWING", SCHOOL_MASK_PHYSICAL),
+			ReportMiss(...);
+end;
+
+function handlers.ENVIRONMENTAL_MISSED(envType, ...)
+	return ReportActivatingSpell(nil, envType, SCHOOL_MASK_PHYSICAL),
+			ReportMiss(...);
+end;
+
+AllTypesHandler("HEAL", function(...)
+	return ReportActivatingSpell(...),
+			ReportHeal(select(4, ...));
+end);
+
+function handlers.SWING_HEAL(...)
+	-- XXX Not sure if this ever fires. Do weapon healing procs count
+	-- as SWING_HEAL?
+	return ReportActivatingSpell(nil, "SWING", SCHOOL_MASK_PHYSICAL),
+			ReportHeal(...);
+end;
+
+function handlers.ENVIRONMENTAL_HEAL(envType, ...)
+	-- XXX Not sure if this ever fires. Do "Entering the arena" heals
+	-- count as ENVIRONMENTAL_HEAL?
+	return ReportActivatingSpell(nil, envType, SCHOOL_MASK_PHYSICAL),
+			ReportHeal(...);
 end;
 
 Serializers=Serializers or {};
@@ -77,8 +126,13 @@ function Serializers.WriteCombatObjects(timestamp, event, _, sourceGUID, sourceN
 			destName,
 			destFlags,
 			destRaidFlags);
-		local handler = handlers[event] or Functions.Return;
-		return timestamp, event, source, target, handler(...);
+		local handler = handlers[event];
+		if handler then
+			return timestamp, event, source, target, handler(...);
+		else
+			trace("Unhandled event: %s", event);
+			return timestamp, event, source, target, ...;
+		end;
 end;
 
 function Callbacks.CombatObjects(func, ...)
@@ -97,3 +151,15 @@ function Callbacks.DamageObjects(func, ...)
 		func(Serializers.WriteCombatObjects(timestamp, event, ...));
 	end);
 end;
+Callbacks.DamageObject = Callbacks.DamageObjects;
+
+function Callbacks.HealObjects(func, ...)
+	func=Curry(func, ...);
+	return CombatEvents(function(timestamp, event, ...)
+		if not Strings.EndsWith(event, "_HEAL") then
+			return;
+		end;
+		func(Serializers.WriteCombatObjects(timestamp, event, ...));
+	end);
+end;
+Callbacks.HealObject = Callbacks.HealObjects;

@@ -5,13 +5,13 @@ end;
 CombatObjects=CombatObjects or {};
 
 local TargetEvent = OOP.Class();
-CombatObjects.TargetEvent= TargetEvent;
+CombatObjects.Target = TargetEvent;
 
 function TargetEvent:Constructor(...)
-	self:SetTarget(...);
+	self:Set(...);
 end;
 
-function TargetEvent:SetTarget(guid, name, flags, raidFlags)
+function TargetEvent:Set(guid, name, flags, raidFlags)
 	self.guid = guid;
 	self.name = name;
 	self.flags = flags;

@@ -1,19 +1,34 @@
+-- Combat log object for all spell, ranged, melee, and environmental damage events
+--[[
+
+Callbacks.DamageObjects(function(when, event, source, target, spell, damage)
+	printf("%s damaged %s for %d damage.",
+		source:Name(),
+		target:Name(),
+		damage:Amount()
+	);
+end);
+
+--]]
+
 if nil ~= require then
 	require "fritomod/OOP-Class";
+	require "fritomod/CombatObjects-Amount";
 end;
 
 CombatObjects=CombatObjects or {};
 
-local DamageEvent = OOP.Class();
-CombatObjects.DamageEvent= DamageEvent;
+local DamageEvent = OOP.Class(CombatObjects.Amount);
+CombatObjects.Damage = DamageEvent;
 
 function DamageEvent:Constructor(...)
-	self:SetDamage(...);
+	self:Set(...);
 end;
 
-function DamageEvent:SetDamage(amount, overkill, school, resisted, blocked, absorbed, isCritical, isGlancing, isCrushing)
-	self.amount = amount;
-	self.overkill = overkill;
+-- XXX I don't use the school parameter in this object, as it seems redundant. I
+-- might be wrong, though.
+function DamageEvent:Set(amount, excess, school, resisted, blocked, absorbed, isCritical, isGlancing, isCrushing)
+	self.super.Set(self, amount, excess);
 	self.resisted = resisted;
 	self.blocked = blocked;
 	self.absorbed = absorbed;
@@ -22,27 +37,13 @@ function DamageEvent:SetDamage(amount, overkill, school, resisted, blocked, abso
 	self.isCrushing = isCrushing;
 end;
 
-function DamageEvent:Mitigated()
+function DamageEvent:Reduction()
 	return self:Resisted() + self:Blocked() + self:Absorbed();
 end;
+DamageEvent.Mitigated = Headless("Reduction");
+DamageEvent.Mitigation = Headless("Reduction");
 
-function DamageEvent:Amount()
-	return self.amount;
-end;
-DamageEvent.GrossAmount = DamageEvent.Amount;
-
-function DamageEvent:NetAmount()
-	return self:GrossAmount() - self:Mitigated();
-end;
-
-function DamageEvent:RealAmount()
-	return self:NetAmount() - self:Overkill();
-end;
-
-
-function DamageEvent:Overkill()
-	return self.overkill or 0;
-end;
+DamageEvent.Overkill = DamageEvent.Excess;
 
 function DamageEvent:Resisted()
 	if self.resisted == nil then
