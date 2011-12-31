@@ -20,6 +20,16 @@ local setUp = Functions.Install(Events.COMBAT_LOG_EVENT_UNFILTERED, CombatEvents
 
 setmetatable(CombatEvents, {
 	__index = function(self, key)
+		if type(key) == "table" then
+			return function(func, ...)
+				func=Curry(func, ...);
+				local removers = {};
+				for i=1, #key do
+					table.insert(removers, CombatEvents[key[i]](func))
+				end;
+				return Functions.OnlyOnce(Lists.CallEach, removers);
+			end;
+		end;
 		eventListeners[key] = {};
 		self[key] = Functions.Spy(
 			function(func, ...)
