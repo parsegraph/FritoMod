@@ -34,6 +34,34 @@ function Lists.Iterator(iterable)
 	end;
 end;
 
+-- This implementation is provided solely for performance.
+function Lists.ValueIterator(iterable)
+	assert(type(iterable) == "table", "iterable must be a table");
+	local i=0;
+	local size=#iterable;
+	return function()
+		i = i + 1;
+		if i > size then
+			return nil;
+		end;
+		return iterable[i];
+	end;
+end;
+
+-- This implementation is provided solely for performance.
+function Lists.KeyIterator(iterable)
+	assert(type(iterable) == "table", "iterable must be a table");
+	local i=0;
+	local size=#iterable;
+	return function()
+		i = i + 1;
+		if i > size then
+			return nil;
+		end;
+		return i;
+	end;
+end;
+
 function Lists.Get(iterable, key)
 	return iterable[key];
 end;
@@ -126,4 +154,10 @@ function Lists.ContainsKey(iterable, target, testFunc, ...)
 		end;
 	end;
 	return false;
+end;
+
+function Lists.CallEach(iterable, ...)
+	for i=1, #iterable do
+		iterable[i](...);
+	end;
 end;
