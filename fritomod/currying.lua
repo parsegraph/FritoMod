@@ -257,80 +257,20 @@ end
 -- throws
 --	 if any curried or passed arguments are nil
 function CurryHeadlessMethod(func, ...)
-	if not func then
-		error("func is falsy");
+	assert(func, "func must not be falsy");
+	local invokedSelf;
+	local invokeHeadless = CurryFunction(function(...)
+		if IsCallable(func) then
+			return func(invokedSelf, ...);
+		else
+			return invokedSelf[func](invokedSelf, ...);
+		end;
+	end, ...);
+	return function(self, ...)
+		invokedSelf=self;
+		return invokeHeadless(...);
 	end;
-	local numArgs = select("#", ...);
-	for i=1, select("#", ...) do
-		assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
-	end;
-	local args = {...};
-	if numArgs==0 then
-		return function(self, ...)
-			if not self then
-				error("self is falsy");
-			end;
-			CheckForNils(...);
-			if IsCallable(func) then
-				return func(self, ...);
-			else
-				return self[func](self, ...);
-			end;
-		end;
-	elseif numArgs==1 then
-		local a1=...;
-		return function(self, ...)
-			if not self then
-				error("self is falsy");
-			end;
-			CheckForNils(...);
-			if IsCallable(func) then
-				return func(self, a1, ...);
-			else
-				return self[func](self, a1, ...);
-			end;
-		end;
-	elseif numArgs==2 then
-		local a1,a2=...;
-		return function(self, ...)
-			if not self then
-				error("self is falsy");
-			end;
-			CheckForNils(...);
-			if IsCallable(func) then
-				return func(self, a1, a2, ...);
-			else
-				return self[func](self, a1, a2, ...);
-			end;
-		end;
-	elseif numArgs==3 then
-		local a1,a2,a3=...;
-		return function(self, ...)
-			if not self then
-				error("self is falsy");
-			end;
-			CheckForNils(...);
-			if IsCallable(func) then
-				return func(self, a1, a2, a3, ...);
-			else
-				return self[func](self, a1, a2, a3, ...);
-			end;
-		end;
-	else
-		local args={...};
-		return function(self, ...)
-			if not self then
-				error("self is falsy");
-			end;
-			if IsCallable(func) then
-				return func(self, UnpackAll(args, {...}));
-			else
-				return self[func](self, UnpackAll(args, {...}));
-			end;
-		end;
-	end;
-	error("func is not callable and is not a string. Received type: %s", type(func));
-end
+end;
 Headless=CurryHeadlessMethod;
 
 -- Returns a method that ignores any arguments passed to it, only invoking the specified
