@@ -43,10 +43,18 @@ end;
 Colors.Colorize=Colors.ColorMessage;
 
 function Colors.PackHex(colorParts, ...)
+	local hexstring = "";
 	if select("#", ...) > 0 then
-		colorParts = { colorParts, ... };
+		hexstring=Colors.ConvertOneHex(colorParts);
+		for i=1, select("#", ...) do
+			hexstring=hexstring..Colors.ConvertOneHex(select(i, ...));
+		end;
+	else
+		for i=1, #colorParts do
+			hexstring=hexstring..Colors.ConvertOneHex(colorParts);
+		end;
 	end;
-	return Strings.JoinArray("", Lists.Map(colorParts, Colors.ConvertOneHex));
+	return hexstring;
 end;
 
 function Colors.ConvertOneHex(colorPart)
