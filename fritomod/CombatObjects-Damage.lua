@@ -13,7 +13,10 @@ end);
 
 if nil ~= require then
 	require "fritomod/OOP-Class";
+	require "fritomod/CombatObjects";
 	require "fritomod/CombatObjects-Amount";
+	require "fritomod/CombatObjects-Spell";
+	require "fritomod/Callbacks-CombatObjects";
 end;
 
 CombatObjects=CombatObjects or {};
@@ -28,7 +31,7 @@ end;
 -- XXX I don't use the school parameter in this object, as it seems redundant. I
 -- might be wrong, though.
 function DamageEvent:Set(amount, excess, school, resisted, blocked, absorbed, isCritical, isGlancing, isCrushing)
-	self.super.Set(self, amount, excess);
+	self.super.Set(self, school, amount, excess);
 	self.resisted = resisted;
 	self.blocked = blocked;
 	self.absorbed = absorbed;
@@ -76,3 +79,9 @@ end;
 function DamageEvent:IsCrushing()
 	return Bool(self.isCrushing);
 end;
+
+CombatObjects.AddSharedEvent("Damage");
+
+CombatObjects.SimpleTypesHandler("DAMAGE", "Damage");
+
+Callbacks.DamageObjects = Curry(Callbacks.SuffixedCombatObjects, "_DAMAGE");

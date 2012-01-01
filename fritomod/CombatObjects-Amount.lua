@@ -1,5 +1,7 @@
 if nil ~= require then
 	require "fritomod/OOP-Class";
+	require "fritomod/CombatObjects";
+	require "fritomod/Callbacks-CombatObjects";
 end;
 
 CombatObjects=CombatObjects or {};
@@ -11,7 +13,8 @@ function AmountEvent:Constructor(...)
 	self:SetAmount(...);
 end;
 
-function AmountEvent:Set(amount, excess)
+function AmountEvent:Set(amountType, amount, excess)
+	self.amountType = amountType;
 	self.amount = amount;
 	self.excess = excess;
 	return self;
@@ -19,13 +22,18 @@ end;
 
 function AmountEvent:Clone()
 	return AmountEvent:New(
+		self:Type(),
 		self:Amount(),
 		self:Excess()
 	);
 end;
 
+function AmountEvent:Type()
+	return self.amountType or "(Unknown)";
+end;
+
 function AmountEvent:Amount()
-	return self.amount;
+	return self.amount or 0;
 end;
 AmountEvent.GrossAmount = Headless("Amount");
 
@@ -53,3 +61,14 @@ function AmountEvent:Reduction()
 end;
 AmountEvent.Reduced = Headless("Reduction");
 AmountEvent.Mitigated = Headless("Reduction");
+AmountEvent.Mitigation = Headless("Reduction");
+
+CombatObjects.AddSharedEvent("Power", "Amount");
+CombatObjects.AddSharedEvent("Leeched", "Amount");
+
+CombatObjects.SimpleTypesHandler("ENERGIZE", "Amount");
+
+Callbacks.PowerObjects = Curry(Callbacks.SuffixedCombatObjects, {
+	"_ENERGIZE",
+	"_DRAIN",
+	"_LEECH"});

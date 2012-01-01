@@ -1,5 +1,7 @@
 if nil ~= require then
 	require "fritomod/OOP-Class";
+	require "fritomod/CombatObjects";
+	require "fritomod/Callbacks-CombatObjects";
 end;
 
 CombatObjects=CombatObjects or {};
@@ -40,3 +42,5 @@ end;
 function SpellEvent:SchoolName()
 	return CombatLog_String_SchoolString(self:School());
 end;
+
+CombatObjects.AddSharedEvent("Spell");

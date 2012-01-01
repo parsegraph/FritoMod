@@ -13,7 +13,9 @@ end);
 --]]
 if nil ~= require then
 	require "fritomod/OOP-Class";
+	require "fritomod/CombatObjects";
 	require "fritomod/CombatObjects-Amount";
+	require "fritomod/Callbacks-CombatObjects";
 end;
 
 CombatObjects=CombatObjects or {};
@@ -29,7 +31,7 @@ end;
 -- effect of a hostile shield (like that given by a Death Knight) rather
 -- than a positive friendly effect.
 function HealEvent:Set(amount, excess, reduction, isCritical)
-	self.super.Set(self, amount, excess);
+	self.super.Set(self, "HEAL", amount, excess);
 	self.reduction = reduction;
 	self.isCritical = isCritical;
 	return self;
@@ -51,3 +53,9 @@ HealEvent.Absorbed = HealEvent.Reduction;
 function HealEvent:IsCritical()
 	return Bool(self.isCritical);
 end;
+
+CombatObjects.AddSharedEvent("Heal");
+
+CombatObjects.SimpleTypesHandler("HEAL", "Heal");
+
+Callbacks.HealObjects = Curry(Callbacks.SuffixedCombatObjects, "_HEAL");

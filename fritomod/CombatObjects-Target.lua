@@ -1,5 +1,6 @@
 if nil ~= require then
 	require "fritomod/OOP-Class";
+	require "fritomod/CombatObjects";
 end;
 
 CombatObjects=CombatObjects or {};
@@ -43,3 +44,6 @@ end;
 function TargetEvent:RaidFlags()
 	return self.raidFlags;
 end;
+
+CombatObjects.AddSharedEvent("Source", "Target");
+CombatObjects.AddSharedEvent("Target");
