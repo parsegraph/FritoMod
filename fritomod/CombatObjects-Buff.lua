@@ -1,3 +1,23 @@
+-- Combat log object for all buff and debuff events.
+--[[
+
+Callbacks.BuffObjects(function(when, event, source, target, buff)
+      if Strings.EndsWith(event, "_REMOVED") then
+         printf("%s fades from %s.",
+            buff:Link(),
+            Colors.ColorMessage(
+               target:ClassColor(),
+               target:Name()));
+      elseif Strings.EndsWith(event, "_APPLIED") then
+         printf("%s gains %s.",
+            Colors.ColorMessage(
+               target:ClassColor(),
+               target:Name()),
+            buff:Link());
+      end;
+end);
+
+--]]
 if nil ~= require then
 	require "fritomod/OOP-Class";
 	require "fritomod/CombatObjects";
