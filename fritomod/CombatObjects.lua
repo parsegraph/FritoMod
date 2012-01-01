@@ -113,6 +113,16 @@ do
 		CombatObjects.SimpleSuffixHandler(suffix, Functions.Return);
 	end;
 
+	function CombatObjects.NakedHandler(name)
+		if type(name)=="table" then
+			for i=1, #name do
+				CombatObjects.NakedHandler(name[i]);
+			end;
+			return;
+		end;
+		handlers[name] = Functions.Return;
+	end;
+
 	function CombatObjects.Handler(name, func, ...)
 		func=Curry(func, ...);
 		handlers[name] = func;
