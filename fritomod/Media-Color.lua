@@ -88,6 +88,7 @@ if PowerBarColor then
 	end;
 end;
 
+colors.default=colors.white;
 Media.color(colors);
 
 Media.color(function(grayShade)
