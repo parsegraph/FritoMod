@@ -17,6 +17,16 @@ Callbacks.BuffObjects(function(when, event, source, target, buff)
       end;
 end);
 
+Callbacks.BuffDoseObjects(function(when, event, source, target, buff, count)
+	printf("%s now has %d %s of %s.",
+		Colors.ColorMessage(
+		target:ClassColor(),
+		target:Name()),
+		count,
+		Strings.Pluralize("charge", count),
+		buff:Link());
+end);
+
 --]]
 if nil ~= require then
 	require "fritomod/OOP-Class";
