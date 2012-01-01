@@ -106,7 +106,7 @@ do
 	function CombatObjects.NakedSuffixHandler(suffix)
 		if type(suffix)=="table" then
 			for i=1, #suffix do
-				CombatObjects.SimpleSuffixHandler(suffix[i], func);
+				CombatObjects.NakedSuffixHandler(suffix[i]);
 			end;
 			return;
 		end;
