@@ -27,9 +27,8 @@ function HealEvent:Constructor(...)
 	self:Set(...);
 end;
 
--- XXX I'm assuming the "absorbed" element in Blizzard's event is the
--- effect of a hostile shield (like that given by a Death Knight) rather
--- than a positive friendly effect.
+-- The "absorbed" element in Blizzard's event is the effect of a hostile shield
+-- (like that given by a Death Knight) rather than a positive friendly effect.
 function HealEvent:Set(amount, excess, reduction, isCritical)
 	self.super.Set(self, "HEAL", amount, excess);
 	self.reduction = reduction;
