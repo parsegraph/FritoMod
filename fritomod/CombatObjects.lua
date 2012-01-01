@@ -22,7 +22,8 @@ do
 	function CombatObjects.SetSharedEvent(name, ...)
 		local event = events[name];
 		if event then
-			return event:Set(...);
+			event:Set(...);
+			return event;
 		end;
 		local eventType = eventTypes[name];
 		assert(eventType, "No registered type for event name: "..name);

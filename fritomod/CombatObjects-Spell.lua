@@ -17,7 +17,6 @@ function SpellEvent:Set(id, name, school)
 	self.id = id;
 	self.name = name;
 	self.school = school;
-	return self;
 end;
 
 function SpellEvent:Clone()

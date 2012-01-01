@@ -34,7 +34,6 @@ function HealEvent:Set(amount, excess, reduction, isCritical)
 	self.super.Set(self, "HEAL", amount, excess);
 	self.reduction = reduction;
 	self.isCritical = isCritical;
-	return self;
 end;
 
 function HealEvent:Clone()

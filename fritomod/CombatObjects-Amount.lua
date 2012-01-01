@@ -17,7 +17,6 @@ function AmountEvent:Set(amountType, amount, excess)
 	self.amountType = amountType;
 	self.amount = amount;
 	self.excess = excess;
-	return self;
 end;
 
 function AmountEvent:Clone()

@@ -17,7 +17,6 @@ function TargetEvent:Set(guid, name, flags, raidFlags)
 	self.name = name;
 	self.flags = flags;
 	self.raidFlags = raidFlags;
-	return self;
 end;
 
 function TargetEvent:Clone()

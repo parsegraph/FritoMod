@@ -31,7 +31,6 @@ end;
 function MissEvent:Set(missType, isOffHand, amount)
 	self.super.Set(self, missType, amount, 0);
 	self.isOffHand = isOffHand;
-	return self;
 end;
 
 function MissEvent:Clone()
