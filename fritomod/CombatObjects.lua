@@ -93,7 +93,7 @@ do
 		CombatObjects.Handler("SWING_"..suffix, function(...)
 			-- XXX This uses WoW-specific functionality, but I don't know where
 			-- the underlying code should belong.
-			return CombatObjects.SetSharedEvent("SourceSpell", nil, "SWING", SCHOOL_MASK_PHYSICAL),
+			return CombatObjects.SetSharedEvent("SourceSpell", nil, "Melee Swing", SCHOOL_MASK_PHYSICAL),
 				func(...);
 		end);
 
