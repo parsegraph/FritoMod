@@ -20,19 +20,25 @@ end;
 function Suite:TestStartsWith()
 	Assert.True(Strings.StartsWith("ABC", "A"), "Strings that start with the given value must match");
 	Assert.True(Strings.StartsWith("A", "A"), "Whole match must still match");
+	Assert.True(Strings.StartsWith("A", {"B", "A"}), "Lists can be used for multiple options");
 	Assert.False(Strings.StartsWith("B", "A"), "Things that don't match return false");
 	Assert.False(Strings.StartsWith("", "A"), "Empty string must not cause chaos");
-	Assert.False(Strings.EndsWith("A", "[A]"), "Regular expressions must be interpreted as plaintext");
+	Assert.False(Strings.StartsWith("A", "[A]"), "Regular expressions must be interpreted as plaintext");
+	Assert.False(Strings.StartsWith("A", {"B", "C"}), "Things that don't match anything in the list must return false");
 	Assert.Exception("Empty matching string must violently crash", Strings.StartsWith, "A", "");
+	Assert.Exception("Empty matching string list must violently crash", Strings.StartsWith, "A", {});
 end;
 
 function Suite:TestEndsWith()
 	Assert.True(Strings.EndsWith("ABC", "C"), "Strings that end with the given value must match");
 	Assert.True(Strings.EndsWith("A", "A"), "Whole match must still match");
+	Assert.True(Strings.EndsWith("A", {"B", "A"}), "Lists can be used for multiple options");
 	Assert.False(Strings.EndsWith("B", "A"), "Things that don't match return false");
 	Assert.False(Strings.EndsWith("", "A"), "Empty string must not cause chaos");
 	Assert.False(Strings.EndsWith("A", "[A]"), "Regular expressions must be interpreted as plaintext");
+	Assert.False(Strings.EndsWith("A", {"B", "C"}), "Things that don't match anything in the list must return false");
 	Assert.Exception("Empty matching string must violently crash", Strings.EndsWith, "A", "");
+	Assert.Exception("Empty matching string list must violently crash", Strings.EndsWith, "A", {});
 end;
 
 function Suite:TestJoin()

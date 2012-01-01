@@ -112,16 +112,34 @@ function Strings.Snippet(str, first, last)
 	return str:sub(first, last);
 end;
 
-function Strings.StartsWith(str, match)
-	assert(type(match) == "string", "match must be a string, got: " .. type(match));
-	assert(#match > 0, "match must contain at least one character");
-	return match==str:sub(1, #match);
+function Strings.StartsWith(str, prefix)
+	if type(prefix)=="table" then
+		assert(#prefix > 0, "Prefix list must contain at least one value");
+		for i=1, #prefix do
+			if Strings.StartsWith(str, prefix[i]) then
+				return true;
+			end;
+		end;
+		return false;
+	end;
+	assert(type(prefix) == "string", "prefix must be a string, got: " .. type(prefix));
+	assert(#prefix > 0, "prefix must contain at least one character");
+	return prefix==str:sub(1, #prefix);
 end;
 
-function Strings.EndsWith(str, match)
-	assert(type(match) == "string", "match must be a string, got:" .. type(match));
-	assert(#match > 0, "match must contain at least one character");
-	return match==str:sub(#str-#match+1);
+function Strings.EndsWith(str, suffix)
+	if type(suffix)=="table" then
+		assert(#suffix > 0, "Suffix list must contain at least one value");
+		for i=1, #suffix do
+			if Strings.EndsWith(str, suffix[i]) then
+				return true;
+			end;
+		end;
+		return false;
+	end;
+	assert(type(suffix) == "string", "suffix must be a string, got:" .. type(suffix));
+	assert(#suffix > 0, "suffix must contain at least one character");
+	return suffix==str:sub(#str-#suffix+1);
 end;
 
 function Strings.Pretty(value)
