@@ -47,6 +47,26 @@ function Callbacks.CombatObjects(func, ...)
 	end);
 end;
 
+function Callbacks.CombatObjectEvent(targetEvent, func, ...)
+	func=Curry(func, ...);
+	return CombatEvents(function(timestamp, event, ...)
+		if type(targetEvent) == "table" then
+			for i=1, #targetEvent do
+				if event == targetEvent[i] then
+					func(Serializers.WriteCombatObjects(
+						timestamp,
+						event,
+						...));
+					return;
+				end;
+			end;
+			return;
+		elseif targetEvent == event then
+			func(Serializers.WriteCombatObjects(timestamp, event, ...));
+		end;
+	end);
+end;
+
 function Callbacks.SuffixedCombatObjects(suffix, func, ...)
 	func=Curry(func, ...);
 	return CombatEvents(function(timestamp, event, ...)
