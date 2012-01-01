@@ -2,12 +2,11 @@
 --[[
 
 Callbacks.MissObjects(function(when, event, source, target, spell, amount)
-	printf("%s avoided %d damage from %s's %s. (Reason: %s)",
-		target:Name(),
-		amount:Amount(),
-		source:Name(),
-		spell:Name(),
-		amount:Reason()
+	printf("%s avoided %s's %s. (%s)",
+		Colors.Colorize(target:ClassColor(), target:Name()),
+		Colors.Colorize(source:ClassColor(), source:Name()),
+		spell:Link(),
+		Strings.Properize(amount:Reason())
 	);
 end);
 
