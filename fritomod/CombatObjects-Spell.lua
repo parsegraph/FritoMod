@@ -88,3 +88,7 @@ CombatObjects.AddSharedEvent("SourceSpell", "Spell");
 CombatObjects.AddSharedEvent("VictimSpell", "Spell");
 
 CombatObjects.SimpleSuffixHandler("INTERRUPT", "VictimSpell");
+
+Callbacks.InterruptObjects = Curry(
+	Callbacks.SuffixedCombatObjects,
+	"INTERRUPT");
