@@ -170,46 +170,14 @@ end
 function CurryNamedFunction(obj, name, ...)
 	assert(obj, "obj is falsy");
 	assert(name, "name is falsy");
-	local numArgs = select("#", ...);
-	for i=1, numArgs do
-		assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
-	end;
-	local function GetFunc()
+	return CurryFunction(function(...)
 		local func = obj[name];
 		if func==nil then
 			error("Named function was not found. Name: " .. name);
 		end;
 		assert(IsCallable(func), "Named function is not callable.");
-		return func;
-	end;
-	if numArgs==0 then
-		return function(...)
-			return GetFunc()(...);
-		end;
-	elseif numArgs==1 then
-		local a1=...;
-		return function(...)
-			CheckForNils(...);
-			return GetFunc()(a1,...);
-		end;
-	elseif numArgs==2 then
-		local a1,a2=...;
-		return function(...)
-			CheckForNils(...);
-			return GetFunc()(a1,a2,...);
-		end;
-	elseif numArgs==3 then
-		local a1, a2, a3=...;
-		return function(...)
-			CheckForNils(...);
-			return GetFunc()(a1,a2,a3,...);
-		end;
-	else
-		local args = {...};
-		return function(...)
-			return Getfunc()(UnpackAll(args, {...}));
-		end;
-	end;
+		return func(...);
+	end, ...);
 end;
 
 -- Returns a partially applied method that, when invoked, calls a method on the specified
