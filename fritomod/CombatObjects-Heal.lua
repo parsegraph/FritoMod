@@ -56,6 +56,6 @@ end;
 
 CombatObjects.AddSharedEvent("Heal");
 
-CombatObjects.SimpleTypesHandler("HEAL", "Heal");
+CombatObjects.SimpleSuffixHandler("Heal");
 
 Callbacks.HealObjects = Curry(Callbacks.SuffixedCombatObjects, "_HEAL");

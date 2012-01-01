@@ -49,6 +49,6 @@ MissEvent.Reason = Headless("Type");
 
 CombatObjects.AddSharedEvent("Miss");
 
-CombatObjects.SimpleTypesHandler("MISSED", "Miss");
+CombatObjects.SimpleSuffixHandler("MISSED", "Miss");
 
 Callbacks.MissObjects = Curry(Callbacks.SuffixedCombatObjects, "_MISSED");

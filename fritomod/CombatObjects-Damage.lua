@@ -82,6 +82,6 @@ end;
 
 CombatObjects.AddSharedEvent("Damage");
 
-CombatObjects.SimpleTypesHandler("DAMAGE", "Damage");
+CombatObjects.SimpleSuffixHandler("Damage");
 
 Callbacks.DamageObjects = Curry(Callbacks.SuffixedCombatObjects, "_DAMAGE");

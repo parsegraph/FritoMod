@@ -35,8 +35,9 @@ end;
 do
 	local handlers={};
 
-	function CombatObjects.MagicTypesHandler(suffix, func, ...)
+	function CombatObjects.AllTypesHandler(suffix, func, ...)
 		func=Curry(func, ...);
+		CombatObjects.Handler("SWING_"..suffix, func);
 		CombatObjects.Handler("RANGE_"..suffix, func);
 		CombatObjects.Handler("SPELL_"..suffix, func);
 		CombatObjects.Handler("SPELL_PERIODIC_"..suffix, func);
@@ -44,29 +45,33 @@ do
 		CombatObjects.Handler("ENVIRONMENTAL"..suffix, func);
 	end;
 
-	function CombatObjects.AllTypesHandler(suffix, func, ...)
+	function CombatObjects.InvokedSuffixHandler(suffix, func, ...)
 		func=Curry(func, ...);
-		CombatObjects.Handler("SWING_"..suffix, func);
-		CombatObjects.MagicTypesHandler(suffix, func);
-	end;
-
-	function CombatObjects.SimpleTypesHandler(suffix, eventName)
 		CombatObjects.AllTypesHandler(suffix, function(...)
 			return CombatObjects.SetSharedEvent("Spell", ...),
-				CombatObjects.SetSharedEvent(eventName, select(4, ...));
+				func(select(4, ...));
 		end);
 
 		CombatObjects.Handler("SWING_"..suffix, function(...)
 			-- XXX This uses WoW-specific functionality, but I don't know where
 			-- the underlying code should belong.
 			return CombatObjects.SetSharedEvent("Spell", nil, "SWING", SCHOOL_MASK_PHYSICAL),
-				CombatObjects.SetSharedEvent(eventName, ...);
+				func(...);
 		end);
 
 		CombatObjects.Handler("ENVIRONMENTAL_"..suffix, function(envType, ...)
 			return CombatObjects.SetSharedEvent("Spell", nil, envType, SCHOOL_MASK_PHYSICAL),
-				CombatObjects.SetSharedEvent(eventName, ...);
+				func(...);
 		end);
+	end;
+
+	function CombatObjects.SimpleSuffixHandler(suffix, eventName)
+		if not eventName then
+			eventName=suffix:upper();
+			suffix, eventName = eventName, suffix;
+		end;
+		CombatObjects.InvokedSuffixHandler(suffix,
+			CombatObjects.SetSharedEvent, eventName);
 	end;
 
 	function CombatObjects.Handler(name, func, ...)

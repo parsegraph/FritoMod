@@ -66,7 +66,7 @@ AmountEvent.Mitigation = Headless("Reduction");
 CombatObjects.AddSharedEvent("Power", "Amount");
 CombatObjects.AddSharedEvent("Leeched", "Amount");
 
-CombatObjects.SimpleTypesHandler("ENERGIZE", "Amount");
+CombatObjects.SimpleSuffixHandler("ENERGIZE", "Amount");
 
 Callbacks.PowerObjects = Curry(Callbacks.SuffixedCombatObjects, {
 	"_ENERGIZE",
