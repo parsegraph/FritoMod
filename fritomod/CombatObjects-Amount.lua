@@ -65,7 +65,24 @@ AmountEvent.Mitigation = Headless("Reduction");
 CombatObjects.AddSharedEvent("Power", "Amount");
 CombatObjects.AddSharedEvent("Leeched", "Amount");
 
-CombatObjects.SimpleSuffixHandler("ENERGIZE", "Amount");
+CombatObjects.InvokedSuffixHandler("ENERGIZE", function(gainedAmount, powerType, alternatePowerType)
+	if powerType == SPELL_POWER_ALTERNATE_POWER then
+		powerType = select(12, GetAlternatePowerInfoByID(alternatePowerType));
+	end;
+	CombatObjects.SetSharedEvent("Power", powerType, gainedAmount);
+end);
+
+CombatObjects.InvokedSuffixHandler("DRAIN", function(drainedAmount, drainType, leechedAmount, alternateType)
+	-- I'm assuming the leeched amount is described in the leechedAmount variable.
+	return CombatObjects.SetSharedEvent("Power", drainType, drainedAmount),
+		CombatObjects.SetSharedEvent("Leeched", drainType, leechedAmount);
+end);
+
+CombatObjects.InvokedSuffixHandler("LEECH", function(drainedAmount, drainType, leechedAmount, alternateType)
+	-- I'm assuming the leeched amount is described in the leechedAmount variable.
+	return CombatObjects.SetSharedEvent("Power", drainType, drainedAmount),
+		CombatObjects.SetSharedEvent("Leeched", drainType, leechedAmount);
+end);
 
 Callbacks.PowerObjects = Curry(Callbacks.SuffixedCombatObjects, {
 	"_ENERGIZE",
