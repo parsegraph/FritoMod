@@ -2,10 +2,11 @@
 --[[
 
 Callbacks.DamageObjects(function(when, event, source, target, spell, damage)
-	printf("%s damaged %s for %d damage.",
-		source:Name(),
-		target:Name(),
-		damage:Amount()
+	printf("%s damaged %s with %s for %s.",
+		Colors.ColorMessage(source:ClassColor(), source:Name()),
+		Colors.ColorMessage(target:ClassColor(), target:Name()),
+		spell:Link(),
+		Colors.ColorMessage(damage:TypeColor(), ("%s %s"):format(damage:Amount(), damage:TypeName()))
 	);
 end);
 
