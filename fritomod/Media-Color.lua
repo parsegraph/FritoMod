@@ -91,6 +91,26 @@ end;
 colors.default=colors.white;
 Media.color(colors);
 
+do
+	local schoolColors;
+	Media.color(function(name)
+		if type(name) ~= "string" then
+			return;
+		end;
+		if not COMBATLOG_DEFAULT_COLORS then
+			return;
+		end;
+		if not schoolColors then
+			schoolColors = {};
+			for school, schoolColor in pairs(COMBATLOG_DEFAULT_COLORS.schoolColoring) do
+				schoolColors[CombatLog_String_SchoolString(school):lower()] =
+					BreakColorTable(schoolColor);
+			end;
+		end;
+		return schoolColors[name:lower()];
+	end);
+end;
+
 Media.color(function(grayShade)
 	if tonumber(grayShade) then
 		grayShade=tonumber(grayShade);
