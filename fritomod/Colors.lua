@@ -23,10 +23,20 @@ function Colors.ColorMessage(color, message)
 		end;
 	end;
 	if type(color) == "table" then
-		color = Chat:GetColorString(color);
+		color = Colors.PackHex(color[1], color[2], color[3]);
+		if color[4] then
+			color = Colors.ConvertOneHex(color[4]);
+		else
+			color = "ff"..color;
+		end;
 	end;
-	if #color ~= 8 or not string.find(color, "^[0-9a-fA-F]+$") then
+	if not string.find(color, "^[0-9a-fA-F]+$") then
 		error(("Color is invalid: '%s'"):format(color));
+	end;
+	if #color == 6 then
+		color = "ff"..color;
+	else
+		assert(#color == 8, "Color length is invalid: "..#color);
 	end;
 	return "|c" .. color .. message .. "|r";
 end;
@@ -35,13 +45,15 @@ function Colors.PackHex(colorParts, ...)
 	if select("#", ...) > 0 then
 		colorParts = { colorParts, ... };
 	end;
-	return Strings.JoinArray("", Lists.Map(colorParts, function(colorPart)
-		local hexColor = ConvertToBase(16, math.floor(colorValue * 255));
-		while #hexColor < 2 do
-			hexColor = "0" .. hexColor;
-		end;
-		return hexColor;
-	end));
+	return Strings.JoinArray("", Lists.Map(colorParts, Colors.ConvertOneHex));
+end;
+
+function Colors.ConvertOneHex(colorPart)
+	local hexColor = Strings.ConvertToBase(16, math.floor(colorPart * 255));
+	while #hexColor < 2 do
+		hexColor = "0" .. hexColor;
+	end;
+	return hexColor;
 end;
 
 -- Unpacks the specified colorValue into its color value parts.

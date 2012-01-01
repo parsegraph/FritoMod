@@ -137,7 +137,7 @@ function Suite:TestConvertToBase()
 	Assert.Equals("1111", c(2, 15), "15, base 2");
 	Assert.Equals("100", c(16, 256), "256, base 16");
 	Assert.Equals("-100", c(16, -256), "-256, base 16");
-	Assert.Equals("FF", c(16, 255), "255, base 16");
+	Assert.Equals("ff", c(16, 255), "255, base 16");
 end;
 
 function Suite:TestJoinValues()

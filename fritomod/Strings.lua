@@ -32,7 +32,7 @@ function Strings.KeyIterator(str)
 end;
 
 Strings.DIGITS = "0123456789"
-Strings.ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+Strings.ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 Strings.ALPHANUMERICS = Strings.DIGITS .. Strings.ALPHABET;
 
 function Strings.Matches(str, pattern)
