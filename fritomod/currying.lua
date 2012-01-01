@@ -208,59 +208,23 @@ end;
 -- throws
 --	 if any curried or passed arguments are nil
 function CurryMethod(object, func, ...)
-	if not object then
-		error("object is falsy");
-	end;
-	if not func then
-		error("func is falsy");
-	end;
+	assert(object, "object must not be falsy during currying");
+	assert(func, "func must not be falsy during currying");
 	if type(object) ~= "table" and type(object) ~= "userdata" then
 		error(("object is not a table. Received type: %s"):format(type(object)));
 	end;
-	local numArgs = select("#", ...);
-	for i=1, numArgs do
-		assert(nil ~= select(i, ...), ("Argument #%d must not be nil"):format(i));
-	end;
-	local args = { ... };
 	if IsCallable(func) then
 		return CurryFunction(func, object, ...);
 	elseif type(func) == "string" then
 		local name=func;
-		local function GetFunc()
+		return CurryFunction(function(...)
 			local func=object[name];
 			if func==nil then
 				error("Named function was not found. Name: " .. name);
 			end;
 			assert(IsCallable(func), "Named function is not callable.");
-			return func;
-		end;
-		if numArgs==0 then
-			return function(...)
-				return GetFunc()(object,...);
-			end;
-		elseif numArgs==1 then
-			local a1=...;
-			return function(...)
-				CheckForNils(...);
-				return GetFunc()(object,a1,...);
-			end;
-		elseif numArgs==2 then
-			local a1,a2=...;
-			return function(...)
-				CheckForNils(...);
-				return GetFunc()(object,a1,a2,...);
-			end;
-		elseif numArgs==3 then
-			local a1,a2,a3=...;
-			return function(...)
-				CheckForNils(...);
-				return GetFunc()(object,a1,a2,a3,...);
-			end;
-		else
-			return function(...)
-				return GetFunc()(object, UnpackAll(args, {...}));
-			end;
-		end;
+			return func(object, ...);
+		end, ...);
 	end;
 	error("func is not callable and is not a string. Received type: " .. type(func));
 end
