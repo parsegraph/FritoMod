@@ -42,4 +42,7 @@ function SpellEvent:SchoolName()
 	return CombatLog_String_SchoolString(self:School());
 end;
 
-CombatObjects.AddSharedEvent("Spell");
+CombatObjects.AddSharedEvent("SourceSpell", "Spell");
+CombatObjects.AddSharedEvent("VictimSpell", "Spell");
+
+CombatObjects.SimpleSuffixHandler("INTERRUPT", "VictimSpell");

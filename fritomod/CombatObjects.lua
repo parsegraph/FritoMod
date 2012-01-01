@@ -49,19 +49,19 @@ do
 	function CombatObjects.InvokedSuffixHandler(suffix, func, ...)
 		func=Curry(func, ...);
 		CombatObjects.AllTypesHandler(suffix, function(...)
-			return CombatObjects.SetSharedEvent("Spell", ...),
+			return CombatObjects.SetSharedEvent("SourceSpell", ...),
 				func(select(4, ...));
 		end);
 
 		CombatObjects.Handler("SWING_"..suffix, function(...)
 			-- XXX This uses WoW-specific functionality, but I don't know where
 			-- the underlying code should belong.
-			return CombatObjects.SetSharedEvent("Spell", nil, "SWING", SCHOOL_MASK_PHYSICAL),
+			return CombatObjects.SetSharedEvent("SourceSpell", nil, "SWING", SCHOOL_MASK_PHYSICAL),
 				func(...);
 		end);
 
 		CombatObjects.Handler("ENVIRONMENTAL_"..suffix, function(envType, ...)
-			return CombatObjects.SetSharedEvent("Spell", nil, envType, SCHOOL_MASK_PHYSICAL),
+			return CombatObjects.SetSharedEvent("SourceSpell", nil, envType, SCHOOL_MASK_PHYSICAL),
 				func(...);
 		end);
 	end;
