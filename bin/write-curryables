@@ -1,0 +1,29 @@
+#!/usr/bin/lua
+
+template = [[
+	elseif numArgs == %d then
+		local %s=...;
+		return function(...)
+			return func(%s, ...);
+		end;]];
+
+function WriteArgLine(count, indent)
+	assert(count >= 1, "count must be at least 1");
+	local argline = "a1";
+	for i=2, count do
+		if i % 10 == 0 and count - i > 0 then
+			argline=argline..",\n"..("\t"):rep(indent);
+		else
+			argline=argline..", ";
+		end;
+		argline=argline.."a"..i;
+	end;
+	return argline;
+end;
+
+MAX_ARGS = 40;
+for i=1, MAX_ARGS do	
+	print(template:format(i,
+		WriteArgLine(i, 3),
+		WriteArgLine(i, 4)));
+end;

@@ -43,16 +43,25 @@ function Suite:TestCurryDoesntCurryPlainFunctions()
 	Assert.Equals(Do, Curry(Do), "Curry doesn't needlessly curry functions");
 end;
 
-function Suite:TestCurryRejectsCurriedNilValues()
-	local function Do(x, y)
-		return x + y;
-	end;
-	Assert.Exception("Curry rejects curried nil values", Curry, Do, nil, 2);
+function Suite:TestCurryHandlesCurriedNilValuesInNormalSituations()
+	local c = Curry(Sum, 1, nil, 2);
+	Assert.Equals(6, c(3));
+	local c = Curry(Sum, nil, 1, 2);
+	Assert.Equals(6, c(3));
+	local c = Curry(Sum, nil, 1, 2);
+	Assert.Equals(6, c(3));
 end;
 
 function Suite:TestCurryRejectsPassedNilValues()
-	local curried = Curry(Sum, 2);
-	Assert.Exception("Curry rejects passed nil values", curried, nil, 3);
+	local c = Curry(Sum, 1, 2);
+	Assert.Equals(15, c(3,4,5));
+	Assert.Equals(12, c(nil,4,5));
+	Assert.Equals(11, c(3,nil,5));
+	Assert.Equals(10, c(3,4,nil));
+end;
+
+function Suite:TestCurryRejectsNilsWhenPassedAnExtraordinaryAmountOfArgs()
+
 end;
 
 function Suite:TestForcedSeal()
@@ -66,7 +75,6 @@ function Suite:TestForcedSeal()
 
 	Assert.Exception("Sealed function rejects nil arguments", sealed, nil);
 	Assert.Exception("Sealed function rejects intermediate nil arguments", sealed, 1, nil, 3);
-	Assert.Exception("ForcedSeal rejects nil arguments", ForcedSeal, Sniff, nil);
 end;
 
 function Suite:TestForcedFunctionOnNoop()
