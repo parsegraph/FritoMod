@@ -84,4 +84,11 @@ CombatObjects.AddSharedEvent("Damage");
 
 CombatObjects.SimpleSuffixHandler("Damage");
 
-Callbacks.DamageObjects = Curry(Callbacks.SuffixedCombatObjects, "_DAMAGE");
+CombatObjects.AliasHandler("DAMAGE_SHIELD", "SPELL_DAMAGE");
+CombatObjects.AliasHandler("DAMAGE_SPLIT", "SPELL_DAMAGE");
+
+Callbacks.DamageObjects = Curry(Callbacks.SuffixedCombatObjects, {
+	"_DAMAGE",
+	"DAMAGE_SHIELD",
+	"DAMAGE_SHIELD_MISSED",
+	"DAMAGE_SPLIT"});

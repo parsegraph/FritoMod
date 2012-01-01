@@ -40,9 +40,27 @@ end;
 
 CombatObjects.AddSharedEvent("Buff");
 
-CombatObjects.SimpleSuffixHandler("DISPEL", "Buff");
-CombatObjects.SimpleSuffixHandler("DISPEL_FAILED", "Buff");
-CombatObjects.SimpleSuffixHandler("STOLEN", "Buff");
+CombatObjects.SimpleSuffixHandler({
+	"DISPEL",
+	"DISPEL_FAILED",
+	"STOLEN",
+	"AURA_BROKEN_SPELL"},
+	"Buff");
+
+CombatObjects.SpellTypesHandler({
+	"AURA_APPLIED",
+	"AURA_REMOVED",
+	"AURA_REFRESH",
+	"AURA_BROKEN"},
+	"Buff");
+
+CombatObjects.SpellTypesHandler({
+	"AURA_APPLIED_DOSE",
+	"AURA_REMOVED_DOSE"},
+	function(...)
+		return CombatObjects.SetSharedEvent("Buff", ...),
+			select(5, ...);
+	end);
 
 Callbacks.BuffObjects = Curry(
 	Callbacks.SuffixedCombatObjects, {

@@ -49,5 +49,6 @@ MissEvent.Reason = Headless("Type");
 CombatObjects.AddSharedEvent("Miss");
 
 CombatObjects.SimpleSuffixHandler("MISSED", "Miss");
+CombatObjects.AliasHandler("DAMAGE_SHIELD_MISSED", "SPELL_MISSED");
 
 Callbacks.MissObjects = Curry(Callbacks.SuffixedCombatObjects, "_MISSED");

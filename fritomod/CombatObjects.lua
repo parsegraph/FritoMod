@@ -36,18 +36,55 @@ end;
 do
 	local handlers={};
 
-	function CombatObjects.AllTypesHandler(suffix, func, ...)
-		func=Curry(func, ...);
-		CombatObjects.Handler("SWING_"..suffix, func);
-		CombatObjects.Handler("RANGE_"..suffix, func);
+	function CombatObjects.SpellTypesHandler(suffix, func, ...)
+		if not func and select("#", ...) == 0 then
+			func=Curry(CombatObjects.SetSharedEvent, suffix);
+			suffix=suffix:upper();
+		elseif type(func) == "string" and select("#", ...) == 0 then
+			func=Curry(CombatObjects.SetSharedEvent, func);
+		else
+			func=Curry(func, ...);
+		end;
+		if type(suffix)=="table" then
+			for i=1, #suffix do
+				CombatObjects.SpellTypesHandler(suffix[i], func);
+			end;
+			return;
+		end;
 		CombatObjects.Handler("SPELL_"..suffix, func);
 		CombatObjects.Handler("SPELL_PERIODIC_"..suffix, func);
 		CombatObjects.Handler("SPELL_BUILDING_"..suffix, func);
-		CombatObjects.Handler("ENVIRONMENTAL"..suffix, func);
 	end;
 
-	function CombatObjects.InvokedSuffixHandler(suffix, func, ...)
+	function CombatObjects.AllTypesHandler(suffix, func, ...)
 		func=Curry(func, ...);
+		if type(suffix)=="table" then
+			for i=1, #suffix do
+				CombatObjects.AllTypesHandler(suffix[i], func);
+			end;
+			return;
+		end;
+		CombatObjects.Handler("SWING_"..suffix, func);
+		CombatObjects.Handler("RANGE_"..suffix, func);
+		CombatObjects.Handler("ENVIRONMENTAL"..suffix, func);
+		CombatObjects.SpellTypesHandler(suffix, func);
+	end;
+
+	function CombatObjects.SimpleSuffixHandler(suffix, func, ...)
+		if not func and select("#", ...) == 0 then
+			func=Curry(CombatObjects.SetSharedEvent, suffix);
+			suffix=suffix:upper();
+		elseif type(func) == "string" and select("#", ...) == 0 then
+			func=Curry(CombatObjects.SetSharedEvent, func);
+		else
+			func=Curry(func, ...);
+		end;
+		if type(suffix)=="table" then
+			for i=1, #suffix do
+				CombatObjects.SimpleSuffixHandler(suffix[i], func);
+			end;
+			return;
+		end;
 		CombatObjects.AllTypesHandler(suffix, function(...)
 			return CombatObjects.SetSharedEvent("SourceSpell", ...),
 				func(select(4, ...));
@@ -66,18 +103,25 @@ do
 		end);
 	end;
 
-	function CombatObjects.SimpleSuffixHandler(suffix, eventName)
-		if not eventName then
-			eventName=suffix:upper();
-			suffix, eventName = eventName, suffix;
+	function CombatObjects.NakedSuffixHandler(suffix)
+		if type(suffix)=="table" then
+			for i=1, #suffix do
+				CombatObjects.SimpleSuffixHandler(suffix[i], func);
+			end;
+			return;
 		end;
-		CombatObjects.InvokedSuffixHandler(suffix,
-			CombatObjects.SetSharedEvent, eventName);
+		CombatObjects.SimpleSuffixHandler(suffix, Functions.Return);
 	end;
 
 	function CombatObjects.Handler(name, func, ...)
 		func=Curry(func, ...);
 		handlers[name] = func;
+	end;
+
+	function CombatObjects.AliasHandler(name, aliasedName)
+		CombatObjects.Handler(
+			name,
+			assert(handlers[aliasedName], "No handler for name: "..aliasedName));
 	end;
 
 	function CombatObjects.Handle(event, ...)
@@ -91,3 +135,12 @@ do
 	end;
 end;
 
+CombatObjects.NakedSuffixHandler("EXTRA_ATTACKS");
+CombatObjects.NakedSuffixHandler("CAST_START");
+CombatObjects.NakedSuffixHandler("CAST_SUCCESS");
+CombatObjects.NakedSuffixHandler("CAST_FAILED");
+CombatObjects.NakedSuffixHandler("INSTAKILL");
+CombatObjects.NakedSuffixHandler("DURABILITY_DAMAGE");
+CombatObjects.NakedSuffixHandler("DURABILITY_DAMAGE_ALL");
+CombatObjects.NakedSuffixHandler("CREATE");
+CombatObjects.NakedSuffixHandler("SUMMON");
