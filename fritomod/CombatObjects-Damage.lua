@@ -48,6 +48,14 @@ DamageEvent.Mitigation = Headless("Reduction");
 
 DamageEvent.Overkill = DamageEvent.Excess;
 
+function DamageEvent:TypeName()
+	return CombatLog_String_SchoolString(self:Type());
+end;
+
+function DamageEvent:TypeColor()
+	return Media.color[self:TypeName()];
+end;
+
 function DamageEvent:Resisted()
 	if self.resisted == nil then
 		return 0;

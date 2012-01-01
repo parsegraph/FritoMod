@@ -31,9 +31,14 @@ function TargetEvent:GUID()
 	return self.guid or 0;
 end;
 TargetEvent.Guid = TargetEvent.GUID;
+TargetEvent.ID= TargetEvent.GUID;
+TargetEvent.Id= TargetEvent.GUID;
 
 function TargetEvent:Name()
-	return self.name or "(Unknown)";
+	if not self.name then
+		self.name = GetPlayerInfoByGUID(6, self:GUID());
+	end;
+	return self.name or "Unknown";
 end;
 
 function TargetEvent:Flags()
@@ -42,6 +47,24 @@ end;
 
 function TargetEvent:RaidFlags()
 	return self.raidFlags;
+end;
+
+local function PlayerInfo(num)
+	return function(self)
+		local value = select(num, GetPlayerInfoByGUID(self:GUID()));
+		return value;
+	end;
+end;
+
+TargetEvent.Class = PlayerInfo(2);
+TargetEvent.ClassName = PlayerInfo(1);
+TargetEvent.Race = PlayerInfo(4);
+TargetEvent.RaceName = PlayerInfo(3);
+TargetEvent.Gender = PlayerInfo(5);
+TargetEvent.Realm = PlayerInfo(7);
+
+function TargetEvent:ClassColor()
+	return Media.color[self:Class()];
 end;
 
 CombatObjects.AddSharedEvent("Source", "Target");
