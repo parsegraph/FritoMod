@@ -76,3 +76,57 @@ function Callbacks.SuffixedCombatObjects(suffix, func, ...)
 		func(Serializers.WriteCombatObjects(timestamp, event, ...));
 	end);
 end;
+
+CombatObjects.NakedSuffixHandler("EXTRA_ATTACKS");
+
+CombatObjects.NakedSuffixHandler("RESURRECT");
+Callbacks.ResurrectObjects = Curry(
+	Callbacks.SuffixedCombatObjects,
+	"RESURRECT");
+
+CombatObjects.NakedSuffixHandler("CREATE");
+CombatObjects.NakedSuffixHandler("SUMMON");
+
+Callbacks.SummonObjects = Curry(
+	Callbacks.SuffixedCombatObjects, {
+		"CREATE",
+		"SUMMON"});
+
+CombatObjects.NakedSuffixHandler({
+	"INSTAKILL",
+	"DISSIPATES"});
+CombatObjects.NakedHandler({
+	"UNIT_DIED",
+	"UNIT_DESTROYED",
+	"PARTY_KILL"});
+
+Callbacks.DeathObjects = Curry(
+	Callbacks.SuffixedCombatObjects, {
+		"UNIT_DIED",
+		"UNIT_DESTROYED",
+		"PARTY_KILL",
+		"INSTAKILL",
+		"DISSIPATES"
+	});
+
+local castObjects = {
+	"CAST_START",
+	"CAST_SUCCESS",
+	"CAST_FAILED"
+};
+CombatObjects.NakedSuffixHandler(castObjects);
+
+Callbacks.CastObjects = Curry(
+	Callbacks.SuffixedCombatObjects,
+	castObjects);
+
+local durabilityObjects = {
+	"DURABILITY_DAMAGE",
+	"DURABILITY_DAMAGE_ALL",
+};
+CombatObjects.NakedSuffixHandler(durabilityObjects);
+
+Callbacks.DurabilityObjects = Curry(
+	Callbacks.SuffixedCombatObjects,
+	durabilityObjects);
+

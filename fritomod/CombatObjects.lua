@@ -144,13 +144,3 @@ do
 		end;
 	end;
 end;
-
-CombatObjects.NakedSuffixHandler("EXTRA_ATTACKS");
-CombatObjects.NakedSuffixHandler("CAST_START");
-CombatObjects.NakedSuffixHandler("CAST_SUCCESS");
-CombatObjects.NakedSuffixHandler("CAST_FAILED");
-CombatObjects.NakedSuffixHandler("INSTAKILL");
-CombatObjects.NakedSuffixHandler("DURABILITY_DAMAGE");
-CombatObjects.NakedSuffixHandler("DURABILITY_DAMAGE_ALL");
-CombatObjects.NakedSuffixHandler("CREATE");
-CombatObjects.NakedSuffixHandler("SUMMON");

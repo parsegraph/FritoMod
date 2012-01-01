@@ -40,30 +40,47 @@ end;
 
 CombatObjects.AddSharedEvent("Buff");
 
-CombatObjects.SimpleSuffixHandler({
+local dispelObjects = {
 	"DISPEL",
 	"DISPEL_FAILED",
 	"STOLEN",
-	"AURA_BROKEN_SPELL"},
-	"Buff");
+	"AURA_BROKEN_SPELL"
+};
 
-CombatObjects.SpellTypesHandler({
+CombatObjects.SimpleSuffixHandler(dispelObjects, "Buff");
+
+Callbacks.DispelObjects = Curry(
+	Callbacks.SuffixedCombatObjects,
+	dispelObjects);
+
+local buffObjects = {
 	"AURA_APPLIED",
 	"AURA_REMOVED",
 	"AURA_REFRESH",
-	"AURA_BROKEN"},
-	"Buff");
+	"AURA_BROKEN"
+};
 
-CombatObjects.SpellTypesHandler({
+CombatObjects.SpellTypesHandler(buffObjects, "Buff");
+
+Callbacks.BuffObjects = Curry(
+	Callbacks.SuffixedCombatObjects,
+	buffObjects);
+Callbacks.AuraObjects=Callbacks.BuffObjects;
+
+local buffDoseObjects = {
 	"AURA_APPLIED_DOSE",
-	"AURA_REMOVED_DOSE"},
+	"AURA_REMOVED_DOSE"
+};
+
+CombatObjects.SpellTypesHandler(
+	buffDoseObjects,
 	function(...)
 		return CombatObjects.SetSharedEvent("Buff", ...),
 			select(5, ...);
 	end);
 
-Callbacks.BuffObjects = Curry(
-	Callbacks.SuffixedCombatObjects, {
-	"_DISPEL",
-	"_DISPEL_FAILED",
-	"_STOLEN"});
+Callbacks.BuffDoseObjects = Curry(
+	Callbacks.SuffixedCombatObjects,
+	buffDoseObjects);
+Callbacks.AuraDoseObjects=Callbacks.BuffDoseObjects;
+
