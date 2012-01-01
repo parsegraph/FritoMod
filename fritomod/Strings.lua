@@ -191,6 +191,7 @@ function Strings.PrettyNamedNumber(number, itemName, pluralName)
 	end;
 	return ("%s %s"):format(numberString, pluralName);
 end;
+Strings.Pluralize = Strings.PrettyNamedNumber;
 
 function Strings.PrettyList(value)
 	assert(type(value) == "table", "value is not a table. Type: " .. type(value));
@@ -329,6 +330,7 @@ function Strings.ProperNounize(word)
 	word = tostring(word);
 	return string.upper(string.sub(word, 1, 1)) .. string.lower(string.sub(word, 2));
 end;
+Strings.Properize=Strings.ProperNounize;
 
 function Strings.ConvertToBase(base, number, digits)
 	digits = digits or Strings.ALPHANUMERICS;

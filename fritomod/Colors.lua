@@ -40,6 +40,7 @@ function Colors.ColorMessage(color, message)
 	end;
 	return "|c" .. color .. message .. "|r";
 end;
+Colors.Colorize=Colors.ColorMessage;
 
 function Colors.PackHex(colorParts, ...)
 	if select("#", ...) > 0 then
