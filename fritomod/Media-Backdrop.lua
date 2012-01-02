@@ -73,7 +73,7 @@ backdrops.tooltip={
 	edgeSize = 16,
 	tile=true,
 	tileSize=16,
-	insets = insets[5]
+	insets = insets[4]
 };
 backdrops.default=backdrops.tooltip;
 
