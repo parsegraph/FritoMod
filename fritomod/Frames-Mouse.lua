@@ -248,6 +248,7 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
 end;
 
 function Frames.ThresholdDraggable(f, threshold, first, ...)
+	f=Frames.GetFrame(f);
 	local conditional;
 	if type(first)=="function" or type(first)=="table" then
 		conditional=Curry(first, ...);
@@ -281,6 +282,7 @@ function Frames.InstantDraggable(f, ...)
 end;
 
 function Frames.Draggable(f, ...)
+	f=Frames.GetFrame(f);
 	-- Type is dumb, so we have to include "or nil"
 	if type(select(1, ...) or nil)=="number" then
 		return Frames.ThresholdDraggable(f, ...);

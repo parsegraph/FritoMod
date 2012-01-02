@@ -23,6 +23,8 @@ local function GetAnchorArguments(frame, ...)
 	anchor=anchor:lower();
 	if ref == nil then
 		ref=frame:GetParent();
+	else
+		ref=Frames.GetFrame(ref);
 	end;
 	return anchor, ref, x, y;
 end;
@@ -53,6 +55,7 @@ local function FlipAnchor(name, reverses, signs, defaultSigns)
 	Anchors[name.."Gap"] = Gap;
 
 	local function Flip(frame, ...)
+		frame=Frames.GetFrame(frame);
 		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 		frame:SetPoint(reverses[anchor], ref, anchor, Gap(anchor, x, y));
 	end
@@ -304,6 +307,7 @@ Anchors.FlipRight=Anchors.HFlipRight;
 
 -- frame shares ref's anchor
 function Anchors.Share(frame, ...)
+	frame=Frames.GetFrame(frame);
 	local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 	local insets=Frames.Insets(ref);
 	if insets.top > 0 and anchor:find("^top") then
@@ -342,6 +346,8 @@ function Anchors.ShareAll(frame, ref, x, y)
 end;
 
 function Anchors.Center(frame, ref)
+	frame=Frames.GetFrame(frame);
+	ref=Frames.GetFrame(ref);
 	anchor=anchor or "center";
 	frame:SetPoint(anchor, ref, "center");
 end;

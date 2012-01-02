@@ -10,10 +10,28 @@ end;
 Frames=Frames or {};
 
 function Frames.IsFrame(frame)
-	return frame and type(frame)=="table" and type(frame.GetObjectType)=="function";
+	return frame and
+		type(frame)=="table" and
+		type(frame.GetObjectType)=="function" and
+		type(frame.SetPoint)=="function";
+end;
+
+function Frames.GetFrame(frame)
+	if Frames.IsFrame(frame) then
+		return frame;
+	end;
+	if type(frame)=="string" then
+		return Frames.GetFrame(_G[frame]);
+	end;
+	assert(type(frame)=="table", "Frame must be a table.");
+	if frame.Frame then
+		return Frames.GetFrame(frame:Frame());
+	end;
+	return Frames.GetFrame(frame.frame);
 end;
 
 function Frames.Inject(frame)
+	frame=Frames.GetFrame(frame);
 	if Frames.IsInjected(frame) then
 		return;
 	end;
@@ -41,6 +59,7 @@ local function CallOriginal(frame, name, ...)
 end;
 
 function Frames.Child(frame, t, name, ...)
+	frame=Frames.GetFrame(frame);
 	local child=CreateFrame(t, name, frame, ...);
 	if Frames.IsInjected(frame) then
 		Frames.Inject(child);
@@ -55,6 +74,7 @@ end;
 Frames.Squared=Frames.Square;
 
 function Frames.DumpPoints(f)
+	f=Frames.GetFrame(f);
 	for i=1,f:GetNumPoints() do
 		print(f:GetPoint(i));
 	end;
@@ -65,6 +85,7 @@ function Frames.Rectangle(f, w, h)
 	if h==nil then
 		return Frames.Square(f, w);
 	end;
+	f=Frames.GetFrame(f);
 	f:SetWidth(w);
 	f:SetHeight(h);
 end;
@@ -79,6 +100,7 @@ local INSETS_ZERO={
 	right=0
 };
 function Frames.Insets(f)
+	f=Frames.GetFrame(f);
 	if f.GetBackdrop then
 		local b=f:GetBackdrop();
 		if b then
@@ -117,6 +139,8 @@ do
 	end;
 
 	function Frames.IsInsetted(f, ref)
+		f=Frames.GetFrame(f);
+		ref=Frames.GetFrame(ref);
 		local insets=Frames.Insets(ref);
 		local matchDistance = 0;
 		if f:GetNumPoints() < 2 then
@@ -155,6 +179,8 @@ do
 	end;
 
 	function Frames.AdjustInsets(f, ref, oldInsets)
+		f=Frames.GetFrame(f);
+		ref=Frames.GetFrame(ref);
 		local newInsets = Frames.Insets(ref);
 		local diffs;
 		if oldInsets then
@@ -181,22 +207,26 @@ end;
 -- You don't need to use this function: we have it here when we use
 -- Frames as a headless table.
 function Frames.Alpha(f, alpha)
+	f=Frames.GetFrame(f);
 	f:SetAlpha(alpha);
 end;
 Frames.Opacity=Frames.Alpha;
 Frames.Visibility=Frames.Alpha;
 
 function Frames.Show(f)
+	f=Frames.GetFrame(f);
 	CallOriginal(f, "Show");
 	return Functions.OnlyOnce(CallOriginal, f, "Hide");
 end;
 
 function Frames.Hide(f)
+	f=Frames.GetFrame(f);
 	CallOriginal(f, "Hide");
 	return Functions.OnlyOnce(CallOriginal, f, "Show");
 end;
 
 function Frames.ToggleShowing(f)
+	f=Frames.GetFrame(f);
 	if f:IsVisible() then
 		f:Hide();
 	else
@@ -211,6 +241,7 @@ Frames.ToggleHide=Frames.ToggleShowing;
 Frames.ToggleHidden=Frames.ToggleShowing;
 
 function Frames.Destroy(f)
+	f=Frames.GetFrame(f);
 	f:Hide();
 	f:ClearAllPoints();
 	f:SetParent(nil);
