@@ -41,6 +41,10 @@ function TargetEvent:Name()
 	return self.name or "Unknown";
 end;
 
+function TargetEvent:IsPlayer()
+	return UnitIsUnit(self:Name(), "player");
+end;
+
 function TargetEvent:Flags()
 	return self.flags;
 end;
