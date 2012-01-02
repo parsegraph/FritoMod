@@ -83,7 +83,7 @@ end;
 -- Sets the dimensions for the specified frame.
 function Frames.Rectangle(f, w, h)
 	if h==nil then
-		return Frames.Square(f, w);
+		h=w;
 	end;
 	f=Frames.GetFrame(f);
 	f:SetWidth(w);
