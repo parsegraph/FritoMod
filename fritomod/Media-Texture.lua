@@ -1,5 +1,6 @@
 if nil ~= require then
 	require "fritomod/Media";
+	require "fritomod/Tables";
 end;
 
 local textures={};
@@ -23,6 +24,33 @@ Media.texture(function(obj)
 		end;
 	end;
 end);
+
+do
+	local classTextures;
+	Media.texture(function(targetClass)
+		if type(targetClass) ~= "string" then
+			return;
+		end;
+		if not classTextures then
+			classTextures={};
+			local name = "Interface/Glues/CharacterCreate/UI-CharacterCreate-Classes";
+			for class, coords in pairs(CLASS_ICON_TCOORDS) do
+				coords = Tables.Clone(coords);
+				classTextures[class] = {
+					name = name,
+					coords = coords
+				};
+				local borderAdjustment = 4/256;
+				coords[1] = coords[1] + borderAdjustment; -- Left border
+				coords[2] = coords[2] - borderAdjustment; -- Right border
+				coords[3] = coords[3] + borderAdjustment; -- Top border
+				coords[4] = coords[4] - borderAdjustment; -- Bottom border
+			end;
+		end;
+		targetClass=targetClass:upper();
+		return classTextures[targetClass];
+	end);
+end;
 
 do
 	local coords = {12/64, 51/64, 12/64, 51/64};
