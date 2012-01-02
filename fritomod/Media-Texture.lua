@@ -13,6 +13,17 @@ textures.chat   ="Interface/Tooltips/ChatBubble-Background";
 
 Media.texture(textures);
 
+Media.texture(function(obj)
+	if type(obj) == "table" then
+		if obj.Texture then
+			return obj:Texture();
+		end;
+		if obj.Icon then
+			return obj:Icon();
+		end;
+	end;
+end);
+
 do
 	local coords = {12/64, 51/64, 12/64, 51/64};
 
