@@ -54,6 +54,7 @@ function SpellEvent:Icon()
 	local icon = select(3, GetSpellInfo(self:Id()));
 	return icon;
 end;
+SpellEvent.Texture = SpellEvent.Icon;
 
 function SpellEvent:Link()
 	local link = GetSpellLink(self:Id());
