@@ -191,7 +191,10 @@ function Strings.PrettyNamedNumber(number, itemName, pluralName)
 	end;
 	return ("%s %s"):format(numberString, pluralName);
 end;
-Strings.Pluralize = Strings.PrettyNamedNumber;
+
+function Strings.Pluralize(str, count, plural)
+	return Strings.PrettyNamedNumber(count, str, plural);
+end;
 
 function Strings.PrettyList(value)
 	assert(type(value) == "table", "value is not a table. Type: " .. type(value));
