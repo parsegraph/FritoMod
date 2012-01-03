@@ -116,6 +116,13 @@ Frames.Rect=Frames.Rectangle;
 Frames.Rectangular=Frames.Rectangle;
 Frames.Size=Frames.Rectangle;
 
+Frames.WidthHeight=Frames.Rectangle;
+Frames.WH=Frames.WidthHeight;
+function Frames.HeightWidth(f, h, w)
+	Frames.Rectangle(f, w, h);
+end;
+Frames.HW=Frames.HeightWidth;
+
 local INSETS_ZERO={
 	left=0,
 	top=0,
