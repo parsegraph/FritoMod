@@ -75,5 +75,14 @@ function TargetEvent:ClassColor()
 	return Media.color[self:Class()];
 end;
 
+function TargetEvent:ClassIcon()
+	return Media.texture[self:Class()];
+end;
+TargetEvent.ClassTexture = TargetEvent.ClassIcon;
+
+function TargetEvent:Classification()
+	return UnitClassification(self:Name());
+end;
+
 CombatObjects.AddSharedEvent("Source", "Target");
 CombatObjects.AddSharedEvent("Target");
