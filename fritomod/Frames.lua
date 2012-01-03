@@ -23,7 +23,7 @@ function Frames.GetFrame(frame)
 	if type(frame)=="string" then
 		return Frames.GetFrame(_G[frame]);
 	end;
-	assert(type(frame)=="table", "Frame must be a table.");
+	assert(type(frame)=="table", "Frame must be a table. Got: "..type(frame));
 	if frame.Frame then
 		return Frames.GetFrame(frame:Frame());
 	end;
