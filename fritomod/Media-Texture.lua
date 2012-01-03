@@ -69,6 +69,18 @@ do
 	end);
 end;
 
+Media.texture(function(obj)
+	if type(obj)=="table" and obj.name and obj.coords then
+		return obj;
+	end;
+end);
+
+Media.texture(function(texture)
+	if type(texture)=="string" and texture:match("[/\\]") then
+		return texture;
+	end;
+end);
+
 do
 	local coords = {12/64, 51/64, 12/64, 51/64};
 
