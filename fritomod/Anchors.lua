@@ -100,19 +100,19 @@ end;
 -- +---+---+
 -- | f |   |
 -- +---|ref|
---	 |   |
---	 +---+
+--     |   |
+--     +---+
 --
 -- Anchors.HorizontalFlip(f, "LEFT", ref);
---	 +---+
+--     +---+
 -- +---|   |
 -- | f |ref|
 -- +---|   |
---	 +---+
+--     +---+
 --
 -- Anchors.HorizontalFlip(f, "BOTTOMLEFT", ref);
---	 +---+
---	 |   |
+--     +---+
+--     |   |
 -- +---|ref|
 -- | f |   |
 -- +---+---+
@@ -148,8 +148,8 @@ FlipAnchor("Horizontal", {
 -- +-------+
 -- |  ref  |
 -- +-------+
---	 | f |
---	 +---+
+--     | f |
+--     +---+
 --
 -- Anchors.VerticalFlip(f, "TOPLEFT", ref);
 -- +---+
@@ -166,8 +166,8 @@ FlipAnchor("Horizontal", {
 -- +-------+
 --
 -- Anchors.VerticalFlip(f, "TOPRIGHT", ref);
---	 +---+
---	 | f |
+--     +---+
+--     | f |
 -- +-------+
 -- |  ref  |
 -- +-------+
@@ -203,8 +203,8 @@ FlipAnchor("Vertical",
 -- +---+
 -- | f |
 -- +---+---+
---	 |ref|
---	 +---+
+--     |ref|
+--     +---+
 --
 -- Anchors.DiagonalFlip(f, "TOP", ref);
 -- +---+
@@ -214,8 +214,8 @@ FlipAnchor("Vertical",
 -- +---+
 --
 -- Anchors.DiagonalFlip(f, "TOPRIGHT", ref);
---	 +---+
---	 | f |
+--     +---+
+--     | f |
 -- +---+---+
 -- |ref|
 -- +---+
@@ -230,8 +230,8 @@ FlipAnchor("Vertical",
 -- +---+
 -- |ref|
 -- +---+---+
---	 | f |
---	 +---+
+--     | f |
+--     +---+
 --
 -- Anchors.DiagonalFlip(f, "BOTTOM", ref);
 -- +---+
@@ -241,8 +241,8 @@ FlipAnchor("Vertical",
 -- +---+
 --
 -- Anchors.DiagonalFlip(f, "BOTTOMLEFT", ref);
---	 +---+
---	 |ref|
+--     +---+
+--     |ref|
 -- +---+---+
 -- | f |
 -- +---+
