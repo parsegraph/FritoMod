@@ -173,3 +173,17 @@ function Frames.Texture(f, texture)
 	end;
 	return f;
 end;
+
+function Frames.PortraitTexture(f, target)
+	f=Frames.GetFrame(f);
+	if f:GetObjectType():find("Button$") then
+		f=f:GetNormalTexture();
+	elseif f:GetObjectType() ~= "Texture" then
+		local t=f:CreateTexture();
+		Anchors.ShareAll(t, f);
+		f=t;
+		f=t;
+	end;
+	SetPortraitTexture(f, target);
+	return f;
+end;
