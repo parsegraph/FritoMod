@@ -13,6 +13,22 @@ textures.black  ="Interface/DialogFrame/UI-DialogBox-Background";
 textures.tooltip="Interface/Tooltips/UI-Tooltip-Background";
 textures.chat   ="Interface/Tooltips/ChatBubble-Background";
 
+textures["melee swing"] ="Interface/ICONS/Ability_SteelMelee";
+textures.swing = textures["melee swing"];
+
+textures.question = "Interface/ICONS/INV_Misc_QuestionMark";
+textures["?"] = textures.question;
+textures.unknown = textures.question;
+textures["question mark"] = textures.question;
+textures["questionmark"] = textures.question;
+textures[""] = textures.question;
+textures.default = textures.question;
+
+textures.critter = "Interface/ICONS/ABILITY_SEAL";
+textures.trivial = textures.critter;
+
+textures.mechanical = "Interface/ICONS/Ability_Mount_MechaStrider";
+
 Media.texture(textures);
 
 Media.texture(function(obj)
