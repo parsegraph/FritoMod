@@ -369,6 +369,7 @@ Anchors.ShareHorizontal = MultipleShare("LEFT", "RIGHT");
 function Anchors.Center(frame, ref)
 	local anchorable;
 	frame,anchorable=Frames.GetFrame(frame);
+	ref=ref or frame:GetParent();
 	ref=Frames.GetBounds(ref);
 	anchor=anchor or "CENTER";
 	if anchorable then
