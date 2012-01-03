@@ -116,6 +116,7 @@ Media.SetAlias("texture", "textures", "background", "backgrounds");
 
 Frames=Frames or {};
 function Frames.Texture(f, texture)
+	f=Frames.GetFrame(f);
 	texture = Media.texture[texture];
 	local coords;
 	if type(texture) == "table" then

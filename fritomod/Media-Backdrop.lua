@@ -111,6 +111,7 @@ function Frames.Backdrop(f, backdrop, bg)
 		usedBackdrop.bgFile=bg;
 		backdrop=usedBackdrop;
 	end;
+	f=Frames.GetFrame(f);
 	local insettedRegions = {};
 	local oldInsets = Frames.Insets(f);
 	do

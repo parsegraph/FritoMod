@@ -52,15 +52,17 @@
 if nil~=require then
    require "wow/Frame-Layout";
    require "wow/Frame-Animation";
+   require "fritomod/Frames";
 end
 
 Animations={};
 
 local function GetGroup(agOrFrame)
-	if agOrFrame.CreateAnimationGroup then
-		return agOrFrame:CreateAnimationGroup();
+	if agOrFrame.CreateAnimation then
+		return agOrFrame;
 	end;
-	return agOrFrame;
+	agOrFrame=Frames.GetFrame(agOrFrame);
+	return agOrFrame:CreateAnimationGroup();
 end;
 
 -- This function lets us define offsets using one number. It also lets

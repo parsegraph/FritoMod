@@ -43,14 +43,12 @@ function Frames.Text(parent, font, size, ...)
 	if type(parent) ~= "table" then
 		text=parent;
 		parent=UIParent:CreateFontString();
+	elseif not parent.CreateFontString then
+		parent=Frames.GetFrame(parent);
 	end;
-	if parent.CreateFontString then
-		f=parent:CreateFontString();
-		if Frames.IsInjected(parent) then
-			Frames.Inject(f);
-		end;
-	else
-		f=parent;
+	local fontstring=parent:CreateFontString();
+	if Frames.IsInjected(parent) then
+		Frames.Inject(fontstring);
 	end;
 	if not font:match("\\") then
 		font=Media.font[font];
@@ -70,20 +68,21 @@ function Frames.Text(parent, font, size, ...)
 			color=Media.color[option];
 		end;
 	end;
-	f:SetFont(font, size, flags);
+	fontstring:SetFont(font, size, flags);
 	if color then
-		Frames.Color(f, color);
+		Frames.Color(fontstring, color);
 	end;
 	if text then
-		f:SetText(text);
+		fonstring:SetText(text);
 	end;
-	return f;
+	return fontstring;
 end;
 
 function Frames.Font(frame, font, size, ...)
 	if not font:match("\\") then
 		font=Media.font[font];
 	end;
+	frame=Frames.GetFrame(frame);
 	if frame.GetFontString then
 		frame=frame:GetFontString();
 	end;

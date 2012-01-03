@@ -263,6 +263,7 @@ function Frames.ButtonTexture(button, layout)
 	if type(layout)=="string" or not layout then
 		layout=Media.button[layout];
 	end;
+	button=Frames.GetFrame(button);
 	if IsCallable(layout) then
 		layout(button);
 	else
