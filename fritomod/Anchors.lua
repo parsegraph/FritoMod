@@ -31,7 +31,7 @@ local function GetAnchorArguments(frame, ...)
 	return anchor, ref, x, y, parent;
 end;
 
-local function FlipAnchor(name, reverses, signs, defaultSigns)
+local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 	for k,v in pairs(Tables.Clone(reverses)) do
 		reverses[v]=k;
 	end;
@@ -157,6 +157,60 @@ local function FlipAnchor(name, reverses, signs, defaultSigns)
 	local reverseStackFrom = Curry(StackFrom, false);
 	Anchors["Reverse"..name.."StackFrom"] = reverseStackFrom;
 	Anchors["R"..Strings.CharAt(name, 1).."StackFrom"] = reverseStackFrom;
+
+	local justifiers = {};
+	local fromJustifiers = {};
+	local reverseJustifiers = {};
+	local reverseFromJustifiers = {};
+
+	-- Similar to stack, but the relative arrangement of individual frames will
+	-- remain in lexicographical order; the first element will (almost) always be
+	-- furthest to the left and to the top.
+	--
+	-- In cases where there is ambiguity, left-to-right should be preferred over
+	-- top-to-bottom.
+	for anchor in pairs(reverses) do
+		if reverseJustify[anchor] then
+			justifiers[anchor] = reverseStack
+			fromJustifiers[anchor] = stackFrom;
+			reverseJustifiers[anchor] = stack
+			reverseFromJustifiers[anchor] = reverseStackFrom;
+		else
+			justifiers[anchor] = stack;
+			fromJustifiers[anchor] = reverseStackFrom;
+			reverseJustifiers[anchor] = reverseStack;
+			reverseFromJustifiers[anchor] = stackFrom;
+		end;
+	end;
+
+	local function Justify(anchor, ...)
+		return justifiers[anchor](anchor, ...);
+	end;
+	local function JustifyFrom(anchor, ...)
+		return fromJustifiers[anchor](anchor, ...);
+	end;
+	local function ReverseJustify(anchor, ...)
+		return reverseJustifiers[anchor](anchor, ...);
+	end;
+	local function ReverseJustifyFrom(anchor, ...)
+		return reverseFromJustifiers[anchor](anchor, ...);
+	end;
+
+	Anchors[name.."Justify"] = Justify;
+	Anchors[Strings.CharAt(name, 1).."Justify"] = Justify;
+	Anchors[name.."JustifyTo"] = Justify;
+	Anchors[Strings.CharAt(name, 1).."JustifyTo"] = Justify;
+
+	Anchors[name.."JustifyFrom"] = JustifyFrom;
+	Anchors[Strings.CharAt(name, 1).."JustifyFrom"] = JustifyFrom;
+
+	Anchors["Reverse"..name.."Justify"] = ReverseJustify;
+	Anchors["R"..Strings.CharAt(name, 1).."Justify"] = ReverseJustify;
+	Anchors["Reverse"..name.."JustifyTo"] = ReverseJustify;
+	Anchors["R"..Strings.CharAt(name, 1).."JustifyTo"] = ReverseJustify;
+
+	Anchors["Reverse"..name.."JustifyFrom"] = ReverseJustifyFrom;
+	Anchors["R"..Strings.CharAt(name, 1).."JustifyFrom"] = ReverseJustifyFrom;
 end;
 
 -- Anchors.HorizontalFlip(f, "TOPRIGHT", ref);
@@ -211,7 +265,12 @@ FlipAnchor("Horizontal", {
 		BOTTOMLEFT  =  { -1, -1 },
 		LEFT		=  { -1,  1 },
 		TOPLEFT	 =  { -1,  1 }
-	}, { 1, 0 } -- Default mask
+	}, { 1, 0 }, -- Default mask
+	{
+		TOPLEFT = true,
+		LEFT = true,
+		BOTTOMLEFT = true
+	}
 );
 
 -- Anchors.VerticalFlip(f, "BOTTOMLEFT", ref);
@@ -267,7 +326,12 @@ FlipAnchor("Vertical",
 		BOTTOMRIGHT =  {  1, -1 },
 		BOTTOM	  =  {  1, -1 },
 		BOTTOMLEFT  =  { -1, -1 }
-	}, { 0, 1 } -- Default mask
+	}, { 0, 1 }, -- Default mask
+	{
+		TOPLEFT = true,
+		TOP = true,
+		TOPRIGHT = true
+	}
 );
 
 -- "frame touches ref's anchor."
@@ -359,6 +423,11 @@ FlipAnchor("Diagonal",
 		BOTTOMLEFT  = {  1,  1 },
 		LEFT		= {  1,  0 },
 		TOPLEFT	 = {  1,  1 },
+	}, {
+		TOP = true,
+		TOPLEFT = true,
+		LEFT = true,
+		BOTTOMLEFT = true,
 	}
 );
 Anchors.Flip=Anchors.DiagonalFlip;
@@ -377,6 +446,18 @@ Anchors.RStackTo=Anchors.ReverseStack;
 Anchors.StackFrom=Anchors.DiagonalStackFrom;
 Anchors.ReverseStackFrom=Anchors.ReverseDiagonalStackFrom;
 Anchors.RStackFrom=Anchors.ReverseStackFrom;
+
+Anchors.Justify=Anchors.DiagonalJustify;
+Anchors.ReverseJustify=Anchors.ReverseDiagonalJustify;
+Anchors.RJustify=Anchors.ReverseJustify;
+
+Anchors.JustifyTo=Anchors.DiagonalJustify;
+Anchors.ReverseJustifyTo=Anchors.ReverseDiagonalJustify;
+Anchors.RJustifyTo=Anchors.ReverseJustify;
+
+Anchors.JustifyFrom=Anchors.DiagonalJustifyFrom;
+Anchors.ReverseJustifyFrom=Anchors.ReverseDiagonalJustifyFrom;
+Anchors.RJustifyFrom=Anchors.ReverseJustifyFrom;
 
 local function EdgeFunctions(name)
 	local func=Anchors[name];
