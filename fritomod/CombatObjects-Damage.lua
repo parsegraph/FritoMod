@@ -49,6 +49,10 @@ DamageEvent.Mitigation = Headless("Reduction");
 
 DamageEvent.Overkill = DamageEvent.Excess;
 
+function DamageEvent:IsKillingBlow()
+	return self:Overkill() > 0;
+end;
+
 function DamageEvent:TypeName()
 	return CombatLog_String_SchoolString(self:Type());
 end;
