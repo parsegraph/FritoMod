@@ -140,7 +140,17 @@ do
 		if anchorTo and anchor ~= anchorTo then
 			return TOLERANCE * 100;
 		end;
-		local xdiff, ydiff = TOLERANCE, TOLERANCE;
+		if anchor == "CENTER" then
+			-- Ignore center anchor
+			return 0;
+		end;
+		local xdiff, ydiff = 0, 0;
+		if DEBUG_TRACE then
+			trace("Top inset: %d", insets.top);
+			trace("Left inset: %d", insets.left);
+			trace("Right inset: %d", insets.right);
+			trace("Bottom inset: %d", insets.bottom);
+		end;
 		if anchor:match("LEFT$") then
 			xdiff = abs(insets.left - x);
 		elseif anchor:match("RIGHT$") then
@@ -167,7 +177,13 @@ do
 			matchDistance = matchDistance + CheckOnePoint(f, ref, insets, i);
 		end;
 		trace("Match distance was %d", matchDistance);
-		return matchDistance < TOLERANCE * f:GetNumPoints();
+		local isInsetted = matchDistance < TOLERANCE * f:GetNumPoints();
+		if isInsetted then
+			trace("Frame is insetted");
+		else
+			trace("Frame is not insetted");
+		end;
+		return isInsetted;
 	end;
 
 	local function AdjustOnePoint(f, ref, insets, diff, i)
