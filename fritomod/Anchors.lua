@@ -360,3 +360,14 @@ function Anchors.Center(frame, ref)
 	anchor=anchor or "center";
 	frame:SetPoint(anchor, ref, "center");
 end;
+
+function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
+	frame=Frames.GetFrame(frame);
+	ref=Frames.GetBounds(ref or frame:GetParent());
+	frame:SetPoint(anchor, ref, anchorTo, x, y);
+end;
+
+function Anchors.Clear(frame)
+	frame=Frames.GetFrame(frame);
+	frame:ClearAllPoints();
+end;
