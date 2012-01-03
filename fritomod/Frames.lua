@@ -25,9 +25,15 @@ function Frames.GetFrame(frame)
 	end;
 	assert(type(frame)=="table", "Frame must be a table. Got: "..type(frame));
 	if frame.Frame then
-		return frame:Frame(), (IsCallable(frame.Anchor) and frame);
+		return frame:Frame(), Frames.GetAnchorable(frame);
 	end;
-	return frame.frame, (IsCallable(frame.Anchor) and frame);
+	return frame.frame, Frames.GetAnchorable(frame);
+end;
+
+function Frames.GetAnchorable(frame)
+	if type(frame)=="table" and frame.Anchor then
+		return frame;
+	end;
 end;
 
 function Frames.GetBounds(frame)
