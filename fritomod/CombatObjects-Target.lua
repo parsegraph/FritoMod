@@ -55,7 +55,11 @@ end;
 
 local function PlayerInfo(num)
 	return function(self)
-		local value = select(num, GetPlayerInfoByGUID(self:GUID()));
+		local guid = self:GUID();
+		if not guid then
+			return;
+		end;
+		local value = select(num, GetPlayerInfoByGUID(guid));
 		return value;
 	end;
 end;
