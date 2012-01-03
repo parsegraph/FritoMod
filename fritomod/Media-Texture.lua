@@ -3,6 +3,7 @@ if nil ~= require then
 	require "fritomod/Tables";
 end;
 
+-- All keys to this table must be lowercase.
 local textures={};
 
 textures.marble ="Interface/FrameGeneral/UI-Background-Marble";
