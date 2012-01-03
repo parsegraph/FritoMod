@@ -57,10 +57,10 @@ end
 Animations={};
 
 local function GetGroup(agOrFrame)
-   if agOrFrame.CreateAnimationGroup then
-	  return agOrFrame:CreateAnimationGroup();
-   end;
-   return agOrFrame;
+	if agOrFrame.CreateAnimationGroup then
+		return agOrFrame:CreateAnimationGroup();
+	end;
+	return agOrFrame;
 end;
 
 -- This function lets us define offsets using one number. It also lets
