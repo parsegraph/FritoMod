@@ -20,7 +20,7 @@ local function GetAnchorArguments(frame, ...)
 	else
 		ref, anchor, x, y=...;
 	end;
-	anchor=anchor:lower();
+	anchor=anchor:upper();
 	if ref == nil then
 		ref=frame:GetParent();
 		parent=ref;
@@ -75,97 +75,97 @@ local function FlipAnchor(name, reverses, signs, defaultSigns)
 	Anchors[name.."Over"]	 = Flip;
 end;
 
--- Anchors.HorizontalFlip(f, "topright", ref);
+-- Anchors.HorizontalFlip(f, "TOPRIGHT", ref);
 -- +---+---+
 -- |   | f |
 -- |ref|---+
 -- |   |
 -- +---+
 --
--- Anchors.HorizontalFlip(f, "right", ref);
+-- Anchors.HorizontalFlip(f, "RIGHT", ref);
 -- +---+
 -- |   |---+
 -- |ref| f |
 -- |   |---+
 -- +---+
 --
--- Anchors.HorizontalFlip(f, "bottomright", ref);
+-- Anchors.HorizontalFlip(f, "BOTTOMRIGHT", ref);
 -- +---+
 -- |   |
 -- |ref|---+
 -- |   | f |
 -- +---+---+
 --
--- Anchors.HorizontalFlip(f, "topleft", ref);
+-- Anchors.HorizontalFlip(f, "TOPLEFT", ref);
 -- +---+---+
 -- | f |   |
 -- +---|ref|
 --	 |   |
 --	 +---+
 --
--- Anchors.HorizontalFlip(f, "left", ref);
+-- Anchors.HorizontalFlip(f, "LEFT", ref);
 --	 +---+
 -- +---|   |
 -- | f |ref|
 -- +---|   |
 --	 +---+
 --
--- Anchors.HorizontalFlip(f, "bottomleft", ref);
+-- Anchors.HorizontalFlip(f, "BOTTOMLEFT", ref);
 --	 +---+
 --	 |   |
 -- +---|ref|
 -- | f |   |
 -- +---+---+
 FlipAnchor("Horizontal", {
-		topleft	= "topright",
-		bottomleft = "bottomright",
-		left	   = "right",
+		TOPLEFT	= "TOPRIGHT",
+		BOTTOMLEFT = "BOTTOMRIGHT",
+		LEFT	   = "RIGHT",
 	}, { -- Signs
-		topright	=  {  1,  1 },
-		right	   =  {  1,  1 },
-		bottomright =  {  1, -1 },
-		bottomleft  =  { -1, -1 },
-		left		=  { -1,  1 },
-		topleft	 =  { -1,  1 }
+		TOPRIGHT	=  {  1,  1 },
+		RIGHT	   =  {  1,  1 },
+		BOTTOMRIGHT =  {  1, -1 },
+		BOTTOMLEFT  =  { -1, -1 },
+		LEFT		=  { -1,  1 },
+		TOPLEFT	 =  { -1,  1 }
 	}, { 1, 0 } -- Default mask
 );
 
--- Anchors.VerticalFlip(f, "bottomleft", ref);
+-- Anchors.VerticalFlip(f, "BOTTOMLEFT", ref);
 -- +-------+
 -- |  ref  |
 -- +-------+
 -- | f |
 -- +---+
 --
--- Anchors.VerticalFlip(f, "bottom", ref);
+-- Anchors.VerticalFlip(f, "BOTTOM", ref);
 -- +-------+
 -- |  ref  |
 -- +-------+
 --   | f |
 --   +---+
 --
--- Anchors.VerticalFlip(f, "bottomright", ref);
+-- Anchors.VerticalFlip(f, "BOTTOMRIGHT", ref);
 -- +-------+
 -- |  ref  |
 -- +-------+
 --	 | f |
 --	 +---+
 --
--- Anchors.VerticalFlip(f, "topleft", ref);
+-- Anchors.VerticalFlip(f, "TOPLEFT", ref);
 -- +---+
 -- | f |
 -- +-------+
 -- |  ref  |
 -- +-------+
 --
--- Anchors.VerticalFlip(f, "top", ref);
+-- Anchors.VerticalFlip(f, "TOP", ref);
 --   +---+
 --   | f |
 -- +-------+
 -- |  ref  |
 -- +-------+
 --
--- Anchors.VerticalFlip(f, "topright", ref);
+-- Anchors.VerticalFlip(f, "TOPRIGHT", ref);
 --	 +---+
 --	 | f |
 -- +-------+
@@ -173,16 +173,16 @@ FlipAnchor("Horizontal", {
 -- +-------+
 FlipAnchor("Vertical",
 	{
-		bottomright = "topright",
-		bottomleft  = "topleft",
-		bottom	  = "top"
+		BOTTOMRIGHT = "TOPRIGHT",
+		BOTTOMLEFT  = "TOPLEFT",
+		BOTTOM	  = "TOP"
 	}, { -- Signs
-		topright	=  {  1,  1 },
-		top		 =  {  1,  1 },
-		topleft	 =  { -1,  1 },
-		bottomright =  {  1, -1 },
-		bottom	  =  {  1, -1 },
-		bottomleft  =  { -1, -1 }
+		TOPRIGHT	=  {  1,  1 },
+		TOP		 =  {  1,  1 },
+		TOPLEFT	 =  { -1,  1 },
+		BOTTOMRIGHT =  {  1, -1 },
+		BOTTOM	  =  {  1, -1 },
+		BOTTOMLEFT  =  { -1, -1 }
 	}, { 0, 1 } -- Default mask
 );
 
@@ -199,82 +199,82 @@ FlipAnchor("Vertical",
 -- The centers will form a line that passes through the anchor; diagonal anchor
 -- points will cause the frames to separate diagonally.
 --
--- Anchors.DiagonalFlip(f, "topleft", ref);
+-- Anchors.DiagonalFlip(f, "TOPLEFT", ref);
 -- +---+
 -- | f |
 -- +---+---+
 --	 |ref|
 --	 +---+
 --
--- Anchors.DiagonalFlip(f, "top", ref);
+-- Anchors.DiagonalFlip(f, "TOP", ref);
 -- +---+
 -- | f |
 -- +---+
 -- |ref|
 -- +---+
 --
--- Anchors.DiagonalFlip(f, "topright", ref);
+-- Anchors.DiagonalFlip(f, "TOPRIGHT", ref);
 --	 +---+
 --	 | f |
 -- +---+---+
 -- |ref|
 -- +---+
 --
--- Anchors.DiagonalFlip(f, "right", ref);
+-- Anchors.DiagonalFlip(f, "RIGHT", ref);
 -- +---+---+
 -- |ref| f |
 -- +---+---+
 --
 --
--- Anchors.DiagonalFlip(f, "bottomright", ref);
+-- Anchors.DiagonalFlip(f, "BOTTOMRIGHT", ref);
 -- +---+
 -- |ref|
 -- +---+---+
 --	 | f |
 --	 +---+
 --
--- Anchors.DiagonalFlip(f, "bottom", ref);
+-- Anchors.DiagonalFlip(f, "BOTTOM", ref);
 -- +---+
 -- |ref|
 -- +---+
 -- | f |
 -- +---+
 --
--- Anchors.DiagonalFlip(f, "bottomleft", ref);
+-- Anchors.DiagonalFlip(f, "BOTTOMLEFT", ref);
 --	 +---+
 --	 |ref|
 -- +---+---+
 -- | f |
 -- +---+
 --
--- Anchors.DiagonalFlip(f, "left", ref);
+-- Anchors.DiagonalFlip(f, "LEFT", ref);
 -- +---+---+
 -- | f |ref|
 -- +---+---+
 FlipAnchor("Diagonal",
 	{
-		top	  = "bottom",
-		right	= "left",
-		topleft  = "bottomright",
-		topright = "bottomleft",
+		TOP	  = "BOTTOM",
+		RIGHT	= "LEFT",
+		TOPLEFT  = "BOTTOMRIGHT",
+		TOPRIGHT = "BOTTOMLEFT",
 	}, { -- Signs
-		top		 = {  1,  1 },
-		topright	= {  1,  1 },
-		right	   = {  1,  1 },
-		bottomright = {  1, -1 },
-		bottom	  = {  1, -1 },
-		bottomleft  = { -1, -1 },
-		left		= { -1, -1 },
-		topleft	 = { -1,  1 },
+		TOP		 = {  1,  1 },
+		TOPRIGHT	= {  1,  1 },
+		RIGHT	   = {  1,  1 },
+		BOTTOMRIGHT = {  1, -1 },
+		BOTTOM	  = {  1, -1 },
+		BOTTOMLEFT  = { -1, -1 },
+		LEFT		= { -1, -1 },
+		TOPLEFT	 = { -1,  1 },
 	}, { -- Defaults
-		top		 = {  0,  1 },
-		topright	= {  1,  1 },
-		right	   = {  1,  0 },
-		bottomright = {  1,  1 },
-		bottom	  = {  0,  1 },
-		bottomleft  = {  1,  1 },
-		left		= {  1,  0 },
-		topleft	 = {  1,  1 },
+		TOP		 = {  0,  1 },
+		TOPRIGHT	= {  1,  1 },
+		RIGHT	   = {  1,  0 },
+		BOTTOMRIGHT = {  1,  1 },
+		BOTTOM	  = {  0,  1 },
+		BOTTOMLEFT  = {  1,  1 },
+		LEFT		= {  1,  0 },
+		TOPLEFT	 = {  1,  1 },
 	}
 );
 Anchors.Flip=Anchors.DiagonalFlip;
@@ -285,20 +285,20 @@ Anchors.Over=Anchors.DiagonalOver;
 local function EdgeFunctions(name)
 	local func=Anchors[name];
 	Anchors[name.."Left"]=function(frame, ref, x, y)
-		func(frame, "topleft", ref, x, y);
-		func(frame, "bottomleft", ref, x, y);
+		func(frame, "TOPLEFT", ref, x, y);
+		func(frame, "BOTTOMLEFT", ref, x, y);
 	end;
 	Anchors[name.."Right"]=function(frame, ref, x, y)
-		func(frame, "topright", ref, x, y);
-		func(frame, "bottomright", ref, x, y);
+		func(frame, "TOPRIGHT", ref, x, y);
+		func(frame, "BOTTOMRIGHT", ref, x, y);
 	end;
 	Anchors[name.."Top"]=function(frame, ref, x, y)
-		func(frame, "topleft", ref, x, y);
-		func(frame, "topright", ref, x, y);
+		func(frame, "TOPLEFT", ref, x, y);
+		func(frame, "TOPRIGHT", ref, x, y);
 	end;
 	Anchors[name.."Bottom"]=function(frame, ref, x, y)
-		func(frame, "bottomleft", ref, x, y);
-		func(frame, "bottomright", ref, x, y);
+		func(frame, "BOTTOMLEFT", ref, x, y);
+		func(frame, "BOTTOMRIGHT", ref, x, y);
 	end;
 end;
 
@@ -318,17 +318,17 @@ function Anchors.Share(frame, ...)
 	frame, anchorable=Frames.GetFrame(frame);
 	local anchor, ref, x, y, parent=GetAnchorArguments(frame, ...);
 	local insets=Frames.Insets(parent);
-	if insets.top > 0 and anchor:find("^top") then
+	if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
 		y=y or 0;
 		y=y+insets.top;
-	elseif insets.bottom > 0 and anchor:find("^bottom") then
+	elseif insets.bottom > 0 and Strings.StartsWith(anchor, "BOTTOM") then
 		y=y or 0;
 		y=y+insets.bottom;
 	end;
-	if insets.left > 0 and anchor:find("left$") then
+	if insets.left > 0 and Strings.EndsWith(anchor, "LEFT") then
 		x=x or 0;
 		x=x+insets.left;
-	elseif insets.right > 0 and anchor:find("right$") then
+	elseif insets.right > 0 and Strings.EndsWith(anchor, "RIGHT") then
 		x=x or 0;
 		x=x+insets.right;
 	end;
@@ -352,16 +352,18 @@ EdgeFunctions("Share");
 function Anchors.ShareAll(frame, ref, x, y)
 	-- We call GetFrame here to avoid calling anchorable:Anchor four times.
 	frame=Frames.GetFrame(frame);
-	Anchors.Share(frame, "top", ref, x, y);
-	Anchors.Share(frame, "left", ref, x, y);
-	Anchors.Share(frame, "right", ref, x, y);
-	Anchors.Share(frame, "bottom", ref, x, y);
+	Anchors.Share(frame, "TOP", ref, x, y);
+	Anchors.Share(frame, "LEFT", ref, x, y);
+	Anchors.Share(frame, "RIGHT", ref, x, y);
+	Anchors.Share(frame, "BOTTOM", ref, x, y);
 end;
 
 function Anchors.Center(frame, ref)
-	frame=Frames.GetFrame(frame);
+	local anchorable;
+	frame,anchorable=Frames.GetFrame(frame);
 	ref=Frames.GetBounds(ref);
-	anchor=anchor or "center";
+	anchor=anchor or "CENTER";
+	anchorable:Anchor("CENTER");
 	frame:SetPoint(anchor, ref, "center");
 end;
 
