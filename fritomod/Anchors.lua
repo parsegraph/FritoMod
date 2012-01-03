@@ -56,23 +56,107 @@ local function FlipAnchor(name, reverses, signs, defaultSigns)
 	end;
 	Anchors[name.."Gap"] = Gap;
 
-	local function Flip(frame, ...)
+	local function Flip(reversed, frame, ...)
 		local anchorable;
 		frame, anchorable=Frames.GetFrame(frame);
 		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 		local reverse = reverses[anchor];
+		assert(reverse, "No reverse anchor found for "..name.." flip: "..anchor);
 		if anchorable then
 			anchorable:Anchor(reverse);
 		end;
-		frame:SetPoint(reverse, ref, anchor, Gap(anchor, x, y));
+		x, y = Gap(anchor, x, y);
+		assert(Frames.IsFrame(frame), "frame must be a frame. Got: "..type(frame));
+		assert(Frames.IsFrame(ref), "ref must be a frame. Got: "..type(frame));
+		if reversed then
+			anchor, reverse = reverse, anchor;
+		end;
+		if DEBUG_TRACE then
+			trace("%s flipping %s's %s over %s's %s (gap: %d, %d)",
+				name,
+				tostring(frame),
+				reverse,
+				tostring(ref),
+				anchor,
+				x,
+				y);
+		end;
+		frame:SetPoint(anchor, ref, reverse, x, y);
 	end
 
-	Anchors[Strings.CharAt(name, 1).."Flip"] = Flip;
-	Anchors[name.."Flip"]	 = Flip;
-	Anchors[name.."Flip"]	 = Flip;
-	Anchors[name.."Flipping"] = Flip;
-	Anchors[name.."Flipped"]  = Flip;
-	Anchors[name.."Over"]	 = Flip;
+	local flipTo = Curry(Flip, true);
+	Anchors[Strings.CharAt(name, 1).."Flip"] = flipTo;
+	Anchors[name.."Flip"]	 = flipTo;
+	Anchors[name.."FlipTo"]	 = flipTo;
+
+	local flipFrom = Curry(Flip, false);
+	Anchors[name.."FlipFrom"] = flipFrom;
+	Anchors[Strings.CharAt(name, 1).."FlipFrom"] = flipFrom;
+
+	Anchors[name.."AnchorName"] = function(anchor)
+		anchor=anchor:upper();
+		return reverses[anchor];
+	end;
+
+	local function Stack(towardsFirst, anchor, gap, ...)
+		local frames;
+		if Frames.IsFrame(gap) then
+			frames={gap, ...};
+			gap=0;
+		elseif select("#", ...) == 0 and type(gap) == "table" then
+			frames = gap;
+			gap=0;
+		elseif select("#", ...) == 1 and not Frames.IsFrame(...) then
+			frames = ...;
+		else
+			frames={...};
+		end;
+		local flipper = Anchors[name.."Flip"];
+		local marcher=Lists.March;
+		if towardsFirst then
+			marcher=Lists.FlipMarch;
+		end;
+		local i=1;
+		marcher(frames, function(first, second)
+			local thisGap = gap;
+			if IsCallable(thisGap) then
+				thisGap = thisGap(first, second);
+			elseif type(thisGap) == "table" and #thisGap > 0 then
+				thisGap = thisGap[1 + (i % #thisGap)]
+				i=i + 1;
+			end;
+			flipper(first, second, anchor, thisGap);
+		end);
+		if towardsFirst then
+			return frames[1];
+		else
+			return frames[#frames];
+		end;
+	end;
+
+	local stack = Curry(Stack, true);
+	Anchors[name.."Stack"] = stack;
+	Anchors[Strings.CharAt(name, 1).."Stack"] = stack;
+	Anchors[name.."StackTo"] = stack;
+	Anchors[Strings.CharAt(name, 1).."StackTo"] = stack;
+
+	local reverseStack = Curry(Stack, false);
+	Anchors["Reverse"..name.."Stack"] = reverseStack;
+	Anchors["R"..Strings.CharAt(name, 1).."Stack"] = reverseStack;
+	Anchors["Reverse"..name.."StackTo"] = reverseStack;
+	Anchors["R"..Strings.CharAt(name, 1).."StackTo"] = reverseStack;
+
+	local function StackFrom(towardsFirst, anchor, gap, ...)
+		anchor=anchor:upper();
+		return Stack(towardsFirst, reverses[anchor], gap, ...);
+	end;
+	local stackFrom = Curry(StackFrom, true);
+	Anchors[name.."StackFrom"] = stackFrom;
+	Anchors[Strings.CharAt(name, 1).."StackFrom"] = stackFrom;
+
+	local reverseStackFrom = Curry(StackFrom, false);
+	Anchors["Reverse"..name.."StackFrom"] = reverseStackFrom;
+	Anchors["R"..Strings.CharAt(name, 1).."StackFrom"] = reverseStackFrom;
 end;
 
 -- Anchors.HorizontalFlip(f, "TOPRIGHT", ref);
@@ -278,9 +362,21 @@ FlipAnchor("Diagonal",
 	}
 );
 Anchors.Flip=Anchors.DiagonalFlip;
-Anchors.Flipping=Anchors.DiagonalFlip;
-Anchors.Flipped=Anchors.DiagonalFlip;
-Anchors.Over=Anchors.DiagonalOver;
+Anchors.FlipTo=Anchors.Flip;
+
+Anchors.FlipFrom=Anchors.DiagonalFlipFrom;
+
+Anchors.Stack=Anchors.DiagonalStack;
+Anchors.ReverseStack=Anchors.ReverseDiagonalStack;
+Anchors.RStack=Anchors.ReverseStack;
+
+Anchors.StackTo=Anchors.DiagonalStack;
+Anchors.ReverseStackTo=Anchors.ReverseDiagonalStack;
+Anchors.RStackTo=Anchors.ReverseStack;
+
+Anchors.StackFrom=Anchors.DiagonalStackFrom;
+Anchors.ReverseStackFrom=Anchors.ReverseDiagonalStackFrom;
+Anchors.RStackFrom=Anchors.ReverseStackFrom;
 
 local function EdgeFunctions(name)
 	local func=Anchors[name];

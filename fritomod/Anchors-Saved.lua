@@ -57,7 +57,7 @@ local function ShowAnchor(name, anchor)
 			if not dragging then
 				anchorNameFrame:Show();
 				anchorNameFrame:ClearAllPoints();
-				Anchors.Over(anchorNameFrame, anchor.frame, "top", 4);
+				Anchors.Flip(anchorNameFrame, anchor.frame, "top", 4);
 				anchorNameFrame:SetText(name);
 			end;
 			return Curry(anchorNameFrame, "Hide");
