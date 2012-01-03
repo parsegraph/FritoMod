@@ -384,7 +384,10 @@ function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
 	frame:SetPoint(anchor, ref, anchorTo, x, y);
 end;
 
-function Anchors.Clear(frame)
-	frame=Frames.GetFrame(frame);
-	frame:ClearAllPoints();
+function Anchors.Clear(...)
+	for i=1, select("#", ...) do
+		local frame = select(i, ...);
+		frame=Frames.GetFrame(frame);
+		frame:ClearAllPoints();
+	end;
 end;
