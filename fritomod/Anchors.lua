@@ -32,7 +32,7 @@ local function GetAnchorArguments(frame, ...)
 end;
 
 local function FlipAnchor(name, reverses, signs, defaultSigns)
-	for k,v in pairs(reverses) do
+	for k,v in pairs(Tables.Clone(reverses)) do
 		reverses[v]=k;
 	end;
 
