@@ -85,6 +85,9 @@ do
 	local coords = {12/64, 51/64, 12/64, 51/64};
 
 	Media.spell(function(spell)
+		if type(spell) ~= "string" and type(spell) ~= "number" then
+			return;
+		end;
 		local texture = select(3, GetSpellInfo(spell));
 		if texture then
 			return {
@@ -110,6 +113,9 @@ do
 	end);
 
 	Media.item(function(item)
+		if type(item) ~= "string" and type(item) ~= "number" then
+			return;
+		end;
 		item = select(10, GetItemInfo(item));
 		if item then
 			return {
