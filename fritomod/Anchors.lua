@@ -349,21 +349,31 @@ Anchors.On=Anchors.Share;
 
 EdgeFunctions("Share");
 
-function Anchors.ShareAll(frame, ref, x, y)
-	-- We call GetFrame here to avoid calling anchorable:Anchor four times.
-	frame=Frames.GetFrame(frame);
-	Anchors.Share(frame, "TOP", ref, x, y);
-	Anchors.Share(frame, "LEFT", ref, x, y);
-	Anchors.Share(frame, "RIGHT", ref, x, y);
-	Anchors.Share(frame, "BOTTOM", ref, x, y);
+local function MultipleShare(anchor, ...)
+	local anchors = {anchor, ...};
+	return function(frame, ref, x, y)
+		-- We call GetFrame here to avoid calling anchorable:Anchor since it would
+		-- be ambiguous.
+		for i=1, #anchors do
+			Anchors.Share(frame, anchors[i], ref, x, y);
+		end;
+	end;
 end;
+
+Anchors.ShareAll = MultipleShare("LEFT", "RIGHT", "TOP", "BOTTOM");
+Anchors.ShareOrthogonals = Anchors.ShareAll;
+Anchors.ShareDiagonals = MultipleShare("TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT");
+Anchors.ShareVertical = MultipleShare("TOP", "BOTTOM");
+Anchors.ShareHorizontal = MultipleShare("LEFT", "RIGHT");
 
 function Anchors.Center(frame, ref)
 	local anchorable;
 	frame,anchorable=Frames.GetFrame(frame);
 	ref=Frames.GetBounds(ref);
 	anchor=anchor or "CENTER";
-	anchorable:Anchor("CENTER");
+	if anchorable then
+		anchorable:Anchor("CENTER");
+	end;
 	frame:SetPoint(anchor, ref, "center");
 end;
 
