@@ -350,8 +350,12 @@ Anchors.On=Anchors.Share;
 EdgeFunctions("Share");
 
 function Anchors.ShareAll(frame, ref, x, y)
-	Anchors.Share(frame, "topleft", ref, x, y);
-	Anchors.Share(frame, "bottomright", ref, x, y);
+	-- We call GetFrame here to avoid calling anchorable:Anchor four times.
+	frame=Frames.GetFrame(frame);
+	Anchors.Share(frame, "top", ref, x, y);
+	Anchors.Share(frame, "left", ref, x, y);
+	Anchors.Share(frame, "right", ref, x, y);
+	Anchors.Share(frame, "bottom", ref, x, y);
 end;
 
 function Anchors.Center(frame, ref)
