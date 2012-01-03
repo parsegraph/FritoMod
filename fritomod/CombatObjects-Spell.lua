@@ -52,6 +52,9 @@ end;
 
 function SpellEvent:Icon()
 	local icon = select(3, GetSpellInfo(self:Id()));
+	if not icon then
+		icon=Media.texture[self:Name()];
+	end;
 	return icon;
 end;
 SpellEvent.Texture = SpellEvent.Icon;
