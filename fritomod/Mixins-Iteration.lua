@@ -858,8 +858,24 @@ function Mixins.Iteration(library)
 		end;
 	end);
 
+	Mixins.Overridable(library, "ReverseMarch", function(iterable, func, ...)
+		local iterator=library.ReverseValueIterator(iterable);
+		local a, b=iterator(), iterator();
+		while b~=nil do
+			func(a, b, ...);
+			a=b;
+			b=iterator();
+		end;
+	end);
+
 	Mixins.Overridable(library, "FlipMarch", function(iterable, func, ...)
 		return library.March(iterable, function(a, b, ...)
+			return func(b, a, ...);
+		end, ...);
+	end);
+
+	Mixins.Overridable(library, "ReverseFlipMarch", function(iterable, func, ...)
+		return library.ReverseMarch(iterable, function(a, b, ...)
 			return func(b, a, ...);
 		end, ...);
 	end);
