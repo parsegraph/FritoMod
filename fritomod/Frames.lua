@@ -21,13 +21,30 @@ function Frames.GetFrame(frame)
 		return frame;
 	end;
 	if type(frame)=="string" then
-		return Frames.GetFrame(_G[frame]);
+		return _G[frame];
 	end;
 	assert(type(frame)=="table", "Frame must be a table. Got: "..type(frame));
 	if frame.Frame then
-		return Frames.GetFrame(frame:Frame());
+		return frame:Frame(), (IsCallable(frame.Anchor) and frame);
 	end;
-	return Frames.GetFrame(frame.frame);
+	return frame.frame, (IsCallable(frame.Anchor) and frame);
+end;
+
+function Frames.GetBounds(frame)
+	if Frames.IsFrame(frame) then
+		return frame;
+	end;
+	if type(frame)=="string" then
+		return _G[frame];
+	end;
+	assert(type(frame)=="table", "Frame must be a table. Got: "..type(frame));
+	if frame.Bounds then
+		return frame:Bounds();
+	end;
+	if frame.bounds then
+		return frame.bounds;
+	end;
+	return Frames.GetFrame(frame);
 end;
 
 function Frames.Inject(frame)

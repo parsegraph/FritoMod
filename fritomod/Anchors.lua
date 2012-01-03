@@ -6,7 +6,7 @@ end;
 Anchors={};
 
 local function GetAnchorArguments(frame, ...)
-	local anchor, ref, x, y;
+	local anchor, ref, x, y, parent;
 	if type(select(1, ...)) == "string" then
 		-- Since type() is a C function, it makes a nuisance of itself
 		-- by demanding we always pass at least one argument. This is true
@@ -23,10 +23,12 @@ local function GetAnchorArguments(frame, ...)
 	anchor=anchor:lower();
 	if ref == nil then
 		ref=frame:GetParent();
+		parent=ref;
 	else
-		ref=Frames.GetFrame(ref);
+		parent=Frames.GetFrame(ref);
+		ref=Frames.GetBounds(ref);
 	end;
-	return anchor, ref, x, y;
+	return anchor, ref, x, y, parent;
 end;
 
 local function FlipAnchor(name, reverses, signs, defaultSigns)
@@ -55,9 +57,14 @@ local function FlipAnchor(name, reverses, signs, defaultSigns)
 	Anchors[name.."Gap"] = Gap;
 
 	local function Flip(frame, ...)
-		frame=Frames.GetFrame(frame);
+		local anchorable;
+		frame, anchorable=Frames.GetFrame(frame);
 		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
-		frame:SetPoint(reverses[anchor], ref, anchor, Gap(anchor, x, y));
+		local reverse = reverses[anchor];
+		if anchorable then
+			anchorable:Anchor(reverse);
+		end;
+		frame:SetPoint(reverse, ref, anchor, Gap(anchor, x, y));
 	end
 
 	Anchors[Strings.CharAt(name, 1).."Flip"] = Flip;
@@ -307,30 +314,32 @@ Anchors.FlipRight=Anchors.HFlipRight;
 
 -- frame shares ref's anchor
 function Anchors.Share(frame, ...)
-	frame=Frames.GetFrame(frame);
-	local anchor, ref, x, y=GetAnchorArguments(frame, ...);
-	local insets=Frames.Insets(ref);
+	local anchorable;
+	frame, anchorable=Frames.GetFrame(frame);
+	local anchor, ref, x, y, parent=GetAnchorArguments(frame, ...);
+	local insets=Frames.Insets(parent);
 	if insets.top > 0 and anchor:find("^top") then
 		y=y or 0;
 		y=y+insets.top;
+	elseif insets.bottom > 0 and anchor:find("^bottom") then
+		y=y or 0;
+		y=y+insets.bottom;
 	end;
 	if insets.left > 0 and anchor:find("left$") then
 		x=x or 0;
 		x=x+insets.left;
-	end
-	if insets.right > 0 and anchor:find("right$") then
+	elseif insets.right > 0 and anchor:find("right$") then
 		x=x or 0;
 		x=x+insets.right;
-	end;
-	if insets.bottom > 0 and anchor:find("^bottom") then
-		y=y or 0;
-		y=y+insets.bottom;
 	end;
 	if x ~= nil then
 		x=-x;
 	end;
 	if y ~= nil then
 		y=-y;
+	end;
+	if anchorable then
+		anchorable:Anchor(anchor);
 	end;
 	frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, x, y));
 end;
@@ -347,7 +356,7 @@ end;
 
 function Anchors.Center(frame, ref)
 	frame=Frames.GetFrame(frame);
-	ref=Frames.GetFrame(ref);
+	ref=Frames.GetBounds(ref);
 	anchor=anchor or "center";
 	frame:SetPoint(anchor, ref, "center");
 end;
