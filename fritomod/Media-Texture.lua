@@ -170,6 +170,8 @@ function Frames.Texture(f, texture)
 	end;
 	if coords then
 		f:SetTexCoord(unpack(coords));
+	else
+		f:SetTexCoord(0, 1, 0, 1);
 	end;
 	return f;
 end;
