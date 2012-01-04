@@ -146,7 +146,7 @@ function Reference(target)
 		setmetatable(target, nil);
 		str = tostring(target);
 		setmetatable(target, metatable);
-	elseif type(target) == "function" then
+	elseif type(target) == "function" or type(target) == "userdata" then
 		str = tostring(target);
 	else
 		error("Type has no reference. Type: " .. type(target));
