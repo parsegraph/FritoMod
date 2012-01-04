@@ -90,6 +90,35 @@ function Frames.GetBounds(frame)
 	return Frames.AsRegion(frame);
 end;
 
+
+do 
+	local verticals = {
+		TOPLEFT = "TOP",
+		TOP = "TOP",
+		TOPRIGHT = "TOP",
+		BOTTOMLEFT = "BOTTOM",
+		BOTTOM = "BOTTOM",
+		BOTTOMRIGHT = "BOTTOM",
+	};
+
+	local horizontals = {
+		TOPLEFT = "LEFT",
+		BOTTOMLEFT = "LEFT",
+		LEFT = "LEFT",
+		TOPRIGHT = "RIGHT",
+		RIGHT = "RIGHT",
+		BOTTOMRIGHT = "RIGHT",
+	}
+
+	function Frames.VerticalComponent(anchor)
+		return verticals[anchor];
+	end;
+
+	function Frames.HorizontalComponent(anchor)
+		return horizontals[anchor];
+	end;
+end;
+
 function Frames.Inject(frame)
 	frame=Frames.AsRegion(frame);
 	if Frames.IsInjected(frame) then
