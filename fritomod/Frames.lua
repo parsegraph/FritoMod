@@ -237,11 +237,13 @@ local INSETS_ZERO={
 	right=0
 };
 function Frames.Insets(f)
-	f=Frames.AsRegion(f);
-	if f and f.GetBackdrop then
-		local b=f:GetBackdrop();
-		if b then
-			return b.insets;
+	if f then
+		f=Frames.AsRegion(f);
+		if f and f.GetBackdrop then
+			local b=f:GetBackdrop();
+			if b then
+				return b.insets;
+			end;
 		end;
 	end;
 	return INSETS_ZERO;
