@@ -80,7 +80,9 @@ do
 	-- One True Way.
 	function Frames.SimpleButtonTester(button)
 		button=tostring(button);
-		return assert(buttons[button:lower()], "Unknown button: " .. button);
+		local tester = buttons[button:lower()];
+		assert(tester, "Unknown button: " .. button);
+		return tester;
 	end;
 
 	local modifiers={
@@ -94,7 +96,9 @@ do
 
 	function Frames.SimpleModifierTester(modifier)
 		modifier=tostring(modifier);
-		return assert(modifiers[modifier:lower()], "Unknown modifier: " .. modifier);
+		local modifierFunc = modifiers[modifier:lower()];
+		assert(modifierFunc, "Unknown modifier: " .. modifier);
+		return modifierFunc;
 	end;
 end;
 
