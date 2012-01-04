@@ -68,7 +68,7 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 		end;
 		x, y = Gap(anchor, x, y);
 		assert(Frames.IsFrame(frame), "frame must be a frame. Got: "..type(frame));
-		assert(Frames.IsFrame(ref), "ref must be a frame. Got: "..type(frame));
+		assert(Frames.IsFrame(ref), "ref must be a frame. Got: "..type(ref));
 		if reversed then
 			anchor, reverse = reverse, anchor;
 		end;
