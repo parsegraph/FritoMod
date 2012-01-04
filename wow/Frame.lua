@@ -9,6 +9,14 @@ WoW=WoW or Metatables.Defensive();
 WoW.Frame=OOP.Class();
 local Frame=WoW.Frame;
 
+function WoW.AssertFrame(frame)
+	assert(frame, "Frame must not be falsy");
+	assert(
+		OOP.InstanceOf(WoW.Frame, frame),
+		"Provided argument is not a frame. Given: "..type(frame)
+	);
+end;
+
 function Frame:Constructor(world)
 	self.world=world;
 end;
