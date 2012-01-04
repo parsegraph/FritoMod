@@ -31,7 +31,7 @@ local function LoadPoint(name, frame, savedPosition)
 end;
 
 function Frames.Position(frame, name)
-	frame=Frames.GetFrame(frame);
+	frame=Frames.AsRegion(frame);
 	if not name then
 		name=frame:GetName();
 	end;

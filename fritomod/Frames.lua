@@ -9,35 +9,78 @@ end;
 
 Frames=Frames or {};
 
-function Frames.IsFrame(frame)
+function Frames.IsRegion(frame)
 	return frame and
 		type(frame)=="table" and
 		type(frame.GetObjectType)=="function" and
 		type(frame.SetPoint)=="function";
 end;
+Frames.IsFrame=Frames.IsRegion;
 
-function Frames.GetFrame(frame)
-	if Frames.IsFrame(frame) then
+-- Returns the region that represents the specified object. Frames, regions, and their
+-- subclasses are returned directly.
+--
+-- UI objects may provide a Frame method or a frame property that represents the frame
+-- of that object. Frame-modifying methods will work on this frame. This allows UI objects
+-- to be passed seamlessly into Frames and Anchors without needing to manually extract a
+-- frame.
+--
+-- see also
+-- 		Frames.AsAnchorable
+-- 		Frames.IsRegion
+function Frames.AsRegion(frame)
+	if Frames.IsRegion(frame) then
+		-- Frames represent themselves.
 		return frame;
 	end;
 	if type(frame)=="string" then
+		-- Frame names represent the frames they name.
 		return _G[frame];
 	end;
 	assert(type(frame)=="table", "Frame must be a table. Got: "..type(frame));
 	if frame.Frame then
-		return frame:Frame(), Frames.GetAnchorable(frame);
+		-- UI objects that have a Frame method are called directly to get their
+		-- frame.
+		return frame:Frame(), Frames.AsAnchorable(frame);
 	end;
-	return frame.frame, Frames.GetAnchorable(frame);
+	-- UI objects may provide a frame property that will be used as the representative
+	-- region
+	return frame.frame, Frames.AsAnchorable(frame);
 end;
+Frames.GetFrame=Frames.AsRegion;
 
-function Frames.GetAnchorable(frame)
+-- Returns an object that may be anchored. Frames, regions, and their subclasses are
+-- returned directly.
+--
+-- UI objects may manage the reanchoring process themselves using an Anchor
+-- method.  This Anchor method should expect an anchor name. The UI object is
+-- responsible for reanchoring its children relative to the specified anchor
+-- name. It is up to the UI object whether this change should result in a
+-- visual appearance change or not.
+function Frames.AsAnchorable(frame)
+	local region = Frames.AsRegion(frame);
+	if region then
+		-- Plain ol' regions and UI objects that can be represented in one region
+		-- are anchorable.
+		return region;
+	end;
 	if type(frame)=="table" and frame.Anchor then
+		-- UI objects that provide an Anchor method can be anchored.
 		return frame;
 	end;
 end;
+Frames.GetAnchorable=Frames.AsAnchorable;
 
+-- Returns a region that represents the bounds of the specified object. Frames, regions,
+-- and their subclasses will be returned directly.
+--
+-- UI objects may provide a Bounds method or a bounds property that represents the bounding
+-- box of that object. Anchoring methods will use this box when regions are anchored relative
+-- to the specified UI object.
+--
+-- The UI object is solely responsible for ensuring the bounding box remains accurate.
 function Frames.GetBounds(frame)
-	if Frames.IsFrame(frame) then
+	if Frames.IsRegion(frame) then
 		return frame;
 	end;
 	if type(frame)=="string" then
@@ -50,11 +93,11 @@ function Frames.GetBounds(frame)
 	if frame.bounds then
 		return frame.bounds;
 	end;
-	return Frames.GetFrame(frame);
+	return Frames.AsRegion(frame);
 end;
 
 function Frames.Inject(frame)
-	frame=Frames.GetFrame(frame);
+	frame=Frames.AsRegion(frame);
 	if Frames.IsInjected(frame) then
 		return;
 	end;
@@ -82,7 +125,8 @@ local function CallOriginal(frame, name, ...)
 end;
 
 function Frames.Child(frame, t, name, ...)
-	frame=Frames.GetFrame(frame);
+	frame=Frames.AsRegion(frame);
+	assert(frame.GetChildren, "Frame cannot handle children");
 	local child=CreateFrame(t, name, frame, ...);
 	if Frames.IsInjected(frame) then
 		Frames.Inject(child);
@@ -97,14 +141,14 @@ end;
 Frames.Squared=Frames.Square;
 
 function Frames.DumpPoints(f)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	for i=1,f:GetNumPoints() do
 		print(f:GetPoint(i));
 	end;
 end;
 
 function Frames.DumpPointsToList(f)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	local points = {};
 	for i=1,f:GetNumPoints() do
 		local anchor, ref, anchorTo, x, y = f:GetPoint(i);
@@ -121,7 +165,7 @@ function Frames.DumpPointsToList(f)
 end;
 
 function Frames.DumpPointsToMap(f)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	local points = {};
 	for i=1,f:GetNumPoints() do
 		local anchor, ref, anchorTo, x, y = f:GetPoint(i);
@@ -148,7 +192,7 @@ function Frames.Rectangle(f, w, h)
 	if h==nil then
 		h=w;
 	end;
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	f:SetWidth(w);
 	f:SetHeight(h);
 end;
@@ -170,7 +214,7 @@ local INSETS_ZERO={
 	right=0
 };
 function Frames.Insets(f)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	if f.GetBackdrop then
 		local b=f:GetBackdrop();
 		if b then
@@ -219,8 +263,8 @@ do
 	end;
 
 	function Frames.IsInsetted(f, ref)
-		f=Frames.GetFrame(f);
-		ref=Frames.GetFrame(ref);
+		f=Frames.AsRegion(f);
+		ref=Frames.AsRegion(ref);
 		local insets=Frames.Insets(ref);
 		local matchDistance = 0;
 		if f:GetNumPoints() < 2 then
@@ -265,8 +309,8 @@ do
 	end;
 
 	function Frames.AdjustInsets(f, ref, oldInsets)
-		f=Frames.GetFrame(f);
-		ref=Frames.GetFrame(ref);
+		f=Frames.AsRegion(f);
+		ref=Frames.AsRegion(ref);
 		local newInsets = Frames.Insets(ref);
 		local diffs;
 		if oldInsets then
@@ -293,31 +337,31 @@ end;
 -- You don't need to use this function: we have it here when we use
 -- Frames as a headless table.
 function Frames.Alpha(f, alpha)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	f:SetAlpha(alpha);
 end;
 Frames.Opacity=Frames.Alpha;
 Frames.Visibility=Frames.Alpha;
 
 function Frames.Show(f)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	CallOriginal(f, "Show");
 	return Functions.OnlyOnce(CallOriginal, f, "Hide");
 end;
 
 function Frames.Hide(f)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	CallOriginal(f, "Hide");
 	return Functions.OnlyOnce(CallOriginal, f, "Show");
 end;
 
 function Frames.IsVisible(f)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	return CallOriginal(f, "IsVisible");
 end;
 
 function Frames.ToggleShowing(f)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	if f:IsVisible() then
 		f:Hide();
 	else
@@ -332,7 +376,7 @@ Frames.ToggleHide=Frames.ToggleShowing;
 Frames.ToggleHidden=Frames.ToggleShowing;
 
 function Frames.Destroy(f)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	f:Hide();
 	f:ClearAllPoints();
 	f:SetParent(nil);

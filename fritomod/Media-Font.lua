@@ -44,8 +44,9 @@ function Frames.Text(parent, font, size, ...)
 		text=parent;
 		parent=UIParent:CreateFontString();
 	elseif not parent.CreateFontString then
-		parent=Frames.GetFrame(parent);
+		parent=Frames.AsRegion(parent);
 	end;
+	assert(parent.CreateFontString, "Provided object does not support font strings");
 	local fontstring=parent:CreateFontString();
 	if Frames.IsInjected(parent) then
 		Frames.Inject(fontstring);
@@ -82,7 +83,7 @@ function Frames.Font(frame, font, size, ...)
 	if not font:match("\\") then
 		font=Media.font[font];
 	end;
-	frame=Frames.GetFrame(frame);
+	frame=Frames.AsRegion(frame);
 	if frame.GetFontString then
 		frame=frame:GetFontString();
 	end;

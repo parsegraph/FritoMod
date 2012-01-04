@@ -61,7 +61,7 @@ local function GetGroup(agOrFrame)
 	if agOrFrame.CreateAnimation then
 		return agOrFrame;
 	end;
-	agOrFrame=Frames.GetFrame(agOrFrame);
+	agOrFrame=Frames.AsRegion(agOrFrame);
 	return agOrFrame:CreateAnimationGroup();
 end;
 

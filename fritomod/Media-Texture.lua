@@ -151,7 +151,7 @@ Media.SetAlias("texture", "textures", "background", "backgrounds");
 
 Frames=Frames or {};
 function Frames.Texture(f, texture)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	texture = Media.texture[texture];
 	local coords;
 	if type(texture) == "table" then
@@ -177,7 +177,7 @@ function Frames.Texture(f, texture)
 end;
 
 function Frames.PortraitTexture(f, target)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	if f:GetObjectType():find("Button$") then
 		f=f:GetNormalTexture();
 	elseif f:GetObjectType() ~= "Texture" then

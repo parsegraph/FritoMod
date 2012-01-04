@@ -16,7 +16,7 @@ local function Forwarded(container, f, name)
 end;
 
 function Frames.OptionCategory(f, name, desc, parent)
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	local container=CreateFrame("Frame", nil, UIParent);
 	if not name then
 		name=f.name;

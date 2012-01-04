@@ -155,7 +155,7 @@ function Frames.Color(f,...)
 			a=possibleAlpha;
 		end;
 	end;
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
 	if f.GetBackdrop and f:GetBackdrop() then
 		f:SetBackdropColor(r,g,b,a);
 	elseif f.SetTextColor then
@@ -182,7 +182,8 @@ function Frames.BorderColor(f, r, g, b, a)
 			a=possibleAlpha;
 		end;
 	end;
-	f=Frames.GetFrame(f);
+	f=Frames.AsRegion(f);
+	assert(f.SetBackdropBorderColor, "Provided object does not support backdrops");
 	f:SetBackdropBorderColor(r,g,b,a);
 	return f;
 end;
