@@ -3,31 +3,28 @@ if nil ~= require then
 	require "wow/Frame";
 end;
 
-local FrameContainer = OOP.Class();
+local Frame = WoW.Frame;
 
-WoW.Frame:AddConstructor(FrameContainer, "New");
-
-function FrameContainer:Constructor(frame)
-	self.frame = frame;
-	WoW.AssertFrame(frame);
-
+Frame:AddConstructor(function(self, world, parent)
 	self.children = {};
+	self.parent = parent;
+end);
 
-	WoW.Inject(frame, self, {
-		"GetNumChildren",
-		"GetChildren",
-		"GetNumRegions",
-		"GetRegions"
-	});
+function Frame:GetNumChildren(...)
 end;
 
-function FrameContainer:GetNumChildren(...)
+function Frame:GetChildren(...)
 end;
 
-function FrameContainer:GetChildren(...)
+function Frame:GetNumRegions(...)
+end;
+function Frame:GetRegions(...)
 end;
 
-function FrameContainer:GetNumRegions(...)
+function Frame:SetParent(parent)
+	self.parent = parent;
 end;
-function FrameContainer:GetRegions(...)
+
+function Frame:GetParent()
+	return self.parent;
 end;

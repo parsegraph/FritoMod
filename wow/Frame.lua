@@ -17,24 +17,11 @@ function WoW.AssertFrame(frame)
 	);
 end;
 
-function WoW.Inject(frame, obj, names)
-	for _, name in ipairs(names) do
-		frame[name] = function(self, ...)
-			return obj[name](obj, ...);
-		end;
-	end;
-end;
-
-function Frame:Constructor(world)
-	self.world=world;
+function Frame:Constructor(parent)
 end;
 
 function Frame:GetObjectType()
 	return "Frame";
-end;
-
-function Frame:GetWorld()
-	return self.world;
 end;
 
 function Frame:SetAlpha()
@@ -42,10 +29,6 @@ function Frame:SetAlpha()
 end;
 
 function Frame:SetFrameStrata()
-
-end;
-
-function Frame:SetParent()
 
 end;
 

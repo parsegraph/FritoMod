@@ -7,9 +7,7 @@ if nil ~= require then
 	require "wow/Frame";
 end;
 
-local FrameLayout = OOP.Class();
-
-WoW.Frame:AddConstructor(FrameLayout, "New");
+local Frame = WoW.Frame;
 
 do
 	local validAnchors = {
@@ -31,26 +29,16 @@ do
 	end;
 end;
 
-function FrameLayout:Constructor(frame)
-	self.frame = frame;
-	WoW.AssertFrame(frame);
-
+WoW.Frame:AddConstructor(function(self)
 	self.points = {};
 	self.pointOrder = {};
+end);
 
-	WoW.Inject(frame, self, {
-		"SetAllPoints",
-		"SetPoint",
-		"GetNumPoints",
-		"GetPoint",
-	});
-end;
-
-function FrameLayout:SetAllPoints(ref)
+function Frame:SetAllPoints(ref)
 	-- TODO Stub
 end;
 
-function FrameLayout:SetPoint(anchor, ...)
+function Frame:SetPoint(anchor, ...)
 	WoW.AssertAnchor(anchor);
 	if select("#", ...) == 0 then
 		-- SetPoint(anchor)
@@ -91,7 +79,7 @@ function FrameLayout:SetPoint(anchor, ...)
 	table.insert(self.pointOrder, anchor);
 end;
 
-function FrameLayout:GetPoint(index)
+function Frame:GetPoint(index)
 	Assert.Number(index, "index must be a number");
 	local anchorName = self.pointOrder[index];
 	assert(anchorName, "index must not be out of range. Given: "..tostring(index));
@@ -107,7 +95,7 @@ function FrameLayout:GetPoint(index)
 		anchor.y
 end;
 
-function FrameLayout:GetNumPoints()
+function Frame:GetNumPoints()
 	return #self.pointOrder;
 end;
 

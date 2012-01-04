@@ -8,17 +8,7 @@ WoW=WoW or {};
 WoW.Cursor=OOP.Class();
 local Cursor=WoW.Cursor;
 
-function Cursor:Constructor(world)
-	self.world=world;
-end;
-
-function Cursor:GetWorld()
-	return self.world;
-end;
-
-function Cursor:AssertWorld(frame)
-	assert(frame.GetWorld, "Frame must be created by FritoMod; real frames aren't supported");
-	assert(frame:GetWorld()==self:GetWorld(), "Frame must be of the same world");
+function Cursor:Constructor()
 end;
 
 function Cursor:Enter(frame)
@@ -28,24 +18,21 @@ function Cursor:Enter(frame)
 	if self.hoveredFrame then
 		self:Leave();
 	end;
-	self:AssertWorld(frame);
 	self.hoveredFrame=frame;
-	WoW.FireFrameEvent(self.hoveredFrame, "OnEnter");
+	self.hoveredFrame:_FireEvent("OnEnter");
 	return Functions.OnlyOnce(self, "Leave", frame);
 end;
 
 function Cursor:Down(frame)
-	self:AssertWorld(frame);
 	self:Enter(frame);
-	WoW.FireFrameEvent(self.hoveredFrame, "OnMouseDown");
+	self.hoveredFrame:_FireEvent("OnMouseDown");
 	return Functions.OnlyOnce(
-		WoW.FireFrameEvent, self.hoveredFrame, "OnMouseUp");
+		self.hoveredFrame, "_FireEvent", "OnMouseUp");
 end;
 
 function Cursor:Click(frame)
-	self:AssertWorld(frame);
 	self:Enter(frame);
-	WoW.FireFrameEvent(self.hoveredFrame, "OnClick");
+	self.hoveredFrame:_FireEvent("OnClick");
 end;
 
 function Cursor:Leave()
@@ -54,5 +41,5 @@ function Cursor:Leave()
 	end;
 	local oldFrame=self.hoveredFrame;
 	self.hoveredFrame=nil;
-	WoW.FireFrameEvent(oldFrame, "OnLeave");
+	oldFrame:_FireEvent("OnLeave");
 end;

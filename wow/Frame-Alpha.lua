@@ -4,42 +4,30 @@ if nil ~= require then
 	require "wow/Frame-Events";
 end;
 
-local FrameAlpha = OOP.Class();
+local Frame = WoW.Frame;
 
-WoW.Frame:AddConstructor(FrameAlpha, "New");
-
-function FrameAlpha:Constructor(frame)
-	self.frame = frame;
-	WoW.AssertFrame(frame);
-
+Frame:AddConstructor(function(self)
 	self.shown = true;
+end);
 
-	WoW.Inject(frame, self, {
-		"Show",
-		"Hide",
-		"IsShown",
-		"IsVisible"
-	});
-end;
-
-function FrameAlpha:Show()
+function Frame:Show()
 	if not self.shown then
 		self.shown=true;
-		WoW.FireFrameEvent(self.frame, "OnShow");
+		self:_FireEvent("OnShow");
 	end;
 end;
 
-function FrameAlpha:Hide()
+function Frame:Hide()
 	if self.shown then
 		self.shown=false;
-		WoW.FireFrameEvent(self.frame, "OnHide");
+		self:_FireEvent("OnHide");
 	end;
 end;
 
-function FrameAlpha:IsShown()
+function Frame:IsShown()
 	return self.shown;
 end;
 
-function FrameAlpha:IsVisible()
+function Frame:IsVisible()
 	return self.shown;
 end;
