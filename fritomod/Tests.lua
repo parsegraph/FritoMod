@@ -295,3 +295,12 @@ function Tests.Counter(count)
 
 	return counter;
 end;
+
+function Tests.Timer(name)
+	local start = GetTime();
+	trace("Beginning timer %q", name);
+	return function()
+		local elapsed = GetTime() - start;
+		trace("Timer %q Took %f seconds", name, elapsed);
+	end;
+end;
