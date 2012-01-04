@@ -105,7 +105,11 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 			frames={gap, ...};
 			gap=0;
 		elseif select("#", ...) == 0 and type(gap) == "table" then
-			frames = gap;
+			if Frames.IsFrame(gap) then
+				frames = {gap}
+			else
+				frames = gap;
+			end;
 			gap=0;
 		elseif select("#", ...) == 1 and not Frames.IsFrame(...) then
 			frames = ...;
