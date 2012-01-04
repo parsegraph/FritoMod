@@ -17,6 +17,7 @@ local PlayerFrame = OOP.Class();
 UI.PlayerFrame = PlayerFrame;
 
 function PlayerFrame:Constructor(parent, orient)
+	parent = Frames.AsRegion(parent);
 	assert(Frames.IsFrame(parent), "Parent frame must be provided");
 	assert(parent.CreateTexture, "Provided parent must be a real frame");
 	local height=30;

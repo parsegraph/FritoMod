@@ -15,7 +15,8 @@ local ActionPlate = OOP.Class();
 UI.ActionPlate = ActionPlate;
 
 function ActionPlate:Constructor(parent)
-	assert(Frames.IsRegion(parent), "Parent frame must be provided");
+	parent = Frames.AsRegion(parent);
+	assert(parent, "Parent frame must be provided");
 	assert(parent.CreateTexture, "Provided parent must be a real frame");
 
 	self.actionIcon = UI.Icon:New(parent, 36);

@@ -12,6 +12,7 @@ local Icon = OOP.Class();
 UI.Icon = Icon;
 
 function Icon:Constructor(parent, size)
+	parent = Frames.AsRegion(parent);
 	assert(Frames.IsRegion(parent), "Parent frame must be provided");
 	assert(parent.GetChildren, "Provided parent must be a real frame");
 	self.frame=CreateFrame("Frame", nil, parent);
