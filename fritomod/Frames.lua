@@ -401,8 +401,14 @@ Frames.ToggleHide=Frames.ToggleShowing;
 Frames.ToggleHidden=Frames.ToggleShowing;
 
 function Frames.Destroy(f)
-	f=Frames.AsRegion(f);
-	f:Hide();
-	f:ClearAllPoints();
-	f:SetParent(nil);
+	if f.Destroy then
+		f:Destroy();
+	else
+		f=Frames.AsRegion(f);
+		if f then
+			f:Hide();
+			f:ClearAllPoints();
+			f:SetParent(nil);
+		end;
+	end;
 end;
