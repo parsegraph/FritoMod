@@ -571,9 +571,12 @@ function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
 end;
 
 function Anchors.Clear(...)
+	if select("#", ...) == 1 and #(...) > 0 then
+		trace("Unpacking list for clearing")
+		return Anchors.Clear(unpack(...));
+	end;
 	for i=1, select("#", ...) do
 		local frame = select(i, ...);
-		frame=Frames.GetFrame(frame);
-		frame:ClearAllPoints();
+		Frames.GetFrame(frame):ClearAllPoints();
 	end;
 end;
