@@ -27,6 +27,7 @@ function Tables.Bias()
 end;
 
 function Tables.Iterator(iterable)
+	-- We don't support userdata since you can't iterate over them using table.next
 	assert(type(iterable) == "table", "iterable is not a table. Iterable: " .. tostring(iterable));
 	local key = nil;
 	return function()
