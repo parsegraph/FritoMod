@@ -6,6 +6,8 @@ if nil ~= require then
 	require "fritomod/Persistence";
 end;
 
+local SAVE_TO_PERSISTENCE=false;
+
 function TestingSlashCommand()
 	local testNameColor = "FFE5B4";
 	local cumulativePassColor = 0x32CD32;
@@ -64,7 +66,7 @@ function TestingSlashCommand()
 					state="Running",
 					numRan=0
 				};
-				if Persistence:Loaded() then
+				if SAVE_TO_PERSISTENCE and Persistence:Loaded() then
 					local N="FritoMod.Cumulative Tests";
 					Persistence[N]=Persistence[N] or {};
 					table.insert(Persistence[N], report);
