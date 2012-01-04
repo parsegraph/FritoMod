@@ -15,8 +15,6 @@ WrappingPlates = OOP.Class();
 UI.WrappingPlates = WrappingPlates;
 
 function WrappingPlates:Constructor()
-	self.frame = CreateFrame("Frame");
-	Frames.Size(self.frame, 10);
 	self.children = {};
 	self.currentFrame = 0;
 end;
@@ -45,36 +43,25 @@ end;
 
 function WrappingPlates:Add(child)
 	table.insert(self.children, child);
-	local f = Frames.GetFrame(child);
-	--f:Hide();
-	f:SetParent(self.frame);
 end;
 
-
 function WrappingPlates:Set(...)
-	self.currentFrame = 1 + self.currentFrame;
+	self.currentFrame = self.currentFrame + 1;
 	local child = self:Get();
-	assert(child, "Child is not present!");
+	child:Set(...);
 	if self.anchor then
-		if not Frames.IsVisible(child) then
-			Frames.Show(child);
-		else
-			-- We wrapped so rearrange
-			Anchors.Clear(self:Next(), self:Current());
-			Anchors.Share(self:Next(), self, self.anchor);
-			Anchors.VFlip(self:Current(), self:Previous(), self.anchor, 12);
-		end;
+		-- We wrapped so rearrange
+		-- TODO Reenable this wrapping
+		--Anchors.Share(self:Next(), self, self.anchor);
+		--Anchors.HFlip(self:Current(), self:Previous(), self.anchor, 12);
 	else
 		trace("No anchor, just setting for now");
 	end;
-	
-	child:Set(...);
 end;
 
 function WrappingPlates:Anchor(anchor)
 	trace("Anchoring WrappingPlates to: "..anchor);
 	self.anchor = anchor;
-	Anchors.Clear(self.children);
 	local orderedChildren = Tables.Clone(self.children);
 	Lists.Rotate(orderedChildren, self:Index());
 	return Anchors.HJustifyFrom(anchor, 10, orderedChildren);
