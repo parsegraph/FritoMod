@@ -14,7 +14,10 @@ UI = UI or {};
 WrappingPlates = OOP.Class();
 UI.WrappingPlates = WrappingPlates;
 
-function WrappingPlates:Constructor()
+function WrappingPlates:Constructor(parent)
+	parent = Frames.AsRegion(parent);
+	self.root = parent:CreateTexture();
+	Frames.Size(self.root, 10);
 	self.children = {};
 	self.currentFrame = 0;
 end;
@@ -64,7 +67,9 @@ function WrappingPlates:Anchor(anchor)
 	self.anchor = anchor;
 	local orderedChildren = Tables.Clone(self.children);
 	Lists.Rotate(orderedChildren, self:Index());
-	return Anchors.HJustifyFrom(anchor, 10, orderedChildren);
+	local anchored = Anchors.HJustifyFrom(anchor, 10, orderedChildren);
+	Anchors.Share(anchored, self.root, anchor);
+	return self.root;
 end;
 
 function WrappingPlates:Destroy()

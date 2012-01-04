@@ -6,8 +6,8 @@ end;
 local Suite=CreateTestSuite("labs.UI-WrappingPlates");
 
 function Suite:TestBasicWrapping()
-	local wrapper = UI.WrappingPlates:New();
 	local parent = CreateFrame("Frame");
+	local wrapper = UI.WrappingPlates:New(parent);
 	for i=1, 25 do
 		wrapper:Add(UI.ActionPlate:New(parent));
 	end;
