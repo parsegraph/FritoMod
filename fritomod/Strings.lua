@@ -208,7 +208,10 @@ function Strings.PrettyList(value)
 end;
 
 function Strings.PrettyMap(value)
-	assert(type(value) == "table", "value is not a table. Type: " .. type(value));
+	assert(
+		type(value) == "table" or type(value) == "userdata",
+		"value is not a table. Type: " .. type(value)
+	);
 	local size = Tables.Size(value);
 	if size == 0 then
 		return "{<empty>}";
