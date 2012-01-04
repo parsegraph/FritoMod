@@ -189,15 +189,19 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 	end;
 
 	local function Justify(anchor, ...)
+		anchor=anchor:upper();
 		return justifiers[anchor](anchor, ...);
 	end;
 	local function JustifyFrom(anchor, ...)
+		anchor=anchor:upper();
 		return fromJustifiers[anchor](anchor, ...);
 	end;
 	local function ReverseJustify(anchor, ...)
+		anchor=anchor:upper();
 		return reverseJustifiers[anchor](anchor, ...);
 	end;
 	local function ReverseJustifyFrom(anchor, ...)
+		anchor=anchor:upper();
 		return reverseFromJustifiers[anchor](anchor, ...);
 	end;
 
