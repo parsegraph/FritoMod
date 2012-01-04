@@ -294,6 +294,11 @@ function Frames.Hide(f)
 	return Functions.OnlyOnce(CallOriginal, f, "Show");
 end;
 
+function Frames.IsVisible(f)
+	f=Frames.GetFrame(f);
+	return CallOriginal(f, "IsVisible");
+end;
+
 function Frames.ToggleShowing(f)
 	f=Frames.GetFrame(f);
 	if f:IsVisible() then
