@@ -28,6 +28,7 @@ local function GetAnchorArguments(frame, ...)
 		parent=Frames.GetFrame(ref);
 		ref=Frames.GetBounds(ref);
 	end;
+	assert(frame ~= ref, "Frame and ref must not be equal");
 	return anchor, ref, x, y, parent;
 end;
 
