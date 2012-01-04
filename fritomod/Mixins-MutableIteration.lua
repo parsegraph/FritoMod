@@ -467,6 +467,12 @@ function Mixins.MutableIteration(library, iteratorFunc)
 		end;
 	end;
 
+	if library.Push==nil then
+		function library.Push(iterable, value)
+			return library.Insert(iterable, value);
+		end;
+	end;
+
 	if library.Shift==nil then
 		function library.Shift(iterable, count)
 			count=count or 1;
@@ -478,6 +484,33 @@ function Mixins.MutableIteration(library, iteratorFunc)
 				count=count-1;
 			end;
 			return removed;
+		end;
+	end;
+
+	if library.ShiftOne==nil then
+		function library.ShiftOne(iterable)
+			if not library.IsEmpty(iterable) then
+				return library.RemoveAt(iterable, 1);
+			end;
+		end;
+	end;
+
+	if library.Unshift == nil then
+		function library.Unshift(iterable, value)
+			return library.InsertAt(iterable, 1, value);
+		end;
+	end;
+
+	if library.Rotate == nil then
+		function library.Rotate(iterable, count)
+			while count > 0 do
+				library.Push(iterable, library.ShiftOne(iterable));
+				count = count - 1;
+			end;
+			while count < 0 do
+				library.Unshift(iterable, library.PopOne(iterable));
+				count = count + 1;
+			end;
 		end;
 	end;
 
