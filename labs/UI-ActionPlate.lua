@@ -1,5 +1,7 @@
 if nil ~= require then
 	require "wow/api/Frame";
+	require "wow/Frame-Container";
+	require "wow/Texture";
 	require "fritomod/OOP-Class";
 	require "fritomod/Frames";
 	require "fritomod/Anchors";
@@ -12,17 +14,15 @@ UI = UI or {};
 local ActionPlate = OOP.Class();
 UI.ActionPlate = ActionPlate;
 
-function ActionPlate:Constructor(anchored)
-	self.frame = CreateFrame("Frame");
-	Frames.Size(self.frame, 10);
+function ActionPlate:Constructor(parent)
+	assert(Frames.IsRegion(parent), "Parent frame must be provided");
+	assert(parent.CreateTexture, "Provided parent must be a real frame");
+
+	self.actionIcon = UI.Icon:New(parent, 36);
+	self.sourceFrame = UI.PlayerFrame:New(parent, "right");
+	self.targetFrame = UI.PlayerFrame:New(parent);
 	
-	self.actionIcon = UI.Icon:New(self.frame, 36);
-	
-	self.sourceFrame = UI.PlayerFrame:New(self.frame, "right");
-	
-	self.targetFrame = UI.PlayerFrame:New(self.frame);
-	
-	self.bounds = CreateFrame("Frame", nil, self.frame);
+	self.bounds = parent:CreateTexture();
 	Anchors.ShareAll(self.bounds, self.actionIcon);
 	Anchors.Share(self.bounds, self.sourceFrame, "left");
 	Anchors.Share(self.bounds, self.targetFrame, "right");
@@ -41,16 +41,14 @@ function ActionPlate:Anchor(anchor)
 		self.targetFrame
 	);
 	if anchor == "CENTER" then
-		Anchors.Center(self.actionIcon, self.frame);
 		Anchors.Flip(self.sourceFrame, self.actionIcon, "LEFT", sourceGap);
 		Anchors.Flip(self.targetFrame, self.actionIcon, "RIGHT", targetGap);
+		return self.actionIcon;
 	else
-		local anchored = Anchors.HJustifyFrom("right", 3,
+		return Anchors.HJustifyFrom("right", 3,
 			self.sourceFrame,
 			self.actionIcon,
 			self.targetFrame
 		);
-		assert(anchored);
-		Anchors.Share(anchored, anchor, self.frame);
 	end;
 end;

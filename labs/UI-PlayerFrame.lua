@@ -5,6 +5,7 @@ if nil ~= require then
 	require "fritomod/Anchors";
 	require "fritomod/Media-Color";
 	require "fritomod/Media-Texture";
+	require "fritomod/Media-Font";
 	require "fritomod/Media-Backdrop";
 	require "fritomod/CombatObjects-Target";
 	require "labs/UI-Icon"
@@ -16,15 +17,15 @@ local PlayerFrame = OOP.Class();
 UI.PlayerFrame = PlayerFrame;
 
 function PlayerFrame:Constructor(parent, orient)
-	self.frame = CreateFrame("Frame", nil, parent);
+	assert(Frames.IsFrame(parent), "Parent frame must be provided");
+	assert(parent.CreateTexture, "Provided parent must be a real frame");
 	local height=30;
-	Frames.WidthHeight(self.frame, 10, height);
-	self.icon = UI.Icon:New(self.frame, height);
+	self.icon = UI.Icon:New(parent, height);
 	
-	self.nameText = Frames.Text(self, "default", 10);
+	self.nameText = Frames.Text(parent, "default", 10);
 	self.nameText:SetHeight(height);
 	
-	self.bounds = CreateFrame("Frame", nil, self.frame);
+	self.bounds = parent:CreateTexture();
 	Anchors.ShareAll(self.bounds, self.icon);
 	Anchors.Share(self.bounds, self.nameText, "right");
 end;
@@ -41,11 +42,9 @@ end;
 
 function PlayerFrame:Anchor(anchor)
 	trace("Anchoring player frame: " ..anchor);
-	Anchors.Clear(self.icon, self.nameText);
-	local anchored = Anchors.HJustifyFrom(anchor, 2,
+	return Anchors.HJustifyFrom(anchor, 2,
 		self.icon,
 		self.nameText
 	);
-	Anchors.Share(anchored, anchor, self.frame);
 end;
 

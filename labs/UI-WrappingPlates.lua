@@ -1,5 +1,7 @@
 if nil ~= require then
 	require "wow/api/Frame";
+	require "wow/FontString";
+
 	require "fritomod/OOP-Class";
 	require "fritomod/Frames";
 	require "fritomod/Anchors";
@@ -75,8 +77,7 @@ function WrappingPlates:Anchor(anchor)
 	Anchors.Clear(self.children);
 	local orderedChildren = Tables.Clone(self.children);
 	Lists.Rotate(orderedChildren, self:Index());
-	local anchored = Anchors.VJustifyFrom(anchor, 10, orderedChildren);
-	Anchors.Share(anchored, anchor, self);
+	return Anchors.HJustifyFrom(anchor, 10, orderedChildren);
 end;
 
 function WrappingPlates:Destroy()
