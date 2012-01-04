@@ -25,6 +25,16 @@ local function PointTest(runner, expectedPoints)
 	end;
 end;
 
+local function PointMapTest(runner, expectedPoints)
+	return function(self)
+		local ref = CreateFrame("Frame");
+		local f = CreateFrame("Frame");
+		expectedPoints = runner(f, ref);
+		local points = Frames.DumpPointsToMap(f);
+		Assert.Equals(expectedPoints, points, "Anchors must match");
+	end;
+end;
+
 Suite.TestSharingAnchorsCausesThemToOverlap = PointTest(
 	function(f, ref)
 		Anchors.Share(f, ref, "topleft");
@@ -139,5 +149,85 @@ Suite.TestDiagonalFlipFromWithGap = PointTest(
 			anchorTo = "TOP",
 			x = 0,
 			y = 2
+		};
+end);
+
+Suite.TestShareAllSetsAllFourDirections = PointMapTest(function(f, ref)
+		Anchors.ShareAll(f, ref);
+		return {
+			BOTTOM = {
+				frame = f,
+				ref = ref,
+				anchor = "BOTTOM",
+				anchorTo = "BOTTOM",
+				x = 0,
+				y = 0
+			},
+			TOP = {
+				frame = f,
+				ref = ref,
+				anchor = "TOP",
+				anchorTo = "TOP",
+				x = 0,
+				y = 0
+			},
+			LEFT = {
+				frame = f,
+				ref = ref,
+				anchor = "LEFT",
+				anchorTo = "LEFT",
+				x = 0,
+				y = 0
+			},
+			RIGHT = {
+				frame = f,
+				ref = ref,
+				anchor = "RIGHT",
+				anchorTo = "RIGHT",
+				x = 0,
+				y = 0
+			}
+		};
+end);
+
+Suite.TestShareAllAndShareInteractHappily = PointMapTest(function(bounds, ref)
+		local a = CreateFrame("Frame", nil, ref);
+		local b = CreateFrame("Frame", nil, ref);
+		Anchors.Flip(b, a, "RIGHT");
+		Anchors.ShareAll(bounds, a);
+		Anchors.Share(bounds, b, "RIGHT");
+		return {
+			BOTTOM = {
+				frame = bounds,
+				ref = a,
+				anchor = "BOTTOM",
+				anchorTo = "BOTTOM",
+				x = 0,
+				y = 0
+			},
+			TOP = {
+				frame = bounds,
+				ref = a,
+				anchor = "TOP",
+				anchorTo = "TOP",
+				x = 0,
+				y = 0
+			},
+			LEFT = {
+				frame = bounds,
+				ref = a,
+				anchor = "LEFT",
+				anchorTo = "LEFT",
+				x = 0,
+				y = 0
+			},
+			RIGHT = {
+				frame = bounds,
+				ref = b,
+				anchor = "RIGHT",
+				anchorTo = "RIGHT",
+				x = 0,
+				y = 0
+			}
 		};
 end);
