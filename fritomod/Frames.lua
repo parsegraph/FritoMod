@@ -400,15 +400,32 @@ Frames.ToggleShow=Frames.ToggleShowing;
 Frames.ToggleHide=Frames.ToggleShowing;
 Frames.ToggleHidden=Frames.ToggleShowing;
 
-function Frames.Destroy(f)
-	if f.Destroy then
-		f:Destroy();
-	else
-		f=Frames.AsRegion(f);
-		if f then
-			f:Hide();
-			f:ClearAllPoints();
-			f:SetParent(nil);
+local disallowsNilParent = {
+	Texture = true,
+	FontString = true
+}
+
+function Frames.Destroy(...)
+	if select("#", ...) == 1 and #(...) > 0 then
+		trace("Unpacking list for destruction")
+		return Frames.Destroy(unpack(...));
+	end;
+	for i=1, select("#", ...) do
+		local f = select(i, ...);
+		if f.Destroy then
+			f:Destroy();
+		else
+			f=Frames.AsRegion(f);
+			if f then
+				f:Hide();
+				f:ClearAllPoints();
+				local objectType = f:GetObjectType();
+				-- Some objects do not allow a nil parent, so we need
+				-- to exclude them here.
+				if not disallowsNilParent[objectType] then
+					f:SetParent(nil);
+				end;
+			end;
 		end;
 	end;
 end;
