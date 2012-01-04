@@ -66,12 +66,12 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 		if anchorable then
 			anchorable:Anchor(reverse);
 		end;
-		x, y = Gap(anchor, x, y);
-		assert(Frames.IsFrame(frame), "frame must be a frame. Got: "..type(frame));
-		assert(Frames.IsFrame(ref), "ref must be a frame. Got: "..type(ref));
 		if reversed then
 			anchor, reverse = reverse, anchor;
 		end;
+		x, y = Gap(reverse, x, y);
+		assert(Frames.IsFrame(frame), "frame must be a frame. Got: "..type(frame));
+		assert(Frames.IsFrame(ref), "ref must be a frame. Got: "..type(ref));
 		if DEBUG_TRACE then
 			trace("%s flipping %s's %s over %s's %s (gap: %d, %d)",
 				name,
