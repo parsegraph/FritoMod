@@ -254,6 +254,19 @@ function Assert.TablesEqual(expected, actual, assertion)
 	end;
 end;
 
+Assert.NUMERIC_TOLERANCE = .00001;
+function Assert.FuzzyEquals(expected, actual, assertion)
+	if type(expected) == "number" then
+		Assert.Type(type(expected), actual, assertion);
+		assertion = FormatName(assertion);
+		assert(
+			math.abs(expected - actual) < Assert.NUMERIC_TOLERANCE,
+			("Identity mismatch%s, expected %s, got %s"):format(assertion, s(expected), s(actual)));
+	else
+		return Assert.Identical(expected, actual, assertion);
+	end;
+end;
+
 -- Asserts that the two values are equal.
 --
 -- The method of testing for equivalence depends on the expected value:
@@ -276,7 +289,7 @@ function Assert.Equals(expected, actual, assertion)
 		Assert.TablesEqual(expected, actual, assertion);
 		return;
 	end;
-	Assert.Identical(expected, actual, assertion);
+	Assert.FuzzyEquals(expected, actual, assertion);
 end;
 Assert.Same=Assert.Equals
 Assert.Equal=Assert.Equals
