@@ -24,9 +24,9 @@ function ActionPlate:Constructor(parent)
 	self.targetFrame = UI.PlayerFrame:New(parent);
 	
 	self.bounds = parent:CreateTexture();
-	Anchors.ShareAll(self.bounds, self.actionIcon);
-	Anchors.Share(self.bounds, self.sourceFrame, "left");
-	Anchors.Share(self.bounds, self.targetFrame, "right");
+	Anchors.ShareOuterAll(self.bounds, self.actionIcon);
+	Anchors.ShareOuter(self.bounds, self.sourceFrame, "left");
+	Anchors.ShareOuter(self.bounds, self.targetFrame, "right");
 end;
 
 function ActionPlate:Set(source, target, action)

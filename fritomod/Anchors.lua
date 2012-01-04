@@ -496,68 +496,89 @@ Anchors.FlipBottom=Anchors.VFlipBottom;
 Anchors.FlipLeft =Anchors.HFlipLeft;
 Anchors.FlipRight=Anchors.HFlipRight;
 
--- frame shares ref's anchor
-function Anchors.Share(frame, ...)
-	local anchor, ref, x, y=GetAnchorArguments(...);
-	local region;
-	repeat
-		region = Frames.AsRegion(frame);
-		if not region then
-			assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
-			frame = frame:Anchor(anchor);
+do
+	-- frame shares ref's anchor
+	local function Share(useInsets, frame, ...)
+		local anchor, ref, x, y=GetAnchorArguments(...);
+		local region;
+		repeat
+			region = Frames.AsRegion(frame);
+			if not region then
+				assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
+				frame = frame:Anchor(anchor);
+			end;
+		until region;
+		assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
+		if ref == nil then
+			ref = region:GetParent();
 		end;
-	until region;
-	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
-	if ref == nil then
-		ref = region:GetParent();
-	end;
-	local insets=Frames.Insets(Frames.AsRegion(ref));
-	ref = Frames.GetBounds(ref);
-	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
-	if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
-		y=y or 0;
-		y=y+insets.top;
-	elseif insets.bottom > 0 and Strings.StartsWith(anchor, "BOTTOM") then
-		y=y or 0;
-		y=y+insets.bottom;
-	end;
-	if insets.left > 0 and Strings.EndsWith(anchor, "LEFT") then
-		x=x or 0;
-		x=x+insets.left;
-	elseif insets.right > 0 and Strings.EndsWith(anchor, "RIGHT") then
-		x=x or 0;
-		x=x+insets.right;
-	end;
-	if x ~= nil then
-		x=-x;
-	end;
-	if y ~= nil then
-		y=-y;
-	end;
-	region:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, x, y));
-end;
-Anchors.Shares=Anchors.Share;
-Anchors.Sharing=Anchors.Share;
-Anchors.On=Anchors.Share;
-
-EdgeFunctions("Share");
-
-local function MultipleShare(anchor, ...)
-	local anchors = {anchor, ...};
-	return function(frame, ref, x, y)
-		-- We call GetFrame here to avoid calling anchorable:Anchor since it would
-		-- be ambiguous.
-		for i=1, #anchors do
-			Anchors.Share(frame, anchors[i], ref, x, y);
+		if useInsets then
+			local insets=Frames.Insets(Frames.AsRegion(ref));
+			if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
+				y=y or 0;
+				y=y+insets.top;
+			elseif insets.bottom > 0 and Strings.StartsWith(anchor, "BOTTOM") then
+				y=y or 0;
+				y=y+insets.bottom;
+			end;
+			if insets.left > 0 and Strings.EndsWith(anchor, "LEFT") then
+				x=x or 0;
+				x=x+insets.left;
+			elseif insets.right > 0 and Strings.EndsWith(anchor, "RIGHT") then
+				x=x or 0;
+				x=x+insets.right;
+			end;
 		end;
+		ref = Frames.GetBounds(ref);
+		assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
+		if x ~= nil then
+			x=-x;
+		end;
+		if y ~= nil then
+			y=-y;
+		end;
+		x,y = Anchors.DiagonalGap(anchor, x, y);
+		if DEBUG_TRACE then
+			trace("Share - %s:SetPoint(%q, %s, %q, %d, %d)",
+				tostring(region),
+				anchor,
+				tostring(ref),
+				anchor,
+				x,
+				y);
+		end;
+		region:SetPoint(anchor, ref, anchor, x, y);
 	end;
-end;
+	Anchors.ShareInner = Curry(Share, true);
+	Anchors.Share = Anchors.ShareInner;
 
-Anchors.ShareAll = MultipleShare("LEFT", "RIGHT", "TOP", "BOTTOM");
-Anchors.ShareOrthogonals = Anchors.ShareAll;
-Anchors.ShareDiagonals = MultipleShare("TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT");
-Anchors.ShareVertical = MultipleShare("TOP", "BOTTOM");
-Anchors.ShareHorizontal = MultipleShare("LEFT", "RIGHT");
+	Anchors.ShareOuter = Curry(Share, false);
+
+	local function MultipleShare(name, anchor, ...)
+		local anchors = {anchor, ...};
+		local function MultiShare(useInsets, frame, ref, x, y)
+			-- We call GetFrame here to avoid calling anchorable:Anchor since it would
+			-- be ambiguous.
+			for i=1, #anchors do
+				Share(useInsets, frame, anchors[i], ref, x, y);
+			end;
+		end;
+		Anchors["ShareInner"..name] = Curry(MultiShare, true);
+		Anchors["Share"..name] = Anchors["ShareInner"..name];
+		Anchors["ShareOuter"..name] = Curry(MultiShare, false);
+	end;
+
+	EdgeFunctions("ShareInner");
+	EdgeFunctions("ShareOuter");
+
+	MultipleShare("All", "LEFT", "RIGHT", "TOP", "BOTTOM");
+	MultipleShare("Orthogonal", "LEFT", "RIGHT", "TOP", "BOTTOM");
+
+
+	MultipleShare("Diagonals", "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT");
+	MultipleShare("Vertical", "TOP", "BOTTOM");
+	MultipleShare("Horiztonals", "LEFT", "RIGHT");
+end;
 
 function Anchors.Center(frame, ref)
 	local anchorable;

@@ -27,8 +27,8 @@ function PlayerFrame:Constructor(parent, orient)
 	self.nameText:SetHeight(height);
 	
 	self.bounds = parent:CreateTexture();
-	Anchors.ShareAll(self.bounds, self.icon);
-	Anchors.Share(self.bounds, self.nameText, "right");
+	Anchors.ShareOuterAll(self.bounds, self.icon);
+	Anchors.ShareOuter(self.bounds, self.nameText, "right");
 end;
 
 function PlayerFrame:Set(target)
