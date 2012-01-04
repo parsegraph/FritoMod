@@ -220,6 +220,10 @@ function Strings.PrettyMap(value)
 	return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", contents));
 end;
 
+function Strings.PrettyUserdata(value)
+	return ("Userdata@%s"):format(Tables.KeyFor(_G, value) or Reference(value));
+end;
+
 function Strings.PrettyNumber(value)
 	local number = tonumber(value);
 	if not number then
