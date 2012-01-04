@@ -20,7 +20,10 @@ local function ToggledEvent(event, setUp, ...)
 	setUp=Curry(setUp, ...);
 	local eventListenerName=event.."Listeners";
 	Callbacks[event]=function(frame, func, ...)
-		assert(Frames.IsFrame(frame), "Listener for "..event.." was not passed a frame, type was: "..type(frame));
+		frame = Frames.AsRegion(frame);
+		assert(frame.SetScript,
+			"Listener for "..event.." was not passed a frame, type was: "..type(frame)
+		);
 		func=Curry(func, ...);
 		local dispatcher;
 		trace("Listening for frame event %q", event);
