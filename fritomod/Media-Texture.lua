@@ -184,7 +184,6 @@ function Frames.PortraitTexture(f, target)
 		local t=f:CreateTexture();
 		Anchors.ShareAll(t, f);
 		f=t;
-		f=t;
 	end;
 	SetPortraitTexture(f, target);
 	return f;
