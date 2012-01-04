@@ -71,12 +71,12 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 		assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
 		x, y = Gap(anchorTo, x, y);
 		if DEBUG_TRACE then
-			trace("%s flipping %s's %s over %s's %s (gap: %d, %d)",
+			trace("%s Flip - %s:SetPoint(%q, %s, %q, %d, %d)",
 				name,
 				tostring(region),
-				reverse,
-				tostring(ref),
 				anchor,
+				tostring(ref),
+				anchorTo,
 				x,
 				y);
 		end;
