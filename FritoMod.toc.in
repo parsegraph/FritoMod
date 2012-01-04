@@ -2,7 +2,7 @@
 PATH=/bin:/usr/bin
 
 cat - <<EOF
-## Interface: 40000
+## Interface: 40300
 ## Title: FritoMod
 ## Notes: A function-oriented library for Lua & WoW
 ## Version: `git describe --tags`
