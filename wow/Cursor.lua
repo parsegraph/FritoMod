@@ -30,23 +30,22 @@ function Cursor:Enter(frame)
 	end;
 	self:AssertWorld(frame);
 	self.hoveredFrame=frame;
-	self.hoveredFrame:FireEvent("OnEnter");
+	WoW.FireFrameEvent(self.hoveredFrame, "OnEnter");
 	return Functions.OnlyOnce(self, "Leave", frame);
 end;
 
 function Cursor:Down(frame)
 	self:AssertWorld(frame);
 	self:Enter(frame);
-	self.hoveredFrame:FireEvent("OnMouseDown");
-	return Functions.OnlyOnce(function()
-		self.hoveredFrame:FireEvent("OnMouseUp");
-	end);
+	WoW.FireFrameEvent(self.hoveredFrame, "OnMouseDown");
+	return Functions.OnlyOnce(
+		WoW.FireFrameEvent, self.hoveredFrame, "OnMouseUp");
 end;
 
 function Cursor:Click(frame)
 	self:AssertWorld(frame);
 	self:Enter(frame);
-	self.hoveredFrame:FireEvent("OnClick");
+	WoW.FireFrameEvent(self.hoveredFrame, "OnClick");
 end;
 
 function Cursor:Leave()
@@ -55,5 +54,5 @@ function Cursor:Leave()
 	end;
 	local oldFrame=self.hoveredFrame;
 	self.hoveredFrame=nil;
-	oldFrame:FireEvent("OnLeave");
+	WoW.FireFrameEvent(oldFrame, "OnLeave");
 end;

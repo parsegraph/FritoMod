@@ -17,6 +17,14 @@ function WoW.AssertFrame(frame)
 	);
 end;
 
+function WoW.Inject(frame, obj, names)
+	for _, name in ipairs(names) do
+		frame[name] = function(self, ...)
+			return obj[name](obj, ...);
+		end;
+	end;
+end;
+
 function Frame:Constructor(world)
 	self.world=world;
 end;
@@ -27,4 +35,40 @@ end;
 
 function Frame:GetWorld()
 	return self.world;
+end;
+
+function Frame:SetAlpha()
+
+end;
+
+function Frame:SetFrameStrata()
+
+end;
+
+function Frame:SetParent()
+
+end;
+
+function Frame:SetBackdrop()
+
+end;
+
+function Frame:SetBackdropBorderColor()
+
+end;
+
+function Frame:SetHeight()
+
+end;
+
+function Frame:GetHeight()
+
+end;
+
+function Frame:SetWidth()
+
+end;
+
+function Frame:GetWidth()
+
 end;

@@ -2,6 +2,8 @@ if nil ~= require then
 	require "fritomod/Tables";
 	require "fritomod/Media";
 	require "fritomod/Frames";
+
+	require "wow/Frame-Container";
 end;
 
 local FRITOMOD="Interface/AddOns/FritoMod/media/";

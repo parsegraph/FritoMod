@@ -6,6 +6,7 @@
 
 if nil ~= require then
 	require "wow/Frame-Events";
+	require "wow/Frame-Alpha";
 
 	require "fritomod/currying";
 	require "fritomod/Lists";

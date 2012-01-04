@@ -3,19 +3,47 @@ if nil ~= require then
 
 	require "fritomod/basic";
 	require "fritomod/Lists";
+	require "fritomod/OOP-Class";
 end;
 
-local Frame=WoW.Frame;
+local frameRegistry = setmetatable({}, {
+	__mode = "k"
+});
+function WoW.FireFrameEvent(frame, ...)
+	local frameEvent = frameRegistry[frame];
+	assert(frameEvent, "Frame is not in registry: "..tostring(frame));
+	frameEvent:FireEvent(...);
+end;
 
-Frame:AddConstructor(function(self)
-	self.eventHandlers={};
-end);
+local FrameEvents=OOP.Class();
 
-function Frame:HasScript(event)
+WoW.Frame:AddConstructor(FrameEvents, "New");
+
+function FrameEvents:Constructor(frame)
+	self.frame = frame;
+	WoW.AssertFrame(frame);
+	frameRegistry[frame] = self;
+
+	self.eventHandlers = {};
+
+	WoW.Inject(frame, self, {
+		"HasScript",
+		"GetScript",
+		"SetScript",
+		"HookScript",
+		"EnableMouse",
+		"IsEventRegistered",
+		"RegisterEvent",
+		"UnregisterEvent",
+	});
+end;
+
+function FrameEvents:HasScript(event)
+	-- TODO Frame:HasScript stub
 	return true;
 end;
 
-function Frame:GetHandlers(event)
+function FrameEvents:GetHandlers(event)
 	if not self:HasScript(event) then
 		return;
 	end;
@@ -29,28 +57,31 @@ function Frame:GetHandlers(event)
 	return handlers;
 end;
 
-function Frame:GetScript(event)
+function FrameEvents:GetScript(event)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		return handlers.handler;
 	end;
 end;
 
-function Frame:SetScript(event, handler)
+function FrameEvents:SetScript(event, handler)
+	assert(event, "Event must not be falsy");
+	assert(type(event)=="string", "Event must be a string");
 	local handlers=self:GetHandlers(event);
 	if handlers then
+		trace("Adding event handler for %q to frame %q", event, tostring(self.frame));
 		handlers.handler=handler;
 	end;
 end;
 
-function Frame:HookScript(event, handler)
+function FrameEvents:HookScript(event, handler)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		table.insert(handlers.hooks, handler);
 	end;
 end;
 
-function Frame:FireEvent(event, ...)
+function FrameEvents:FireEvent(event, ...)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		if handlers.handler then
@@ -60,23 +91,24 @@ function Frame:FireEvent(event, ...)
 	end;
 end;
 
-function Frame:EnableMouse(enabled)
+function FrameEvents:EnableMouse(enabled)
+	-- TODO Frame:EnableMouse stub
 	-- XXX What does this function do in-game?
 end;
 
-function Frame:IsEventRegistered(event)
+function FrameEvents:IsEventRegistered(event)
 	local handlers=self:GetHandlers(event);
 	return handlers and handlers.registered;
 end;
 
-function Frame:RegisterEvent(event)
+function FrameEvents:RegisterEvent(event)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		handlers.registered=true;
 	end;
 end;
 
-function Frame:UnregisterEvent(event)
+function FrameEvents:UnregisterEvent(event)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		handlers.registered=false;

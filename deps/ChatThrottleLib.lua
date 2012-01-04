@@ -22,8 +22,8 @@
 --
 
 if nil ~= require then
+    require "wow/Frame-Alpha";
     require "wow/Frame-Events";
-    require "wow/Frame-Layout";
 
     require "wow/api/hooking";
     require "wow/api/Chat";

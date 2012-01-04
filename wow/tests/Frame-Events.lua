@@ -4,10 +4,10 @@ function Suite:TestSetScript()
 	local flag=Tests.Flag();
 	local frame=WoW.Frame:New("Frame");
 	frame:SetScript("OnEvent", flag.Raise);
-	frame:FireEvent("OnEvent");
+	WoW.FireFrameEvent(frame, "OnEvent");
 	flag.Assert();
 	flag.Reset();
 	frame:SetScript("OnEvent", nil);
-	frame:FireEvent("OnEvent");
+	WoW.FireFrameEvent(frame, "OnEvent");
 	flag.AssertUnset();
 end;
