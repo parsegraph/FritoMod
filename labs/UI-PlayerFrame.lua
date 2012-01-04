@@ -49,3 +49,7 @@ function PlayerFrame:Anchor(anchor)
 	);
 end;
 
+function PlayerFrame:Destroy()
+	trace("Destroying player frame");
+	Frames.Destroy(self.bounds, self.icon, self.nameText);
+end;
