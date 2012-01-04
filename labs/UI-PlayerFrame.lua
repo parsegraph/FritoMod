@@ -6,6 +6,7 @@ if nil ~= require then
 	require "fritomod/Media-Color";
 	require "fritomod/Media-Texture";
 	require "fritomod/Media-Backdrop";
+	require "fritomod/CombatObjects-Target";
 	require "labs/UI-Icon"
 end;
 
@@ -18,7 +19,7 @@ function PlayerFrame:Constructor(parent, orient)
 	self.frame = CreateFrame("Frame", nil, parent);
 	local height=30;
 	Frames.WidthHeight(self.frame, 10, height);
-	self.icon = Icon:New(self.frame, height);
+	self.icon = UI.Icon:New(self.frame, height);
 	
 	self.nameText = Frames.Text(self, "default", 10);
 	self.nameText:SetHeight(height);

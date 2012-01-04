@@ -9,18 +9,18 @@ end;
 
 UI = UI or {};
 
-ActionPlate = OOP.Class();
+local ActionPlate = OOP.Class();
 UI.ActionPlate = ActionPlate;
 
 function ActionPlate:Constructor(anchored)
 	self.frame = CreateFrame("Frame");
 	Frames.Size(self.frame, 10);
 	
-	self.actionIcon = Icon:New(self.frame, 36);
+	self.actionIcon = UI.Icon:New(self.frame, 36);
 	
-	self.sourceFrame = PlayerFrame:New(self.frame, "right");
+	self.sourceFrame = UI.PlayerFrame:New(self.frame, "right");
 	
-	self.targetFrame = PlayerFrame:New(self.frame);
+	self.targetFrame = UI.PlayerFrame:New(self.frame);
 	
 	self.bounds = CreateFrame("Frame", nil, self.frame);
 	Anchors.ShareAll(self.bounds, self.actionIcon);
