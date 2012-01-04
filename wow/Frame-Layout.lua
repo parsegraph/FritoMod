@@ -1,6 +1,9 @@
 if nil ~= require then
 	require "wow/Frame";
+	require "wow/FrameLayout";
 	require "wow/Frame-Events";
+	require "fritomod/Lists";
+	require "fritomod/OOP-Class";
 end;
 
 local Frame=WoW.Frame;
@@ -9,17 +12,8 @@ Frame:AddConstructor(function(self)
 	self.shown=true;
 end);
 
-function Frame:SetAllPoints()
-
-end;
-
-function Frame:SetPoint()
-
-end;
-
-function Frame:GetNumPoints()
-
-end;
+-- FrameLayout will insert new methods into this class
+Frame:AddConstructor(WoW.FrameLayout, "New");
 
 function Frame:SetHeight()
 
