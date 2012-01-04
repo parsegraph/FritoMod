@@ -5,7 +5,7 @@ end;
 
 Anchors={};
 
-local function GetAnchorArguments(frame, ...)
+local function GetAnchorArguments(...)
 	local anchor, ref, x, y, parent;
 	if type(select(1, ...)) == "string" then
 		-- Since type() is a C function, it makes a nuisance of itself
@@ -20,16 +20,7 @@ local function GetAnchorArguments(frame, ...)
 	else
 		ref, anchor, x, y=...;
 	end;
-	anchor=anchor:upper();
-	if ref == nil then
-		ref=frame:GetParent();
-		parent=ref;
-	else
-		parent=Frames.GetFrame(ref);
-		ref=Frames.GetBounds(ref);
-	end;
-	assert(frame ~= ref, "Frame and ref must not be equal");
-	return anchor, ref, x, y, parent;
+	return anchor:upper(), ref, x, y;
 end;
 
 local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
@@ -58,31 +49,32 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 	Anchors[name.."Gap"] = Gap;
 
 	local function Flip(reversed, frame, ...)
-		local anchorable;
-		frame, anchorable=Frames.GetFrame(frame);
-		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
-		local reverse = reverses[anchor];
-		assert(reverse, "No reverse anchor found for "..name.." flip: "..anchor);
-		if anchorable then
-			anchorable:Anchor(reverse);
-		end;
+		local anchor, ref, x, y=GetAnchorArguments(...);
+		local anchorTo = reverses[anchor];
+		assert(anchorTo, "No target anchor found for "..name.." flip: "..anchor);
 		if reversed then
-			anchor, reverse = reverse, anchor;
+			anchor, anchorTo = anchorTo, anchor;
 		end;
-		x, y = Gap(reverse, x, y);
-		assert(Frames.IsFrame(frame), "frame must be a frame. Got: "..type(frame));
-		assert(Frames.IsFrame(ref), "ref must be a frame. Got: "..type(ref));
+		ref = Frames.GetBounds(ref);
+		assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
+		local region = Frames.AsRegion(frame);
+		if not region then
+			assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
+			region = frame:Anchor(anchor);
+		end;
+		assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
+		x, y = Gap(anchorTo, x, y);
 		if DEBUG_TRACE then
 			trace("%s flipping %s's %s over %s's %s (gap: %d, %d)",
 				name,
-				tostring(frame),
+				tostring(region),
 				reverse,
 				tostring(ref),
 				anchor,
 				x,
 				y);
 		end;
-		frame:SetPoint(anchor, ref, reverse, x, y);
+		region:SetPoint(anchor, ref, anchorTo, x, y);
 	end
 
 	local flipTo = Curry(Flip, true);
@@ -500,10 +492,16 @@ Anchors.FlipRight=Anchors.HFlipRight;
 
 -- frame shares ref's anchor
 function Anchors.Share(frame, ...)
-	local anchorable;
-	frame, anchorable=Frames.GetFrame(frame);
-	local anchor, ref, x, y, parent=GetAnchorArguments(frame, ...);
-	local insets=Frames.Insets(parent);
+	local anchor, ref, x, y=GetAnchorArguments(...);
+	local insets=Frames.Insets(Frames.AsRegion(ref));
+	ref = Frames.GetBounds(ref);
+	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
+	local region = Frames.AsRegion(frame);
+	if not region then
+		assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
+		region = frame:Anchor(anchor);
+	end;
+	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
 	if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
 		y=y or 0;
 		y=y+insets.top;
@@ -524,10 +522,7 @@ function Anchors.Share(frame, ...)
 	if y ~= nil then
 		y=-y;
 	end;
-	if anchorable then
-		anchorable:Anchor(anchor);
-	end;
-	frame:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, x, y));
+	region:SetPoint(anchor, ref, anchor, Anchors.DiagonalGap(anchor, x, y));
 end;
 Anchors.Shares=Anchors.Share;
 Anchors.Sharing=Anchors.Share;

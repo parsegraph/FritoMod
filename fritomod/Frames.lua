@@ -58,12 +58,6 @@ Frames.GetFrame=Frames.AsRegion;
 -- name. It is up to the UI object whether this change should result in a
 -- visual appearance change or not.
 function Frames.AsAnchorable(frame)
-	local region = Frames.AsRegion(frame);
-	if region then
-		-- Plain ol' regions and UI objects that can be represented in one region
-		-- are anchorable.
-		return region;
-	end;
 	if type(frame)=="table" and frame.Anchor then
 		-- UI objects that provide an Anchor method can be anchored.
 		return frame;
