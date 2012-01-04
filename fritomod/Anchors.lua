@@ -55,14 +55,20 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 		if reversed then
 			anchor, anchorTo = anchorTo, anchor;
 		end;
+		local region;
+		repeat
+			region = Frames.AsRegion(frame);
+			if not region then
+				assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
+				frame = frame:Anchor(anchor);
+			end;
+		until region;
+		assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
+		if ref == nil then
+			ref = region:GetParent();
+		end;
 		ref = Frames.GetBounds(ref);
 		assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
-		local region = Frames.AsRegion(frame);
-		if not region then
-			assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
-			region = frame:Anchor(anchor);
-		end;
-		assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
 		x, y = Gap(anchorTo, x, y);
 		if DEBUG_TRACE then
 			trace("%s flipping %s's %s over %s's %s (gap: %d, %d)",
@@ -493,15 +499,21 @@ Anchors.FlipRight=Anchors.HFlipRight;
 -- frame shares ref's anchor
 function Anchors.Share(frame, ...)
 	local anchor, ref, x, y=GetAnchorArguments(...);
+	local region;
+	repeat
+		region = Frames.AsRegion(frame);
+		if not region then
+			assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
+			frame = frame:Anchor(anchor);
+		end;
+	until region;
+	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
+	if ref == nil then
+		ref = region:GetParent();
+	end;
 	local insets=Frames.Insets(Frames.AsRegion(ref));
 	ref = Frames.GetBounds(ref);
 	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
-	local region = Frames.AsRegion(frame);
-	if not region then
-		assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
-		region = frame:Anchor(anchor);
-	end;
-	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
 	if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
 		y=y or 0;
 		y=y+insets.top;
