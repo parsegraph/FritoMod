@@ -103,6 +103,29 @@ function Frames.DumpPoints(f)
 	end;
 end;
 
+function Frames.DumpPointsToList(f)
+	f=Frames.GetFrame(f);
+	local points = {};
+	for i=1,f:GetNumPoints() do
+		local anchor, ref, anchorTo, x, y = f:GetPoint(i);
+		table.insert(points, {
+			frame = f,
+			anchor = anchor,
+			ref = ref,
+			anchorTo = anchorTo,
+			x = x,
+			y = y
+		});
+	end;
+	return points;
+end;
+
+function Frames.DumpSharedPointsToList(f, ref)
+	return Lists.FilterValues(Frames.DumpPointsToList(f), function(point)
+		return points.ref == ref;
+	end);
+end;
+
 -- Sets the dimensions for the specified frame.
 function Frames.Rectangle(f, w, h)
 	if h==nil then
