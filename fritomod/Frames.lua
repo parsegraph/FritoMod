@@ -120,6 +120,23 @@ function Frames.DumpPointsToList(f)
 	return points;
 end;
 
+function Frames.DumpPointsToMap(f)
+	f=Frames.GetFrame(f);
+	local points = {};
+	for i=1,f:GetNumPoints() do
+		local anchor, ref, anchorTo, x, y = f:GetPoint(i);
+		points[anchor] = {
+			frame = f,
+			anchor = anchor,
+			ref = ref,
+			anchorTo = anchorTo,
+			x = x,
+			y = y
+		};
+	end;
+	return points;
+end;
+
 function Frames.DumpSharedPointsToList(f, ref)
 	return Lists.FilterValues(Frames.DumpPointsToList(f), function(point)
 		return points.ref == ref;
