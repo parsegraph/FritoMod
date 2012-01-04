@@ -4,10 +4,6 @@ if nil ~= require then
 end;
 local Suite=CreateTestSuite("fritomod.Anchors");
 
-function Suite:ShouldIgnore()
-	return not WoW;
-end;
-
 local function PointTest(runner, expectedPoints)
 	return function(self)
 		local ref = CreateFrame("Frame");
