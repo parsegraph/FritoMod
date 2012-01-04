@@ -20,7 +20,7 @@ function ActionPlate:Constructor(parent)
 	assert(parent.CreateTexture, "Provided parent must be a real frame");
 
 	self.actionIcon = UI.Icon:New(parent, 36);
-	self.sourceFrame = UI.PlayerFrame:New(parent, "right");
+	self.sourceFrame = UI.PlayerFrame:New(parent);
 	self.targetFrame = UI.PlayerFrame:New(parent);
 	
 	self.bounds = parent:CreateTexture();
