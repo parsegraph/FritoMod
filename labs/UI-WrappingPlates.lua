@@ -67,7 +67,7 @@ function WrappingPlates:Anchor(anchor)
 	self.anchor = anchor;
 	local orderedChildren = Tables.Clone(self.children);
 	Lists.Rotate(orderedChildren, self:Index());
-	local anchored = Anchors.HJustifyFrom(anchor, 10, orderedChildren);
+	local anchored = Anchors.VJustifyFrom(anchor, 10, orderedChildren);
 	Anchors.Share(anchored, self.root, anchor);
 	return self.root;
 end;
