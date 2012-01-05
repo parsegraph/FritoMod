@@ -48,3 +48,11 @@ function ActionPlate:Anchor(anchor)
 		);
 	end;
 end;
+
+function ActionPlate:Destroy()
+	Frames.Destroy(
+		self.sourceFrame,
+		self.actionIcon,
+		self.targetFrame
+	);
+end;
