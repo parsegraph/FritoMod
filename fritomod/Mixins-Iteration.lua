@@ -677,7 +677,7 @@ function Mixins.Iteration(library)
 		--	 an iterable containing elements that evaluated to true, according to the specified func
 	Mixins.KeyValuePairOperation(library, "Filter%ss", function(chooser, iterable, func, ...)
 		local filtered = NewIterable();
-		if not IsCallable(func) and select("#", ...)==0 then
+		if not IsCallable(func) and select("#", ...)==0 and type(func) == "table" then
 			for key, value in library.Iterator(iterable) do
 				local doInsert=true;
 				for _, filter in ipairs(func) do
