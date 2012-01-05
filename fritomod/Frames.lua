@@ -163,10 +163,40 @@ function Frames.Square(f, size)
 end;
 Frames.Squared=Frames.Square;
 
-function Frames.DumpPoints(f)
-	f=Frames.AsRegion(f);
-	for i=1,f:GetNumPoints() do
-		print(f:GetPoint(i));
+do
+	local counts = {};
+	local seenFrames = setmetatable({}, {
+		__mode = "k"
+	});
+
+	function Frames.DumpFrameName(f)
+		if not seenFrames[f] then
+			local frameType = f:GetObjectType();
+			local count = counts[frameType] or 0;
+			count = count + 1;
+			counts[frameType] = count
+			seenFrames[f] = ("[%s %d]"):format(frameType, count);
+		end;
+		return seenFrames[f];
+	end;
+
+	function Frames.DumpPoints(f)
+		f=Frames.AsRegion(f);
+		local points = Frames.DumpPointsToList(f);
+		printf("%s has %s",
+			Frames.DumpFrameName(f),
+			Strings.Pluralize("point", #points));
+		for i=1,#points do
+			local point = points[i];
+			printf("%d. %s's %s to %s's %s (Offset: %d, %d)",
+				i,
+				Frames.DumpFrameName(point.frame),
+				point.anchor,
+				Frames.DumpFrameName(point.ref),
+				point.anchorTo,
+				point.x,
+				point.y);
+		end;
 	end;
 end;
 
