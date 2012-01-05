@@ -298,9 +298,30 @@ end;
 
 function Tests.Timer(name)
 	local start = GetTime();
+	name = name or "";
 	trace("Beginning timer %q", name);
-	return function()
-		local elapsed = GetTime() - start;
-		trace("Timer %q Took %f seconds", name, elapsed);
-	end;
+	local timer = {
+		Hit = function()
+			local current = GetTime();
+			local elapsed = current - start;
+			trace("Timer %q took %f seconds", name, elapsed);
+			start = current;
+			return elapsed;
+		end,
+		Lap = function()
+			local elapsed = GetTime() - start;
+			trace("Lap of timer %q took %f seconds", name, elapsed);
+			return elapsed;
+		end,
+		Reset = function()
+			trace("Resetting timer %q", name);
+			start = GetTime()
+		end,
+	};
+
+	setmetatable(timer, {
+		__call = timer.Hit
+	});
+
+	return timer;
 end;
