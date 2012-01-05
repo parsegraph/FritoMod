@@ -1189,11 +1189,22 @@ function Mixins.Iteration(library)
 		end;
 	end;
 
-	if library.Random == nil then
-		function library.Random(iterable)
+	if library.RandomKey == nil then
+		function library.RandomKey(iterable)
 			assert(not library.IsEmpty(iterable), "iterable must have at least one element");
 			local keys=library.Keys(iterable);
 			return keys[math.ceil(math.random() * #keys)];
+		end;
+	end;
+
+	if library.Random == nil then
+		library.Random = CurryNamedFunction(library, "RandomKey");
+	end;
+
+	if library.RandomValue == nil then
+		function library.RandomValue(iterable)
+			local key = library.RandomKey(iterable);
+			return library.Get(iterable, key);
 		end;
 	end;
 
