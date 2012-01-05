@@ -601,9 +601,13 @@ function Anchors.Center(frame, ref)
 end;
 
 function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
-	frame=Frames.GetFrame(frame);
-	ref=Frames.GetBounds(ref or frame:GetParent());
-	frame:SetPoint(anchor, ref, anchorTo, x, y);
+	anchor=anchor:upper();
+	anchorTo=anchorTo:upper();
+	local region = GetAnchorable(frame, anchor);
+	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
+	ref=GetBounds(ref or region:GetParent(), anchorTo);
+	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
+	region:SetPoint(anchor, ref, anchorTo, x, y);
 end;
 
 function Anchors.Clear(...)
