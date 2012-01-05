@@ -605,6 +605,8 @@ function Anchors.Clear(...)
 	end;
 	for i=1, select("#", ...) do
 		local frame = select(i, ...);
-		Frames.AsRegion(frame):ClearAllPoints();
+		if frame then
+			Frames.AsRegion(frame):ClearAllPoints();
+		end;
 	end;
 end;

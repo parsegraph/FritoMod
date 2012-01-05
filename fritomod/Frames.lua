@@ -412,7 +412,9 @@ function Frames.Destroy(...)
 	end;
 	for i=1, select("#", ...) do
 		local f = select(i, ...);
-		if f.Destroy then
+		if not f then
+			-- Skip nil frames
+		elseif f.Destroy then
 			f:Destroy();
 		else
 			f=Frames.AsRegion(f);
