@@ -585,6 +585,7 @@ do
 	end;
 
 	EdgeFunctions("ShareInner");
+	EdgeFunctions("Share");
 	EdgeFunctions("ShareOuter");
 
 	MultipleShare("All", "LEFT", "RIGHT", "TOP", "BOTTOM");

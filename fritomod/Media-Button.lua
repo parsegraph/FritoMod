@@ -1,5 +1,13 @@
 -- A collection of button textures, used with Frames.ButtonTexture.
---
+--[[
+
+local B=CreateFrame("Button", nil, UIParent);
+B:SetPoint("center");
+Frames.Draggable(B);
+Frames.Size(B, 20);
+Frames.Button(B, "dialog");
+
+]]
 -- Each value is a table containing textures to map a Button or CheckButton.
 --
 -- Ideally, virtual frames would make this sort of thing obsolete. Most of
