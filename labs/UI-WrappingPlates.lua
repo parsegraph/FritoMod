@@ -65,7 +65,7 @@ function WrappingPlates:Anchor(anchor)
 	trace("Anchoring WrappingPlates to: "..anchor);
 	self.anchor = anchor;
 	local orderedChildren = Tables.Clone(self.children);
-	Lists.Rotate(orderedChildren, self:Index());
+	Lists.RotateLeft(orderedChildren, self:Index());
 	local anchored = Anchors.VJustifyFrom(anchor, 10, orderedChildren);
 	Anchors.Share(anchored, self.root, anchor);
 	return self.root;

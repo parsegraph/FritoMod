@@ -501,15 +501,20 @@ function Mixins.MutableIteration(library, iteratorFunc)
 		end;
 	end;
 
-	if library.Rotate == nil then
-		function library.Rotate(iterable, count)
+	if library.RotateRight == nil then
+		function library.RotateRight(iterable, count)
+			while count > 0 do
+				library.Unshift(iterable, library.PopOne(iterable));
+				count = count - 1;
+			end;
+		end;
+	end;
+
+	if library.RotateLeft == nil then
+		function library.RotateLeft(iterable, count)
 			while count > 0 do
 				library.Push(iterable, library.ShiftOne(iterable));
 				count = count - 1;
-			end;
-			while count < 0 do
-				library.Unshift(iterable, library.PopOne(iterable));
-				count = count + 1;
 			end;
 		end;
 	end;

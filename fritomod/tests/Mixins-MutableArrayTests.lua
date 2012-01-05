@@ -57,6 +57,14 @@ function Mixins.MutableArrayTests(Suite, library)
 		Assert.NotEquals(Suite:Array(1,2,3,4,5,6,7,8,9), a, "Shuffle should practically never produce an identical list");
 	end;
 
+	function Suite:TestRotate()
+		local a=Suite:Array(1, 2, 3);
+		lib.RotateRight(a, 1);
+		Assert.Equals(Suite:Array(3,1,2), a);
+		lib.RotateLeft(a, 2);
+		Assert.Equals(Suite:Array(2,3,1), a);
+	end;
+
 	function Suite:TestSwap()
 		local arr=Suite:Array("A","B");
 		library.Swap(arr,1,2);
