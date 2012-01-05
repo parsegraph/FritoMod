@@ -31,7 +31,7 @@ Frames.Button(B, "dialog");
 --
 -- I chose the bold approach. We steal the useful stuff that Blizzard gave us,
 -- but we rewrite it in Lua. We get maximum power and flexibility, since it's
--- entirely our stuff. It also becomes natural to build complicate UIs, since
+-- entirely our stuff. It also becomes natural to build complicated UIs, since
 -- we can design our API to fit well with FritoMod.
 --
 -- In practice, the redundancy factor hasn't really been a problem. We usually
