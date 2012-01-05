@@ -26,7 +26,6 @@ Frames.IsFrame=Frames.IsRegion;
 -- frame.
 --
 -- see also
--- 		Frames.AsAnchorable
 -- 		Frames.IsRegion
 function Frames.AsRegion(frame)
 	if Frames.IsRegion(frame) then
@@ -41,29 +40,13 @@ function Frames.AsRegion(frame)
 	if frame.Frame then
 		-- UI objects that have a Frame method are called directly to get their
 		-- frame.
-		return frame:Frame(), Frames.AsAnchorable(frame);
+		return frame:Frame();
 	end;
 	-- UI objects may provide a frame property that will be used as the representative
 	-- region
-	return frame.frame, Frames.AsAnchorable(frame);
+	return frame.frame;
 end;
 Frames.GetFrame=Frames.AsRegion;
-
--- Returns an object that may be anchored. Frames, regions, and their subclasses are
--- returned directly.
---
--- UI objects may manage the reanchoring process themselves using an Anchor
--- method.  This Anchor method should expect an anchor name. The UI object is
--- responsible for reanchoring its children relative to the specified anchor
--- name. It is up to the UI object whether this change should result in a
--- visual appearance change or not.
-function Frames.AsAnchorable(frame)
-	if type(frame)=="table" and frame.Anchor then
-		-- UI objects that provide an Anchor method can be anchored.
-		return frame;
-	end;
-end;
-Frames.GetAnchorable=Frames.AsAnchorable;
 
 -- Returns a region that represents the bounds of the specified object. Frames, regions,
 -- and their subclasses will be returned directly.
