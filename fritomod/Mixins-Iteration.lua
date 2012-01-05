@@ -32,44 +32,58 @@ end;
 function Mixins.Iteration(library)
 	library=library or {};
 
-	local function NewIterable()
-		if rawget(library, "New") ~= nil then
-			return library.New();
-		end;
-		return {};
-	end;
-
-	local function CloneIterable(iterable)
-		if rawget(library, "Clone") then
-			return library.Clone(iterable);
-		else
-			local t=NewIterable();
-			for v in library.ValueIterator(iterable) do
-				InsertInto(t, v);
+	if library._NewIterable == nil then
+		function library._NewIterable()
+			if rawget(library, "New") ~= nil then
+				return library.New();
 			end;
-			return t;
+			return {};
 		end;
 	end;
+	local NewIterable = CurryNamedFunction(library, "_NewIterable");
 
-	local function InsertInto(iterable, key, value)
-		if library.Bias() == "table" then
-			return library.InsertPair(iterable, key, value);
+	if library._CloneIterable == nil then
+		function library._CloneIterable(iterable)
+			if rawget(library, "Clone") then
+				return library.Clone(iterable);
+			else
+				local t=NewIterable();
+				for v in library.ValueIterator(iterable) do
+					InsertInto(t, v);
+				end;
+				return t;
+			end;
 		end;
-		if type(key) ~= "number" then
-			if rawget(library, "Set") ~= nil then
-				return library.Set(iterable, key, value);
+	end;
+	local CloneIterable = CurryNamedFunction(library, "_CloneIterable");
+
+	if library._InsertInto == nil then
+		function library._InsertInto(iterable, key, value)
+			if library.Bias() == "table" then
+				if library.InsertPair then
+					return library.InsertPair(iterable, key, value);
+				else
+					iterable[key] = value;
+					return;
+				end;
+			end;
+			if type(key) ~= "number" then
+				if rawget(library, "Set") ~= nil then
+					return library.Set(iterable, key, value);
+				end;
+				assert(type(iterable) == "table", "Iterable is not a table");
+				iterable[key] = value;
+				return CurryNamedFunction(library, "Delete", iterable, key);
+			end;
+			if rawget(library, "Insert") ~= nil then
+				return library.Insert(iterable, value);
 			end;
 			assert(type(iterable) == "table", "Iterable is not a table");
-			iterable[key] = value;
-			return CurryNamedFunction(library, "Delete", iterable, key);
+			table.insert(iterable, value);
+			return CurryFunction(RemoveValueFromTable, iterable, value);
 		end;
-		if rawget(library, "Insert") ~= nil then
-			return library.Insert(iterable, value);
-		end;
-		assert(type(iterable) == "table", "Iterable is not a table");
-		table.insert(iterable, value);
-		return CurryFunction(RemoveValueFromTable, iterable, value);
 	end;
+	local InsertInto = CurryNamedFunction(library, "_InsertInto");
 
 	if library.Bias == nil then
 		-- Returns the bias of the library - whether the iterable is expected to behave like
