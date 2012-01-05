@@ -36,11 +36,6 @@ function ActionPlate:Set(source, target, action)
 end;
 
 function ActionPlate:Anchor(anchor)
-	Anchors.Clear(
-		self.actionIcon,
-		self.sourceFrame,
-		self.targetFrame
-	);
 	if anchor == "CENTER" then
 		Anchors.Flip(self.sourceFrame, self.actionIcon, "LEFT", sourceGap);
 		Anchors.Flip(self.targetFrame, self.actionIcon, "RIGHT", targetGap);
