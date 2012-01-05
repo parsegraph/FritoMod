@@ -1,6 +1,7 @@
 if nil ~= require then
 	require "wow/Frame-Layout";
 	require "fritomod/Strings";
+	require "fritomod/Metatables";
 end;
 
 Anchors={};
@@ -184,10 +185,10 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 	Anchors["Reverse"..name.."StackFrom"] = reverseStackFrom;
 	Anchors["R"..Strings.CharAt(name, 1).."StackFrom"] = reverseStackFrom;
 
-	local justifiers = {};
-	local fromJustifiers = {};
-	local reverseJustifiers = {};
-	local reverseFromJustifiers = {};
+	local justifiers = Metatables.Defensive();
+	local fromJustifiers = Metatables.Defensive();
+	local reverseJustifiers = Metatables.Defensive();
+	local reverseFromJustifiers = Metatables.Defensive();
 
 	-- Similar to stack, but the relative arrangement of individual frames will
 	-- remain in lexicographical order; the first element will (almost) always be
