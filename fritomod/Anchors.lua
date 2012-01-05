@@ -23,6 +23,31 @@ local function GetAnchorArguments(...)
 	return anchor:upper(), ref, x, y;
 end;
 
+--- Returns an object that may be anchored. Frames, regions, and their subclasses are
+--- returned directly.
+---
+--- UI objects may manage the reanchoring process themselves using an Anchor
+--- method.  This Anchor method should expect an anchor name. The UI object is
+--- responsible for reanchoring its children relative to the specified anchor
+--- name. It is up to the UI object whether this change should result in a
+--- visual appearance change or not.
+local function GetAnchorable(frame, anchor)
+	return Frames.AsRegion(frame) or GetAnchorable(frame:Anchor(anchor), anchor);
+end;
+
+-- Returns a region that represents the bounds of the specified object. Frames, regions,
+-- and their subclasses will be returned directly.
+--
+-- UI objects must provid a Bounds method that will return a region that at that corner
+-- of the UI object. Anchoring operations will use the returned region as the reference
+-- anchor.
+--
+-- UI objects may also return another UI object. In this case, GetBounds will recurse
+-- until a real region is found.
+local function GetBounds(frame, anchor)
+	return Frames.AsRegion(frame) or GetBounds(frame:Bounds(anchor), anchor);
+end;
+
 local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 	for k,v in pairs(Tables.Clone(reverses)) do
 		reverses[v]=k;
@@ -63,19 +88,9 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 		if reversed then
 			anchor, anchorTo = anchorTo, anchor;
 		end;
-		local region;
-		repeat
-			region = Frames.AsRegion(frame);
-			if not region then
-				assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
-				frame = frame:Anchor(anchor);
-			end;
-		until region;
+		local region = GetAnchorable(frame, anchor);
 		assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
-		if ref == nil then
-			ref = region:GetParent();
-		end;
-		ref = Frames.GetBounds(ref);
+		ref=GetBounds(ref or region:GetParent(), anchorTo);
 		assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
 		x, y = Gap(anchorTo, x, y);
 		if DEBUG_TRACE then
@@ -508,14 +523,7 @@ do
 	-- frame shares ref's anchor
 	local function Share(useInsets, frame, ...)
 		local anchor, ref, x, y=GetAnchorArguments(...);
-		local region;
-		repeat
-			region = Frames.AsRegion(frame);
-			if not region then
-				assert(IsCallable(frame.Anchor, "Provided frame is not anchorable"));
-				frame = frame:Anchor(anchor);
-			end;
-		until region;
+		local region = GetAnchorable(frame, anchor);
 		assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
 		if ref == nil then
 			ref = region:GetParent();
@@ -537,7 +545,7 @@ do
 				x=x+insets.right;
 			end;
 		end;
-		ref = Frames.GetBounds(ref);
+		ref=GetBounds(ref or region:GetParent(), anchorTo);
 		assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
 		if x ~= nil then
 			x=-x;

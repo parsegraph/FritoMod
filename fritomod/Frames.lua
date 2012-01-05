@@ -48,32 +48,6 @@ function Frames.AsRegion(frame)
 end;
 Frames.GetFrame=Frames.AsRegion;
 
--- Returns a region that represents the bounds of the specified object. Frames, regions,
--- and their subclasses will be returned directly.
---
--- UI objects may provide a Bounds method or a bounds property that represents the bounding
--- box of that object. Anchoring methods will use this box when regions are anchored relative
--- to the specified UI object.
---
--- The UI object is solely responsible for ensuring the bounding box remains accurate.
-function Frames.GetBounds(frame)
-	if Frames.IsRegion(frame) then
-		return frame;
-	end;
-	if type(frame)=="string" then
-		return _G[frame];
-	end;
-	assert(type(frame)=="table", "Frame must be a table. Got: "..type(frame));
-	if frame.Bounds then
-		return frame:Bounds();
-	end;
-	if frame.bounds then
-		return frame.bounds;
-	end;
-	return Frames.AsRegion(frame);
-end;
-
-
 do 
 	local verticals = {
 		TOPLEFT = "TOP",

@@ -22,11 +22,6 @@ function ActionPlate:Constructor(parent)
 	self.actionIcon = UI.Icon:New(parent, 36);
 	self.sourceFrame = UI.PlayerFrame:New(parent);
 	self.targetFrame = UI.PlayerFrame:New(parent);
-	
-	self.bounds = parent:CreateTexture();
-	Anchors.ShareOuterAll(self.bounds, self.actionIcon);
-	Anchors.ShareOuter(self.bounds, self.sourceFrame, "left");
-	Anchors.ShareOuter(self.bounds, self.targetFrame, "right");
 end;
 
 function ActionPlate:Set(source, target, action)
@@ -46,6 +41,17 @@ function ActionPlate:Anchor(anchor)
 			self.actionIcon,
 			self.targetFrame
 		);
+	end;
+end;
+
+function ActionPlate:Bounds(anchor)
+	local hcomp = Frames.HorizontalComponent(anchor);
+	if hcomp == "CENTER" then
+		return self.actionIcon;
+	elseif hcomp == "LEFT" then
+		return self.sourceFrame;
+	else
+		return self.targetFrame;
 	end;
 end;
 

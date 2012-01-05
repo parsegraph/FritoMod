@@ -25,10 +25,6 @@ function PlayerFrame:Constructor(parent, orient)
 	
 	self.nameText = Frames.Text(parent, "default", 10);
 	self.nameText:SetHeight(height);
-	
-	self.bounds = parent:CreateTexture();
-	Anchors.ShareOuterAll(self.bounds, self.icon);
-	Anchors.ShareOuter(self.bounds, self.nameText, "right");
 end;
 
 function PlayerFrame:Set(target)
@@ -47,6 +43,17 @@ function PlayerFrame:Anchor(anchor)
 		self.icon,
 		self.nameText
 	);
+end;
+
+function PlayerFrame:Bounds(anchor)
+	local hcomp = Frames.HorizontalComponent(anchor);
+	if hcomp == "CENTER" then
+		return self.nameText;
+	elseif hcomp == "LEFT" then
+		return self.icon;
+	else
+		return self.nameText;
+	end;
 end;
 
 function PlayerFrame:Destroy()
