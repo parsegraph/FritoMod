@@ -202,6 +202,17 @@ function Mixins.Iteration(library)
 		end;
 	end;
 
+	if nil == rawget(library, "Modulo") then
+		function library.Modulo(iterable, index)
+			local length=library.Size(iterable);
+			
+			if length == 0 then
+				return nil;
+			end;
+			index = (index % length) + 1;
+		end;
+	end;
+
 	-- Returns whether the two iterables contain the same elements, in the same order.
 	--
 	-- This option is applicable to keys or values.
