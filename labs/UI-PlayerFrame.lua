@@ -39,6 +39,7 @@ end;
 
 function PlayerFrame:Anchor(anchor)
 	trace("Anchoring player frame: " ..anchor);
+	Anchors.Clear(self.icon, self.nameText);
 	return Anchors.HJustifyFrom(anchor, 2,
 		self.icon,
 		self.nameText

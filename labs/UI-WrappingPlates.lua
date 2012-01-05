@@ -52,11 +52,10 @@ function WrappingPlates:Set(...)
 	self.currentFrame = self.currentFrame + 1;
 	local child = self:Get();
 	child:Set(...);
-	if self.anchor then
+	if self.anchor and self.currentFrame > #self.children then
 		-- We wrapped so rearrange
-		-- TODO Reenable this wrapping
-		--Anchors.Share(self:Next(), self, self.anchor);
-		--Anchors.HFlip(self:Current(), self:Previous(), self.anchor, 12);
+		Anchors.Share(self:Next(), self.root, self.anchor);
+		Anchors.VFlipFrom(self:Current(), self:Previous(), self.anchor, 12);
 	else
 		trace("No anchor, just setting for now");
 	end;
