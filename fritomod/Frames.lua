@@ -48,7 +48,7 @@ function Frames.AsRegion(frame)
 end;
 Frames.GetFrame=Frames.AsRegion;
 
-do 
+do
 	local verticals = {
 		TOPLEFT = "TOP",
 		TOP = "TOP",
