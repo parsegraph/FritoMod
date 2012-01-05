@@ -2,7 +2,7 @@ if nil ~= require then
 	require "wow/Frame-Events";
 	require "fritomod/Frames";
 end;
-local Suite=CreateTestSuite("fritomod.Callbacks-UI");
+local Suite=CreateTestSuite("fritomod.Callbacks-Mouse");
 
 function Suite:ShouldIgnore()
 	return not WoW;

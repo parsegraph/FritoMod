@@ -27,7 +27,7 @@ if nil ~= require then
 
 	require "fritomod/PersistentAnchor";
 	require "fritomod/Anchors";
-	require "fritomod/Callbacks-UI";
+	require "fritomod/Callbacks-Mouse";
 end;
 
 -- A mapping of anchor names to PersistentAnchor objects.

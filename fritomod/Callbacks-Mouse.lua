@@ -192,39 +192,3 @@ function Callbacks.CursorOffset(frame, func, ...)
 	end);
 end;
 Callbacks.MouseOffset=Callbacks.CursorOffset;
-
-local function enableKeyboard(f)
-	f.keyListenerTypes=f.keyListenerTypes or 0;
-	f.keyListenerTypes=f.keyListenerTypes+1;
-	f:EnableKeyboard(true);
-	return Functions.OnlyOnce(function()
-		f.keyListenerTypes=f.keyListenerTypes-1;
-		if f.keyListenerTypes <= 0 then
-			f:EnableKeyboard(false);
-		end;
-	end)
-end;
-
-local function KeyListener(event)
-	local frameEvent="_"..event;
-	return function(f, func, ...)
-		func=Curry(func, ...);
-		if not f[frameEvent] then
-			local listeners={};
-			f[frameEvent]=Functions.Spy(
-				Curry(Lists.Insert, listeners),
-				Functions.Install(function()
-					return Curry(Lists.CallEach, {
-						enableKeyboard(f),
-						Callbacks.Script(f, "On"..event, Lists.CallEach, listeners)
-					});
-				end)
-			);
-		end;
-		return f[frameEvent](func);
-	end;
-end;
-
-Callbacks.Char=KeyListener("Char");
-Callbacks.KeyUp=KeyListener("KeyUp");
-Callbacks.KeyDown=KeyListener("KeyDown");

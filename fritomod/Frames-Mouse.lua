@@ -32,7 +32,7 @@ if nil ~= require then
 	require "fritomod/Functions";
 	require "fritomod/Lists";
 	require "fritomod/Tables";
-	require "fritomod/Callbacks-UI";
+	require "fritomod/Callbacks-Mouse";
 end;
 
 Frames=Frames or {};
