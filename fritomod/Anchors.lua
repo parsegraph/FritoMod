@@ -32,7 +32,15 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 		if not x then
 			x=0;
 		end;
-		local sign=assert(signs[anchor], "Unrecognized anchor name: "..anchor);
+		local sign=signs[anchor];
+		if not sign then
+			assert(
+				(x == nil or x == 0) and
+				(y == nil or y == 0),
+				"Anchor is not supported: "..anchor
+			);
+			return 0, 0;
+		end;
 		local sx, sy=unpack(sign);
 		if not y then
 			y=x;
@@ -581,15 +589,7 @@ do
 end;
 
 function Anchors.Center(frame, ref)
-	local anchorable;
-	frame,anchorable=Frames.GetFrame(frame);
-	ref=ref or frame:GetParent();
-	ref=Frames.GetBounds(ref);
-	anchor=anchor or "CENTER";
-	if anchorable then
-		anchorable:Anchor("CENTER");
-	end;
-	frame:SetPoint(anchor, ref, "center");
+	return Anchors.Share(frame, ref, "CENTER");
 end;
 
 function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
