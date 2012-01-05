@@ -74,8 +74,12 @@ setmetatable(Events, {
 				return Lists.Insert(eventListeners[key], Curry(func, ...));
 			end,
 			Functions.Install(function()
+				trace("Listening for event %q", key);
 				eventsFrame:RegisterEvent(key);
-				return CurryMethod(eventsFrame, "UnregisterEvent", key);
+				return function()
+					trace("Unregistering event %q", key);
+					eventsFrame:UnregisterEvent(key);
+				end;
 			end)
 		);
 		return rawget(self, key);
