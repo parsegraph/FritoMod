@@ -52,7 +52,7 @@ end;
 
 local function InstanceWatcher(watchedType, specialName)
 	local dispatcher=IdempotentToggleDispatcher:New();
-	function dispatcher:Install()
+	dispatcher:AddInstaller(function()
 		return Callbacks.ChangedInstance(function(instanceType)
 			if instanceType:lower()==watchedType then
 				dispatcher:Fire();
@@ -60,7 +60,7 @@ local function InstanceWatcher(watchedType, specialName)
 				dispatcher:Reset();
 			end;
 		end);
-	end;
+	end);
 	Callbacks[specialName]=Curry(dispatcher, "Add");
 	Callbacks["Enter"..specialName]=Callbacks[specialName];
 	Callbacks["Entering"..specialName]=Callbacks[specialName];
@@ -79,7 +79,7 @@ InstanceWatcher("none", "World");
 -- Callbacks.Resting fires the specified callback whenever the player is resting.
 do
 	local dispatcher=ToggleDispatcher:New();
-	function dispatcher:Install()
+	dispatcher:AddInstaller(function()
 		return Events.PLAYER_UPDATE_RESTING(function()
 			if IsResting() then
 				dispatcher:Fire();
@@ -87,7 +87,7 @@ do
 				dispatcher:Reset();
 			end;
 		end);
-	end;
+	end);
 	Callbacks.Resting=Curry(dispatcher, "Add");
 	Callbacks.Rest=Callbacks.Resting;
 	Callbacks.RestState=Callbacks.Resting;
@@ -96,14 +96,10 @@ end;
 -- Callbacks.Combat fires the specified callback whenever the player enters combat.
 do
 	local dispatcher=ToggleDispatcher:New();
-	function dispatcher:Install()
-		local r1=Events.PLAYER_REGEN_DISABLED(Seal(dispatcher, "Fire"));
-		local r2=Events.PLAYER_REGEN_ENABLED(Seal(dispatcher, "Reset"));
-		return Functions.OnlyOnce(function()
-			r1();
-			r2();
-		end);
-	end;
+	dispatcher:AddInstaller(
+		Events.PLAYER_REGEN_DISABLED, Seal(dispatcher, "Fire"));
+	dispatcher:AddInstaller(
+		Events.PLAYER_REGEN_ENABLED, Seal(dispatcher, "Reset"));
 	Callbacks.Combat=Curry(dispatcher, "Add");
 	Callbacks.InCombat=Callbacks.Combat;
 end;
