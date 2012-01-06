@@ -28,7 +28,7 @@ function TargetEvent:Clone()
 end;
 
 function TargetEvent:GUID()
-	return self.guid or 0;
+	return self.guid;
 end;
 TargetEvent.Guid = TargetEvent.GUID;
 TargetEvent.ID= TargetEvent.GUID;
@@ -42,7 +42,10 @@ function TargetEvent:Name()
 end;
 
 function TargetEvent:IsPlayer()
-	return UnitIsUnit(self:Name(), "player");
+	local name = self:Name();
+	if name then
+		return UnitIsUnit(self:Name(), "player");
+	end;
 end;
 
 function TargetEvent:Flags()
@@ -72,16 +75,25 @@ TargetEvent.Gender = PlayerInfo(5);
 TargetEvent.Realm = PlayerInfo(7);
 
 function TargetEvent:ClassColor()
-	return Media.color[self:Class()];
+	local class = self:Class();
+	if class then
+		return Media.color[class];
+	end;
 end;
 
 function TargetEvent:ClassIcon()
-	return Media.texture[self:Class()];
+	local class = self:Class();
+	if class then
+		return Media.texture[self:Class()];
+	end;
 end;
 TargetEvent.ClassTexture = TargetEvent.ClassIcon;
 
 function TargetEvent:Classification()
-	return UnitClassification(self:Name());
+	local name = self:Name();
+	if name then
+		return UnitClassification(name);
+	end;
 end;
 
 CombatObjects.AddSharedEvent("Source", "Target");
