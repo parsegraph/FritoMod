@@ -28,7 +28,9 @@ function TargetEvent:Clone()
 end;
 
 function TargetEvent:GUID()
-	return self.guid;
+	-- By default, return a GUID of an anonymous
+	-- world object.
+	return self.guid or "0x0010000000000000";
 end;
 TargetEvent.Guid = TargetEvent.GUID;
 TargetEvent.ID= TargetEvent.GUID;
@@ -58,11 +60,8 @@ end;
 
 local function PlayerInfo(num)
 	return function(self)
-		local guid = self:GUID();
-		if not guid then
-			return;
-		end;
-		local value = select(num, GetPlayerInfoByGUID(guid));
+		-- Use a variable so we only return one value.
+		local value = select(num, GetPlayerInfoByGUID(self:GUID()));
 		return value;
 	end;
 end;
