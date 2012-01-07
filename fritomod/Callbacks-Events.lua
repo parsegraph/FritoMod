@@ -21,6 +21,7 @@ if nil ~= require then
 	require "fritomod/Lists";
 	require "fritomod/IdempotentToggleDispatcher";
 	require "fritomod/ToggleDispatcher";
+	require "fritomod/Events";
 end;
 
 Callbacks=Callbacks or {};
