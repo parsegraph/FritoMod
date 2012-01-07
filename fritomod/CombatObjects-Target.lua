@@ -53,12 +53,14 @@ function TargetEvent:ShortName()
 	end;
 end;
 
-function TargetEvent:IsPlayer()
+function TargetEvent:IsSelf()
 	local name = self:Name();
 	if name then
 		return UnitIsUnit(self:Name(), "player");
 	end;
 end;
+TargetEvent.IsMe = TargetEvent.IsSelf;
+TargetEvent.IsMyself = TargetEvent.IsSelf;
 
 function TargetEvent:Flags()
 	return self.flags;
