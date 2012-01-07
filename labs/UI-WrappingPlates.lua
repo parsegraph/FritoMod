@@ -55,7 +55,7 @@ function WrappingPlates:Set(...)
 	if self.anchor and self.currentFrame > #self.children then
 		-- We wrapped so rearrange
 		Anchors.Share(self:Next(), self.root, self.anchor);
-		Anchors.VFlipFrom(self:Current(), self:Previous(), self.anchor, 12);
+		Anchors.VFlipFrom(self:Current(), self:Previous(), self.anchor, 8);
 	else
 		trace("No anchor, just setting for now");
 	end;
@@ -66,7 +66,7 @@ function WrappingPlates:Anchor(anchor)
 	self.anchor = anchor;
 	local orderedChildren = Tables.Clone(self.children);
 	Lists.RotateLeft(orderedChildren, self:Index());
-	local anchored = Anchors.VJustifyFrom(anchor, 10, orderedChildren);
+	local anchored = Anchors.VJustifyFrom(anchor, 8, orderedChildren);
 	Anchors.Share(anchored, self.root, anchor);
 	return self.root;
 end;
