@@ -51,6 +51,8 @@ colors.purple={1.0, 0.0,  1.0, 1.0};
 colors.gold  ={1.0, 0.82, 0.0, 1.0}; -- This is the yellow/gold color Blizzard uses in text.
 colors.violet=colors.purple;
 
+colors.alliance = {.3, .3, 1};
+colors.horde = {1, .2, .2};
 
 colors.warning=ConvertToTable(0xFFFF6347);
 colors.error=  ConvertToTable(0xFFB22222)
