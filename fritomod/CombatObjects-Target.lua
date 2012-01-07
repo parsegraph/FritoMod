@@ -62,6 +62,32 @@ end;
 TargetEvent.IsMe = TargetEvent.IsSelf;
 TargetEvent.IsMyself = TargetEvent.IsSelf;
 
+do
+	local unitTypes = {
+		["0"] = "PLAYER",
+		["1"] = "OBJECT",
+		["3"] = "NPC",
+		["4"] = "PET",
+		["5"] = "VEHICLE"
+	};
+
+	function TargetEvent:UnitType()
+		return unitTypes[Strings.CharAt(self:GUID(), 5)];
+	end;
+
+	local function IsUnitType(unitType)
+		return function(self)
+			return self:UnitType() == unitType;
+		end;
+	end;
+
+	TargetEvent.IsPlayer = IsUnitType("PLAYER");
+	TargetEvent.IsNPC = IsUnitType("NPC");
+	TargetEvent.IsObject = IsUnitType("OBJECT");
+	TargetEvent.IsPet = IsUnitType("PET");
+	TargetEvent.IsVehicle = IsUnitType("VEHICLE");
+end;
+
 function TargetEvent:Flags()
 	return self.flags;
 end;
