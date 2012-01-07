@@ -13,22 +13,6 @@ textures.black  ="Interface/DialogFrame/UI-DialogBox-Background";
 textures.tooltip="Interface/Tooltips/UI-Tooltip-Background";
 textures.chat   ="Interface/Tooltips/ChatBubble-Background";
 
-textures["melee swing"] ="Interface/ICONS/Ability_SteelMelee";
-textures.swing = textures["melee swing"];
-
-textures.question = "Interface/ICONS/INV_Misc_QuestionMark";
-textures["?"] = textures.question;
-textures.unknown = textures.question;
-textures["question mark"] = textures.question;
-textures["questionmark"] = textures.question;
-textures[""] = textures.question;
-textures.default = textures.question;
-
-textures.critter = "Interface/ICONS/ABILITY_SEAL";
-textures.trivial = textures.critter;
-
-textures.mechanical = "Interface/ICONS/Ability_Mount_MechaStrider";
-
 Media.texture(textures);
 
 Media.texture(function(obj)
@@ -75,13 +59,61 @@ Media.texture(function(obj)
 	end;
 end);
 
+-- These are the texture coords for all Blizzard icons in Interface\Icons. There's
+-- a few that deviate from this, but not by a noticeable amount. There's also a few
+-- that are much larger (probably 256px or so), but the ratio is the same, so these
+-- coordinates should work for those as well.
+local ICON_COORDS = {4/64, 60/64, 4/64, 60/64};
+
 Media.texture(function(texture)
 	if type(texture)=="string" and texture:match("[/\\]") then
-		return texture;
+		if Strings.StartsWith(texture, "interface\\icons") then
+			return {
+				name = texture,
+				coords = ICON_COORDS
+			};
+		else
+			return texture;
+		end;
 	end;
 end);
 
 do
+	local coords = ICON_COORDS;
+
+	local namedIcons = {};
+
+	namedIcons["melee swing"] ="Interface/ICONS/Ability_SteelMelee";
+	namedIcons.swing = namedIcons["melee swing"];
+
+	namedIcons.question = "Interface/ICONS/INV_Misc_QuestionMark";
+	namedIcons["?"] = namedIcons.question;
+	namedIcons.unknown = namedIcons.question;
+	namedIcons["question mark"] = namedIcons.question;
+	namedIcons["questionmark"] = namedIcons.question;
+	namedIcons[""] = namedIcons.question;
+	namedIcons.default = namedIcons.question;
+
+	namedIcons.critter = "Interface/ICONS/ABILITY_SEAL";
+	namedIcons.trivial = namedIcons.critter;
+
+	namedIcons.mechanical = "Interface/ICONS/Ability_Mount_MechaStrider";
+
+	Media.texture(function(texture)
+		local texture = namedIcons[texture];
+		if texture then
+			return {
+				name = texture,
+				coords = coords
+			};
+		end;
+	end);
+
+end;
+
+do
+	-- I believe I pulled these from Blizzard's button virtual frame. They're
+	-- slightly smaller than the ones I deduced myself.
 	local coords = {12/64, 51/64, 12/64, 51/64};
 
 	Media.spell(function(spell)
