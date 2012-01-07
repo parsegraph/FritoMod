@@ -125,7 +125,7 @@ do
 		end;
 	end);
 
-	Media.SetAlias("item", "icon", "loot", "drop", "treasure");
+	Media.SetAlias("item", "items", "icon", "icons", "loot", "drop", "treasure");
 
 	Media.texture(function(name)
 		if type(name) ~= "string" then
