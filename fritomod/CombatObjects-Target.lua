@@ -43,6 +43,16 @@ function TargetEvent:Name()
 	return self.name or "Unknown";
 end;
 
+function TargetEvent:ShortName()
+	local name = self:Name();
+	if name then
+		local parts = Strings.Split("-", name, 2);
+		return parts[1];
+	else
+		return "Unknown";
+	end;
+end;
+
 function TargetEvent:IsPlayer()
 	local name = self:Name();
 	if name then
