@@ -23,18 +23,19 @@ function PlayerFrame:Constructor(parent, orient)
 	local height=30;
 	self.icon = UI.Icon:New(parent, height);
 	
-	self.nameText = Frames.Text(parent, "default", 10);
+	self.nameText = Frames.Text(parent, "default", 12, "outline");
 	self.nameText:SetHeight(height);
 end;
 
 function PlayerFrame:Set(target)
 	self.icon:SetTexture(target:Class());
-	self.nameText:SetText(target:Name());
+	self.nameText:SetText(target:ShortName());
 	if target:Class() then
 		Frames.Color(self.nameText, target:Class());
 	else
 		Frames.Color(self.nameText, "white");
 	end;
+	Frames.BorderColor(self.icon, target:FactionColor());
 end;
 
 function PlayerFrame:Anchor(anchor)
