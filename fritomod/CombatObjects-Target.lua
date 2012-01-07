@@ -1,6 +1,7 @@
 if nil ~= require then
 	require "fritomod/OOP-Class";
 	require "fritomod/CombatObjects";
+	require "fritomod/Tables";
 end;
 
 CombatObjects=CombatObjects or {};
@@ -131,6 +132,55 @@ function TargetEvent:Classification()
 	if name then
 		return UnitClassification(name);
 	end;
+end;
+
+do
+	local raceToFactions = {
+		[{	"Dwarf",
+			"NightElf",
+			"Human",
+			"Gnome",
+			"Draenei",
+			"Worgen"}] = "Alliance",
+		[{	"BloodElf",
+			"Goblin",
+			"Orc",
+			"Tauren",
+			"Troll",
+			"Scourge"}] = "Horde"
+	};
+	Tables.Expand(raceToFactions);
+
+	function TargetEvent:Faction()
+		local faction;
+		local name = self:Name();
+		if name then
+			faction = UnitFactionGroup(name);
+		end;
+		if not faction and self:IsPlayer() then
+			local race = self:Race();
+			if race then
+				faction = raceToFactions[race];
+			end;
+		end;
+		return faction;
+	end;
+end;
+
+function TargetEvent:FactionIcon()
+	local faction = self:Faction();
+	if faction then
+		return Media.texture[faction];
+	end;
+	return Media.texture.unknown;
+end;
+
+function TargetEvent:FactionColor()
+	local faction = self:Faction();
+	if faction then
+		return Media.color[faction];
+	end;
+	return Media.color.white;
 end;
 
 CombatObjects.AddSharedEvent("Source", "Target");
