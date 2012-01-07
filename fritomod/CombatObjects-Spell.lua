@@ -51,11 +51,9 @@ function SpellEvent:SchoolColor()
 end;
 
 function SpellEvent:Icon()
-	local icon = select(3, GetSpellInfo(self:Id()));
-	if not icon then
-		icon=Media.texture[self:Name()];
-	end;
-	return icon;
+	return Media.texture[
+		select(3, GetSpellInfo(self:Id())) or
+		self:Name()];
 end;
 SpellEvent.Texture = SpellEvent.Icon;
 
