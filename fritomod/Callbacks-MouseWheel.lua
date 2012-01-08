@@ -9,21 +9,9 @@ local MouseWheelListener = OOP.Class(ListenerList);
 function MouseWheelListener:Constructor(frame)
 	self.super.Constructor(self, "MouseWheel listener");
 	self.frame = frame;
-end;
 
-function MouseWheelListener:Install()
-	self.super.Install(self);
-	frame:EnableMouseWheel(true);
-	self.scriptHandler = Callbacks.Script(self.frame, "OnMouseWheel", self, "Fire");
-end;
-
-function MouseWheelListener:Uninstall()
-	frame:EnableMouseWheel(false);
-	if self.scriptHandler then
-		self.scriptHandler();
-		self.scriptHandler=nil;
-	end;
-	self.super.Uninstall(self);
+	self:AddInstaller(frame, "EnableMouseWheel", true);
+	self:AddInstaller(Callbacks.Script, self.frame, "OnMouseWheel", self, "Fire");
 end;
 
 Callbacks = Callbacks or {};

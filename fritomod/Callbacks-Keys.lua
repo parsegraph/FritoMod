@@ -6,38 +6,24 @@ end;
 
 local KeyListener = OOP.Class(ListenerList);
 
+local KEYBOARD_ENABLER = "__KeyboardEnabler";
+
 function KeyListener:Constructor(frame, event)
 	self.super.Constructor(self, "Key listener");
 	self.frame = frame;
 	self.event = event;
-end;
 
-local KEYBOARD_ENABLER = "__KeyboardEnabler";
+	-- Enable the keyboard, if it's not already enabled.
+	self:AddInstaller(function()
+		if not frame[KEYBOARD_ENABLER] then
+			frame[KEYBOARD_ENABLER] = Functions.Install(
+				Seal(frame, "EnableKeyboard", true),
+				Noop);
+		end;
+		return frame[KEYBOARD_ENABLER]();
+	end);
 
-function KeyListener:Install()
-	self.super.Install(self);
-
-	if not frame[KEYBOARD_ENABLER] then
-		frame[KEYBOARD_ENABLER] = Functions.Install(
-			Seal(frame, "EnableKeyboard", true),
-			Noop);
-	end;
-
-	self.keyboardEnabled = frame[KEYBOARD_ENABLER]();
-
-	self.scriptHandler = Callbacks.Script(self.frame, event, self, "Fire");
-end;
-
-function KeyListener:Uninstall()
-	if self.keyboardEnabled then
-		self.keyboardEnabled();
-		self.keyboardEnabled=nil;
-	end;
-	if self.scriptHandler then
-		self.scriptHandler();
-		self.scriptHandler=nil;
-	end;
-	self.super.Uninstall(self);
+	self:AddInstaller(Callbacks.Script, self.frame, event, self, "Fire");
 end;
 
 Callbacks = Callbacks or {};

@@ -34,19 +34,6 @@ function ToggleDispatcher:Constructor(name)
 	self.resetters={};
 end;
 
-function ToggleDispatcher:AddInstaller(func, ...)
-	self.installers=self.installers or {};
-	return Lists.Insert(self.installers, Curry(func, ...));
-end;
-
-function ToggleDispatcher:Install()
-	trace("Installing dispatcher %q", self.name);
-	self.super.Install(self);
-	if self.installers then
-		self.uninstallers=Lists.MapCall(self.installers);
-	end;
-end;
-
 function ToggleDispatcher:Fire(...)
 	if self.fired then
 		return;
@@ -97,14 +84,5 @@ function ToggleDispatcher:Toggle(...)
 		self:Reset(...);
 	else
 		self:Fire(...);
-	end;
-end;
-
-function ToggleDispatcher:Uninstall()
-	self.super.Uninstall(self);
-	if self.uninstallers then
-		trace("Uninstalling dispatcher %q", self.name);
-		Lists.CallEach(self.uninstallers);
-		self.uninstallers=nil;
 	end;
 end;

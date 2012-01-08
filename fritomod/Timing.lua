@@ -69,12 +69,13 @@ do
 	local listeners = ListenerList:New("Timing");
 	local timingFrame;
 
-	function listeners:Install()
+
+	listeners:AddInstaller(function()
 		if timingFrame == nil then
 			timingFrame = CreateFrame("Frame", nil, UIParent);
 		end;
 		return Callbacks.OnUpdate(timingFrame, Timing._Tick);
-	end;
+	end);
 
 	-- Replace our listener tables with new ones.
 	--
