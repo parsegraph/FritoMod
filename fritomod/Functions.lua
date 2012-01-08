@@ -96,6 +96,33 @@ function Functions.Chain(wrapped, receiverFunc, ...)
 	end;
 end;
 
+function Functions.CycleValues(...)
+	local values;
+	if select("#", ...) == 1 and type(...) == "table" then
+		values = ...;
+	else
+		values = {...};
+	end;
+	local cycle = 0;
+	return function()
+		cycle = cycle + 1;
+		cycle = cycle % #values;
+		return values[cycle + 1];
+	end;
+end;
+
+function Functions.RandomValue(...)
+	local values;
+	if select("#", ...) == 1 and type(...) == "table" then
+		values = ...;
+	else
+		values = {...};
+	end;
+	return function()
+		return values[math.random(#values)];
+	end;
+end;
+
 -- Cycles between the specified functions. Each invocation of the returned function
 -- will invoke the next function. The cycle will loop once the last function is invoked.
 --
@@ -104,14 +131,19 @@ end;
 -- returns
 --	 a function that will invoke the next specified function in order
 function Functions.Cycle(...)
-	local functions = {...};
-	local cycle = -1;
+	local cycler = Functions.CycleValues(...);
 	return function(...)
-		cycle = (cycle + 1) % #functions;
-		return functions[cycle + 1](...);
+		return cycler()(...);
 	end;
 end;
 Functions.Rotate=Functions.Cycle;
+
+function Functions.Random(...)
+	local chooser = Functions.RandomValues(...);
+	return function(...)
+		return chooser()(...);
+	end;
+end;
 
 -- Toggles between calling the specified function and the function returned by it (henceforth referred
 -- to as the second function). The first function's returned value always replaces the second function.
