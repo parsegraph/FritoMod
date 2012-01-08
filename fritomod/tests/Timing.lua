@@ -154,11 +154,11 @@ function Suite:TestCooldown()
 	-- We're on cooldown, so our counter doesn't move.
 	c.Assert(1);
 	self:Tick(3);
-	-- We coalesce calls, so now that our cooldown is complete, the implicit call will
-	-- fire.
-	c.Assert(2);
+	-- Our function will work again, but it doesn't coalesce calls, so the counter
+	-- should remain at 1.
+	c.Assert(1);
 	f();
-	-- Invocations due to cooldown put us on cooldown, just like user-initiated ones.
+	-- Off cooldown, so function call succeeds
 	c.Assert(2);
 end;
 
