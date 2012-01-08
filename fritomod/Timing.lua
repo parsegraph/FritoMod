@@ -89,7 +89,8 @@ do
 
 	-- Iterate our timers.
 	--
-	-- You'll never call this function unless you're developing this addon.
+	-- There's never a need to directly call this function unelss you're developing or
+	-- testing this addon.
 	function Timing._Tick(...)
 		-- We don't use currying here to ensure we can override listeners
 		-- during testing.
