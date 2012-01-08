@@ -74,8 +74,22 @@ Chat.__Language=function()
 	return GetDefaultLanguage("PLAYER");
 end;
 
-Chat.__ChannelName=function(...)
-	return GetChannelName(...);
+Chat.__ChannelName=function(given)
+	local id, name = GetChannelName(given);
+	if id ~= nil and id ~= 0 then
+		return id;
+	end;
+	given = tostring(given):lower();
+	local function Finder(id, name, ...)
+		if name == nil then
+			return nil;
+		end;
+		if name:lower() == given then
+			return id;
+		end;
+		return Finder(...);
+	end;
+	return Finder(GetChannelList());
 end;
 
 function Chat.InChannel(channelName)
@@ -188,7 +202,11 @@ local ALIASES = Tables.Expand({
 	  [{"rw", "warning", "warn"}] = "raidwarning",
 	  [{"o", "officer"}] = "officer",
 	  [{"bg", "battlefield", "battlegroup", "pvp", "arena"}] = "battleground",
-	  [{"null", "noop", "none"}] = Noop
+	  [{"null", "noop", "none"}] = Noop,
+	tradechat = trade,
+	[{"localdef", "local defense"}] = "localdefense",
+	[{"worlddef", "world defense"}] = "worlddefense",
+	[{"lfg", "looking for group"}] = "lookingforgroup"
 });
 
 setmetatable(Chat, {
