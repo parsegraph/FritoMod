@@ -363,3 +363,39 @@ function Strings.ConvertToBase(base, number, digits)
 	end;
 	return converted;
 end
+
+function Strings.Each(str, pattern, func, ...)
+	func=Curry(func, ...);
+	local matcher, state, first = str:gmatch(pattern);
+	local function eachWrapper(arg, ...)
+		if arg == nil and select("#", ...) == 0 then
+			return false;
+		end;
+		first = arg;
+		func(arg, ...);
+		return true;
+	end;
+	while eachWrapper(matcher(state, first)) do
+	end;
+end;
+
+do
+	local magnitudes = {
+	   [{"ms", "mil", "milli"}] = 1/1000,
+	   [{"s", "sec", ""}] = 1,
+	   [{"m", "min"}] = 60,
+	   [{"h", "hr"}] = 60 * 60
+	};
+	Tables.Expand(magnitudes);
+	function Strings.GetTime(str)
+		local total = tonumber(str) or 0;
+		if total ~= 0 then
+			-- It was a plain numer, so just return it
+			return total;
+		end;
+		Strings.Each(str, "%s*([0-9-.]+)([a-zA-Z]*)%s*", function(num, suffix)
+			total = total + (num * magnitudes[suffix or "ms"]);
+		end);
+		return total;
+	end;
+end;

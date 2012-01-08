@@ -127,6 +127,7 @@ end;
 local function Timer(tickFunc, ...)
 	tickFunc=Curry(tickFunc, ...);
 	return function(period, func, ...)
+		period = Strings.GetTime(period);
 		func=Curry(func,...);
 		local elapsed=0;
 		return Timing.OnUpdate(function(delta)
@@ -154,11 +155,17 @@ Timing.Periodic = Timer(function(period, elapsed, func)
 end);
 
 
-function Timing.Every(...)
-	if type(select(1, ...))=="number" then
-		return Timing.Periodic(...);
+function Timing.Every(first, ...)
+	if type(first) == "string" then
+		local time = Strings.GetTime(first);
+		if time > 0 then
+			first = time;
+		end;
+	end;
+	if type(first)=="number" then
+		return Timing.Periodic(first, ...);
 	else
-		return Timing.OnUpdate(...);
+		return Timing.OnUpdate(first, ...);
 	end;
 end;
 
@@ -223,6 +230,7 @@ Timing.Count=Timing.Countdown;
 -- value, ...
 --	 the values that will, over time, be used
 function Timing.CycleValues(period, value, ...)
+	period = Strings.GetTime(period);
 	local values={value, ...};
 	local time=GetTime();
 	return function()
@@ -258,6 +266,7 @@ end;
 -- see
 --	 Timing.Throttle
 function Timing.Cooldown(cooldownTime, func, ...)
+	cooldownTime = Strings.GetTime(cooldownTime);
 	func = Curry(func, ...);
 	local lastCall;
 	local waitingInvocation;
@@ -301,6 +310,7 @@ end;
 -- see
 --	 Timing.Cooldown
 function Timing.Throttle(waitTime, func, ...)
+	waitTime = Strings.GetTime(waitTime);
 	func=Curry(func, ...);
 	local invocations={};
 	local r;
@@ -347,6 +357,7 @@ end;
 -- returns
 --	 a timer that responds to the values listed above
 function Timing.After(wait, func, ...)
+	wait=Strings.GetTime(wait);
 	func=Curry(func,...);
 	local elapsed=0;
 	local r;
