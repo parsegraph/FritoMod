@@ -80,7 +80,7 @@ do
 	-- Replace our listener tables with new ones.
 	--
 	-- You'll never call this function unless you're developing this addon.
-	Timing._Mask = function(newListeners)
+	function Timing._Mask(newListeners)
 		local oldListeners = listeners;
 		listeners=newListeners;
 		return function()
