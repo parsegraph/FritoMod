@@ -262,6 +262,7 @@ function Frames.Texture(f, texture)
 	end;
 	if f:GetObjectType():find("Button$") then
 		f:SetNormalTexture(texture);
+		f=f:GetNormalTexture();
 	elseif f:GetObjectType() == "Texture" then
 		f:SetTexture(texture);
 	else
