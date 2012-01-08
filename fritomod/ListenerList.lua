@@ -47,6 +47,14 @@ end;
 
 ListenerList=OOP.Class();
 
+DEBUG_TRACE_LISTENERS = false;
+
+local function trace(...)
+	if DEBUG_TRACE_LISTENERS then
+		_G["trace"](...);
+	end;
+end;
+
 function ListenerList:Constructor(name)
 	self.name = name or tostring(self);
 end;
