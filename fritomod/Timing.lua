@@ -59,42 +59,41 @@ if nil ~= require then
 	require "fritomod/Functions";
 	require "fritomod/Lists";
 	require "fritomod/Callbacks-Frames";
+	require "fritomod/ListenerList";
 end;
 
 Timing = {};
 local Timing = Timing;
 
 do
-	local updateListeners = {};
-	local deadListeners = {};
-	local timingFrame = CreateFrame("Frame", nil, UIParent);
+	local listeners = ListenerList:New("Timing");
+	local timingFrame;
+
+	function listeners:Install()
+		if timingFrame == nil then
+			timingFrame = CreateFrame("Frame", nil, UIParent);
+		end;
+		return Callbacks.OnUpdate(timingFrame, Timing._Tick);
+	end;
 
 	-- Replace our listener tables with new ones.
 	--
 	-- You'll never call this function unless you're developing this addon.
-	Timing._Mask = function(newUpdate, newDead)
-		local oldUpdate, oldDead=updateListeners, deadListeners;
-		updateListeners=newUpdate;
-		deadListeners=newDead;
+	Timing._Mask = function(newListeners)
+		local oldListeners = listeners;
+		listeners=newListeners;
 		return function()
-			updateListeners=oldUpdate;
-			deadListeners=oldDead;
+			listeners=oldListeners;
 		end;
 	end;
 
 	-- Iterate our timers.
 	--
 	-- You'll never call this function unless you're developing this addon.
-	Timing._Tick = function(elapsed)
-		for i=1, #updateListeners do
-			local listener=updateListeners[i];
-			if not Lists.Contains(deadListeners, listener) then
-				listener(elapsed);
-			end;
-		end;
-		while #deadListeners > 0 do
-			Lists.Remove(updateListeners, table.remove(deadListeners));
-		end;
+	function Timing._Tick(...)
+		-- We don't use currying here to ensure we can override listeners
+		-- during testing.
+		listeners:Fire(...);
 	end;
 
 	-- Adds a function that is fired every update. This is the highest-precision timing
@@ -104,21 +103,11 @@ do
 	--	 the function that is fired every update
 	-- returns
 	--	 a function that removes the specified listener
-	Timing.OnUpdate = Functions.Spy(
-		function(func, ...)
-			-- We can't just remove a listener at any given time because we may be
-			-- iterating over our list. Instead, any listeners that are removed must be
-			-- saved, so they can be removed at a safe time later on.
-			func=Curry(func, ...);
-			table.insert(updateListeners, func);
-			return Functions.OnlyOnce(function()
-				table.insert(deadListeners, func);
-			end);
-		end,
-		Functions.Install(Callbacks.OnUpdate, timingFrame, function(elapsed)
-			Timing._Tick(elapsed);
-		end)
-	);
+	function Timing.OnUpdate(func, ...)
+		-- We don't use currying here to ensure we can override listeners
+		-- during testing.
+		return listeners:Add(func, ...);
+	end;
 end;
 
 -- Helper function to construct timers. tickFuncs are called every update, and should

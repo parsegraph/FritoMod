@@ -1,3 +1,6 @@
+if nil ~= require then
+	require "fritomod/ListenerList";
+end;
 local Suite=CreateTestSuite("fritomod.Timing");
 
 function Suite:Tick(value)
@@ -12,14 +15,12 @@ Suite:AddListener(Metatables.Noop({
 		GetTime=function()
 			return suite.time;
 		end;
-		self.updateListeners={};
-		self.deadListeners={};
-		self.remover=Timing._Mask(self.updateListeners, self.deadListeners);
+		self.listeners = ListenerList:New("Dummy Timer");
+		self.remover=Timing._Mask(self.listeners);
 	end,
 	TestFinished = function(self, suite)
 		GetTime=self.oldGetTime;
-		self.updateListeners=nil;
-		self.deadListeners=nil;
+		self.listeners=nil;
 		self.remover();
 	end
 }));
