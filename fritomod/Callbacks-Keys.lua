@@ -60,3 +60,26 @@ end;
 Callbacks.Char=KeyListener("OnChar");
 Callbacks.KeyUp=KeyListener("OnKeyUp");
 Callbacks.KeyDown=KeyListener("OnKeyDown");
+
+function Callbacks.Key(key, func, ...)
+	key=key:lower();
+	func=Curry(func, ...);
+	local onKeyUp;
+	return Functions.OnlyOnce(Lists.CallEach, {
+		Callbacks.KeyDown(function(pressedKey)
+			pressedKey=pressedKey:lower();
+			if pressedKey == key then
+				func();
+			end;
+		end),
+		Callbacks.KeyUp(function(pressedKey)
+			if onKeyUp then
+				pressedKey=pressedKey:lower();
+				if pressedKey == key then
+					onKeyUp();
+					onKeyUp=nil;
+				end;
+			end
+		end)
+	});
+end;
