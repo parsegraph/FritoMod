@@ -78,6 +78,25 @@ Chat.__ChannelName=function(...)
 	return GetChannelName(...);
 end;
 
+function Chat.InChannel(channelName)
+	channelName=channelName:lower();
+	local function search(thisChannelNum, thisChannelName, ...)
+		if thisChannelNum == nil then
+			return false;
+		end;
+		thisChannelName=thisChannelName:lower();
+		if thisChannelName == channelName then
+			return true;
+		end;
+		return search(...);
+	end;
+	return search(GetChannelList());
+end;
+Chat.InTrade=Curry(Chat.InChannel, "Trade");
+Chat.InGeneral=Curry(Chat.InChannel, "General")
+Chat.InLookingForGroup=Curry(Chat.InChannel, "LookingForGroup");
+Chat.InLFG=Chat.InLookingForGroup;
+
 local function SendTargetedMessage(medium, target, ...)
 	if type(target)=="string" then
 		target=target:lower();
