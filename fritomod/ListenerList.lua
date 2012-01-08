@@ -51,9 +51,8 @@ function ListenerList:Constructor(name)
 	self.name = name or tostring(self);
 end;
 
+-- Install this listener. This should setup this listener to be fired.
 function ListenerList:Install()
-	assert(not self:HasListeners(), "Refusing to install to a non-empty list");
-	self.listeners = {};
 end;
 
 function ListenerList:GetListenerCount()
@@ -82,7 +81,8 @@ function ListenerList:Add(listener, ...)
 		self.name,
 		self:GetListenerCount());
 	if not self:HasListeners() then
-		self:Install();
+		self.listeners = {};
+		self.uninstaller = self:Install();
 	end;
 	table.insert(self.listeners, 1, listener);
 	return Functions.OnlyOnce(self, "RemoveListener", listener);
@@ -111,12 +111,16 @@ function ListenerList:RemoveListener(listener)
 	Lists.RemoveLast(self.listeners, listener);
 	if not self:HasListeners() then
 		self:Uninstall();
+		if self.uninstaller then
+			self.uninstaller();
+			self.uninstaller = nil;
+		end;
+		self.listeners = nil;
 	end;
 end;
 
 function ListenerList:Uninstall()
-	assert(not self:HasListeners(), "Refusing to uninstall a non-empty list");
-	self.listeners = nil;
+	-- By default, do nothing.
 end;
 
 function ListenerList:IsFiring()
