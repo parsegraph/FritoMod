@@ -99,6 +99,76 @@ do
 
 	namedIcons.mechanical = "Interface/ICONS/Ability_Mount_MechaStrider";
 
+	local function HunterPetIcon(name, ...)
+		namedIcons[name:lower()] = "Interface/ICONS/Ability_Hunter_Pet_"..name;
+		for i=1, select("#", ...) do
+			namedIcons[select(i, ...):lower()] = namedIcons[name:lower()];
+		end;
+	end;
+
+	HunterPetIcon("Boar", "Pig");
+	HunterPetIcon("Bear");
+	HunterPetIcon("Lion", "Tiger", "Cat", "Tigress");
+	HunterPetIcon("Chimera");
+	HunterPetIcon("CoreHound", "Core Hound");
+	HunterPetIcon("Gorilla", "Monkey");
+	HunterPetIcon("Hyena");
+	HunterPetIcon("Moth");
+	HunterPetIcon("Owl");
+	HunterPetIcon("Ravager");
+	HunterPetIcon("Scorpid", "Scorpion");
+	HunterPetIcon("DragonHawk", "Dragon Hawk");
+	HunterPetIcon("Silithid");
+	HunterPetIcon("Spider");
+	HunterPetIcon("SporeBat", "Spore Bat");
+	HunterPetIcon("TallStrider", "Strider");
+	HunterPetIcon("Turtle", "Tortoise");
+	HunterPetIcon("Wasp", "Insect");
+	HunterPetIcon("WindSerpent", "Wind Serpent");
+	HunterPetIcon("Worm");
+
+	namedIcons.panther = "Interface/ICONS/Ability_Mount_BlackPanther";
+	namedIcons.ram = "Interface/ICONS/Ability_Mount_MountainRam";
+	namedIcons.kodo = "Interface/ICONS/Ability_Mount_Kodo_02";
+	namedIcons.horse = "Interface/ICONS/Ability_Mount_NightmareHorse";
+	namedIcons["kodo beast"] = namedIcons.kodo;
+
+	namedIcons.wolf = "Interface/ICONS/Ability_Mount_WhiteDireWolf";
+	namedIcons.coyote = namedIcons.wolf;
+
+	namedIcons.tentacle = "Interface/ICONS/Achievement_Boss_YoggSaron_01";
+	namedIcons.chicken = "Interface/ICONS/Spell_Magic_PolymorphChicken";
+	namedIcons.rabbit = "Interface/ICONS/Spell_Magic_PolymorphRabbit";
+	namedIcons.sheep = "Interface/ICONS/Spell_Nature_Polymorph";
+	namedIcons.cow = "Interface/ICONS/Spell_Nature_Polymorph_Cow";
+	namedIcons.skeleton = "Interface/ICONS/Spell_Shadow_RaiseDead";
+	namedIcons.felhound = "Interface/ICONS/Spell_Shadow_SummonFelHunter";
+	namedIcons["fel hound"] = namedIcons.felhound;
+	namedIcons.felhunter = namedIcons.felhound;
+	namedIcons["fel hunter"] = namedIcons.felhunter;
+	namedIcons.imp = "Interface/ICONS/Spell_Shadow_SummonImp";
+	namedIcons.succubus = "Interface/ICONS/Spell_Shadow_SummonSuccubus";
+
+	namedIcons.dummy = "Interface/ICONS/Ability_Mount_RocketMount";
+	namedIcons.targetdummy = namedIcons.dummy;
+	namedIcons["target dummy"] = namedIcons.dummy;
+	namedIcons["raider's target dummy"] = namedIcons.dummy;
+
+	namedIcons.draenei = "Interface/ICONS/Achievement_Character_Draenei_Male";
+	namedIcons.bloodelf = "Interface/ICONS/Achievement_Character_BloodElf_Female";
+	namedIcons.dwarf = "Interface/ICONS/Achievement_Character_Dwarf_Male";
+	namedIcons.gnome = "Interface/ICONS/Achievement_Character_Gnome_Female";
+	namedIcons.human = "Interface/ICONS/Achievement_Character_Human_Male";
+	namedIcons.nightelf = "Interface/ICONS/Achievement_Character_NightElf_Male";
+	namedIcons["night elf"] = namedIcons.nightelf;
+	namedIcons.orc = "Interface/ICONS/Achievement_Character_Orc_Male";
+	namedIcons.tauren = "Interface/ICONS/Achievement_Character_Tauren_Female";
+	namedIcons.troll = "Interface/ICONS/Achievement_Character_Troll_Male";
+	namedIcons.undead = "Interface/ICONS/Achievement_Character_Undead_Male";
+	namedIcons.ogre = "Interface/ICONS/Achievement_Reputation_Ogre";
+	namedIcons.lostone = "Interface/ICONS/Achievement_Reputation_AshtongueDeathSworn";
+	namedIcons["lost one"] = namedIcons.lostone;
+
 	Media.texture(function(texture)
 		local texture = namedIcons[texture];
 		if texture then
