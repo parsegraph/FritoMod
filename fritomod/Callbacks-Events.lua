@@ -18,6 +18,7 @@
 
 if nil ~= require then
 	require "fritomod/currying";
+	require "fritomod/Callbacks";
 	require "fritomod/Lists";
 	require "fritomod/IdempotentToggleDispatcher";
 	require "fritomod/ToggleDispatcher";
@@ -66,6 +67,10 @@ local function InstanceWatcher(watchedType, specialName)
 	Callbacks["Enter"..specialName]=Callbacks[specialName];
 	Callbacks["Entering"..specialName]=Callbacks[specialName];
 	Callbacks["Entered"..specialName]=Callbacks[specialName];
+
+	Callbacks["Leave"..specialName]=Callbacks.ReversedCallback("Enter"..specialName);
+	Callbacks["Leaving"..specialName]=Callbacks["Leave"..specialName];
+	Callbacks["Left"..specialName]=Callbacks["Leave"..specialName];
 end;
 
 InstanceWatcher("arena", "Arena");
