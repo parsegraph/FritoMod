@@ -407,9 +407,7 @@ function Frames.Destroy(...)
 		local f = select(i, ...);
 		if not f then
 			-- Skip nil frames
-		elseif f.Destroy then
-			f:Destroy();
-		else
+		elseif Frames.AsRegion(f) then
 			f=Frames.AsRegion(f);
 			if f then
 				f:Hide();
@@ -421,6 +419,8 @@ function Frames.Destroy(...)
 					f:SetParent(nil);
 				end;
 			end;
+		elseif f.Destroy and f.Destroy ~= Frames.Destroy then
+				f:Destroy();
 		end;
 	end;
 end;
