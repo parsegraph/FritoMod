@@ -12,6 +12,8 @@ if nil ~= require then
 	require "fritomod/Lists";
 	require "fritomod/Timing";
 	require "fritomod/ToggleDispatcher";
+	require "fritomod/Callbacks";
+	require "fritomod/Functions";
 end;
 
 Callbacks=Callbacks or {};
@@ -55,33 +57,24 @@ local function BasicEvent(onEvent, offEvent, dispatcher, frame)
 	dispatcher:AddInstaller(Callbacks.Script, frame, offEvent, dispatcher, "Reset");
 end;
 
-local function ReversedEvent(event, reversedEvent)
-	Callbacks[event] = function(frame, listener, ...)
-		listener=Curry(listener, ...);
-		local remover;
-		return Callbacks[reversedEvent](frame, function(...)
-			if remover then
-				remover(...);
-				remover=nil;
-			end;
-			return function(...)
-				remover=listener(...);
-			end;
-		end);
-	end;
-end;
-
 -- Calls the specified callback whenever the mouse enters and leaves the specified frame.
 ToggledEvent("EnterFrame", BasicEvent, "OnEnter", "OnLeave");
 Callbacks.MouseEnter=Callbacks.EnterFrame;
 Callbacks.FrameEnter=Callbacks.EnterFrame;
-ReversedEvent("LeaveFrame", "EnterFrame");
+
+function Callbacks.LeaveFrame(frame, func, ...)
+	return Callbacks.EnterFrame(frame, Functions.ReverseUndoable(func, ...));
+end;
 Callbacks.MouseLeave=Callbacks.LeaveFrame;
 Callbacks.FrameLeave=Callbacks.LeaveFrame;
 
 -- Calls the specified callback whenever the specified frame is shown.
 ToggledEvent("ShowFrame", BasicEvent, "OnShow", "OnHide");
-ReversedEvent("HideFrame", "ShowFrame");
+function Callbacks.HideFrame(frame, func, ...)
+	return Callbacks.ShowFrame(frame, Functions.ReverseUndoable(func, ...));
+end;
+Callbacks.FrameHidden=Callbacks.HideFrame;
+Callbacks.FrameHide=Callbacks.HideFrame;
 
 -- A helper function that ensures we only enable the mouse on a frame when
 -- necessary. This coordination is necessary since different callbacks all
@@ -138,7 +131,9 @@ ToggledEvent("MouseDown", function(dispatcher, frame)
 	dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseUp", OnMouseUp, "OnMouseUp event was fired");
 	dispatcher:AddInstaller(Callbacks.HideFrame, frame, OnMouseUp, "Frame was hidden");
 end);
-ReversedEvent("MouseUp", "MouseDown");
+function Callbacks.MouseUp(frame, func, ...)
+	return Callbacks.MouseDown(frame, Functions.ReverseUndoable(func, ...));
+end;
 
 local CLICK_TOLERANCE=.5;
 -- Calls the specified callback whenever a click begins on a frame.

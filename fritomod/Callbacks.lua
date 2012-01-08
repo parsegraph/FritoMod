@@ -4,6 +4,7 @@
 -- of the methods here.
 if nil ~= require then
 	require "fritomod/currying";
+	require "fritomod/Functions";
 end;
 
 Callbacks = Callbacks or {};
@@ -16,17 +17,7 @@ function Callbacks.Reversed(callback, func, ...)
 		IsCallable(callback),
 		"Callback must be callable. Given: "..tostring(callback)
 	);
-	func=Curry(func, ...);
-	local remover;
-	return callback(function(...)
-		if remover then
-			remover(...);
-			remover=nil;
-		end;
-		return function(...)
-			remover = func(...);
-		end;
-	end);
+	return callback(Functions.ReverseUndoable(func, ...));
 end;
 
 function Callbacks.ReversedCallback(callback)
@@ -36,3 +27,4 @@ function Callbacks.ReversedCallback(callback)
 	assert(IsCallable(callback), "Callback must be callable. Given: "..tostring(callback));
 	return Curry(Callbacks.Reversed, callback);
 end;
+Callbacks.ReverseCallback = Callbacks.ReversedCallback;

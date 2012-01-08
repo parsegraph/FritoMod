@@ -207,6 +207,20 @@ function Functions.Undoable(performer, undoFunc, ...)
 	end;
 end;
 
+function Functions.ReverseUndoable(func, ...)
+	func=Curry(func, ...);
+	local remover;
+	return function(...)
+		if remover then
+			remover(...);
+			remover=nil;
+		end;
+		return function(...)
+			remover = func(...);
+		end;
+	end;
+end;
+
 -- Decorates the global function of the specified name, calling the specified function whenever the
 -- global is called. The spy function merely observes calls to the global; it does not affect them.
 --
