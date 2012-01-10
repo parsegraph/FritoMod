@@ -70,6 +70,15 @@ Chat.__Send=function(...)
 	end;
 end;
 
+function Chat.__Mask(func, ...)
+	func=Curry(func, ...);
+	local oldSend = Chat.__Send;
+	Chat.__Send = func;
+	return Functions.OnlyOnce(function()
+		Chat.__Send=oldSend;
+	end);
+end;
+
 Chat.__Language=function()
 	return GetDefaultLanguage("PLAYER");
 end;
