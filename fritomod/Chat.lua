@@ -82,7 +82,7 @@ Chat.__ChannelName=function(given)
 	given = tostring(given):lower();
 	local function Finder(id, name, ...)
 		if name == nil then
-			return nil;
+			return 0;
 		end;
 		if name:lower() == given then
 			return id;
