@@ -21,7 +21,6 @@ function Callbacks.ChannelJoinOrLeave(name, func, ...)
 	end;
 	func = Curry(func, ...);
 	return Events.CHAT_MSG_CHANNEL_NOTICE(function(status, ...)
-		-- This is the 8th, not 9th, argument since we define status.
 		local channelType = select(6, ...);
 		if channelType == CHANNEL_TYPE_TRADE then
 			trace("Got channel notice event for trade chat");
