@@ -74,6 +74,14 @@ function Objects.Value(value)
 			return Assert.Equals(expectedValue, value, assertion);
 		end,
 
+		AssertUnset = function(assertion)
+			return Assert.Nil(value, assertion);
+		end;
+
+		AssertSet = function(assertion)
+			return Assert.NotNil(value, assertion);
+		end;
+
 		-- If newValue is provided, this calls Set with that value. Otherwise, Get is
 		-- called.
 		--

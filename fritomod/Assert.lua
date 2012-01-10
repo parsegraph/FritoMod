@@ -302,3 +302,7 @@ Assert.NotEqual=Assert.NotEquals
 Assert.Unequal=Assert.NotEquals
 Assert.Unequals=Assert.NotEquals
 Assert.Different=Assert.NotEquals
+
+function Assert.Callable(variable, assertion)
+	assert(IsCallable(variable), ("Variable must be callable%s"):format(assertion));
+end;
