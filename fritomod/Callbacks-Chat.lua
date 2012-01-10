@@ -93,12 +93,15 @@ function Callbacks.ImmediateJoinChannel(name, func, ...)
 	func = Curry(func, ...);
 	local onLeave;
 	if Chat.InChannel(name) then
+		trace("Already in channel %q, emitting event", name);
 		onLeave = func();
 	end;
 	return Callbacks.ChannelJoinOrLeave(name, function(isJoin)
 		if isJoin and not onLeave then
+			trace("Joined channel, so firing onJoin listener");
 			onLeave = func();
 		elseif onLeave then
+			trace("Left channel, so firing onLeave listener");
 			onLeave();
 			onLeave=nil;
 		end;
