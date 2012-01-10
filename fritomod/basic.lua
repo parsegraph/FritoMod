@@ -23,7 +23,7 @@ end
 -- A value that is used to signal the death of some operations. This is used where a remover
 -- cannot easily be provided.
 --
--- Never change, edit, or use this value.
+-- Never change or edit this value, or assign to any of its keys.
 --
 -- see
 --	 Timing.Throttle, Timing.After
