@@ -9,7 +9,7 @@ local KeyListener = OOP.Class(ListenerList);
 local KEYBOARD_ENABLER = "__KeyboardEnabler";
 
 function KeyListener:Constructor(frame, event)
-	self.super.Constructor(self, "Key listener");
+	KeyListener.super.Constructor(self, "Key listener");
 	self.frame = frame;
 	self.event = event;
 

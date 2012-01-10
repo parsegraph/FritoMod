@@ -28,7 +28,7 @@ function MissEvent:Constructor(...)
 end;
 
 function MissEvent:Set(missType, isOffHand, amount)
-	self.super.Set(self, missType, amount, 0);
+	MissEvent.super.Set(self, missType, amount, 0);
 	self.isOffHand = isOffHand;
 end;
 

@@ -11,16 +11,16 @@ IdempotentToggleDispatcher=OOP.Class(ToggleDispatcher);
 
 function IdempotentToggleDispatcher:Fire(...)
 	self.firedArguments={...};
-	return self.super.Fire(self, ...);
+	return IdempotentToggleDispatcher.super.Fire(self, ...);
 end;
 
 function IdempotentToggleDispatcher:Reset()
-	return self.super.Reset(self);
+	return IdempotentToggleDispatcher.super.Reset(self);
 end;
 
 function IdempotentToggleDispatcher:Add(listener, ...)
 	listener=Curry(listener, ...);
-	local r=self.super.Add(self, listener);
+	local r=IdempotentToggleDispatcher.super.Add(self, listener);
 	if self.firedArguments then
 		self:FireListener(listener, unpack(self.firedArguments));
 	end;

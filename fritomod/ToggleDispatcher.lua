@@ -38,7 +38,7 @@ function ToggleDispatcher:Fire(...)
 	if self.fired then
 		return;
 	end;
-	self.super.Fire(self, ...);
+	ToggleDispatcher.super.Fire(self, ...);
 	self.fired=true;
 end;
 
@@ -53,7 +53,7 @@ function ToggleDispatcher:FireListener(listener, ...)
 end;
 
 function ToggleDispatcher:RemoveListener(listener)
-	self.super.RemoveListener(self, listener);
+	ToggleDispatcher.super.RemoveListener(self, listener);
 	if self.resetters then
 		local resetter=self.resetters[listener];
 		if resetter then

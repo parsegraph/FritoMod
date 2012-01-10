@@ -44,7 +44,7 @@ function BuffEvent:Constructor(...)
 end;
 
 function BuffEvent:Set(id, name, school, auraType)
-	self.super.Set(self, id, name, school);
+	BuffEvent.super.Set(self, id, name, school);
 	self.auraType = auraType;
 end;
 

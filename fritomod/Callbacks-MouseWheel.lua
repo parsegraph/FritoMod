@@ -7,7 +7,7 @@ end;
 local MouseWheelListener = OOP.Class(ListenerList);
 
 function MouseWheelListener:Constructor(frame)
-	self.super.Constructor(self, "MouseWheel listener");
+	MouseWheelListener.super.Constructor(self, "MouseWheel listener");
 	self.frame = frame;
 
 	self:AddInstaller(frame, "EnableMouseWheel", true);
