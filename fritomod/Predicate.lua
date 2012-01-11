@@ -169,3 +169,8 @@ function Predicate:Evaluate()
 	trace("Predicate %q has result: %q", self.name, tostring(result));
 	return result;
 end;
+
+function Predicate:Destroy()
+	self:Detach();
+	self:ForceReset();
+end;
