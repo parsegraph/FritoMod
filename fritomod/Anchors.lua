@@ -49,15 +49,63 @@ local function GetBounds(frame, anchor)
 	return Frames.AsRegion(frame) or GetBounds(frame:Bounds(anchor), anchor);
 end;
 
-local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
-	for k,v in pairs(Tables.Clone(reverses)) do
-		reverses[v]=k;
+-- Return the gap and a table containing the frames given in the arguments. This
+-- handles a few different styles of arguments for convenience, so it should be used
+-- when writing anchor functions that involve multiple frames combined with a gap.
+local function GetGapAndFrames(gap, ...)
+	local frames;
+	if Frames.IsFrame(gap) then
+		frames={gap, ...};
+		gap=0;
+	elseif select("#", ...) == 0 and type(gap) == "table" then
+		if Frames.IsFrame(gap) then
+			frames = {gap}
+		else
+			frames = gap;
+		end;
+		gap=0;
+	elseif select("#", ...) == 1 and not Frames.IsFrame(...) then
+		frames = ...;
+	else
+		frames={...};
 	end;
+	return gap, frames;
+end;
 
-	local function Gap(anchor, x, y)
+local function InjectIntoAnchors(format, name, func, ...)
+	func=Curry(func, ...);
+	if type(format) == "table" then
+		for i=1, #format do
+			InjectIntoAnchors(format[i], name, func);
+		end;
+		return;
+	end;
+	if type(name) == "table" then
+		for i=1, #name do
+			InjectIntoAnchors(format, name[i], func);
+		end;
+		return;
+	end;
+	Anchors[format:format(name)] = func;
+end;
+
+local function FullStrategyName(name)
+	if type(name) == "string" then
+		return name;
+	end;
+	return name[1];
+end;
+
+local function GapAnchorStrategy(name, signs, masks)
+	if IsCallable(signs) then
+		InjectIntoAnchors("%sGap", name, signs);
+		return;
+	end;
+	InjectIntoAnchors("%sGap", name, function(anchor, x, y, ref)
 		if not x then
 			x=0;
 		end;
+		anchor = tostring(anchor):upper();
 		local sign=signs[anchor];
 		if not sign then
 			assert(
@@ -67,84 +115,191 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 			);
 			return 0, 0;
 		end;
+		assert(tonumber(x), "X must be a number. Given: "..tostring(x));
 		local sx, sy=unpack(sign);
 		if not y then
 			y=x;
-			local defaults;
-			if #defaultSigns > 0 then
-				defaults=defaultSigns;
+			local mask;
+			if #masks > 0 then
+				mask=masks;
 			else
-				defaults=defaultSigns[anchor];
+				mask=masks[anchor];
 			end;
-			sx, sy = defaults[1] * sx, defaults[2] * sy;
+			sx, sy = mask[1] * sx, mask[2] * sy;
 		end;
+		assert(tonumber(y), "Y must be a number. Given: "..tostring(y));
 		return sx * x, sy * y;
+	end);
+end;
+
+local function AnchorPairStrategy(name, anchorPairs)
+	for k,v in pairs(Tables.Clone(anchorPairs)) do
+		anchorPairs[v]=k;
 	end;
-	Anchors[name.."Gap"] = Gap;
 
-	local function Flip(reversed, frame, ...)
-		local anchor, ref, x, y=GetAnchorArguments(...);
-		local anchorTo = reverses[anchor];
-		assert(anchorTo, "No target anchor found for "..name.." flip: "..anchor);
-		if reversed then
-			anchor, anchorTo = anchorTo, anchor;
-		end;
-		local region = GetAnchorable(frame, anchor);
-		assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
-		ref=GetBounds(ref or region:GetParent(), anchorTo);
-		assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
-		x, y = Gap(anchorTo, x, y);
-		if DEBUG_TRACE then
-			trace("%s Flip - %s:SetPoint(%q, %s, %q, %d, %d)",
-				name,
-				tostring(region),
-				anchor,
-				tostring(ref),
-				anchorTo,
-				x,
-				y);
-		end;
-		region:SetPoint(anchor, ref, anchorTo, x, y);
-	end
-
-	local flipTo = Curry(Flip, true);
-	Anchors[Strings.CharAt(name, 1).."Flip"] = flipTo;
-	Anchors[name.."Flip"]	 = flipTo;
-	Anchors[name.."FlipTo"]	 = flipTo;
-
-	local flipFrom = Curry(Flip, false);
-	Anchors[name.."FlipFrom"] = flipFrom;
-	Anchors[Strings.CharAt(name, 1).."FlipFrom"] = flipFrom;
-
-	Anchors[name.."AnchorName"] = function(anchor)
+	InjectIntoAnchors("%sAnchorPair", name, function(anchor)
+		assert(anchor, "Anchor must not be falsy");
 		anchor=anchor:upper();
-		return reverses[anchor];
+		return anchorPairs[anchor];
+	end);
+
+	InjectIntoAnchors("%sAnchorPairs", name, function()
+		return anchorPairs;
+	end);
+end;
+
+local function AnchorSetStrategy(name, setVerb)
+	if type(setVerb) == "table" then
+		for i=1, #setVerb do
+			AnchorSetStrategy(name, setVerb[i]);
+		end;
+		return;
 	end;
+
+	local fullName = FullStrategyName(name);
+	local Gap = Anchors[fullName.."Gap"];
+	local AnchorPair = Anchors[fullName.."AnchorPair"];
+
+	InjectIntoAnchors(setVerb, name, function(frame, ...)
+		local anchor, ref, x, y=GetAnchorArguments(...);
+		local anchorTo = AnchorPair(anchor);
+		assert(anchorTo, "No anchor pair found for "..fullName.." flip: "..anchor);
+		Anchors.Set(frame, anchor, ref, anchorTo, Gap(anchorTo, x, y, ref));
+	end);
+end;
+
+local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
+	if type(setVerb) == "table" then
+		for i=1, #setVerb do
+			ReverseAnchorSetStrategy(name, setVerb[i], reversingVerb);
+		end;
+		return;
+	end;
+	local fullName = FullStrategyName(name);
+
+	local funcNames = {
+		setVerb
+	};
+	if type(reversingVerb) == "table" then
+		for i=1, #reversingVerb do
+			table.insert(funcNames, "Reverse"..reversingVerb[i]);
+			table.insert(funcNames, "R"..reversingVerb[i]);
+		end;
+		reversingVerb = reversingVerb[1];
+	end;
+
+	local AnchorPair = Anchors[fullName.."AnchorPair"];
+	local Gap = Anchors[fullName.."Gap"];
+
+	InjectIntoAnchors(
+		funcNames,
+		name,
+		function(frame, ...)
+			local anchor, ref, x, y=GetAnchorArguments(...);
+			local anchorTo = AnchorPair(anchor);
+			assert(anchorTo, "No anchor pair found for "..fullName.." flip: "..anchor);
+			Anchors.Set(frame, anchorTo, ref, anchor, Gap(anchor, x, y, ref));
+		end
+	);
+end;
+
+local function EdgeSetStrategy(name, setVerb)
+	local fullName = FullStrategyName(name);
+
+	if type(setVerb) == "table" then
+		for i=1, #setVerb do
+			EdgeSetStrategy(name, setVerb[i]);
+		end;
+		return;
+	end;
+	local SetPoint = Anchors[setVerb:format(fullName)];
+
+	local function FlipEdge(...)
+		local anchors = {...};
+		return function(frame, ref, x, y)
+			for i=1, #anchors do
+				SetPoint(frame, anchors[i], ref, x, y);
+			end;
+		end;
+	end;
+	InjectIntoAnchors(setVerb.."Left",
+		name,
+		FlipEdge("TOPLEFT", "BOTTOMLEFT")
+	);
+	InjectIntoAnchors(setVerb.."Right",
+		name,
+		FlipEdge("TOPRIGHT", "BOTTOMRIGHT")
+	);
+	InjectIntoAnchors(setVerb.."Top",
+		name,
+		FlipEdge("TOPLEFT", "TOPRIGHT")
+	);
+	InjectIntoAnchors(setVerb.."Bottom",
+		name,
+		FlipEdge("BOTTOMLEFT", "BOTTOMRIGHT")
+	);
+	InjectIntoAnchors(setVerb.."All",
+		name,
+		FlipEdge("LEFT", "RIGHT", "TOP", "BOTTOM")
+	);
+	InjectIntoAnchors(setVerb.."Orthogonal",
+		name,
+		FlipEdge("LEFT", "RIGHT", "TOP", "BOTTOM")
+	);
+	InjectIntoAnchors(setVerb.."Diagonals",
+		name,
+		FlipEdge("TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT")
+	);
+	InjectIntoAnchors(setVerb.."Verticals",
+		name,
+		FlipEdge("TOP", "BOTTOM")
+	);
+	InjectIntoAnchors(setVerb.."Horizontals",
+		name,
+		FlipEdge("LEFT", "RIGHT")
+	);
+end;
+
+local function StackStrategy(name)
+	local fullName = FullStrategyName(name);
+
+	if type(setVerb) == "table" then
+		setVerb = setVerb[1];
+	end;
+	local FlipTo = Anchors[fullName.."FlipTo"];
+	local AnchorPair = Anchors[fullName.."AnchorPair"];
 
 	local function Stack(towardsFirst, anchor, gap, ...)
 		local frames;
-		if Frames.IsFrame(gap) then
-			frames={gap, ...};
-			gap=0;
-		elseif select("#", ...) == 0 and type(gap) == "table" then
-			if Frames.IsFrame(gap) then
-				frames = {gap}
-			else
-				frames = gap;
-			end;
-			gap=0;
-		elseif select("#", ...) == 1 and not Frames.IsFrame(...) then
-			frames = ...;
-		else
-			frames={...};
-		end;
-		local flipper = Anchors[name.."Flip"];
+		gap, frames = GetGapAndFrames(gap, ...);
 		local marcher=Lists.March;
 		if towardsFirst then
+			-- We want A<B<C (stack from the right), so we need to reverse-march
+			-- so we get the following moves:
+			--
+			-- Flip(C, B)
+			-- Flip(B, A)
+			--
+			-- This is a reverse march, with the "first" frame being the anchor
+			-- (or reference).
+			--
+			-- We don't need to get the paired anchor, since each subsequent frame
+			-- will be flipped over the previous frame's point.
 			marcher=Lists.ReverseMarch;
+		else
+			-- We want A>B>C (stack to the right). This is accomplished by:
+			-- Flip(A, B)
+			-- Flip(B, C)
+			--
+			-- Each subsequent frame is to the right of the previous frame,
+			-- with the last frame being the anchor (or reference).
+			--
+			-- We need to get the paired anchor, since the flips are based off
+			-- the reference's opposing anchor.
+			anchor=AnchorPair(anchor);
 		end;
 		local i=1;
-		marcher(frames, function(first, second)
+		return marcher(frames, function(first, second)
 			local thisGap = gap;
 			if IsCallable(thisGap) then
 				thisGap = thisGap(first, second);
@@ -152,97 +307,108 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 				thisGap = thisGap[1 + (i % #thisGap)]
 				i=i + 1;
 			end;
-			flipper(first, second, anchor, thisGap);
+			FlipTo(first, second, anchor, thisGap);
 		end);
-		if towardsFirst then
-			return frames[1];
-		else
-			return frames[#frames];
-		end;
-	end;
+	end
+	InjectIntoAnchors({
+			"%sStack",
+			"%sStackTo"
+		},
+		name,
+		Curry(Stack, false)
+	);
 
-	local stack = Curry(Stack, true);
-	Anchors[name.."Stack"] = stack;
-	Anchors[Strings.CharAt(name, 1).."Stack"] = stack;
-	Anchors[name.."StackTo"] = stack;
-	Anchors[Strings.CharAt(name, 1).."StackTo"] = stack;
+	local AnchorPair = Anchors[FullStrategyName(name) .. "AnchorPair"];
 
-	local reverseStack = Curry(Stack, false);
-	Anchors["Reverse"..name.."Stack"] = reverseStack;
-	Anchors["R"..Strings.CharAt(name, 1).."Stack"] = reverseStack;
-	Anchors["Reverse"..name.."StackTo"] = reverseStack;
-	Anchors["R"..Strings.CharAt(name, 1).."StackTo"] = reverseStack;
-
-	local function StackFrom(towardsFirst, anchor, gap, ...)
-		anchor=anchor:upper();
-		return Stack(towardsFirst, reverses[anchor], gap, ...);
-	end;
-	local stackFrom = Curry(StackFrom, true);
-	Anchors[name.."StackFrom"] = stackFrom;
-	Anchors[Strings.CharAt(name, 1).."StackFrom"] = stackFrom;
-
-	local reverseStackFrom = Curry(StackFrom, false);
-	Anchors["Reverse"..name.."StackFrom"] = reverseStackFrom;
-	Anchors["R"..Strings.CharAt(name, 1).."StackFrom"] = reverseStackFrom;
-
-	local justifiers = Metatables.Defensive();
-	local fromJustifiers = Metatables.Defensive();
-	local reverseJustifiers = Metatables.Defensive();
-	local reverseFromJustifiers = Metatables.Defensive();
-
-	-- Similar to stack, but the relative arrangement of individual frames will
-	-- remain in lexicographical order; the first element will (almost) always be
-	-- furthest to the left and to the top.
-	--
-	-- In cases where there is ambiguity, left-to-right should be preferred over
-	-- top-to-bottom.
-	for anchor in pairs(reverses) do
-		if reverseJustify[anchor] then
-			justifiers[anchor] = reverseStack
-			fromJustifiers[anchor] = stackFrom;
-			reverseJustifiers[anchor] = stack
-			reverseFromJustifiers[anchor] = reverseStackFrom;
-		else
-			justifiers[anchor] = stack;
-			fromJustifiers[anchor] = reverseStackFrom;
-			reverseJustifiers[anchor] = reverseStack;
-			reverseFromJustifiers[anchor] = stackFrom;
-		end;
-	end;
-
-	local function Justify(anchor, ...)
-		anchor=anchor:upper();
-		return justifiers[anchor](anchor, ...);
-	end;
-	local function JustifyFrom(anchor, ...)
-		anchor=anchor:upper();
-		return fromJustifiers[anchor](anchor, ...);
-	end;
-	local function ReverseJustify(anchor, ...)
-		anchor=anchor:upper();
-		return reverseJustifiers[anchor](anchor, ...);
-	end;
-	local function ReverseJustifyFrom(anchor, ...)
-		anchor=anchor:upper();
-		return reverseFromJustifiers[anchor](anchor, ...);
-	end;
-
-	Anchors[name.."Justify"] = Justify;
-	Anchors[Strings.CharAt(name, 1).."Justify"] = Justify;
-	Anchors[name.."JustifyTo"] = Justify;
-	Anchors[Strings.CharAt(name, 1).."JustifyTo"] = Justify;
-
-	Anchors[name.."JustifyFrom"] = JustifyFrom;
-	Anchors[Strings.CharAt(name, 1).."JustifyFrom"] = JustifyFrom;
-
-	Anchors["Reverse"..name.."Justify"] = ReverseJustify;
-	Anchors["R"..Strings.CharAt(name, 1).."Justify"] = ReverseJustify;
-	Anchors["Reverse"..name.."JustifyTo"] = ReverseJustify;
-	Anchors["R"..Strings.CharAt(name, 1).."JustifyTo"] = ReverseJustify;
-
-	Anchors["Reverse"..name.."JustifyFrom"] = ReverseJustifyFrom;
-	Anchors["R"..Strings.CharAt(name, 1).."JustifyFrom"] = ReverseJustifyFrom;
+	InjectIntoAnchors(
+		"%sStackFrom",
+		name,
+		Curry(Stack, true)
+	);
 end;
+
+local function JustifyStrategy(name, reverseJustify)
+	local fullName = FullStrategyName(name);
+	local AnchorPair = Anchors[fullName.."AnchorPair"];
+
+	local StackTo = Anchors[fullName.."StackTo"];
+	local StackFrom = Anchors[fullName.."StackFrom"];
+
+	local function RetrieveWithAnchor(t)
+		return function(anchor, ...)
+			anchor=anchor:upper();
+			return t[anchor](anchor, ...);
+		end;
+	end;
+
+	InjectIntoAnchors({
+			"%sJustify",
+			"%sJustifyTo"
+		},
+		name,
+		function(anchor, ...)
+			anchor=anchor:upper();
+			if reverseJustify[anchor] then
+				return StackFrom(AnchorPair(anchor), ...);
+			end;
+			return StackTo(anchor, ...);
+		end
+	);
+	InjectIntoAnchors(
+		"%sJustifyFrom",
+		name,
+		function(anchor, ...)
+			anchor=anchor:upper();
+			if reverseJustify[anchor] then
+				return StackTo(AnchorPair(anchor), ...);
+			end;
+			return StackFrom(anchor, ...);
+		end
+	);
+end;
+
+local function CenterStrategy(name)
+	local fullName = FullStrategyName(name);
+	local JustifyFrom = Anchors[fullName.."JustifyFrom"];
+	local JustifyTo = Anchors[fullName.."JustifyTo"];
+
+	InjectIntoAnchors({
+			"%sCenterJustify"
+		},
+		name,
+		function(anchor, gap, ...)
+			local gap, frames = GetGapAndFrames(gap, ...);
+			local count = #frames;
+			local mid;
+			-- Handle trivial cases specially to save lots of
+			-- effort later.
+			if count == 0 then
+				return nil;
+			elseif count == 1 then
+				return frames[1];
+			end;
+			if count % 2 == 0 then
+				-- We have an even number of frames, so
+				-- we need to pick one arbitrarily to be
+				-- the "middle".
+				mid = count / 2;
+			else
+				mid = (count + 1) / 2;
+			end;
+			-- Align the leading slice
+			JustifyTo(anchor, gap,
+				Lists.Slice(frames, 1, mid));
+			-- Align the trailing slice
+			JustifyFrom(anchor, gap,
+				Lists.Slice(frames, mid, #frames));
+			-- Return the middle
+			return frames[mid];
+		end
+	);
+end;
+
+
+local strategies = {};
 
 -- Anchors.HorizontalFlip(f, "TOPRIGHT", ref);
 -- +---+---+
@@ -285,24 +451,31 @@ end;
 -- +---|ref|
 -- | f |   |
 -- +---+---+
-FlipAnchor("Horizontal", {
-		TOPLEFT	= "TOPRIGHT",
-		BOTTOMLEFT = "BOTTOMRIGHT",
-		LEFT	   = "RIGHT",
-	}, { -- Signs
+
+strategies.Horizontal = {
+	name = {"Horizontal", "H"},
+	gapSigns = {
 		TOPRIGHT	=  {  1,  1 },
 		RIGHT	   =  {  1,  1 },
 		BOTTOMRIGHT =  {  1, -1 },
 		BOTTOMLEFT  =  { -1, -1 },
 		LEFT		=  { -1,  1 },
 		TOPLEFT	 =  { -1,  1 }
-	}, { 1, 0 }, -- Default mask
-	{
+	},
+	gapMask = { 1, 0 },
+	anchorPairs = {
+		TOPLEFT	= "TOPRIGHT",
+		BOTTOMLEFT = "BOTTOMRIGHT",
+		LEFT	   = "RIGHT",
+	},
+	setVerb = "%sFlipFrom",
+	reverseSetVerb = { "%sFlipTo", "%sFlip" },
+	reverseJustify = {
 		TOPLEFT = true,
-		LEFT = true,
-		BOTTOMLEFT = true
+		TOP = true,
+		TOPRIGHT = true
 	}
-);
+};
 
 -- Anchors.VerticalFlip(f, "BOTTOMLEFT", ref);
 -- +-------+
@@ -345,25 +518,31 @@ FlipAnchor("Horizontal", {
 -- +-------+
 -- |  ref  |
 -- +-------+
-FlipAnchor("Vertical",
-	{
-		BOTTOMRIGHT = "TOPRIGHT",
-		BOTTOMLEFT  = "TOPLEFT",
-		BOTTOM	  = "TOP"
-	}, { -- Signs
+
+strategies.Vertical = {
+	name = {"Vertical", "V"},
+	gapSigns = {
 		TOPRIGHT	=  {  1,  1 },
 		TOP		 =  {  1,  1 },
 		TOPLEFT	 =  { -1,  1 },
 		BOTTOMRIGHT =  {  1, -1 },
 		BOTTOM	  =  {  1, -1 },
 		BOTTOMLEFT  =  { -1, -1 }
-	}, { 0, 1 }, -- Default mask
-	{
+	},
+	gapMask = { 0, 1 },
+	anchorPairs = {
+		BOTTOMRIGHT = "TOPRIGHT",
+		BOTTOMLEFT  = "TOPLEFT",
+		BOTTOM	  = "TOP"
+	},
+	setVerb = "%sFlipFrom",
+	reverseSetVerb = { "%sFlipTo", "%sFlip" },
+	reverseJustify = {
 		TOPLEFT = true,
 		TOP = true,
 		TOPRIGHT = true
 	}
-);
+};
 
 -- "frame touches ref's anchor."
 --
@@ -430,13 +609,14 @@ FlipAnchor("Vertical",
 -- +---+---+
 -- | f |ref|
 -- +---+---+
-FlipAnchor("Diagonal",
-	{
-		TOP	  = "BOTTOM",
-		RIGHT	= "LEFT",
-		TOPLEFT  = "BOTTOMRIGHT",
-		TOPRIGHT = "BOTTOMLEFT",
-	}, { -- Signs
+
+strategies.Diagonal = {
+	name = {
+		"Diagonal",
+		"D",
+		""
+	},
+	gapSigns = {
 		TOP		 = {  1,  1 },
 		TOPRIGHT	= {  1,  1 },
 		RIGHT	   = {  1,  1 },
@@ -445,7 +625,8 @@ FlipAnchor("Diagonal",
 		BOTTOMLEFT  = { -1, -1 },
 		LEFT		= { -1, -1 },
 		TOPLEFT	 = { -1,  1 },
-	}, { -- Defaults
+	},
+	gapMask = {
 		TOP		 = {  0,  1 },
 		TOPRIGHT	= {  1,  1 },
 		RIGHT	   = {  1,  0 },
@@ -454,149 +635,113 @@ FlipAnchor("Diagonal",
 		BOTTOMLEFT  = {  1,  1 },
 		LEFT		= {  1,  0 },
 		TOPLEFT	 = {  1,  1 },
-	}, {
+	},
+	anchorPairs = {
+		TOP	  = "BOTTOM",
+		RIGHT	= "LEFT",
+		TOPLEFT  = "BOTTOMRIGHT",
+		TOPRIGHT = "BOTTOMLEFT",
+	},
+	setVerb = "%sFlipFrom",
+	reverseSetVerb = { "%sFlipTo", "%sFlip" },
+	reverseJustify = {
 		TOP = true,
 		TOPLEFT = true,
 		LEFT = true,
 		BOTTOMLEFT = true,
 	}
-);
-Anchors.Flip=Anchors.DiagonalFlip;
-Anchors.FlipTo=Anchors.Flip;
+};
 
-Anchors.FlipFrom=Anchors.DiagonalFlipFrom;
-
-Anchors.Stack=Anchors.DiagonalStack;
-Anchors.ReverseStack=Anchors.ReverseDiagonalStack;
-Anchors.RStack=Anchors.ReverseStack;
-
-Anchors.StackTo=Anchors.DiagonalStack;
-Anchors.ReverseStackTo=Anchors.ReverseDiagonalStack;
-Anchors.RStackTo=Anchors.ReverseStack;
-
-Anchors.StackFrom=Anchors.DiagonalStackFrom;
-Anchors.ReverseStackFrom=Anchors.ReverseDiagonalStackFrom;
-Anchors.RStackFrom=Anchors.ReverseStackFrom;
-
-Anchors.Justify=Anchors.DiagonalJustify;
-Anchors.ReverseJustify=Anchors.ReverseDiagonalJustify;
-Anchors.RJustify=Anchors.ReverseJustify;
-
-Anchors.JustifyTo=Anchors.DiagonalJustify;
-Anchors.ReverseJustifyTo=Anchors.ReverseDiagonalJustify;
-Anchors.RJustifyTo=Anchors.ReverseJustify;
-
-Anchors.JustifyFrom=Anchors.DiagonalJustifyFrom;
-Anchors.ReverseJustifyFrom=Anchors.ReverseDiagonalJustifyFrom;
-Anchors.RJustifyFrom=Anchors.ReverseJustifyFrom;
-
-local function EdgeFunctions(name)
-	local func=Anchors[name];
-	Anchors[name.."Left"]=function(frame, ref, x, y)
-		func(frame, "TOPLEFT", ref, x, y);
-		func(frame, "BOTTOMLEFT", ref, x, y);
-	end;
-	Anchors[name.."Right"]=function(frame, ref, x, y)
-		func(frame, "TOPRIGHT", ref, x, y);
-		func(frame, "BOTTOMRIGHT", ref, x, y);
-	end;
-	Anchors[name.."Top"]=function(frame, ref, x, y)
-		func(frame, "TOPLEFT", ref, x, y);
-		func(frame, "TOPRIGHT", ref, x, y);
-	end;
-	Anchors[name.."Bottom"]=function(frame, ref, x, y)
-		func(frame, "BOTTOMLEFT", ref, x, y);
-		func(frame, "BOTTOMRIGHT", ref, x, y);
-	end;
-end;
-
-EdgeFunctions("HFlip");
-EdgeFunctions("VFlip");
-EdgeFunctions("DFlip");
-
-Anchors.FlipTop   =Anchors.VFlipTop;
-Anchors.FlipBottom=Anchors.VFlipBottom;
-
-Anchors.FlipLeft =Anchors.HFlipLeft;
-Anchors.FlipRight=Anchors.HFlipRight;
-
-do
-	-- frame shares ref's anchor
-	local function Share(useInsets, frame, ...)
-		local anchor, ref, x, y=GetAnchorArguments(...);
-		local region = GetAnchorable(frame, anchor);
-		assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
-		if ref == nil then
-			ref = region:GetParent();
+strategies.ShareInner = {
+	name = {
+		"Shared",
+		"Sharing",
+		"S",
+	},
+	gapSigns = function(anchor, x, y, ref)
+		local insets=Frames.Insets(ref);
+		if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
+			y=y or 0;
+			y=y+insets.top;
+		elseif insets.bottom > 0 and Strings.StartsWith(anchor, "BOTTOM") then
+			y=y or 0;
+			y=y+insets.bottom;
 		end;
-		if useInsets then
-			local insets=Frames.Insets(Frames.AsRegion(ref));
-			if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
-				y=y or 0;
-				y=y+insets.top;
-			elseif insets.bottom > 0 and Strings.StartsWith(anchor, "BOTTOM") then
-				y=y or 0;
-				y=y+insets.bottom;
-			end;
-			if insets.left > 0 and Strings.EndsWith(anchor, "LEFT") then
-				x=x or 0;
-				x=x+insets.left;
-			elseif insets.right > 0 and Strings.EndsWith(anchor, "RIGHT") then
-				x=x or 0;
-				x=x+insets.right;
-			end;
+		if insets.left > 0 and Strings.EndsWith(anchor, "LEFT") then
+			x=x or 0;
+			x=x+insets.left;
+		elseif insets.right > 0 and Strings.EndsWith(anchor, "RIGHT") then
+			x=x or 0;
+			x=x+insets.right;
 		end;
-		ref=GetBounds(ref or region:GetParent(), anchorTo);
-		assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
 		if x ~= nil then
 			x=-x;
 		end;
 		if y ~= nil then
 			y=-y;
 		end;
-		x,y = Anchors.DiagonalGap(anchor, x, y);
-		if DEBUG_TRACE then
-			trace("Share - %s:SetPoint(%q, %s, %q, %d, %d)",
-				tostring(region),
-				anchor,
-				tostring(ref),
-				anchor,
-				x,
-				y);
-		end;
-		region:SetPoint(anchor, ref, anchor, x, y);
-	end;
-	Anchors.ShareInner = Curry(Share, true);
-	Anchors.Share = Anchors.ShareInner;
+		return Anchors.DiagonalGap(anchor, x, y);
+	end,
+	anchorPairs = {
+		RIGHT  = "RIGHT",
+		TOPRIGHT  = "TOPRIGHT",
+		TOP = "TOP",
+		TOPLEFT  = "TOPLEFT",
+		BOTTOMRIGHT  = "BOTTOMRIGHT",
+		BOTTOM = "BOTTOM",
+		BOTTOMLEFT  = "BOTTOMLEFT",
+		LEFT  = "LEFT",
+		CENTER = "CENTER",
+	},
+	setVerb = {"Share", "ShareInner"},
+};
 
-	Anchors.ShareOuter = Curry(Share, false);
-
-	local function MultipleShare(name, anchor, ...)
-		local anchors = {anchor, ...};
-		local function MultiShare(useInsets, frame, ref, x, y)
-			-- We call GetFrame here to avoid calling anchorable:Anchor since it would
-			-- be ambiguous.
-			for i=1, #anchors do
-				Share(useInsets, frame, anchors[i], ref, x, y);
+strategies.ShareOuter = setmetatable({
+		name = {
+			"OuterShared",
+			"OuterSharing",
+			"OS"
+		},
+		setVerb = "ShareOuter",
+		gapSigns = function(anchor, x, y, ref)
+			if x ~= nil then
+				x=-x;
 			end;
-		end;
-		Anchors["ShareInner"..name] = Curry(MultiShare, true);
-		Anchors["Share"..name] = Anchors["ShareInner"..name];
-		Anchors["ShareOuter"..name] = Curry(MultiShare, false);
+			if y ~= nil then
+				y=-y;
+			end;
+			return Anchors.DiagonalGap(anchor, x, y);
+		end
+	}, {
+		__index = strategies.ShareInner
+});
+
+for _, strategy in pairs(strategies) do
+	local name = strategy.name;
+	GapAnchorStrategy(
+		name,
+		strategy.gapSigns,
+		strategy.gapMask
+	);
+	AnchorPairStrategy(name, strategy.anchorPairs);
+	AnchorSetStrategy(name, strategy.setVerb);
+	if strategy.reverseSetVerb then
+		ReverseAnchorSetStrategy(name,
+			strategy.reverseSetVerb,
+			strategy.setVerb);
 	end;
-
-	EdgeFunctions("ShareInner");
-	EdgeFunctions("Share");
-	EdgeFunctions("ShareOuter");
-
-	MultipleShare("All", "LEFT", "RIGHT", "TOP", "BOTTOM");
-	MultipleShare("Orthogonal", "LEFT", "RIGHT", "TOP", "BOTTOM");
-
-
-	MultipleShare("Diagonals", "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT");
-	MultipleShare("Vertical", "TOP", "BOTTOM");
-	MultipleShare("Horiztonals", "LEFT", "RIGHT");
+	EdgeSetStrategy(name, strategy.setVerb);
+	StackStrategy(name);
+	JustifyStrategy(name, strategy.reverseJustify or {});
+	CenterStrategy(name);
 end;
+
+-- Tweak some default functions for least-surprise usage.
+Anchors.FlipTop   =Anchors.VFlipTop;
+Anchors.FlipBottom=Anchors.VFlipBottom;
+
+Anchors.FlipLeft =Anchors.HFlipLeft;
+Anchors.FlipRight=Anchors.HFlipRight;
 
 function Anchors.Center(frame, ref)
 	return Anchors.Share(frame, ref, "CENTER");
@@ -609,6 +754,16 @@ function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
 	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
 	ref=GetBounds(ref or region:GetParent(), anchorTo);
 	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
+	if DEBUG_TRACE then
+		trace("%s:SetPoint(%q, %s, %q, %d, %d)",
+			tostring(region),
+			anchor,
+			tostring(ref),
+			anchorTo,
+			x,
+			y
+		);
+	end;
 	region:SetPoint(anchor, ref, anchorTo, x, y);
 end;
 

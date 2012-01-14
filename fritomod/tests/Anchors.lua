@@ -35,6 +35,10 @@ local function PointMapTest(runner, expectedPoints)
 	end;
 end;
 
+function Suite:TestGapReturnsSensibleValues()
+	Assert.Equals({-2, 2}, {Anchors.DiagonalGap("topleft", 2)});
+end;
+
 Suite.TestSharingAnchorsCausesThemToOverlap = PointTest(
 	function(f, ref)
 		Anchors.Share(f, ref, "topleft");
@@ -231,3 +235,29 @@ Suite.TestShareAllAndShareInteractHappily = PointMapTest(function(bounds, ref)
 			}
 		};
 end);
+
+function Suite:TestStack()
+	local frames = {};
+	for i=1, 5 do
+		table.insert(frames, CreateFrame("Frame"));
+	end;
+	local f = Anchors.HStack("topleft", frames);
+	assert(Frames.AsRegion(f), "Stack must return an object convertible to a region");
+end;
+
+function Suite:TestJustify()
+	local frames = {};
+	for i=1, 5 do
+		table.insert(frames, CreateFrame("Frame"));
+	end;
+	local f = Anchors.HJustify("topleft", frames);
+	assert(Frames.AsRegion(f), "Justify must return an object convertible to a region");
+end;
+
+function Suite:TestCenterJustify()
+	local frames = {};
+	for i=1, 5 do
+		table.insert(frames, CreateFrame("Frame"));
+	end;
+	Anchors.HCenterJustify("topleft", frames);
+end;
