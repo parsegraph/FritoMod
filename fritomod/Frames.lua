@@ -378,6 +378,11 @@ function Frames.IsVisible(f)
 	return CallOriginal(f, "IsVisible");
 end;
 
+function Frames.IsShown(f)
+	f=Frames.AsRegion(f);
+	return Bool(CallOriginal(f, "IsShown"));
+end;
+
 function Frames.ToggleShowing(f)
 	f=Frames.AsRegion(f);
 	if f:IsVisible() then
