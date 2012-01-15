@@ -163,7 +163,7 @@ local function AnchorSetStrategy(name, setVerb)
 	InjectIntoAnchors(setVerb, name, function(frame, ...)
 		local anchor, ref, x, y=GetAnchorArguments(...);
 		local anchorTo = AnchorPair(anchor);
-		assert(anchorTo, "No anchor pair found for "..fullName.." flip: "..anchor);
+		assert(anchorTo, "No anchor pair found for "..fullName.." set: "..anchor);
 		Anchors.Set(frame, anchor, ref, anchorTo, Gap(anchorTo, x, y, ref));
 	end);
 end;
@@ -197,7 +197,7 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 		function(frame, ...)
 			local anchor, ref, x, y=GetAnchorArguments(...);
 			local anchorTo = AnchorPair(anchor);
-			assert(anchorTo, "No anchor pair found for "..fullName.." flip: "..anchor);
+			assert(anchorTo, "No anchor pair found for "..fullName.." set: "..anchor);
 			Anchors.Set(frame, anchorTo, ref, anchor, Gap(anchor, x, y, ref));
 		end
 	);
