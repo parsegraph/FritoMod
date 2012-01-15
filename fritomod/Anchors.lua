@@ -459,14 +459,14 @@ strategies.Horizontal = {
 	anchorPairs = {
 		TOPLEFT	= "TOPRIGHT",
 		BOTTOMLEFT = "BOTTOMRIGHT",
-		LEFT	   = "RIGHT",
+		LEFT	   = "RIGHT"
 	},
 	setVerb = "%sFlipFrom",
 	reverseSetVerb = { "%sFlipTo", "%sFlip" },
 	reverseJustify = {
 		TOPLEFT = true,
-		TOP = true,
-		TOPRIGHT = true
+		LEFT = true,
+		BOTTOMLEFT = true
 	}
 };
 
