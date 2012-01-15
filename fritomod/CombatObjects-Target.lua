@@ -15,7 +15,7 @@ end;
 
 function TargetEvent:Set(guid, name, flags, raidFlags)
 	self.guid = guid;
-	self.name = name;
+	self:SetName(name);
 	self.flags = flags;
 	self.raidFlags = raidFlags;
 end;
@@ -37,22 +37,23 @@ TargetEvent.Guid = TargetEvent.GUID;
 TargetEvent.ID= TargetEvent.GUID;
 TargetEvent.Id= TargetEvent.GUID;
 
-function TargetEvent:Name()
-	if not self.name then
-		self.name = GetPlayerInfoByGUID(6, self:GUID());
+function TargetEvent:SetName(name)
+	name = name or select(6, GetPlayerInfoByGUID(self:GUID()));
+	if name then
+		self.name = Strings.Trim(Strings.Split("-", name, 2)[1]);
+	else
+		self.name = "Unknown";
 	end;
-	return self.name or "Unknown";
 end;
 
-function TargetEvent:ShortName()
-	local name = self:Name();
-	if name then
-		local parts = Strings.Split("-", name, 2);
-		return parts[1];
-	else
-		return "Unknown";
-	end;
+function TargetEvent:FullName()
+	return ("%s - %s"):format(self:Name(), self:Realm());
 end;
+
+function TargetEvent:Name()
+	return self.name;
+end;
+TargetEvent.ShortName = TargetEvent.Name;
 
 function TargetEvent:IsSelf()
 	local name = self:Name();
@@ -110,7 +111,13 @@ TargetEvent.ClassName = PlayerInfo(1);
 TargetEvent.Race = PlayerInfo(4);
 TargetEvent.RaceName = PlayerInfo(3);
 TargetEvent.Gender = PlayerInfo(5);
-TargetEvent.Realm = PlayerInfo(7);
+
+function TargetEvent:Realm()
+	local realm = select(7, GetPlayerInfoByGUID(self:GUID()));
+	if not realm or realm == "" then
+		return GetRealmName();
+	end;
+end;
 
 function TargetEvent:ClassColor()
 	local class = self:Class();
@@ -128,7 +135,7 @@ end;
 TargetEvent.ClassTexture = TargetEvent.ClassIcon;
 
 function TargetEvent:Classification()
-	local name = self:Name();
+	local name = self:ShortName();
 	if name then
 		return UnitClassification(name);
 	end;
@@ -153,7 +160,7 @@ do
 
 	function TargetEvent:Faction()
 		local faction;
-		local name = self:Name();
+		local name = self:ShortName();
 		if name then
 			faction = UnitFactionGroup(name);
 		end;
