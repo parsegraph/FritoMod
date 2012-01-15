@@ -141,7 +141,7 @@ local function FlipAnchor(name, reverses, signs, defaultSigns, reverseJustify)
 		local flipper = Anchors[name.."Flip"];
 		local marcher=Lists.March;
 		if towardsFirst then
-			marcher=Lists.FlipMarch;
+			marcher=Lists.ReverseMarch;
 		end;
 		local i=1;
 		marcher(frames, function(first, second)

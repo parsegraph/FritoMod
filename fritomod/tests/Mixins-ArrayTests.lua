@@ -235,7 +235,7 @@ function Mixins.ArrayTests(Suite, library)
 		library.March(Suite:Array(1,2,3,4), Do);
 		Assert.Equals({-1,-1,-1}, results);
 		results={};
-		library.FlipMarch(Suite:Array(1,2,3,4), Do);
+		library.ReverseMarch(Suite:Array(1,2,3,4), Do);
 		Assert.Equals({1,1,1}, results);
 	end;
 
