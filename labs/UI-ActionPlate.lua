@@ -33,17 +33,11 @@ end;
 function ActionPlate:Anchor(anchor)
 	anchor = Frames.HorizontalComponent(anchor);
 	trace("Anchoring ActionPlate to ".. anchor);
-	if anchor == "CENTER" then
-		Anchors.Flip(self.sourceFrame, self.actionIcon, "LEFT", sourceGap);
-		Anchors.Flip(self.targetFrame, self.actionIcon, "RIGHT", targetGap);
-		return self.actionIcon;
-	else
-		return Anchors.HJustifyFrom(anchor, 3,
-			self.sourceFrame,
-			self.actionIcon,
-			self.targetFrame
-		);
-	end;
+	return Anchors.HJustifyFrom(anchor, 3,
+		self.sourceFrame,
+		self.actionIcon,
+		self.targetFrame
+	);
 end;
 
 function ActionPlate:Bounds(anchor)

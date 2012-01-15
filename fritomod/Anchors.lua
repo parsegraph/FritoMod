@@ -253,7 +253,7 @@ local function EdgeSetStrategy(name, setVerb)
 	);
 end;
 
-local function StackStrategy(name)
+local function StackStrategy(name, defaultAnchor)
 	local fullName = FullStrategyName(name);
 
 	if type(setVerb) == "table" then
@@ -263,6 +263,11 @@ local function StackStrategy(name)
 	local AnchorPair = Anchors[fullName.."AnchorPair"];
 
 	local function Stack(towardsFirst, anchor, gap, ...)
+		anchor=anchor:upper();
+		if anchor == "CENTER" and defaultAnchor then
+			local CStack = Anchors[fullName.."CStack"];
+			return CStack(defaultAnchor, ...);
+		end;
 		local frames;
 		gap, frames = GetGapAndFrames(gap, ...);
 		local marcher=Lists.March;
@@ -320,46 +325,6 @@ local function StackStrategy(name)
 	);
 end;
 
-local function JustifyStrategy(name, reverseJustify)
-	local fullName = FullStrategyName(name);
-	local AnchorPair = Anchors[fullName.."AnchorPair"];
-
-	local StackTo = Anchors[fullName.."StackTo"];
-	local StackFrom = Anchors[fullName.."StackFrom"];
-
-	local function RetrieveWithAnchor(t)
-		return function(anchor, ...)
-			anchor=anchor:upper();
-			return t[anchor](anchor, ...);
-		end;
-	end;
-
-	InjectIntoAnchors({
-			"%sJustify",
-			"%sJustifyTo"
-		},
-		name,
-		function(anchor, ...)
-			anchor=anchor:upper();
-			if reverseJustify[anchor] then
-				return StackFrom(AnchorPair(anchor), ...);
-			end;
-			return StackTo(anchor, ...);
-		end
-	);
-	InjectIntoAnchors(
-		"%sJustifyFrom",
-		name,
-		function(anchor, ...)
-			anchor=anchor:upper();
-			if reverseJustify[anchor] then
-				return StackTo(AnchorPair(anchor), ...);
-			end;
-			return StackFrom(anchor, ...);
-		end
-	);
-end;
-
 local function CenterStackStrategy(name)
 	local fullName = FullStrategyName(name);
 	local StackFrom = Anchors[fullName.."StackFrom"];
@@ -391,6 +356,47 @@ local function CenterStackStrategy(name)
 				Lists.Slice(frames, mid, #frames));
 			-- Return the middle
 			return frames[mid];
+		end
+	);
+end;
+
+local function JustifyStrategy(name, reverseJustify, defaultAnchor)
+	local fullName = FullStrategyName(name);
+	local AnchorPair = Anchors[fullName.."AnchorPair"];
+
+	local StackTo = Anchors[fullName.."StackTo"];
+	local StackFrom = Anchors[fullName.."StackFrom"];
+
+	InjectIntoAnchors({
+			"%sJustify",
+			"%sJustifyTo"
+		},
+		name,
+		function(anchor, ...)
+			anchor=anchor:upper();
+			if anchor == "CENTER" and defaultAnchor then
+				local CJustify = Anchors[fullName.."CJustify"];
+				return CJustify(defaultAnchor, ...);
+			end;
+			if reverseJustify[anchor] then
+				return StackFrom(AnchorPair(anchor), ...);
+			end;
+			return StackTo(anchor, ...);
+		end
+	);
+	InjectIntoAnchors(
+		"%sJustifyFrom",
+		name,
+		function(anchor, ...)
+			anchor=anchor:upper();
+			if anchor == "CENTER" and defaultAnchor then
+				local CJustify = Anchors[fullName.."CJustify"];
+				return CJustify(defaultAnchor, ...);
+			end;
+			if reverseJustify[anchor] then
+				return StackTo(AnchorPair(anchor), ...);
+			end;
+			return StackFrom(anchor, ...);
 		end
 	);
 end;
@@ -482,7 +488,8 @@ strategies.Horizontal = {
 		TOPLEFT = true,
 		LEFT = true,
 		BOTTOMLEFT = true
-	}
+	},
+	defaultAnchor = "RIGHT"
 };
 
 -- Anchors.VerticalFlip(f, "BOTTOMLEFT", ref);
@@ -549,7 +556,8 @@ strategies.Vertical = {
 		TOPLEFT = true,
 		TOP = true,
 		TOPRIGHT = true
-	}
+	},
+	defaultAnchor = "BOTTOM"
 };
 
 -- "frame touches ref's anchor."
@@ -657,7 +665,8 @@ strategies.Diagonal = {
 		TOPLEFT = true,
 		LEFT = true,
 		BOTTOMLEFT = true,
-	}
+	},
+	defaultAnchor = "RIGHT"
 };
 
 strategies.ShareInner = {
@@ -739,11 +748,11 @@ for _, strategy in pairs(strategies) do
 			strategy.setVerb);
 	end;
 	EdgeSetStrategy(name, strategy.setVerb);
-	StackStrategy(name);
+	StackStrategy(name, strategy.defaultAnchor);
 	CenterStackStrategy(name);
 
 	strategy.reverseJustify = strategy.reverseJustify or {};
-	JustifyStrategy(name, strategy.reverseJustify);
+	JustifyStrategy(name, strategy.reverseJustify, strategy.defaultAnchor);
 	CenterJustifyStrategy(name, strategy.reverseJustify);
 end;
 
