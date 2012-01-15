@@ -177,14 +177,7 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 	end;
 	local fullName = FullStrategyName(name);
 
-	local funcNames = {
-		setVerb
-	};
 	if type(reversingVerb) == "table" then
-		for i=1, #reversingVerb do
-			table.insert(funcNames, "Reverse"..reversingVerb[i]);
-			table.insert(funcNames, "R"..reversingVerb[i]);
-		end;
 		reversingVerb = reversingVerb[1];
 	end;
 
@@ -192,7 +185,7 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 	local Gap = Anchors[fullName.."Gap"];
 
 	InjectIntoAnchors(
-		funcNames,
+		setVerb,
 		name,
 		function(frame, ...)
 			local anchor, ref, x, y=GetAnchorArguments(...);
