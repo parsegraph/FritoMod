@@ -16,7 +16,7 @@ UI = UI or {};
 local PlayerFrame = OOP.Class();
 UI.PlayerFrame = PlayerFrame;
 
-function PlayerFrame:Constructor(parent, orient)
+function PlayerFrame:Constructor(parent)
 	parent = Frames.AsRegion(parent);
 	assert(Frames.IsFrame(parent), "Parent frame must be provided");
 	assert(parent.CreateTexture, "Provided parent must be a real frame");
