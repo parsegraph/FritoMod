@@ -360,26 +360,21 @@ local function JustifyStrategy(name, reverseJustify)
 	);
 end;
 
-local function CenterStrategy(name)
+local function CenterStackStrategy(name)
 	local fullName = FullStrategyName(name);
-	local JustifyFrom = Anchors[fullName.."JustifyFrom"];
-	local JustifyTo = Anchors[fullName.."JustifyTo"];
+	local StackFrom = Anchors[fullName.."StackFrom"];
+	local StackTo = Anchors[fullName.."StackTo"];
 
 	InjectIntoAnchors({
-			"%sCenterJustify"
+			"%sCStack",
+			"%sCenterStack",
 		},
 		name,
 		function(anchor, gap, ...)
+			anchor=anchor:upper();
 			local gap, frames = GetGapAndFrames(gap, ...);
 			local count = #frames;
 			local mid;
-			-- Handle trivial cases specially to save lots of
-			-- effort later.
-			if count == 0 then
-				return nil;
-			elseif count == 1 then
-				return frames[1];
-			end;
 			if count % 2 == 0 then
 				-- We have an even number of frames, so
 				-- we need to pick one arbitrarily to be
@@ -389,13 +384,33 @@ local function CenterStrategy(name)
 				mid = (count + 1) / 2;
 			end;
 			-- Align the leading slice
-			JustifyTo(anchor, gap,
+			StackTo(anchor, gap,
 				Lists.Slice(frames, 1, mid));
 			-- Align the trailing slice
-			JustifyFrom(anchor, gap,
+			StackFrom(anchor, gap,
 				Lists.Slice(frames, mid, #frames));
 			-- Return the middle
 			return frames[mid];
+		end
+	);
+end;
+
+local function CenterJustifyStrategy(name, reverseJustify)
+	local fullName = FullStrategyName(name);
+	local AnchorPair = Anchors[fullName.."AnchorPair"];
+	local CStack = Anchors[fullName.."CStack"];
+
+	InjectIntoAnchors({
+			"%sCJustify",
+			"%sCenterJustify",
+		},
+		name,
+		function(anchor, ...)
+			anchor=anchor:upper();
+			if reverseJustify[anchor] then
+				return CStack(AnchorPair(anchor), ...);
+			end;
+			return CStack(anchor, ...);
 		end
 	);
 end;
@@ -725,8 +740,11 @@ for _, strategy in pairs(strategies) do
 	end;
 	EdgeSetStrategy(name, strategy.setVerb);
 	StackStrategy(name);
-	JustifyStrategy(name, strategy.reverseJustify or {});
-	CenterStrategy(name);
+	CenterStackStrategy(name);
+
+	strategy.reverseJustify = strategy.reverseJustify or {};
+	JustifyStrategy(name, strategy.reverseJustify);
+	CenterJustifyStrategy(name, strategy.reverseJustify);
 end;
 
 -- Tweak some default functions for least-surprise usage.
