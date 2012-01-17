@@ -90,6 +90,24 @@ end;
 Animations.Shrink=Animations.Scale;
 Animations.Grow=Animations.Scale;
 
+function Animations.ScaleTo(ag, duration, anchor, ...)
+	local scale, ag = Animations.Scale(ag, duration, ...);
+	Animations.Origin(scale, Anchors.AnchorPair(anchor));
+	return scale, ag;
+end;
+
+function Animations.HScaleTo(ag, duration, anchor, magnitude)
+	local scale, ag = Animations.Scale(ag, duration, magnitude, 1);
+	Animations.Origin(scale, Anchors.AnchorPair(anchor));
+	return scale, ag;
+end;
+
+function Animations.VScaleTo(ag, duration, anchor, magnitude)
+	local scale, ag = Animations.Scale(ag, duration, 1, magnitude);
+	Animations.Origin(scale, Anchors.AnchorPair(anchor));
+	return scale, ag;
+end;
+
 function Animations.Rotate(ag, duration, degrees)
    ag=GetGroup(ag);
    local rotate=ag:CreateAnimation("rotation");
@@ -108,6 +126,14 @@ function Animations.Alpha(ag, duration, change)
    return alpha, ag;
 end;
 Animations.Opacity=Animations.Alpha;
+
+function Animations.Show(ag, duration)
+	return Animations.Alpha(ag, duration, 1);
+end;
+
+function Animations.Hide(ag, duration)
+	return Animations.Alpha(ag, duration, -1);
+end;
 
 function Animations.Translate(ag, duration, xOffset, yOffset)
    if yOffset==nil then
