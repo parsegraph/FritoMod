@@ -1,4 +1,4 @@
-local Suite = CreateTestSuite("fritomod.Timer");
+local Suite = CreateTestSuite("fritomod.Monitor");
 
 function Suite:Tick(value)
 	self.time=self.time+value;
@@ -12,7 +12,7 @@ Suite:AddListener(Metatables.Noop({
 		GetTime=function()
 			return suite.time;
 		end;
-		self.listeners = ListenerList:New("Dummy Timer");
+		self.listeners = ListenerList:New("Dummy Monitor");
 		self.remover=Timing._Mask(self.listeners);
 	end,
 	TestFinished = function(self, suite)
@@ -22,26 +22,26 @@ Suite:AddListener(Metatables.Noop({
 	end
 }));
 
-function Suite:TestTimer()
-	local t = Timer:New();
+function Suite:TestMonitor()
+	local t = Monitor:New();
 	t:SetWithDuration("5s");
 	assert(t:IsActive());
 	self:Tick(10);
 	assert(t:IsComplete());
 end;
 
-function Suite:TestTimerAlreadyCompleted()
-	local t = Timer:New();
+function Suite:TestMonitorAlreadyCompleted()
+	local t = Monitor:New();
 	t:SetWithDuration("5s", "6s");
 	assert(t:IsActive());
 	assert(t:IsComplete());
 end;
 
-function Suite:TestTimerStateOrder()
+function Suite:TestMonitorStateOrder()
 	local states = {};
 
-	local t = Timer:New();
-	t:AddListener(table.insert, states);
+	local t = Monitor:New();
+	t:StateListener(table.insert, states);
 
 	t:SetWithDuration("5s");
 	self:Tick(10);
@@ -54,11 +54,11 @@ function Suite:TestTimerStateOrder()
 	}, states);
 end;
 
-function Suite:TestTimerStateOrderWithChange()
+function Suite:TestMonitorStateOrderWithChange()
 	local states = {};
 
-	local t = Timer:New();
-	t:AddListener(table.insert, states);
+	local t = Monitor:New();
+	t:StateListener(table.insert, states);
 
 	t:SetWithDuration("5s");
 	self:Tick(2);
