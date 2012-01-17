@@ -17,9 +17,6 @@ function WoW.AssertFrame(frame)
 	);
 end;
 
-function Frame:Constructor(parent)
-end;
-
 function Frame:GetObjectType()
 	return "Frame";
 end;
