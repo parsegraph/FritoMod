@@ -367,12 +367,11 @@ end
 function Strings.Each(str, pattern, func, ...)
 	func=Curry(func, ...);
 	local matcher, state, first = str:gmatch(pattern);
-	local function eachWrapper(arg, ...)
-		if arg == nil and select("#", ...) == 0 then
+	local function eachWrapper(...)
+		if select("#", ...) == 0 then
 			return false;
 		end;
-		first = arg;
-		func(arg, ...);
+		func(...);
 		return true;
 	end;
 	while eachWrapper(matcher(state, first)) do
