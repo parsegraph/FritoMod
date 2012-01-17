@@ -680,6 +680,8 @@ strategies.ShareInner = {
 		"S",
 	},
 	gapSigns = function(anchor, x, y, ref)
+		anchor=tostring(anchor):upper();
+		assert(ref, "Reference frame must be provided for determining gap strategy");
 		local insets=Frames.Insets(ref);
 		if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
 			y=y or 0;
