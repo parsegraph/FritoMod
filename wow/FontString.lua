@@ -4,10 +4,11 @@ if nil ~= require then
 	require "fritomod/OOP-Class";
 end;
 
-WoW.FontString=OOP.Class(WoW.Frame);
+local FontString=OOP.Class(WoW.Frame);
+WoW.FontString = FontString;
 
 function WoW.Frame:CreateFontString()
-	return WoW.FontString:New();
+	return WoW.FontString:New(self);
 end;
 
 function WoW.FontString:SetFontObject()
