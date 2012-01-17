@@ -28,13 +28,13 @@ local CLASS_METATABLE = {
 	--	 the object that is constructed
 	-- throws
 	--	 if object is falsy
-	ConstructObject = function(self, object)
+	ConstructObject = function(self, object, ...)
 		if not object then
 			error("Object is falsy");
 		end;
 		for i=1, #self.constructors do
 			local constructor = self.constructors[i];
-			constructor(object);
+			constructor(object, ...);
 		end;
 	end,
 
@@ -86,13 +86,13 @@ local function New(class, ...)
 	};
 	setmetatable(instance, instance);
 
-	local function Initialize(class)
+	local function Initialize(class, ...)
 		if class.super then
-			Initialize(class.super);
+			Initialize(class.super, ...);
 		end;
-		class:ConstructObject(instance);
+		class:ConstructObject(instance, ...);
 	end;
-	Initialize(class);
+	Initialize(class, ...);
 
 	instance:Constructor(...);
 	return instance;
