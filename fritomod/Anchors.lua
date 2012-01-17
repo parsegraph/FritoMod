@@ -1,5 +1,6 @@
 if nil ~= require then
 	require "wow/Frame-Layout";
+	require "wow/Frame-Container";
 	require "fritomod/Strings";
 	require "fritomod/Metatables";
 end;
