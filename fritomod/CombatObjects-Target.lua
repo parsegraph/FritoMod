@@ -38,6 +38,7 @@ TargetEvent.ID= TargetEvent.GUID;
 TargetEvent.Id= TargetEvent.GUID;
 
 function TargetEvent:SetName(name)
+	assert(self:GUID(), "GUID must be present, but was: "..tostring(self:GUID()));
 	name = name or select(6, GetPlayerInfoByGUID(self:GUID()));
 	if name then
 		self.name = Strings.Trim(Strings.Split("-", name, 2)[1]);
