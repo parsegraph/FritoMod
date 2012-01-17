@@ -401,6 +401,25 @@ local disallowsNilParent = {
 	FontString = true
 }
 
+do
+	local FONT_HEIGHT_MULTIPLE = 12;
+	local FONT_HEIGHT_MINIMUM = 1;
+
+	function Frames.ShrinkFontToFit(fs, maxSize)
+		local font, height, flags = fs:GetFont();
+		fs:SetFont(font, maxSize, flags);
+		local heightMultiplier = math.floor(maxSize / FONT_HEIGHT_MULTIPLE);
+		while fs:GetStringWidth() > fs:GetWidth() do
+			fs:SetFont(font, heightMultiplier * FONT_HEIGHT_MULTIPLE, flags);
+			if heightMultiplier <= FONT_HEIGHT_MINIMUM then
+				-- That's as small as we can make it
+				return;
+			end;
+			heightMultiplier = heightMultiplier - 1;
+		end;
+	end;
+end;
+
 function Frames.Destroy(...)
 	if select("#", ...) == 1 and #(...) > 0 then
 		trace("Unpacking list for destruction")
