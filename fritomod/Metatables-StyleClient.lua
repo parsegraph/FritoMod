@@ -25,6 +25,10 @@ function Metatables.StyleClient(t)
 	if not t then
 		t = {};
 	end;
+	if IsCallable(t.Inherits) then
+		-- It's already a style client
+		return t;
+	end;
 	assert(type(t) == "table", "t must be a table. Type: " .. type(t));
 	assert(getmetatable(t) == nil, "t must not have a metatable");
 	local styles = {};
