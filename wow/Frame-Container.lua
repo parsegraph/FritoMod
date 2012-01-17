@@ -5,7 +5,7 @@ end;
 
 local Frame = WoW.Frame;
 
-Frame:AddConstructor(function(self, world, parent)
+Frame:AddConstructor(function(self, parent)
 	self.children = {};
 	self.parent = parent;
 end);
