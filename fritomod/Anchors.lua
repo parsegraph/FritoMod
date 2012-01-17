@@ -6,7 +6,7 @@ end;
 
 Anchors={};
 
-local function GetAnchorArguments(...)
+local function GetAnchorArguments(frame, ...)
 	local anchor, ref, x, y, parent;
 	if type(select(1, ...)) == "string" then
 		-- Since type() is a C function, it makes a nuisance of itself
@@ -21,7 +21,11 @@ local function GetAnchorArguments(...)
 	else
 		ref, anchor, x, y=...;
 	end;
-	return anchor:upper(), ref, x, y;
+	anchor = anchor:upper();
+	if not ref then
+		ref = Frames.AsRegion(frame):GetParent()
+	end;
+	return anchor, ref, x, y;
 end;
 
 --- Returns an object that may be anchored. Frames, regions, and their subclasses are
@@ -161,7 +165,7 @@ local function AnchorSetStrategy(name, setVerb)
 	local AnchorPair = Anchors[fullName.."AnchorPair"];
 
 	InjectIntoAnchors(setVerb, name, function(frame, ...)
-		local anchor, ref, x, y=GetAnchorArguments(...);
+		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 		local anchorTo = AnchorPair(anchor);
 		assert(anchorTo, "No anchor pair found for "..fullName.." set: "..anchor);
 		Anchors.Set(frame, anchor, ref, anchorTo, Gap(anchorTo, x, y, ref));
@@ -188,7 +192,7 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 		setVerb,
 		name,
 		function(frame, ...)
-			local anchor, ref, x, y=GetAnchorArguments(...);
+			local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 			local anchorTo = AnchorPair(anchor);
 			assert(anchorTo, "No anchor pair found for "..fullName.." set: "..anchor);
 			Anchors.Set(frame, anchorTo, ref, anchor, Gap(anchor, x, y, ref));
