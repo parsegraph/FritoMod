@@ -80,7 +80,7 @@ end;
 function Animations.Scale(ag, duration, xscale, yscale)
    ag=GetGroup(ag);
    local scale=ag:CreateAnimation("scale");
-   scale:SetDuration(duration);
+   scale:SetDuration(Strings.GetTime(duration));
    if yscale==nil then
 	  yscale=xscale;
    end;
@@ -111,7 +111,7 @@ end;
 function Animations.Rotate(ag, duration, degrees)
    ag=GetGroup(ag);
    local rotate=ag:CreateAnimation("rotation");
-   rotate:SetDuration(duration);
+   rotate:SetDuration(Strings.GetTime(duration));
    rotate:SetDegrees(degrees);
    return rotate, ag;
 end;
@@ -121,7 +121,7 @@ Animations.Spin=Animations.Rotate;
 function Animations.Alpha(ag, duration, change)
    ag=GetGroup(ag);
    local alpha=ag:CreateAnimation("alpha");
-   alpha:SetDuration(duration);
+   alpha:SetDuration(Strings.GetTime(duration));
    alpha:SetChange(change);
    return alpha, ag;
 end;
@@ -141,7 +141,7 @@ function Animations.Translate(ag, duration, xOffset, yOffset)
    end;
    ag=GetGroup(ag);
    local translation=ag:CreateAnimation("translation");
-   translation:SetDuration(duration);
+   translation:SetDuration(Strings.GetTime(duration));
    translation:SetOffset(xOffset, yOffset);
    return translation, ag;
 end;
