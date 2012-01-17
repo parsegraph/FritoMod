@@ -387,11 +387,13 @@ do
 	};
 	Tables.Expand(magnitudes);
 	function Strings.GetTime(str)
-		local total = tonumber(str) or 0;
-		if total ~= 0 then
+		local total = tonumber(str);
+		if total ~= nil then
 			-- It was a plain numer, so just return it
 			return total;
 		end;
+		total = 0;
+		assert(type(str) == "string", "Str must be a string, given "..type(str));
 		Strings.Each(str, "%s*([0-9-.]+)([a-zA-Z]*)%s*", function(num, suffix)
 			total = total + (num * magnitudes[suffix or "ms"]);
 		end);
