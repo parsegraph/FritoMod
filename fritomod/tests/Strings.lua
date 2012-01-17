@@ -147,3 +147,11 @@ function Suite:TestJoinValues()
 	Assert.Equals("a b c", c("a", "b", "c"), "Multiple words");
 	Assert.Equals("a  b", c("a ", "b"), "Spurious spaces");
 end;
+
+function Suite:TestColonTime()
+	local f = Strings.FormatColonTime;
+	Assert.Equals("1", f(1));
+	Assert.Equals("24", f(24));
+	Assert.Equals("1:04", f(64));
+	Assert.Equals("1:00:00", f(60 * 60));
+end;

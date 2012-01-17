@@ -400,3 +400,53 @@ do
 		return total;
 	end;
 end;
+
+function Strings.FormatPercent(num, decimals)
+	decimals = decimals or 0;
+	return ("%1."..decimals.."f%%"):format(num * 100);
+end;
+
+function Strings.FormatShortTime(num)
+	num = Strings.GetTime(num);
+	if num > 60 * 60 * 24 then
+		-- At least one day.
+		return ("%dd"):format(num / (60 * 60 * 24));
+	elseif num > 60 * 60 then
+		-- At least one hour.
+		return ("%dh"):format(num / (60 * 60));
+	elseif num >= 60 then
+		-- At least one minute.
+		return ("%dm"):format(num / 60);
+	else
+		return ("%d"):format(num);
+	end;
+end;
+
+function Strings.FormatColonTime(num)
+	num = Strings.GetTime(num);
+	if num >= 60 * 60 * 24 then
+		-- At least one day.
+		return ("%d:%02d:%02d:%02d"):format(
+			num / (60 * 60 * 24), --  Days
+			(num / (60 * 60)) % 60, -- Hours
+			(num / 60) % 60, -- Minutes
+			num / 60, num % 60 -- Seconds
+		);
+	elseif num >= 60 * 60 then
+		-- At least one hour.
+		return ("%d:%02d:%02d"):format(
+			num / (60 * 60), -- Hours
+			(num / 60) % 60, -- Minutes
+			num % 60 -- Seconds
+		);
+	elseif num >= 60 then
+		-- At least one minute.
+		return ("%d:%02d"):format(
+			num / 60, -- Minutes
+			num % 60 -- Seconds
+		);
+	else
+		-- Less than one minute.
+		return ("%d"):format(num);
+	end;
+end;
