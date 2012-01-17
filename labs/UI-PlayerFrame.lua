@@ -8,7 +8,7 @@ if nil ~= require then
 	require "fritomod/Media-Font";
 	require "fritomod/Media-Backdrop";
 	require "fritomod/CombatObjects-Target";
-	require "labs/UI-Icon"
+	require "fritomod/UI-Icon"
 end;
 
 UI = UI or {};

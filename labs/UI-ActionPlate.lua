@@ -6,7 +6,7 @@ if nil ~= require then
 	require "fritomod/Frames";
 	require "fritomod/Anchors";
 	require "labs/UI-PlayerFrame"
-	require "labs/UI-Icon"
+	require "fritomod/UI-Icon"
 end;
 
 UI = UI or {};
