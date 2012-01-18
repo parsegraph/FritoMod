@@ -50,9 +50,9 @@
 -- ag:Play();
 
 if nil~=require then
-   require "wow/Frame-Layout";
-   require "wow/Frame-Animation";
-   require "fritomod/Frames";
+	require "wow/Frame-Layout";
+	require "wow/Frame-Animation";
+	require "fritomod/Frames";
 end
 
 Animations={};
@@ -78,14 +78,14 @@ function Animations.Origin(animation, anchor, xOffset, yOffset)
 end;
 
 function Animations.Scale(ag, duration, xscale, yscale)
-   ag=GetGroup(ag);
-   local scale=ag:CreateAnimation("scale");
-   scale:SetDuration(Strings.GetTime(duration));
-   if yscale==nil then
+	ag=GetGroup(ag);
+	local scale=ag:CreateAnimation("scale");
+	scale:SetDuration(Strings.GetTime(duration));
+	if yscale==nil then
 	  yscale=xscale;
-   end;
-   scale:SetScale(xscale, yscale);
-   return scale, ag;
+	end;
+	scale:SetScale(xscale, yscale);
+	return scale, ag;
 end;
 Animations.Shrink=Animations.Scale;
 Animations.Grow=Animations.Scale;
@@ -109,21 +109,21 @@ function Animations.VScaleTo(ag, duration, anchor, magnitude)
 end;
 
 function Animations.Rotate(ag, duration, degrees)
-   ag=GetGroup(ag);
-   local rotate=ag:CreateAnimation("rotation");
-   rotate:SetDuration(Strings.GetTime(duration));
-   rotate:SetDegrees(degrees);
-   return rotate, ag;
+	ag=GetGroup(ag);
+	local rotate=ag:CreateAnimation("rotation");
+	rotate:SetDuration(Strings.GetTime(duration));
+	rotate:SetDegrees(degrees);
+	return rotate, ag;
 end;
 Animations.Rotation=Animations.Rotate;
 Animations.Spin=Animations.Rotate;
 
 function Animations.Alpha(ag, duration, change)
-   ag=GetGroup(ag);
-   local alpha=ag:CreateAnimation("alpha");
-   alpha:SetDuration(Strings.GetTime(duration));
-   alpha:SetChange(change);
-   return alpha, ag;
+	ag=GetGroup(ag);
+	local alpha=ag:CreateAnimation("alpha");
+	alpha:SetDuration(Strings.GetTime(duration));
+	alpha:SetChange(change);
+	return alpha, ag;
 end;
 Animations.Opacity=Animations.Alpha;
 
@@ -136,14 +136,14 @@ function Animations.Hide(ag, duration)
 end;
 
 function Animations.Translate(ag, duration, xOffset, yOffset)
-   if yOffset==nil then
+	if yOffset==nil then
 	  yOffset=xOffset;
-   end;
-   ag=GetGroup(ag);
-   local translation=ag:CreateAnimation("translation");
-   translation:SetDuration(Strings.GetTime(duration));
-   translation:SetOffset(xOffset, yOffset);
-   return translation, ag;
+	end;
+	ag=GetGroup(ag);
+	local translation=ag:CreateAnimation("translation");
+	translation:SetDuration(Strings.GetTime(duration));
+	translation:SetOffset(xOffset, yOffset);
+	return translation, ag;
 end;
 Animations.Translation=Animations.Translate;
 Animations.Move=Animations.Translate;
