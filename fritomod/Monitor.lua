@@ -56,8 +56,13 @@ function Monitor:SetWithDuration(duration, elapsed)
 end;
 
 function Monitor:SetWithBounds(lastTime, startTime)
-	self.startTime = Strings.GetTime(startTime or self:CurrentTime());
-	self.lastTime = Strings.GetTime(lastTime);
+	lastTime = Strings.GetTime(lastTime);
+	startTime = Strings.GetTime(startTime or self:CurrentTime());
+	if self.startTime == startTime and self.lastTime == lastTime then
+		return;
+	end;
+	self.startTime = startTime;
+	self.lastTime = lastTime;
 	if self.timer then
 		self.timer(POISON);
 		self.timer = nil;
