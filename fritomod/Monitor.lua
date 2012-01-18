@@ -26,6 +26,10 @@ function Monitor:Constructor(name)
 	self.isActive = false;
 end;
 
+function Monitor:AddInstaller(installer, ...)
+	return self.listeners:AddInstaller(installer, ...);
+end;
+
 function Monitor:StateListener(listener, ...)
 	return self.listeners:Add(listener, ...);
 end;
