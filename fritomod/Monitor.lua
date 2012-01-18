@@ -16,8 +16,10 @@ function Monitor:Constructor(name)
 	self.activators:AddInstaller(function(self)
 		return self.listeners:Add(function(self, state)
 			if state == "Active" then
+				trace("Firing activators for monitor %q", self.name);
 				self.activators:Fire();
 			elseif state == "Complete" or state == "Inactive" then
+				trace("Firing resetters for monitor %q", self.name);
 				self.activators:Reset();
 			end;
 		end, self);
@@ -62,11 +64,14 @@ function Monitor:SetWithBounds(lastTime, startTime)
 	end;
 	if not self:IsActive() then
 		self.isActive = true;
+		trace("Activating monitor %q", self.name);
 		self:Fire("Active");
 	else
+		trace("Firing changed event for monitor %q", self.name);
 		self:Fire("Changed");
 	end;
 	if self:IsComplete() then
+		trace("Firing complete event for monitor %q", self.name);
 		self:Fire("Complete");
 	else
 		self.timer = Timing.After(self:Remaining(), self, "Fire", "Complete");
