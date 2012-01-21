@@ -57,14 +57,6 @@ end
 
 Animations={};
 
-local function GetGroup(agOrFrame)
-	if agOrFrame.CreateAnimation then
-		return agOrFrame;
-	end;
-	agOrFrame=Frames.AsRegion(agOrFrame);
-	return agOrFrame:CreateAnimationGroup();
-end;
-
 -- This function lets us define offsets using one number. It also lets
 -- us omit offsets - this is something that Blizzard's animation can't do.
 function Animations.Origin(animation, anchor, xOffset, yOffset)
@@ -77,73 +69,121 @@ function Animations.Origin(animation, anchor, xOffset, yOffset)
 	animation:SetOrigin(anchor, xOffset, yOffset);
 end;
 
-function Animations.Scale(ag, duration, xscale, yscale)
-	ag=GetGroup(ag);
-	local scale=ag:CreateAnimation("scale");
-	scale:SetDuration(Strings.GetTime(duration));
+local function Animator(animType, animator, ...)
+	animator=Curry(animator, ...);
+
+	local function DoAnimation(agOrFrame, duration, ...)
+		assert(agOrFrame, "Frame must be provided");
+		duration = Strings.GetTime(duration);
+		if agOrFrame.CreateAnimationGroup then
+			-- We were passed a frame, so do a one-shot animation.
+			local frame  = agOrFrame;
+			local ag = frame:CreateAnimationGroup();
+			local anim = ag:CreateAnimation(animType);
+			anim:SetDuration(duration);
+			animator(anim, ...);
+			ag:Play();
+			return Seal(ag, "Stop");
+		elseif agOrFrame.CreateAnimation then
+			-- We were passed an animation group, so just create the animation.
+			local anim = agOrFrame:CreateAnimation(animType);
+			animator(anim, ...);
+			return anim;
+		else
+			return DoAnimation(Frames.AsRegion(agOrFrame), duration, ...);
+		end;
+	end;
+	return DoAnimation;
+end;
+
+local function CreateScale(scale, xscale, yscale)
 	if yscale==nil then
 	  yscale=xscale;
 	end;
 	scale:SetScale(xscale, yscale);
-	return scale, ag;
+	return scale;
 end;
+
+Animations.Scale = Animator("Scale", CreateScale);
 Animations.Shrink=Animations.Scale;
 Animations.Grow=Animations.Scale;
 
-function Animations.ScaleTo(ag, duration, anchor, ...)
-	local scale, ag = Animations.Scale(ag, duration, ...);
+Animations.ScaleTo = Animator("Scale", function(scale, duration, anchor, ...)
+	scale = CreateScale(scale, ...);
 	Animations.Origin(scale, Anchors.AnchorPair(anchor));
-	return scale, ag;
-end;
+	return scale;
+end);
 
-function Animations.HScaleTo(ag, duration, anchor, magnitude)
-	local scale, ag = Animations.Scale(ag, duration, magnitude, 1);
+Animations.HScaleTo = Animator("Scale", function(ag, anchor, magnitude)
+	scale = CreateScale(scale, magnitude, 1);
 	Animations.Origin(scale, Anchors.AnchorPair(anchor));
-	return scale, ag;
-end;
+	return scale;
+end);
 
-function Animations.VScaleTo(ag, duration, anchor, magnitude)
-	local scale, ag = Animations.Scale(ag, duration, 1, magnitude);
+Animations.VScaleTo = Animator("Scale", function(scale, anchor, magnitude)
+	scale = CreateScale(scale, 1, magnitude);
 	Animations.Origin(scale, Anchors.AnchorPair(anchor));
-	return scale, ag;
-end;
+	return scale;
+end);
 
-function Animations.Rotate(ag, duration, degrees)
-	ag=GetGroup(ag);
-	local rotate=ag:CreateAnimation("rotation");
-	rotate:SetDuration(Strings.GetTime(duration));
-	rotate:SetDegrees(degrees);
-	return rotate, ag;
-end;
+Animations.Rotate = Animator("Rotation", "SetDegrees");
 Animations.Rotation=Animations.Rotate;
 Animations.Spin=Animations.Rotate;
 
-function Animations.Alpha(ag, duration, change)
-	ag=GetGroup(ag);
-	local alpha=ag:CreateAnimation("alpha");
-	alpha:SetDuration(Strings.GetTime(duration));
-	alpha:SetChange(change);
-	return alpha, ag;
-end;
+Animations.Alpha = Animator("Alpha", "SetChange");
 Animations.Opacity=Animations.Alpha;
 
-function Animations.Show(ag, duration)
-	return Animations.Alpha(ag, duration, 1);
+function Animations.Show(agOrFrame, duration)
+	assert(agOrFrame, "Animation must be passed a truthy value");
+	duration = Strings.GetTime(duration);
+	if agOrFrame.CreateAnimationGroup then
+		-- We were passed a frame
+		local frame = agOrFrame;
+		local ag = agOrFrame:CreateAnimationGroup();
+		local alpha = ag:CreateAnimation("Alpha");
+		alpha:SetChange(1);
+		alpha:SetDuration(duration);
+		ag:Play();
+		ag:SetScript("OnFinished", Seal(frame, "SetAlpha", 1));
+		return Seal(ag, "Stop");
+	elseif agOrFrame.CreateAnimation then
+		local ag = agOrFrame;
+		local alpha = ag:CreateAnimation("Alpha");
+		alpha:SetChange(1);
+		alpha:SetDuration(duration);
+		return alpha;
+	else
+		return Animations.Show(Frames.AsRegion(agOrFrame), duration);
+	end;
 end;
 
-function Animations.Hide(ag, duration)
-	return Animations.Alpha(ag, duration, -1);
+function Animations.Hide(agOrFrame, duration)
+	duration = Strings.GetTime(duration);
+	if agOrFrame.CreateAnimationGroup then
+		-- We were passed a frame
+		local frame = agOrFrame;
+		local ag = agOrFrame:CreateAnimationGroup();
+		local alpha = ag:CreateAnimation("Alpha");
+		alpha:SetChange(-1);
+		alpha:SetDuration(duration);
+		ag:Play();
+		ag:SetScript("OnFinished", Seal(frame, "SetAlpha", 0));
+		return Seal(ag, "Stop");
+	elseif agOrFrame.CreateAnimation then
+		local alpha = ag:CreateAnimation("Alpha");
+		alpha:SetChange(-1);
+		alpha:SetDuration(duration);
+		return alpha;
+	else
+		return Animations.Hide(Frames.AsRegion(agOrFrame), duration);
+	end;
 end;
 
-function Animations.Translate(ag, duration, xOffset, yOffset)
+Animations.Translate = Animator("Translation", function(translation, xOffset, yOffset)
 	if yOffset==nil then
 	  yOffset=xOffset;
 	end;
-	ag=GetGroup(ag);
-	local translation=ag:CreateAnimation("translation");
-	translation:SetDuration(Strings.GetTime(duration));
 	translation:SetOffset(xOffset, yOffset);
-	return translation, ag;
-end;
+end);
 Animations.Translation=Animations.Translate;
 Animations.Move=Animations.Translate;
