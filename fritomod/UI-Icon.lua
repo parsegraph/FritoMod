@@ -24,7 +24,7 @@ local DEFAULT_STYLE = {
 
 function Icon:Constructor(parent, style)
 	parent = Frames.AsRegion(parent);
-	assert(Frames.IsRegion(parent), "Parent frame must be provided");
+	assert(Frames.IsRegion(parent), "Parent frame must be provided. Got: "..tostring(parent));
 	assert(parent.GetChildren, "Provided parent must be a real frame");
 	self.frame=CreateFrame("Frame", nil, parent);
 	if tonumber(style) then
