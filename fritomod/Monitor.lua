@@ -52,6 +52,9 @@ function Monitor:SetCompleted()
 end;
 
 function Monitor:SetValue(value)
+	if self.value == value then
+		return;
+	end;
 	self.value = value;
 	self:Refire();
 end;
