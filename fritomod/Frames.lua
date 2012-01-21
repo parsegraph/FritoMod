@@ -32,6 +32,7 @@ function Frames.AsRegion(frame)
 		-- Frames represent themselves.
 		return frame;
 	end;
+	assert(frame, "Frame passed was falsy. Given: "..tostring(frame));
 	if type(frame)=="string" then
 		-- Frame names represent the frames they name.
 		return _G[frame];
@@ -40,11 +41,11 @@ function Frames.AsRegion(frame)
 	if frame.Frame then
 		-- UI objects that have a Frame method are called directly to get their
 		-- frame.
-		return frame:Frame();
+		return Frames.AsRegion(frame:Frame());
 	end;
 	-- UI objects may provide a frame property that will be used as the representative
 	-- region
-	return frame.frame;
+	return Frames.AsRegion(frame.frame);
 end;
 Frames.GetFrame=Frames.AsRegion;
 
