@@ -9,8 +9,7 @@ end;
 Monitor = OOP.Class(StateDispatcher);
 
 function Monitor:Constructor(name)
-	Monitor.super.Constructor(self, "Inactive");
-	self.name = name or "Monitor";
+	Monitor.super.Constructor(self, "Inactive", name or "Monitor");
 end;
 
 function Monitor:CurrentTime()
