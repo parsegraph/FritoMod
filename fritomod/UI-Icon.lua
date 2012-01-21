@@ -15,7 +15,11 @@ local Icon = OOP.Class();
 UI.Icon = Icon;
 
 local DEFAULT_STYLE = {
-	size = 50
+	-- The unscaled icon size
+	size = 50,
+
+	-- The backdrop and border of the icon
+	backdrop = "default"
 };
 
 function Icon:Constructor(parent, style)
@@ -30,7 +34,7 @@ function Icon:Constructor(parent, style)
 	self.style:Inherits(DEFAULT_STYLE);
 
 	Frames.Size(self.frame, self.style.size);
-	Frames.Backdrop(self.frame);
+	Frames.Backdrop(self.frame, self.style.backdrop);
 	self.texture = self.frame:CreateTexture();
 	self.texture:SetDrawLayer("ARTWORK");
 	assert(self.texture:GetParent());
