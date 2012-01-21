@@ -34,6 +34,7 @@ if nil ~= require then
 	require "fritomod/basic";
 	require "fritomod/Functions";
 	require "fritomod/Lists";
+	require "fritomod/ListenerList";
 end;
 
 Events = {};
@@ -43,7 +44,7 @@ Events._eventListeners = eventListeners;
 Events._call = function(event, ...)
 	local listeners = eventListeners[event];
 	if listeners then
-		Lists.CallEach(listeners, ...);
+		listeners:Fire(...);
 	end;
 end;
 
@@ -68,20 +69,18 @@ setmetatable(Events, {
 				return Functions.OnlyOnce(Lists.CallEach, removers);
 			end;
 		end;
-		eventListeners[key] = {};
-		self[key] = Functions.Spy(
-			function(func, ...)
-				return Lists.Insert(eventListeners[key], Curry(func, ...));
-			end,
-			Functions.Install(function()
-				trace("Listening for event %q", key);
-				eventsFrame:RegisterEvent(key);
-				return function()
-					trace("Unregistering event %q", key);
-					eventsFrame:UnregisterEvent(key);
-				end;
-			end)
-		);
+		eventListeners[key] = ListenerList:New("Event listeners for "..tostring(key));
+		eventListeners[key]:AddInstaller(function()
+			eventsFrame:RegisterEvent(key);
+			trace("Listening for event %q", key);
+			return function()
+				trace("Unregistering event %q", key);
+				eventsFrame:UnregisterEvent(key);
+			end;
+		end);
+		self[key] = function(func, ...)
+			return eventListeners[key]:Add(func, ...);
+		end;
 		return rawget(self, key);
 	end
 });
