@@ -86,6 +86,31 @@ function SpellEvent:CostTypeName()
 	end;
 end;
 
+function SpellEvent:Is(what)
+	if tonumber(what) then
+		-- It's an ID;
+		return self:ID() == tonumber(what);
+	end;
+	if type(what) == "string" then
+		return self:Name():lower() == what:lower();
+	end;
+	if type(what) == "table" then
+		if IsCallable(what.ID) then
+			return self:Is(what:ID());
+		end;
+		if IsCallable(what.Name) then
+			return self:Is(what:Name());
+		end;
+		if IsCallable(what.Value) then
+			return self:Is(what:Value());
+		end;
+	end;
+	if IsCallable(what) then
+		return self:Is(what());
+	end;
+	return false;
+end;
+
 CombatObjects.AddSharedEvent("SourceSpell", "Spell");
 CombatObjects.AddSharedEvent("VictimSpell", "Spell");
 
