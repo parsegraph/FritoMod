@@ -3,45 +3,14 @@ if nil ~= require then
 	require "fritomod/OOP-Class";
 	require "fritomod/ListenerList";
 	require "fritomod/ImmediateToggleDispatcher";
+	require "fritomod/StateDispatcher";
 end;
 
-Monitor = OOP.Class();
+Monitor = OOP.Class(StateDispatcher);
 
 function Monitor:Constructor(name)
+	Monitor.super.Constructor(self, "Inactive");
 	self.name = name or "Monitor";
-	self.listeners = ListenerList:New(self.name);
-
-	self.activators = ImmediateToggleDispatcher:New(self.name);
-
-	self.activators:AddInstaller(function(self)
-		return self.listeners:Add(function(self, state)
-			if state == "Active" then
-				trace("Firing activators for monitor %q", self.name);
-				self.activators:Fire();
-			elseif state == "Complete" or state == "Inactive" then
-				trace("Firing resetters for monitor %q", self.name);
-				self.activators:Reset();
-			end;
-		end, self);
-	end, self);
-
-	self.isActive = false;
-end;
-
-function Monitor:AddInstaller(installer, ...)
-	return self.listeners:AddInstaller(installer, ...);
-end;
-
-function Monitor:StateListener(listener, ...)
-	return self.listeners:Add(listener, ...);
-end;
-
-function Monitor:OnActivate(listener, ...)
-	return self.activators:Add(listener, ...);
-end;
-
-function Monitor:OnDeactivate(listener, ...)
-	return self:OnActivate(Functions.ReverseUndoable(listener, ...));
 end;
 
 function Monitor:CurrentTime()
@@ -67,25 +36,19 @@ function Monitor:SetWithBounds(lastTime, startTime)
 		self.timer(POISON);
 		self.timer = nil;
 	end;
-	if not self:IsActive() then
-		self.isActive = true;
-		trace("Activating monitor %q", self.name);
-		self:Fire("Active");
+	trace("Activating monitor %q", self.name);
+	self:Fire("Active");
+	if self:Completed() >= self:Duration() then
+		trace("Firing completed event for monitor %q", self.name);
+		self:Fire("Completed");
 	else
-		trace("Firing changed event for monitor %q", self.name);
-		self:Fire("Changed");
-	end;
-	if self:IsComplete() then
-		trace("Firing complete event for monitor %q", self.name);
-		self:Fire("Complete");
-	else
-		self.timer = Timing.After(self:Remaining(), self, "Fire", "Complete");
+		self.timer = Timing.After(self:Remaining(), self, "Fire", "Completed");
 	end;
 end;
 
 function Monitor:SetValue(value)
 	self.value = value;
-	self:Fire("Changed");
+	self:Refire();
 end;
 
 function Monitor:Value()
@@ -107,26 +70,36 @@ function Monitor:Reset()
 end;
 
 function Monitor:IsActive()
-	return self.isActive;
+	return self:State() == "Active";
 end;
 
 function Monitor:IsInactive()
-	return not self:IsActive();
+	return self:State() == "Inactive";
 end;
 
-function Monitor:IsComplete()
-	return self:CurrentTime() >= self.lastTime;
+function Monitor:IsCompleted()
+	return self:State() == "Completed";
 end;
 
 function Monitor:Duration()
 	return self.lastTime - self.startTime;
 end;
 
+function Monitor:Completed()
+	if self:IsActive() then
+		return math.min(self:Duration(), self:CurrentTime() - self.startTime);
+	elseif self:IsCompleted() then
+		return self:Duration();
+	elseif self:IsInactive() then
+		return 0;
+	end;
+end;
+
 function Monitor:Remaining()
 	return math.max(0, self.lastTime - self:CurrentTime());
 end;
 
-function Monitor:PercentComplete()
+function Monitor:PercentCompleted()
 	return 1 - self:PercentRemaining();
 end;
 
@@ -138,13 +111,13 @@ function Monitor:PercentRemaining()
 end;
 
 function Monitor:Interpolate(first, last)
-	if self:IsComplete() then
+	if self:IsCompleted() then
 		return last;
 	end;
 	if not self:IsActive() then
 		return first;
 	end;
-	return first + ((last - first) * self:PercentComplete());
+	return first + ((last - first) * self:PercentCompleted());
 end;
 
 function Monitor:StartTime()
@@ -155,15 +128,8 @@ function Monitor:LastTime()
 	return self.lastTime;
 end;
 
-function Monitor:Fire(state)
-	self.listeners:Fire(state);
-end;
-
 function Monitor:Destroy(...)
-	if self:IsActive() then
-		self.isActive = false;
-		self.duration = nil;
-		self.startTime = nil;
-		self:Fire("Inactive");
-	end;
+	self.duration = nil;
+	self.startTime = nil;
+	self:SafeFire("Inactive");
 end;

@@ -27,21 +27,20 @@ function Suite:TestMonitor()
 	t:SetWithDuration("5s");
 	assert(t:IsActive());
 	self:Tick(10);
-	assert(t:IsComplete());
+	assert(t:IsCompleted());
 end;
 
 function Suite:TestMonitorAlreadyCompleted()
 	local t = Monitor:New();
 	t:SetWithDuration("5s", "6s");
-	assert(t:IsActive());
-	assert(t:IsComplete());
+	assert(t:IsCompleted());
 end;
 
 function Suite:TestMonitorStateOrder()
 	local states = {};
 
 	local t = Monitor:New();
-	t:StateListener(table.insert, states);
+	t:StateListener(Lists.Insert, states);
 
 	t:SetWithDuration("5s");
 	self:Tick(10);
@@ -49,7 +48,7 @@ function Suite:TestMonitorStateOrder()
 
 	Assert.Equals({
 		"Active",
-		"Complete",
+		"Completed",
 		"Inactive"
 	}, states);
 end;
@@ -58,18 +57,18 @@ function Suite:TestMonitorStateOrderWithChange()
 	local states = {};
 
 	local t = Monitor:New();
-	t:StateListener(table.insert, states);
+	t:StateListener(Lists.Insert, states);
 
 	t:SetWithDuration("5s");
 	self:Tick(2);
-	t:SetWithDuration("7s"); -- Delay it
+	t:Delay("2s");
 	self:Tick(15);
 	t:Destroy();
 
 	Assert.Equals({
 		"Active",
-		"Changed",
-		"Complete",
+		"Active",
+		"Completed",
 		"Inactive"
 	}, states);
 end;

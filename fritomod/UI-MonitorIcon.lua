@@ -77,7 +77,7 @@ function MonitorIcon:SetMonitor(monitor)
 		return;
 	end;
 	self.remover = Curry(Lists.CallEach, {
-		self.monitor:OnActivate(Timing.Every, self.style.frequency, function(self)
+		self.monitor:OnState("Active", Timing.Every, self.style.frequency, function(self)
 			local num = monitor:Remaining();
 			if self.style.useComplete then
 				num = monitor:Complete();
@@ -87,14 +87,10 @@ function MonitorIcon:SetMonitor(monitor)
 				Frames.ShrinkFontToFit(self.text, self.style.fontSize);
 			end;
 		end, self),
-		self.monitor:OnActivate(function(self)
+		self.monitor:OnState("Active", function(self)
 			Frames.Alpha(self, self.style.activeAlpha);
+			self:SetTexture(self.monitor:Value());
 			return Seal(Frames.Alpha, self, self.style.inactiveAlpha);
-		end, self),
-		self.monitor:StateListener(function(self, state)
-			if state == "Active" or state == "Changed" then
-				self:SetTexture(self.monitor:Value());
-			end;
 		end, self)
 	});
 
