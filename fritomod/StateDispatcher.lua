@@ -8,9 +8,9 @@ StateDispatcher = OOP.Class();
 
 function StateDispatcher:Constructor(initial, name)
 	assert(initial, "Initial state must be provided");
-	self.name = name or "StateDispatcher";
+	self.name = tostring(name or "StateDispatcher");
 
-	self.installers = ImmediateToggleDispatcher:New("Installers");
+	self.installers = ImmediateToggleDispatcher:New("Installers for StateDispatcher "..self.name);
 
 	local Install = Functions.Install(self.installers, "Fire");
 
