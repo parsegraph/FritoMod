@@ -28,3 +28,12 @@ function Callbacks.ReversedCallback(callback)
 	return Curry(Callbacks.Reversed, callback);
 end;
 Callbacks.ReverseCallback = Callbacks.ReversedCallback;
+
+function Callbacks.OnlyOnce(callback, listener, ...)
+	listener=Curry(listener, ...);
+	local remover;
+	remover = callback(function(...)
+		listener(...);
+		remover();
+	end);
+end;
