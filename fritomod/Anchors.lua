@@ -24,7 +24,7 @@ local function GetAnchorArguments(frame, ...)
 	end;
 	anchor = anchor:upper();
 	if not ref then
-		ref = Frames.AsRegion(frame):GetParent()
+		ref = assert(Frames.AsRegion(frame), "Frame or UI object has no parent"):GetParent()
 	end;
 	return anchor, ref, x, y;
 end;
