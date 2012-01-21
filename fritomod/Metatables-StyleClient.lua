@@ -21,6 +21,12 @@ local function FunctionTable(t, container)
 	end);
 end;
 
+-- TODO StyleClients are typically passed from logical UI object containers to their children.
+-- It'd be nice if we could have a Metatables.PrefixedStyleClient("Icon") that would minimize the
+-- collision by forcing every key to have the Icon prefix.
+--
+-- This is still half-baked, but something like this will probably get written.
+
 function Metatables.StyleClient(t)
 	if not t then
 		t = {};
