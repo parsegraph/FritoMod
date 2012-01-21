@@ -34,10 +34,12 @@ end;
 
 function StateDispatcher:Fire(state, ...)
 	if self.currentState then
+		trace("Resetting state %q for dispatcher %q", self.currentState, self.name);
 		self.states[self.currentState]:Reset();
 	end;
 	local oldState = self.currentState;
 	self.currentState = state;
+	trace("Firing state %q for dispatcher %q", state, self.name);
 	self.stateListeners:Fire(state, oldState, ...);
 	self.states[state]:Fire(...);
 end;
