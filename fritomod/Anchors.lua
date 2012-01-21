@@ -7,6 +7,15 @@ end;
 
 Anchors={};
 
+DEBUG_TRACE_ANCHORS = false;
+
+local gtrace = trace;
+local function trace(...)
+	if DEBUG_TRACE_ANCHORS then
+		return gtrace(...);
+	end;
+end;
+
 local function GetAnchorArguments(frame, ...)
 	local anchor, ref, x, y, parent;
 	if type(select(1, ...)) == "string" then
@@ -783,7 +792,7 @@ function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
 	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
 	x = x or 0;
 	y = y or 0;
-	if DEBUG_TRACE then
+	if DEBUG_TRACE_ANCHORS then
 		trace("%s:SetPoint(%q, %s, %q, %d, %d)",
 			tostring(region),
 			anchor,
