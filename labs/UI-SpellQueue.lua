@@ -1,3 +1,15 @@
+-- A nifty way to help you visualize your rotation.
+--
+--[[
+
+local sq = UI.SpellQueue:New(UIParent);
+Anchors.Set(sq, "right", UIParent, "center");
+
+sq:Queue(Monitors.MyCooldown("Lifebloom"));
+sq:Queue(Monitors.MyCooldown("Rejuvenation"));
+sq:Queue(Monitors.MyCooldown("Swiftmend"));
+
+]]
 if nil ~= require then
 	require "fritomod/currying";
 	require "fritomod/OOP-Class";
