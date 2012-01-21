@@ -82,6 +82,8 @@ function SpellQueueItem:Set(monitor)
 
 	local destructor = Curry(Lists.CallEach, removers);
 
+	-- Once we've fired, listen for our "Inactive" event. Destroy all our listeners when this event
+	-- is fired.
 	local destroyOnceFired = self:OnState("Fired", Callbacks.OnlyOnce,
 		Curry(self, "OnState", "Inactive"), destructor);
 	table.insert(removers, destroyOnceFired);

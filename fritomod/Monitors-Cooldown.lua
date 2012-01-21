@@ -8,6 +8,9 @@ Monitors = Monitors or {};
 
 function Monitors.MyCooldown(name, frequency)
 	local m = Monitor:New(name);
+
+	-- This frequency doesn't need to be too often, since it only determines how quickly
+	-- we call UpdateCooldown. The monitor's resolution is independent.
 	frequency = frequency or .5;
 
 	m:SetValue(name);
