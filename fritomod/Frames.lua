@@ -45,7 +45,9 @@ function Frames.AsRegion(frame)
 	end;
 	-- UI objects may provide a frame property that will be used as the representative
 	-- region
-	return Frames.AsRegion(frame.frame);
+	if frame.frame then
+		return Frames.AsRegion(frame.frame);
+	end;
 end;
 Frames.GetFrame=Frames.AsRegion;
 
