@@ -15,6 +15,7 @@ function ImmediateToggleDispatcher:Fire(...)
 end;
 
 function ImmediateToggleDispatcher:Reset()
+	self.firedArguments = nil;
 	return ImmediateToggleDispatcher.super.Reset(self);
 end;
 
