@@ -47,10 +47,26 @@ function SpellQueueItem:Constructor(parent, style)
 		Animations.Hide(self, self.style.hideDuration);
 		Timing.After(self.style.hideDuration, self, "Fire", "Inactive");
 	end);
+
+	self:OnState("Inactive", Frames.Hide, self);
 end;
 
-function SpellQueueItem:Set(monitor)
+function SpellQueueItem:SetPending(monitor)
 	self.frame:SetTexture(monitor);
+end;
+
+
+function SpellQueueItem:SetCurrent(monitor)
+	if self.monitoring then
+		self.monitoring();
+		self.monitoring=nil;
+	end;
+	if monitor == nil then
+		self:Fire("Inactive");
+		return;
+	end;
+	self.frame:SetTexture(monitor);
+	self.monitor = monitor;
 
 	trace("Setting SpellQueueItem to monitor: "..monitor.name);
 
@@ -88,6 +104,14 @@ function SpellQueueItem:Set(monitor)
 		Curry(self, "OnState", "Inactive"), destructor);
 	table.insert(removers, destroyOnceFired);
 
-	return destructor;
+	self.monitoring = destructor;
 end;
 
+function SpellQueueItem:Destroy()
+	if self.monitoring then
+		self.monitoring();
+		self.monitoring=nil;
+		self.monitor=nil;
+	end;
+	Frames.Destroy(self.frame);
+end;
