@@ -23,6 +23,9 @@ Media.texture(function(obj)
 		if obj.Icon then
 			return obj:Icon();
 		end;
+		if obj.Value then
+			return Media.texture[obj:Value()];
+		end;
 	end;
 end);
 
