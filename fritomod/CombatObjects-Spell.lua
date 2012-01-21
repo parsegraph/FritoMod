@@ -119,3 +119,15 @@ CombatObjects.SimpleSuffixHandler("INTERRUPT", "VictimSpell");
 Callbacks.InterruptObjects = Curry(
 	Callbacks.SuffixedCombatObjects,
 	"INTERRUPT");
+
+function Callbacks.MySpellCasts(listener, ...)
+	listener = Curry(listener, ...);
+	local spell = CombatObjects.Spell:New();
+	return Events.UNIT_SPELLCAST_SUCCEEDED(function(who, name, rank, _, id)
+		if who ~= "player" then
+			return;
+		end;
+		spell:Set(id, name);
+		listener(spell);
+	end);
+end;
