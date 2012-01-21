@@ -781,6 +781,8 @@ function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
 	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
 	ref=GetBounds(ref or region:GetParent(), anchorTo);
 	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
+	x = x or 0;
+	y = y or 0;
 	if DEBUG_TRACE then
 		trace("%s:SetPoint(%q, %s, %q, %d, %d)",
 			tostring(region),
