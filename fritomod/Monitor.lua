@@ -46,6 +46,10 @@ function Monitor:SetWithBounds(lastTime, startTime)
 	end;
 end;
 
+function Monitor:SetCompleted()
+	self:SetWithBounds(self:CurrentTime(), self:CurrentTime());
+end;
+
 function Monitor:SetValue(value)
 	self.value = value;
 	self:Refire();
