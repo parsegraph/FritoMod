@@ -40,6 +40,7 @@ function ToggleDispatcher:Fire(...)
 	end;
 	ToggleDispatcher.super.Fire(self, ...);
 	self.fired=true;
+	return Seal(self, "Reset");
 end;
 
 function ToggleDispatcher:FireListener(listener, ...)
