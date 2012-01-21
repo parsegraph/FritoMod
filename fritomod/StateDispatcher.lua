@@ -9,13 +9,23 @@ StateDispatcher = OOP.Class();
 function StateDispatcher:Constructor(initial, name)
 	assert(initial, "Initial state must be provided");
 	self.name = name or "StateDispatcher";
+
+	self.installers = ImmediateToggleDispatcher:New("Installers");
+
+	local Install = Functions.Install(self.installers, "Fire");
+
 	self.stateListeners = ListenerList:New();
+	self.stateListeners:AddInstaller(Install);
 	self.states = setmetatable({}, {
 		__index = function(self, key)
-			rawset(self, key, ImmediateToggleDispatcher:New(key));
+			local dispatcher = ImmediateToggleDispatcher:New(key);
+			dispatcher:AddInstaller(Install);
+			rawset(self, key, dispatcher);
 			return self[key];
 		end
 	});
+
+	self:Fire(initial);
 end;
 
 function StateDispatcher:State()
@@ -41,6 +51,10 @@ end;
 
 function StateDispatcher:Refire(...)
 	self:Fire(self:State(), ...);
+end;
+
+function StateDispatcher:AddInstaller(installer, ...)
+	return self.installers:Add(installer, ...);
 end;
 
 function StateDispatcher:StateListener(listener, ...)
