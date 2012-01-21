@@ -92,14 +92,6 @@ function StateDispatcher:OnTransition(newState, oldState, listener, ...)
 end;
 
 function StateDispatcher:OnState(state, activator, ...)
-	if type(state) == "table" and #state then
-		activator=Curry(activator, ...);
-		local removers = {};
-		for i=1, #state do
-			table.insert(removers, self:OnActivate(state[i], activator));
-		end;
-		return Functions.OnlyOnce(Lists.CallEach, removers);
-	end;
 	return self.states[state]:Add(activator, ...);
 end;
 
