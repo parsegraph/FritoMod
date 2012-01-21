@@ -181,9 +181,7 @@ do
 end;
 
 do
-	-- I believe I pulled these from Blizzard's button virtual frame. They're
-	-- slightly smaller than the ones I deduced myself.
-	local coords = {12/64, 51/64, 12/64, 51/64};
+	local coords = ICON_COORDS;
 
 	Media.spell(function(spell)
 		if type(spell) ~= "string" and type(spell) ~= "number" then
