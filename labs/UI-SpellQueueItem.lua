@@ -50,7 +50,7 @@ function SpellQueueItem:Constructor(parent, style)
 end;
 
 function SpellQueueItem:Set(monitor)
-	Frames.Texture(self, monitor);
+	self.frame:SetTexture(monitor);
 
 	trace("Setting SpellQueueItem to monitor: "..monitor.name);
 

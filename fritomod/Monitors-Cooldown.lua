@@ -10,8 +10,8 @@ function Monitors.MyCooldown(name, frequency)
 	local m = Monitor:New(name);
 	frequency = frequency or .5;
 
+	m:SetValue(name);
 	local function UpdateCooldown()
-		m:SetValue(name);
 		local startTime, duration, enabled = GetSpellCooldown(name);
 		if not startTime then
 			-- Not a spell, so maybe it's an item.
