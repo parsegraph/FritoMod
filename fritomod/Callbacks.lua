@@ -34,6 +34,9 @@ function Callbacks.OnlyOnce(callback, listener, ...)
 	local remover;
 	remover = callback(function(...)
 		listener(...);
-		remover();
+		if remover then
+			remover();
+		end;
 	end);
+	return remover;
 end;
