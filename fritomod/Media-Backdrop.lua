@@ -114,7 +114,7 @@ function Frames.Backdrop(f, backdrop, bg)
 		backdrop=usedBackdrop;
 	end;
 	f=Frames.AsRegion(f);
-	assert(f.SetBackdrop, "Provided object does not support backdrops");
+	assert(f and f.SetBackdrop, "Provided object does not support backdrops");
 	local insettedRegions = {};
 	local oldInsets = Frames.Insets(f);
 	do
