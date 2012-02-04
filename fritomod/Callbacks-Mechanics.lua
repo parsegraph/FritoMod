@@ -27,6 +27,17 @@ Callbacks.FrequentHealth = Callbacks.Health;
 
 Callbacks.ThrottledHealth = HealthCallback("UNIT_HEALTH");
 
+function Callbacks.HealthPercent(who, listener, ...)
+	listener=Curry(listener, ...);
+	return Callbacks.Health(who, function(amount)
+		if amount ~= nil then
+			listener(amount / UnitHealthMax(who));
+		else
+			listener(nil);
+		end;
+	end);
+end;
+
 local function PowerCallback(event)
 	return function(who, power, listener, ...)
 		listener = Curry(listener, ...);
@@ -48,3 +59,14 @@ Callbacks.Power = PowerCallback("UNIT_POWER_FREQUENT");
 Callbacks.FrequentPower = Callbacks.Power;
 
 Callbacks.ThrottledPower = PowerCallback("UNIT_POWER");
+
+function Callbacks.PowerPercent(who, powerType, listener, ...)
+	listener=Curry(listener, ...);
+	return Callbacks.Power(who, powerType, function(amount)
+		if amount ~= nil then
+			listener(amount / UnitPowerMax(who, powerType));
+		else
+			listener(nil);
+		end;
+	end);
+end;
