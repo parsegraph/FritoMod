@@ -90,7 +90,11 @@ function Monitor:IsCompleted()
 end;
 
 function Monitor:Duration()
-	return self.lastTime - self.startTime;
+	if self.lastTime then
+		return self.lastTime - self.startTime;
+	else
+		return nil;
+	end;
 end;
 
 function Monitor:Completed()
