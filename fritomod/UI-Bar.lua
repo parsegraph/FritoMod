@@ -73,6 +73,19 @@ function Bar:Constructor(parent, style)
 	Anchors.Share(self.bar, self.frame, self.style.barAnchor);
 end;
 
+function Bar:SetMonitor(monitor, frequency)
+	if self.callback then
+		self.callback();
+	end;
+	self.callback = Functions.OnlyOnce(Lists.CallEach, {
+		monitor:OnState("Active", Timing.Every, frequency, function()
+			self:SetPercent(monitor:PercentCompleted());
+		end),
+		monitor:OnState("Completed", self, "SetPercent", 1),
+		monitor:OnState("Inactive", self, "SetPercent", 0)
+	});
+end;
+
 function Bar:SetPercentCallback(callback, ...)
 	callback=Curry(callback, ...);
 	if self.callback then
