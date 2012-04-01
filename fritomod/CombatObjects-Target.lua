@@ -28,18 +28,33 @@ function TargetEvent:Clone()
 		self:RaidFlags());
 end;
 
+local DUMMY_GUID = "0x0010000000000000";
 function TargetEvent:GUID()
 	-- By default, return a GUID of an anonymous
 	-- world object.
-	return self.guid or "0x0010000000000000";
+	if not self.guid or self.guid == "0x0000000000000000" then
+		self.guid = DUMMY_GUID;
+	end;
+	return self.guid;
 end;
 TargetEvent.Guid = TargetEvent.GUID;
 TargetEvent.ID= TargetEvent.GUID;
 TargetEvent.Id= TargetEvent.GUID;
 
+local function TryGUID(guid)
+	local result = {pcall(GetPlayerInfoByGUID, guid)};
+	if result[1] then
+		table.remove(result, 1);
+		return unpack(result);
+	else
+		Chatf.debug("Failed GUID: %s", guid)
+		return GetPlayerInfoByGUID(DUMMY_GUID);
+	end;
+end;
+
 function TargetEvent:SetName(name)
 	assert(self:GUID(), "GUID must be present, but was: "..tostring(self:GUID()));
-	name = name or select(6, GetPlayerInfoByGUID(self:GUID()));
+	name = name or select(6, TryGUID(self:GUID()));
 	if name then
 		self.name = Strings.Trim(Strings.Split("-", name, 2)[1]);
 	else
@@ -102,7 +117,7 @@ end;
 local function PlayerInfo(num)
 	return function(self)
 		-- Use a variable so we only return one value.
-		local value = select(num, GetPlayerInfoByGUID(self:GUID()));
+		local value = select(num, TryGUID(self:GUID()));
 		return value;
 	end;
 end;
@@ -114,7 +129,7 @@ TargetEvent.RaceName = PlayerInfo(3);
 TargetEvent.Gender = PlayerInfo(5);
 
 function TargetEvent:Realm()
-	local realm = select(7, GetPlayerInfoByGUID(self:GUID()));
+	local realm = select(7, TryGUID(self:GUID()));
 	if not realm or realm == "" then
 		return GetRealmName();
 	end;
