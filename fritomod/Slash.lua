@@ -5,15 +5,15 @@ end;
 
 Slash = setmetatable({}, {
 	__newindex = function(self, name, listener)
-		assert(string.upper(name) ~= "RUN", "'/run' slash command cannot be overwritten");
-		assert(string.upper(name) ~= "DUMP", "'/dump' slash command cannot be overwritten");
-		assert(string.upper(name) ~= "SCRIPT", "'/script' slash command cannot be overwritten");
 		if type(name) == "table" then
 			for _, subname in ipairs(name) do
 				self[subname] = listener;
 			end;
 			return;
 		end;
+		assert(string.upper(name) ~= "RUN", "'/run' slash command cannot be overwritten");
+		assert(string.upper(name) ~= "DUMP", "'/dump' slash command cannot be overwritten");
+		assert(string.upper(name) ~= "SCRIPT", "'/script' slash command cannot be overwritten");
 		if not listener then
 			slashListeners[name] = nil;
 		end;
