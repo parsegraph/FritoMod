@@ -22,6 +22,7 @@ function Math.Mean(values, ...)
 	local sum = Lists.Reduce(values, 0, Operator.Add);
 	return sum / #values;
 end;
+Math.Average = Math.Mean;
 
 function Math.Signum(number)
 	if number > 0 then
