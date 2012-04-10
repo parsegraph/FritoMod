@@ -93,7 +93,9 @@ function MonitorIcon:SetMonitor(monitor)
 			return Seal(Frames.Alpha, self, self.style.inactiveAlpha);
 		end, self)
 	});
-
+	if not self.monitor:IsActive() then
+		Frames.Alpha(self, self.style.inactiveAlpha);
+	end;
 end;
 
 function MonitorIcon:Monitor()
