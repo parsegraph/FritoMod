@@ -15,8 +15,11 @@ function Math.Distance(...)
 	return math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2))
 end;
 
-function Math.Mean(values)
-	local sum = Lists:Reduce(values, 0, Operator.Add);
+function Math.Mean(values, ...)
+	if select("#", ...) ~= 0 or type(values) ~= "table" then
+		return Math.Mean({values, ...});
+	end;
+	local sum = Lists.Reduce(values, 0, Operator.Add);
 	return sum / #values;
 end;
 
