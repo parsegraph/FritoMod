@@ -207,20 +207,20 @@ function Strings.PrettyList(value)
 	return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", contents));
 end;
 
-function Strings.PrettyMap(value)
+function Strings.PrettyMap(map)
 	assert(
-		type(value) == "table" or type(value) == "userdata",
-		"value is not a table. Type: " .. type(value)
+		type(map) == "table" or type(map) == "userdata",
+		"map is not a table. Type: " .. type(map)
 	);
-	local size = Tables.Size(value);
+	local size = Tables.Size(map);
 	if size == 0 then
 		return "{<empty>}";
 	end;
 	size = Strings.PrettyNamedNumber(Strings.PrettyNumber(size), "item");
-	local contents = Tables.MapPairs(value, function(key, value)
+	local contents = Tables.MapPairs(map, function(key, value)
 		return ("%s = %s"):format(Strings.Pretty(key), Strings.Pretty(value));
 	end);
-	return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", contents));
+	return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", Tables.Values(contents)));
 end;
 
 function Strings.PrettyUserdata(value)
