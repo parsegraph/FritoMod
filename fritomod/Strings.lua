@@ -200,11 +200,11 @@ function Strings.PrettyList(value)
 	assert(type(value) == "table", "value is not a table. Type: " .. type(value));
 	local size = #value;
 	if size == 0 then
-		return "[<empty>]";
+		return "{<empty>}";
 	end;
 	local size = Strings.PrettyNamedNumber(Strings.PrettyNumber(size), "item");
 	local contents = Lists.Map(value, Strings.Pretty);
-	return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", contents));
+	return ("{<%s> %s}"):format(size, Strings.JoinArray(", ", contents));
 end;
 
 function Strings.PrettyMap(map)
@@ -218,9 +218,9 @@ function Strings.PrettyMap(map)
 	end;
 	size = Strings.PrettyNamedNumber(Strings.PrettyNumber(size), "item");
 	local contents = Tables.MapPairs(map, function(key, value)
-		return ("%s = %s"):format(Strings.Pretty(key), Strings.Pretty(value));
+		return ("[%s] = %s"):format(Strings.Pretty(key), Strings.Pretty(value));
 	end);
-	return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", Tables.Values(contents)));
+	return ("{<%s> %s}"):format(size, Strings.JoinArray(", ", Tables.Values(contents)));
 end;
 
 function Strings.PrettyUserdata(value)
