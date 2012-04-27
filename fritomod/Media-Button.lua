@@ -275,7 +275,7 @@ function Frames.ButtonTexture(button, layout)
 	if IsCallable(layout) then
 		layout(button);
 	else
-		ApplyStandardButton(button);
+		ApplyStandardButton(layout, button);
 	end;
 	return f;
 end;
