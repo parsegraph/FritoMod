@@ -405,7 +405,7 @@ local disallowsNilParent = {
 }
 
 do
-	local FONT_HEIGHT_MULTIPLE = 12;
+	local FONT_HEIGHT_MULTIPLE = 2;
 	local FONT_HEIGHT_MINIMUM = 1;
 
 	function Frames.ShrinkFontToFit(fs, maxSize)
