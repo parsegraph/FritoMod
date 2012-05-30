@@ -7,6 +7,7 @@ cat - <<EOF
 ## Notes: A function-oriented library for Lua & WoW
 ## Version: `git describe --tags`
 ## SavedVariables: _Persistence
+FritoMod.xml
 EOF
 
 # vim: set filetype=sh :
