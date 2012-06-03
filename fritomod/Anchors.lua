@@ -103,7 +103,10 @@ local function InjectIntoAnchors(format, name, func, ...)
 	Anchors[format:format(name)] = func;
 end;
 
-local function FullStrategyName(name)
+-- Returns the canonical mode name for the given mode. By convention, the
+-- first name within name is the "full" name. (e.g, "Horizontal" for the "H"
+-- mode).
+local function CanonicalModeName(name)
 	if type(name) == "string" then
 		return name;
 	end;
@@ -170,14 +173,14 @@ local function AnchorSetStrategy(name, setVerb)
 		return;
 	end;
 
-	local fullName = FullStrategyName(name);
-	local Gap = Anchors[fullName.."Gap"];
-	local AnchorPair = Anchors[fullName.."AnchorPair"];
+	local mode = CanonicalModeName(name);
+	local Gap = Anchors[mode.."Gap"];
+	local AnchorPair = Anchors[mode.."AnchorPair"];
 
 	InjectIntoAnchors(setVerb, name, function(frame, ...)
 		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 		local anchorTo = AnchorPair(anchor);
-		assert(anchorTo, "No anchor pair found for "..fullName.." set: "..anchor);
+		assert(anchorTo, "No anchor pair found for "..mode.." set: "..anchor);
 		Anchors.Set(frame, anchor, ref, anchorTo, Gap(anchorTo, x, y, ref));
 	end);
 end;
@@ -189,14 +192,14 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 		end;
 		return;
 	end;
-	local fullName = FullStrategyName(name);
+	local mode = CanonicalModeName(name);
 
 	if type(reversingVerb) == "table" then
 		reversingVerb = reversingVerb[1];
 	end;
 
-	local AnchorPair = Anchors[fullName.."AnchorPair"];
-	local Gap = Anchors[fullName.."Gap"];
+	local AnchorPair = Anchors[mode.."AnchorPair"];
+	local Gap = Anchors[mode.."Gap"];
 
 	InjectIntoAnchors(
 		setVerb,
@@ -204,14 +207,14 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 		function(frame, ...)
 			local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 			local anchorTo = AnchorPair(anchor);
-			assert(anchorTo, "No anchor pair found for "..fullName.." set: "..anchor);
+			assert(anchorTo, "No anchor pair found for "..mode.." set: "..anchor);
 			Anchors.Set(frame, anchorTo, ref, anchor, Gap(anchor, x, y, ref));
 		end
 	);
 end;
 
 local function EdgeSetStrategy(name, setVerb)
-	local fullName = FullStrategyName(name);
+	local mode = CanonicalModeName(name);
 
 	if type(setVerb) == "table" then
 		for i=1, #setVerb do
@@ -219,7 +222,7 @@ local function EdgeSetStrategy(name, setVerb)
 		end;
 		return;
 	end;
-	local SetPoint = Anchors[setVerb:format(fullName)];
+	local SetPoint = Anchors[setVerb:format(mode)];
 
 	local function FlipEdge(...)
 		local anchors = {...};
@@ -268,18 +271,18 @@ local function EdgeSetStrategy(name, setVerb)
 end;
 
 local function StackStrategy(name, defaultAnchor)
-	local fullName = FullStrategyName(name);
+	local mode = CanonicalModeName(name);
 
 	if type(setVerb) == "table" then
 		setVerb = setVerb[1];
 	end;
-	local FlipTo = Anchors[fullName.."FlipTo"];
-	local AnchorPair = Anchors[fullName.."AnchorPair"];
+	local FlipTo = Anchors[mode.."FlipTo"];
+	local AnchorPair = Anchors[mode.."AnchorPair"];
 
 	local function Stack(towardsFirst, anchor, gap, ...)
 		anchor=anchor:upper();
 		if anchor == "CENTER" and defaultAnchor then
-			local CStack = Anchors[fullName.."CStack"];
+			local CStack = Anchors[mode.."CStack"];
 			return CStack(defaultAnchor, ...);
 		end;
 		local frames;
@@ -330,7 +333,7 @@ local function StackStrategy(name, defaultAnchor)
 		Curry(Stack, false)
 	);
 
-	local AnchorPair = Anchors[FullStrategyName(name) .. "AnchorPair"];
+	local AnchorPair = Anchors[CanonicalModeName(name) .. "AnchorPair"];
 
 	InjectIntoAnchors(
 		"%sStackFrom",
@@ -340,9 +343,9 @@ local function StackStrategy(name, defaultAnchor)
 end;
 
 local function CenterStackStrategy(name)
-	local fullName = FullStrategyName(name);
-	local StackFrom = Anchors[fullName.."StackFrom"];
-	local StackTo = Anchors[fullName.."StackTo"];
+	local mode = CanonicalModeName(name);
+	local StackFrom = Anchors[mode.."StackFrom"];
+	local StackTo = Anchors[mode.."StackTo"];
 
 	InjectIntoAnchors({
 			"%sCStack",
@@ -375,11 +378,11 @@ local function CenterStackStrategy(name)
 end;
 
 local function JustifyStrategy(name, reverseJustify, defaultAnchor)
-	local fullName = FullStrategyName(name);
-	local AnchorPair = Anchors[fullName.."AnchorPair"];
+	local mode = CanonicalModeName(name);
+	local AnchorPair = Anchors[mode.."AnchorPair"];
 
-	local StackTo = Anchors[fullName.."StackTo"];
-	local StackFrom = Anchors[fullName.."StackFrom"];
+	local StackTo = Anchors[mode.."StackTo"];
+	local StackFrom = Anchors[mode.."StackFrom"];
 
 	InjectIntoAnchors({
 			"%sJustify",
@@ -389,7 +392,7 @@ local function JustifyStrategy(name, reverseJustify, defaultAnchor)
 		function(anchor, ...)
 			anchor=anchor:upper();
 			if anchor == "CENTER" and defaultAnchor then
-				local CJustify = Anchors[fullName.."CJustify"];
+				local CJustify = Anchors[mode.."CJustify"];
 				return CJustify(defaultAnchor, ...);
 			end;
 			if reverseJustify[anchor] then
@@ -404,7 +407,7 @@ local function JustifyStrategy(name, reverseJustify, defaultAnchor)
 		function(anchor, ...)
 			anchor=anchor:upper();
 			if anchor == "CENTER" and defaultAnchor then
-				local CJustify = Anchors[fullName.."CJustify"];
+				local CJustify = Anchors[mode.."CJustify"];
 				return CJustify(defaultAnchor, ...);
 			end;
 			if reverseJustify[anchor] then
@@ -416,9 +419,9 @@ local function JustifyStrategy(name, reverseJustify, defaultAnchor)
 end;
 
 local function CenterJustifyStrategy(name, reverseJustify)
-	local fullName = FullStrategyName(name);
-	local AnchorPair = Anchors[fullName.."AnchorPair"];
-	local CStack = Anchors[fullName.."CStack"];
+	local mode = CanonicalModeName(name);
+	local AnchorPair = Anchors[mode.."AnchorPair"];
+	local CStack = Anchors[mode.."CStack"];
 
 	InjectIntoAnchors({
 			"%sCJustify",
@@ -436,7 +439,7 @@ local function CenterJustifyStrategy(name, reverseJustify)
 end;
 
 
-local strategies = {};
+local modes = {};
 
 -- Anchors.HorizontalFlip(f, "TOPRIGHT", ref);
 -- +---+---+
@@ -480,7 +483,7 @@ local strategies = {};
 -- | f |   |
 -- +---+---+
 
-strategies.Horizontal = {
+modes.Horizontal = {
 	name = {"Horizontal", "H"},
 	gapSigns = {
 		TOPRIGHT	=  {  1,  1 },
@@ -548,7 +551,7 @@ strategies.Horizontal = {
 -- |  ref  |
 -- +-------+
 
-strategies.Vertical = {
+modes.Vertical = {
 	name = {"Vertical", "V"},
 	gapSigns = {
 		TOPRIGHT	=  {  1,  1 },
@@ -640,7 +643,7 @@ strategies.Vertical = {
 -- | f |ref|
 -- +---+---+
 
-strategies.Diagonal = {
+modes.Diagonal = {
 	name = {
 		"Diagonal",
 		"D",
@@ -683,7 +686,7 @@ strategies.Diagonal = {
 	defaultAnchor = "RIGHT"
 };
 
-strategies.ShareInner = {
+modes.ShareInner = {
 	name = {
 		"Shared",
 		"Sharing",
@@ -729,7 +732,7 @@ strategies.ShareInner = {
 	setVerb = {"Share", "ShareInner"},
 };
 
-strategies.ShareOuter = setmetatable({
+modes.ShareOuter = setmetatable({
 		name = {
 			"OuterShared",
 			"OuterSharing",
@@ -746,10 +749,10 @@ strategies.ShareOuter = setmetatable({
 			return Anchors.DiagonalGap(anchor, x, y);
 		end
 	}, {
-		__index = strategies.ShareInner
+		__index = modes.ShareInner
 });
 
-for _, strategy in pairs(strategies) do
+for _, strategy in pairs(modes) do
 	local name = strategy.name;
 	GapAnchorStrategy(
 		name,
