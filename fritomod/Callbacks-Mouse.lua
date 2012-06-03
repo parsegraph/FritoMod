@@ -165,6 +165,21 @@ function Callbacks.Click(f, func, ...)
 	end);
 end;
 
+function SpecificButtonClick(namedButton)
+	return function(f, func, ...)
+		func=Curry(func, ...);
+		return Callbacks.Click(f, function(btn)
+			if btn == namedButton then
+				func();
+			end;
+		end);
+	end;
+end;
+
+Callbacks.LeftClick = SpecificButtonClick("LeftButton");
+Callbacks.RightClick = SpecificButtonClick("RightButton");
+Callbacks.MiddleClick = SpecificButtonClick("MiddleButton");
+
 -- Returns the cursor's distance from the time this function was invoked.
 --
 -- The specified frame's scale will be used to adjust the distance. If no frame
