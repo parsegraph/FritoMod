@@ -139,6 +139,11 @@ local CLICK_TOLERANCE=.5;
 -- Calls the specified callback whenever a click begins on a frame.
 function Callbacks.Click(f, func, ...)
 	func=Curry(func, ...);
+	if type(f) == "table" and #f > 0 then
+		return Functions.OnlyOnce(Lists.CallEach,
+			Lists.Each(f, Headless(Callbacks.Click, func))
+		);
+	end;
 	if f:HasScript("OnClick") then
 		if not f.doClick then
 			local listeners={};
