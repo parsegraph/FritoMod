@@ -92,7 +92,6 @@ function Predicate:Constructor(name)
 	self.attached = true;
 
 	self.evaluator = evaluators.all;
-
 end;
 
 -- Attaches this predicate, registering itself as a listener for each of its
