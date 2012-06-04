@@ -13,9 +13,9 @@ function Labs.CAID()
 	gridGapV = 5
 	gridGapH = 5
 	blendType = "BLEND"
-	bgColor = {0.1,0.1,0.1,1}
-	borderColor = {0.5,0,1,1}
-	gcdbarColor = {0.5,0,1,1}
+	bgColor = Media.color(0.1);
+	borderColor = "purple";
+	gcdbarColor = "violet";
 
 	----
 	----
@@ -26,15 +26,9 @@ function Labs.CAID()
 	caid:SetPoint("Center",UIParent,"Center",0,-100)
 	Frames.Size(caid,width, height)
 
-	caid.background = caid:CreateTexture(nil,"BACKGROUND")
-	caid.background:SetAllPoints(caid)
-	caid.background:SetTexture("Interface\\Buttons\\WHITE8X8")
-	caid.background:SetBlendMode(blendType)
-	caid.background:SetVertexColor(unpack(bgColor))
-
-	caid:SetBackdropColor( unpack(bgColor) )
-	caid:SetBackdropBorderColor( unpack(borderColor) )
-
+	Frames.Backdrop(caid);
+	Frames.Color(caid, bgColor);
+	Frames.BorderColor(caid, borderColor);
 
 	local CreateBorderTexture = function()
 	   local b = caid:CreateTexture(nil, "border")
