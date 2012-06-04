@@ -8,6 +8,7 @@ function Labs.CAID()
 	enableGCD = true
 	enableCast = true
 	enableMageArmorBorder = true -- border and gcdbar are colored based on mage armor, not the settings below
+	enablePowerBar = true
 	width = 80
 	height = 55
 	gridGapV = 5
@@ -16,11 +17,16 @@ function Labs.CAID()
 	bgColor = Media.color(0.1);
 	borderColor = "purple";
 	gcdbarColor = "violet";
-	cdbarTexture = "Interface\\Buttons\\WHITE8X8"
+	barTexture = "Interface\\Buttons\\WHITE8X8"
 
 	----
 	----
 	----
+
+	math.round = function(num,idp)
+		local mult = 10^(idp or 0)
+		return math.floor(num * mult + 0.5) / mult
+	end
 	local gcd = 61304
 	local caid = CreateFrame("Frame",nil,UIParent)
 	caid:SetFrameStrata("LOW")
@@ -57,6 +63,48 @@ function Labs.CAID()
 	   end)
 	end
 
+	local ss = function (frame, current, max)
+		local perc = current/max
+		if not frame.bar then
+			frame.bar = frame:CreateTexture(nil, "background")
+			frame.bar:SetTexture(barTexture)
+			frame.bar:SetBlendMode(blendType)
+			frame.bar:SetPoint("Left")
+		end
+		frame.bar:SetWidth(frame:GetWidth()*perc)
+	end
+
+	if enablePowerBar then
+		local colors = { -- all colors just approximate
+		[0] = "blue", --mana
+		[1] = "red", -- rage
+		[2] = "orange", -- focus
+		[3] ="yellow", -- energy
+		[4] = "gray", -- nothing
+		[5] = "gray", -- nothing
+		[6] = "cyan" -- runic power
+		}
+		local power = UnitPowerType("player")
+		caid.powerbar = CreateFrame("Frame",nil, caid)
+		caid.powerbar:SetHeight(8)
+		caid.powerbar:SetWidth(caid:GetWidth()-gridGapH*2)
+		caid.powerbar:SetPoint("Top", caid, "Bottom",0,-5)
+		caid.powerbar:SetFrameLevel(caid:GetFrameLevel()+4)
+		caid.powerbar.SetStatus = ss
+		caid.powerbar.text = caid.powerbar:CreateFontString(nil, 'OVERLAY')
+		caid.powerbar.text:SetAllPoints(caid.powerbar)
+		caid.powerbar.text:SetFont(STANDARD_TEXT_FONT, 7, 'OUTLINE')
+		caid.powerbar.text:SetText("")
+		Timing.Every(0.01, function()
+			caid.powerbar:SetStatus(UnitPower("player"),UnitPowerMax("player") )
+			Frames.Color(caid.powerbar.bar,colors[power])
+			if power == 0 then
+				caid.powerbar.text:SetText(math.round(  (UnitPower("player")/UnitPowerMax("player"))*100 ) )
+			else
+				caid.powerbar.text:SetText(UnitPower("player"))
+			end
+		end)
+	end
 	local scd = function(frame,start,duration)
 	   if start == 0 then
 	      frame.onTrueCooldown = false
@@ -74,7 +122,7 @@ function Labs.CAID()
 	   cd:SetFrameLevel(caid:GetFrameLevel()+4)
 	   cd.spell = spell
 	   cd.bar = cd:CreateTexture(nil,"artwork")
-	   cd.bar:SetTexture(cdbarTexture)
+	   cd.bar:SetTexture(barTexture)
 	   cd.bar:SetBlendMode(blendType)
 	   cd.bar:SetPoint("Left")
 	   cd.onTrueCooldown = false
@@ -162,5 +210,6 @@ function Labs.CAID()
 
 		end)
 	end
+
 end;
 
