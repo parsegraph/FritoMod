@@ -21,7 +21,7 @@ function Labs.CAID()
 	----
 	----
 	local gcd = 61304
-	local caid = CreateFrame("Frame","CAID",UIParent)
+	local caid = CreateFrame("Frame",nil,UIParent)
 	caid:SetFrameStrata("LOW")
 	caid:SetPoint("Center",UIParent,"Center",0,-100)
 	Frames.Size(caid,width, height)
