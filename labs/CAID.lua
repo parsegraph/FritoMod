@@ -56,7 +56,7 @@ function Labs.CAID()
 		    perc = (GetTime() - start) / dur
 		    if perc < 1 then
 		       caid.gcdbar:Show()
-			   Anchors.Share(caid.gcdbar, "bottom", 0, height*perc);
+			   Anchors.Share(caid.gcdbar, "bottom", 0, (height-caid.gcdbar:GetHeight())*perc);
 		    end
 		 end
 
