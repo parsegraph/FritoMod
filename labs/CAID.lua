@@ -45,7 +45,20 @@ function Labs.CAID()
 			{ 5, 6 }
 		}
 	elseif UnitName("player") == "Dafrito" then
-		WorldFrame:Hide()
+		spells = {
+			{"Cone of Cold",    "blue" },
+			{"Frost Nova",      "blue" },
+			{"Ice Barrier",     "red"  },
+			{"Deep Freeze",     "red"  },
+			{"Blink",           "pink" },
+			{"Counterspell",    "pink" },
+		}
+
+		grid = {
+			{ 1, 2 },
+			{ 3, 4 },
+			{ 5, 6 }
+		}
 	end
 	--------------------------------------------------------------------
 	--------------------------------------------------------------------
