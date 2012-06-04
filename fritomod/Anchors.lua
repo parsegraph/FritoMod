@@ -1096,6 +1096,9 @@ modes.ShareInner = {
 	},
 	gapSigns = function(anchor, x, y, ref)
 		anchor=tostring(anchor):upper();
+		if anchor == "CENTER" then
+			return Anchors.DiagonalGap("topright", x, y);
+		end;
 		assert(ref, "Reference frame must be provided for determining gap strategy");
 		local insets=Frames.Insets(ref);
 		if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
@@ -1142,11 +1145,15 @@ modes.ShareOuter = setmetatable({
 		},
 		setVerb = "ShareOuter",
 		gapSigns = function(anchor, x, y, ref)
+			anchor=tostring(anchor):upper();
 			if x ~= nil then
 				x=-x;
 			end;
 			if y ~= nil then
 				y=-y;
+			end;
+			if anchor == "CENTER" then
+				return Anchors.DiagonalGap("topright", x, y);
 			end;
 			return Anchors.DiagonalGap(anchor, x, y);
 		end
@@ -1184,8 +1191,8 @@ Anchors.FlipBottom=Anchors.VFlipBottom;
 Anchors.FlipLeft =Anchors.HFlipLeft;
 Anchors.FlipRight=Anchors.HFlipRight;
 
-function Anchors.Center(frame, ref)
-	return Anchors.Share(frame, ref, "CENTER");
+function Anchors.Center(frame, ...)
+	return Anchors.Share(frame, "CENTER", ...);
 end;
 
 function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
