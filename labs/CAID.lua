@@ -18,10 +18,37 @@ function Labs.CAID()
 	borderColor = "purple";
 	gcdbarColor = "violet";
 	barTexture = "Interface\\Buttons\\WHITE8X8"
+	--------------------------------------------------------------------
+	--------------------------------------------------------------------
+	-- not settings
+	local grid = {}
+	local spells
+	--------------------------------------------------------------------
+	--------------------------------------------------------------------
+		-- spells
 
-	----
-	----
-	----
+	if UnitName("player") == "Khthon" then
+
+		spells = {
+		{"Cone of Cold",{0,0,1,1} },
+		{"Frost Nova", {0,0,1,1}  },
+		{"Dragon's Breath", {1,0,0,1}  },
+		{"Blast Wave", {1,0,0,1}  },
+		{"Blink", {1,0,1,1}  },
+		{"Counterspell", {1,0,1,1}  }
+		}
+
+		grid = {
+			{ 1, 2 },
+			{ 3, 4 },
+			{ 5, 6 }
+		}
+	elseif UnitName("player") == "Dafrito" then
+		WorldFrame:Hide()
+	end
+	--------------------------------------------------------------------
+	--------------------------------------------------------------------
+
 
 	math.round = function(num,idp)
 		local mult = 10^(idp or 0)
@@ -130,37 +157,31 @@ function Labs.CAID()
 	   return cd
 	end
 
-	local CoC = CreateCooldownBar("Cone of Cold")
-	CoC.bar:SetVertexColor(0,0,1,1)
-	local FN = CreateCooldownBar("Frost Nova")
-	FN.bar:SetVertexColor(0,0,1,1)
-	local BW = CreateCooldownBar("Frost Nova")
-	BW.bar:SetVertexColor(1,0,0,1)
-	local DB = CreateCooldownBar("Frost Nova")
-	DB.bar:SetVertexColor(1,0,0,1)
-	local B = CreateCooldownBar("Blink")
-	B.bar:SetVertexColor(1,0,1,1)
-	local CS = CreateCooldownBar("Counterspell")
-	CS.bar:SetVertexColor(1,0,1,1)
 
-
+	for k,v in ipairs(spells) do
+		spells[k] = CreateCooldownBar(v[1])
+		spells[k].bar:SetVertexColor( unpack(v[2]) )
+		for l, u in ipairs(grid) do
+			for m,w in ipairs(u) do
+				if w == k then
+					grid[l][m] = spells[k]
+				end
+			end
+		end
+	end
 	-- autoadjust the bars inside the main frame
 	-- put false if you want a nonexistent bar
 	-- otherwise the other bar will expand into that space
-	local cdgrid = {
-	   { CoC, FN },
-	   { DB , BW },
-	   { B  , CS }
-	}
+
 
 	local insets = Frames.Insets(caid)
 	local insetsH = insets.left + insets.right
 	local insetsV = insets.top + insets.bottom
-	local h = (caid:GetHeight()-insetsV) - (gridGapV*(#cdgrid+1))
-	h = h/#cdgrid
+	local h = (caid:GetHeight()-insetsV) - (gridGapV*(#grid+1))
+	h = h/#grid
 	local w
 
-	for k,v in ipairs(cdgrid) do
+	for k,v in ipairs(grid) do
 		w = (caid:GetWidth()-insetsH) - (gridGapH*(#v+1))
 		w = w/#v
 		for l,u in ipairs(v) do
@@ -176,7 +197,7 @@ function Labs.CAID()
 	end
 
 	Timing.Every(0.05, function()
-	      for k,v in ipairs(cdgrid) do
+	      for k,v in ipairs(grid) do
 		 for l,u in ipairs(v) do
 		    cd = 0
 		    if u then
