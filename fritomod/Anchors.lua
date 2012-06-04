@@ -463,14 +463,14 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 		end;
 		return;
 	end;
+
 	local mode = CanonicalModeName(name);
+	local AnchorPair = Anchors[mode.."AnchorPair"];
+	local Gap = Anchors[mode.."Gap"];
 
 	if type(reversingVerb) == "table" then
 		reversingVerb = reversingVerb[1];
 	end;
-
-	local AnchorPair = Anchors[mode.."AnchorPair"];
-	local Gap = Anchors[mode.."Gap"];
 
 	InjectIntoAnchors(
 		setVerb,
