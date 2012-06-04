@@ -166,10 +166,21 @@ function Frames.Color(f,...)
 		f:SetTextColor(r,g,b,a);
 	elseif f.SetTexture then
 		f:SetTexture(r,g,b,a);
-	elseif f.CreateTexture then --TODO: make it so I can reaccess this texture through future color calls
-		local t=f:CreateTexture();
+	elseif f.CreateTexture then
+		local t = nil;
+		local regions = {f:GetRegions()};
+		for _, region in ipairs(regions) do
+			if region.__colored then
+				t=region.__colored;
+				break;
+			end;
+		end;
+		if not t then
+			t=f:CreateTexture();
+		end;
 		t:SetAllPoints();
 		t:SetTexture(r,g,b,a);
+		t.__colored = true;
 		f=t;
 	end;
 	return f;
