@@ -1,3 +1,33 @@
+-- Provides an OOP approach to conditions and actions.
+
+-- A Predicate manages two separate lists: conditions and actions.
+-- The state of each condition is monitored, and if the predicate
+-- determines that its conditions cumulatively evaluate to true, then
+-- every action is fired. If the conditions change such that their
+-- cumulative result is no longer true, then any actions are revoked.
+
+-- Conditions are functions or other Predicates. By default, these functions
+-- behave like callbacks: they should expect a listener to be passed, and they
+-- should invoke it whenever their condition is true. They should expect the
+-- listener to return a function that, when invoked, indicates the condition
+-- is no longer true.
+
+-- A condition may also be a value-based condition. In this case, they should pass
+-- a value to the passed listener. Truthy values are considered active by the
+-- predicate; falsy values are treated as a false condition.
+
+-- Finally, a condition may be another predicate. In this case, if the inner
+-- predicate is true, then it is considered a true condition by the outer predicate.
+
+-- Actions are simple undoables. They may return a function that will be invoked
+-- when the predicate is no longer active.
+
+-- By default, the predicate is considered active if all conditions are true (if
+-- no conditions are present, then the predicate is considered inactive). This
+-- behavior may be changed by using Predicate:SetEvaluator. Some basic evaluators
+-- are already provided: "all", "any", and "majority". These may be used by passing
+-- the respective string to SetEvaluator.
+
 if nil ~= require then
 	require "fritomod/currying";
 	require "fritomod/OOP-Class";
@@ -210,6 +240,8 @@ end;
 
 -- Runs this predicate, by evaluating its conditions and firing
 -- actions if the predicate is active.
+--
+-- This method does not normally need to be called by clients.
 function Predicate:Run()
 	if not self:IsAttached() then
 		return;
