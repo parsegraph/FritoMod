@@ -431,7 +431,7 @@ local function AnchorSetStrategy(name, setVerb)
 	InjectIntoAnchors(setVerb, name, function(frame, ...)
 		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 		local anchorTo = AnchorPair(anchor);
-		assert(anchorTo, "No anchor pair found for "..mode.." set: "..anchor);
+		assert(anchorTo, "Frames cannot be "..mode.." aligned using the "..anchor.." anchor");
 		Anchors.Set(frame, anchor, ref, anchorTo, Gap(anchorTo, x, y, ref));
 	end);
 end;
