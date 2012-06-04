@@ -49,6 +49,7 @@ colors.orange={1.0, 0.5,  0.0, 1.0};
 colors.yellow={1.0, 1.0,  0.0, 1.0};
 colors.pink  ={1.0, 0.0,  1.0, 1.0};
 colors.purple={0.5, 0.0,  1.0, 1.0};
+colors.cyan = {0.0, 1.0,  1.0, 1.0};
 colors.gold  ={1.0, 0.82, 0.0, 1.0}; -- This is the yellow/gold color Blizzard uses in text.
 colors.violet=colors.purple;
 
