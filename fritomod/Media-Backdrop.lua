@@ -97,6 +97,29 @@ backdrops.test={
 	insets = insets[1]
 };
 
+backdrops.solid={
+	edgeFile=FRITOMOD.."Solid-Border",
+	bgFile  ="Interface/Tooltips/UI-Tooltip-Background",
+	edgeSize = 2,
+	tile=true,
+	tileSize=16,
+	insets = insets[1]
+};
+
+do
+	local sizes = {};
+	Media.backdrop(function(size)
+		if tonumber(size) then
+			size=tonumber(size);
+			if not sizes[size] then
+				sizes[size]=Tables.Clone(backdrops.solid);
+				sizes[size].edgeSize = size;
+			end;
+			return sizes[size];
+		end;
+	end);
+end;
+
 Media.backdrop(backdrops);
 Media.SetAlias("backdrops", "border", "borders", "edge", "edges");
 
