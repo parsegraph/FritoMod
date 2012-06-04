@@ -17,15 +17,6 @@ function Predicate:Constructor(name)
 
 	self.attached = true;
 
-	self.Detach = ForcedMethod(self, function(self)
-		if not self:IsAttached() then
-			return;
-		end;
-		for cond, _ in pairs(self.conditions) do
-			self:DetachCondition(cond);
-		end;
-		self.attached = false;
-	end);
 end;
 
 -- Attaches this predicate, registering itself as a listener for each of its
@@ -41,6 +32,16 @@ function Predicate:Attach()
 		self:AttachCondition(cond);
 	end;
 	self:Run();
+end;
+
+function Predicate:Detach()
+	if not self:IsAttached() then
+		return;
+	end;
+	for cond, _ in pairs(self.conditions) do
+		self:DetachCondition(cond);
+	end;
+	self.attached = false;
 end;
 
 -- Returns whether this predicate is attached. An attached predicate is registered
