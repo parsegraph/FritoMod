@@ -98,6 +98,19 @@ function Predicate:PredicateCondition(predicate)
 	end);
 end;
 
+function Predicate:ConstantCondition(value)
+	if value then
+		return self:Condition(function(listener)
+			-- Always fire the listener, and ignore any revoker returned.
+			listener();
+		end);
+	else
+		-- A noop condition will never fire, so it will always evaluate
+		-- to false.
+		return self:Condition(Noop);
+	end;
+end;
+
 -- Register an action that will fire when this predicate evaluates to true.
 -- Actions may be undoable; their revoking function will be called when
 -- the predicate's state changes from true to false.

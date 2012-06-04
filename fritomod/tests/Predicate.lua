@@ -64,3 +64,17 @@ function Suite:TestPredicateWithInnerPredicate()
 
 	flag.AssertUnset("Outer predicate is no longer active if inner active is inactive");
 end;
+
+function Suite:TestConstantCondition()
+	local pred = Predicate:New();
+	local flag = Tests.Flag();
+	pred:Action(flag.Raise);
+
+	pred:ConstantCondition(true);
+
+	flag.AssertSet("Predicate is active if constant is truthy");
+
+	pred:ConstantCondition(false);
+
+	flag.AssertUnset("Predicate is inactive if constant is falsy");
+end;
