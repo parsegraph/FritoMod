@@ -1,3 +1,226 @@
+-- Anchors frames to one another.
+--
+-- Anchors provides many ways of anchoring frames to one another. It's
+-- designed to be as powerful as possible for the client; the flipside
+-- is the source here is rather complicated.
+--
+-- I've divided the functionality into Strategies and Modes. Each Mode
+-- provides a different way of anchoring frames. Each Strategy is a
+-- single way to anchor them.
+--
+-- ### MODES
+--
+-- Currently, the following modes are available:
+--
+-- #### FLIPPING MODES
+--
+-- Flipping modes align frames such that they are next to one another.
+--
+-- Horizontal (H)
+-- Anchor frames along the horizontal axis. Corner anchors are aligned
+-- horizontally, so you can align a series of frames using their topmost
+-- points.
+--
+-- Vertical (V)
+-- Anchor frames along the vertical axis. Corner anchors are aligned
+-- vertically, so you can align a series of frames using their left- or
+-- rightmost points.
+--
+-- Diagonal (D)
+-- Anchor frames diagonally. This behaves similarly to Horizontal and
+-- Vertical for sides (e.g. Left, Top, Right, or Bottom), but corners
+-- will be aligned vertically; a series of frames will extend in a
+-- diagonal direction from the first frame.
+--
+-- #### SHARING MODES
+--
+-- Sharing modes align frames such that they overlap one another.
+--
+-- ShareInner (S, Shared, Sharing)
+-- Frame anchors will be overlapped. This will stack frames on top of
+-- one another. Frame insets from backdrops will be respected, causing
+-- frames to be stacked within their borders.
+--
+-- ShareOuter (OS, OuterShared, OuterSharing)
+-- Frames will be stacked, similar to ShareInner. However, frame insets
+-- are ignored, so frames will be aligned outside their borders.
+--
+-- ### COMMON ARGUMENTS
+--
+-- Unless otherwise specified, each function expects arguments in the following
+-- order:
+
+-- Anchors.%s(anchorable, anchor, bounds, gapX, gapy)
+
+-- The anchorable may be either a region (or frame), or a UI object. If it's
+-- the latter case, then the helper function GetAnchorable is used to deduce
+-- a frame.
+
+-- The anchor is the string specifying an anchor for the given anchorable. It
+-- will be used to determined the anchorTo point based on the mode's logic. Some
+-- strategies do not expect an anchor (the anchor is implied by the function name,
+-- as in EdgeSetStrategy)
+
+-- The bounds is used as the reference. Regions and frames are used directly. UI objects
+-- will be converted to frames using the helper function GetBounds.
+
+-- The gap should be specified in absolute terms. The sign will be determined
+-- using the mode's strategy for aligning frames. For the most part, gap signs
+-- will behave as expected.
+--
+-- ### STRATEGIES
+
+-- The following strategies are available for the above modes. Each strategy
+-- adds several functions to Anchors, available by combining the mode name with
+-- the strategy. For example, the stacking strategy with the horizontal mode
+-- would be Anchors.HStack ( "H" being the mode, and "Stack" being the
+-- strategy).
+
+-- All current strategies are described in brief below. Full documentation can
+-- be found for each strategy.
+
+-- #### AnchorSetStrategy
+
+-- Aligns two frames using the specified anchor. For flipping modes, the
+-- frames will be aligned next to each other, and for sharing modes, the
+-- frames will be stacked on top of one another.
+
+-- * Anchors.HAnchorTo, Anchors.HFlipFrom
+-- * Anchors.VAnchorTo, Anchors.VFlipFrom
+-- * Anchors.DAnchorTo, Anchors.DFlipFrom
+-- * Anchors.ShareOuter
+-- * Anchors.ShareInner
+
+-- Anchors.HAnchorTo(f, "left", ref)
+-- Anchors f's left anchor to ref.
+-- +---+---+
+-- |ref| f |
+-- +---+---+
+
+-- #### ReverseAnchorSetStrategy
+
+-- Aligns two frames using the specified anchor. The specified frames will
+-- be aligned next to each other.
+
+-- * Anchors.HFlipOver, Anchors.HFlipTo, Anchors.HFlip
+-- * Anchors.VFlipOver, Anchors.VFlipTo, Anchors.VFlip
+-- * Anchors.DFlipOver, Anchors.DFlipTo, Anchors.DFlip
+
+-- Anchors.HFlipOver(f, ref, "left");
+-- Flips f over ref's left, aligning f to the left of ref.
+-- +---+---+
+-- | f |ref|
+-- +---+---+
+
+-- #### EdgeSetStrategy
+
+-- Aligns two frames using several anchors, collectively called an edge.
+-- Flipping anchors will be aligned next to one another, sharing the specified
+-- edge. Sharing anchors will be overlapped using the specified edge.
+
+-- * Anchors.HAnchorToLeft
+-- * Anchors.VAnchorToLeft
+-- * Anchors.DAnchorToLeft
+-- * Anchors.ShareLeft
+-- * Anchors.ShareOuterLeft
+
+-- Each of the above is also available for the following edges:
+
+-- * Left (topleft, topright)
+-- * Right (topright, bottomright)
+-- * Top (topleft, topright)
+-- * Bottom (bottomleft, bottomright)
+-- * All (left, right, top, bottom)
+-- * Orthogonal (left, right, top, bottom)
+-- * Verticals (top, bottom)
+-- * Horizontals (left, right)
+
+-- #### StackStrategy
+
+-- Aligns a series of frames in order. For flipping modes, the frames will
+-- be arranged linearly. For sharing modes, the frames will be stacked on
+-- top of one another.
+
+-- * Anchors.HStack%s
+-- * Anchors.VStack%s
+-- * Anchors.DStack%s
+-- * Anchors.SStack%s, Anchors.SharedStack%s
+-- * Anchors.OSStack%s, Anchors.OuterSharedStack%s
+
+-- ##### Anchors.%sStackTo
+
+-- The frames will be stacked in the specified anchor direction. For example,
+-- Anchors.DStackTo("topright", a, b, c) will stack frames in the topright direction,
+-- with the last frame becoming the reference frame.
+
+-- local ref = Anchors.HStackTo("right", a, b, c)
+-- +---+---+---+
+-- | a>| b>| c |
+-- +---+---+---+
+
+-- ##### Anchors.%sStackFrom
+
+-- The frames will be stacked similarly to StackTo. However, the first rather than
+-- last frame will become the reference frame.
+
+-- local ref = Anchors.HStackFrom("right", a, b, c)
+-- +---+---+---+
+-- | a |<b |<c |
+-- +---+---+---+
+
+-- #### CenterStackStrategy
+
+-- * Anchors.HCStack
+-- * Anchors.VCStack
+-- * Anchors.CStack
+
+-- Stacks a series of frames in the specified direction, similar to StackStrategy.
+-- However, the middle-most frame will become the reference frame.
+
+-- local ref = Anchors.HCStack("right", a, b, c)
+-- +---+---+---+
+-- | a>| b |<c |
+-- +---+---+---+
+
+-- #### JustifyStrategy
+
+-- The frames will be arranged in order, similar to stack. However, the visible
+-- order will always match the argument order; the frames will never appear "reverse"
+
+-- Internally, StackStrategy is used to implement justified frames.
+
+-- * Anchors.HJustify%s
+-- * Anchors.VJustify%s
+-- * Anchors.DJustify%s
+
+-- local ref = Anchors.HJustifyTo("left", a, b, c)
+-- +---+---+---+
+-- | a |<b |<c |
+-- +---+---+---+
+
+-- local ref = Anchors.HJustifyFrom("left", a, b, c)
+-- +---+---+---+
+-- | a>| b>| c |
+-- +---+---+---+
+
+-- #### CJustifyStrategy
+
+-- Justifies a series of frames, similar to JustifyStrategy. However, the central
+-- frame will be used as the reference frame. The visible order is identical to
+-- JustifyStrategy.
+
+-- local ref = Anchors.HCJustify("right", a, b, c)
+-- +---+---+---+
+-- | a>| b |<c |
+-- +---+---+---+
+-- assert(ref == b);
+
+-- local ref = Anchors.HCJustify("left", a, b, c)
+-- +---+---+---+
+-- | a>| b |<c |
+-- +---+---+---+
+-- assert(ref == b);
+
 if nil ~= require then
 	require "wow/Frame-Layout";
 	require "wow/Frame-Container";
@@ -16,6 +239,10 @@ local function trace(...)
 	end;
 end;
 
+-- Converts passed anchor arguments into a canonical form. Anchors allows
+-- clients to omit some arguments when it is convenient to do so. I wanted
+-- these conversions to be shared across Anchors functions, so this function
+-- was written to ensure the conversion is consistent.
 local function GetAnchorArguments(frame, ...)
 	local anchor, ref, x, y, parent;
 	if type(select(1, ...)) == "string" then
@@ -86,6 +313,14 @@ local function GetGapAndFrames(gap, ...)
 	return gap, frames;
 end;
 
+-- Insert the specified function into the Anchors table. If format is itself
+-- a table, then each entry within format will be used. If name is a table, then
+-- each name will also be inserted.
+--
+-- format (if it is a string) is a format string that will be interpolated
+-- using name. This interpolation will serve as the name used within Anchors.
+--
+-- The curried function will be the value to the interpolated name.
 local function InjectIntoAnchors(format, name, func, ...)
 	func=Curry(func, ...);
 	if type(format) == "table" then
@@ -165,6 +400,22 @@ local function AnchorPairStrategy(name, anchorPairs)
 	end);
 end;
 
+-- A strategy for anchoring frames using the mode's pairing strategy. Flipping
+-- modes will cause the two frames to be aligned next to one another. Sharing
+-- modes will cause the two frames to be stack on top of one another, with the
+-- specified anchor determining where the frames are aligned.  All modes will
+-- cause the paired anchors to touch (assuming no gap is specified)
+
+-- Anchors.HFlipFrom(f, "topright", ref) causes f to be flipped over its topright
+-- anchor.
+-- +---+---+
+-- | f |   |
+-- +---|ref|
+--     |   |
+--     +---+
+--
+--see
+--	ReverseAnchorSetStrategy
 local function AnchorSetStrategy(name, setVerb)
 	if type(setVerb) == "table" then
 		for i=1, #setVerb do
@@ -185,6 +436,26 @@ local function AnchorSetStrategy(name, setVerb)
 	end);
 end;
 
+-- A strategy for anchoring frames using the mode's pairing strategy. This
+-- will produce the same set of results as AnchorSetStrategy. However, the
+-- anchor pairs are "reversed".
+
+-- For example, the following two lines of code will produce the same result:
+-- Anchors.HFlipFrom(f, "topright", ref) causes f to be flipped over its topright
+-- anchor.
+-- Anchors.HFlipTo(f, ref, "topleft") causes f to be flipped over ref's topleft
+-- anchor.
+-- +---+---+
+-- | f |   |
+-- +---|ref|
+--     |   |
+--     +---+
+
+-- It is up to the client's preference which method is preferred. I personally
+-- prefer the reverse anchor strategy.
+
+--see
+--	AnchorSetStrategy
 local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 	if type(setVerb) == "table" then
 		for i=1, #setVerb do
@@ -213,6 +484,25 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 	);
 end;
 
+-- A strategy that sets multiple anchors using the AnchorSetStrategy for the
+-- specified mode. This will change the size of the anchoring frame if it
+-- differs from the size of the reference frame.
+--
+-- Anchors.HFlipFromLeft(f, ref)
+-- +---+---+
+-- |   |   |
+-- |ref| f |
+-- |   |   |
+-- +---+---+
+--
+-- Anchors.ShareLeft(f, ref)
+-- +---+---+
+-- | f :   |
+-- |and:ref|
+-- |ref:   |
+-- +---+---+
+--
+-- I personally only use this strategy for sharing modes.
 local function EdgeSetStrategy(name, setVerb)
 	local mode = CanonicalModeName(name);
 
@@ -270,6 +560,25 @@ local function EdgeSetStrategy(name, setVerb)
 	);
 end;
 
+-- A strategy for lining up a series of frames.
+--
+-- local ref = Anchors.HStackTo("right", a, b, c)
+-- +---+---+---+
+-- | a>| b>| c |
+-- +---+---+---+
+-- For StackTo, the last frame is always the reference frame.
+--
+-- local ref = Anchors.HStackFrom("right", a, b, c)
+-- +---+---+---+
+-- | a |<b |<c |
+-- +---+---+---+
+-- For StackFrom, the first frame is always the reference frame.
+--
+-- The mode will determine the anchor pairs used for a given anchor.
+--
+-- Use this if you want to align a series of frames, but don't care about
+-- the visible ordering. I rarely use Stack over Justify, since it's very
+-- common to expect the visible ordering of frames to be preserved.
 local function StackStrategy(name, defaultAnchor)
 	local mode = CanonicalModeName(name);
 
@@ -342,6 +651,25 @@ local function StackStrategy(name, defaultAnchor)
 	);
 end;
 
+-- A strategy for "lining up" a series of frames, ensuring the middle frame
+-- is always the reference frame.
+--
+-- local ref = Anchors.HCStack("right", a, b, c)
+-- +---+---+---+
+-- | a>| b |<c |
+-- +---+---+---+
+--
+-- local ref = Anchors.HCStack("left", a, b, c)
+-- +---+---+---+
+-- | c>| b |<a |
+-- +---+---+---+
+--
+-- The visible order of the frames will match the ordering produced by StackTo,
+-- however the anchoring will always place the middle frame as the reference
+-- frame.
+--
+-- Personally, I rarely use CStack directly. It's more often used as a result of
+-- CJustify.
 local function CenterStackStrategy(name)
 	local mode = CanonicalModeName(name);
 	local StackFrom = Anchors[mode.."StackFrom"];
@@ -377,6 +705,35 @@ local function CenterStackStrategy(name)
 	);
 end;
 
+-- A strategy for lining up a series of frames, with the ordering of frames
+-- always matching the ordering of the arguments.
+--
+-- local ref = Anchors.HJustifyTo("right", a, b, c)
+-- +---+---+---+
+-- | a>| b>| c |
+-- +---+---+---+
+--
+-- local ref = Anchors.HJustifyTo("left", a, b, c)
+-- +---+---+---+
+-- | a |<b |<c |
+-- +---+---+---+
+--
+-- Observe how the specified ordering is preserved in the visible ordering
+-- of the frames. This differs from StackTo:
+-- local ref = Anchors.HStackTo("left", a, b, c)
+-- +---+---+---+
+-- | c |<b |<a |
+-- +---+---+---+
+--
+-- local ref = Anchors.HJustifyFrom("right", a, b, c)
+-- +---+---+---+
+-- | a |<b |<c |
+-- +---+---+---+
+-- This invocation behaves identically to Anchors.HJustifyto("left", a, b, c)
+--
+-- Use justify when you always want the visible ordering to be in a specified
+-- order, regardless of where the frames are aligned. The frames will be aligned
+-- lexicographically, with left-to-right and top-to-bottom being preferred.
 local function JustifyStrategy(name, reverseJustify, defaultAnchor)
 	local mode = CanonicalModeName(name);
 	local AnchorPair = Anchors[mode.."AnchorPair"];
@@ -418,6 +775,48 @@ local function JustifyStrategy(name, reverseJustify, defaultAnchor)
 	);
 end;
 
+-- Justifies a series of frames, with the central frame being used as
+-- the reference. This will produce visibily identical results to Justify,
+-- but the central frame will be used as the reference frame in all cases.
+--
+-- Anchors.HCJustify("right", a, b, c)
+-- +---+---+---+
+-- | a>| b |<c |
+-- +---+---+---+
+--
+-- Anchors.HCJustify("left", a, b, c)
+-- +---+---+---+
+-- | a>| b |<c |
+-- +---+---+---+
+--
+-- As you can see, when CJustify is used, the anchor provided specifies very
+-- little. For example, for HCJustify, "right" and "left" produce identical
+-- results: the frames are aligned such that their centers are vertically aligned.
+-- If "topright" or "topleft" are given, then the topmost anchors are vertically
+-- aligned.
+--
+-- I use CJustify when I want to perform two alignments. I want to vertically
+-- align a series of UI objects. Each UI object is comprised of a number of
+-- horizontally-aligned regions. I want the UI objects to be vertically aligned
+-- using a central axis. Such an alignment is shown below:
+--
+--    Foo [ ] Onyxia
+-- Edward [ ] Ragnaros
+--   Karl [ ] Nefarian
+--
+-- In this case, each UI object (a line comprised of two names and an icon) must
+-- be centrally stacked. I don't want the visible order to change, so I use justify.
+-- The following code is called within UI object:
+--
+-- Anchors.HCJustify("right", sourceName, icon, targetName)
+--
+-- I want each UI object to be vertically aligned, so I need a stack or a justify.
+-- I also want the visible ordering to be consistent, regardless of whether I use
+-- the first or the last frame as the reference for the whole list, so I need to
+-- use justify.
+--
+-- local ref = Anchors.VJustify("top", foo, edward, karl);
+-- assert(ref == foo, "foo is the reference frame");
 local function CenterJustifyStrategy(name, reverseJustify)
 	local mode = CanonicalModeName(name);
 	local AnchorPair = Anchors[mode.."AnchorPair"];
