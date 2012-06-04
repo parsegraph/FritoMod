@@ -16,13 +16,14 @@ UI = UI or {};
 local PlayerFrame = OOP.Class();
 UI.PlayerFrame = PlayerFrame;
 
-function PlayerFrame:Constructor(parent)
+function PlayerFrame:Constructor(parent, height)
 	parent = Frames.AsRegion(parent);
 	assert(Frames.IsFrame(parent), "Parent frame must be provided");
 	assert(parent.CreateTexture, "Provided parent must be a real frame");
-	local height=30;
+
+	height = height or 30;
 	self.icon = UI.Icon:New(parent, height);
-	
+
 	self.nameText = Frames.Text(parent, "default", 12, "outline");
 	self.nameText:SetHeight(height);
 end;
