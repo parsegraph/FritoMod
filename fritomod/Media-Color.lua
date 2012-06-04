@@ -167,7 +167,7 @@ function Frames.Color(f,...)
 		f:SetTextColor(r,g,b,a);
 	elseif f.SetTexture then
 		f:SetTexture(r,g,b,a);
-	elseif f.CreateTexture then
+	elseif f.CreateTexture then --TODO: make it so I can reaccess this texture through future color calls
 		local t=f:CreateTexture();
 		Anchors.ShareAll(t);
 		t:SetTexture(r,g,b,a);
