@@ -28,6 +28,10 @@ function Predicate:Constructor(name)
 	end);
 end;
 
+-- Attaches this predicate, registering itself as a listener for each of its
+-- conditions.
+--
+-- This method is a noop if this predicate is already attached.
 function Predicate:Attach()
 	if self:IsAttached() then
 		return;
@@ -39,11 +43,17 @@ function Predicate:Attach()
 	self:Run();
 end;
 
+-- Returns whether this predicate is attached. An attached predicate is registered
+-- as a listener for each of its conditions.
 function Predicate:IsAttached()
 	return self.attached;
 end;
 
 -- Register a condition that determines the overall state of this predicate.
+
+-- A condition is a two-state callback. It should fire a given listener once
+-- when it is "active".  The given listener will return a function that the
+-- specified condition should fire when the condition is no longer true.
 function Predicate:Condition(cond, ...)
 	trace("Adding condition to predicate %q", self.name);
 	cond=Curry(cond, ...);
@@ -61,8 +71,10 @@ function Predicate:Action(action, ...)
 	return self.actions:Add(action, ...);
 end;
 
--- You shouldn't need to directly call this function. It's used internally to
--- register the specified condition.
+-- Register a single condition for this predicate.
+
+-- This is an internal method used by Predicate:Attach(), so you'll never need
+-- to call it yourself.
 function Predicate:AttachCondition(cond)
 	self.conditions[cond] = false;
 	if self:IsAttached() then
@@ -87,6 +99,8 @@ function Predicate:DetachCondition(cond)
 	end;
 end;
 
+-- Sets the active/inactive state for the specified condition.
+--
 -- You shouldn't need to call this method normally. Predicate uses it internally
 -- when it registers conditions.
 function Predicate:SetConditionState(cond, state)
@@ -99,6 +113,8 @@ function Predicate:SetConditionState(cond, state)
 	self:Run();
 end;
 
+-- Runs this predicate, by evaluating its conditions and firing
+-- actions if the predicate is active.
 function Predicate:Run()
 	if not self:IsAttached() then
 		return;
@@ -125,10 +141,12 @@ function Predicate:Override(result)
 	self:FireActions(result)
 end;
 
+-- Forces the execution of this predicate's actions.
 function Predicate:ForceFire()
 	return self:Override(true);
 end;
 
+-- Forces the execution of this predicate's reset actions.
 function Predicate:ForceReset()
 	return self:Override(false);
 end;
