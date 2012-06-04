@@ -234,7 +234,7 @@ function Predicate:SetConditionState(cond, state)
 	trace("Setting condition state to %s for condition %s",
 		tostring(state),
 		tostring(cond));
-	self.conditions[cond] = Bool(state);
+	self.conditions[cond] = state;
 	self:Run();
 end;
 
