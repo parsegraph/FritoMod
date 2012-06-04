@@ -23,7 +23,7 @@ function Labs.CAID()
 	local gcd = 61304
 	local caid = CreateFrame("Frame",nil,UIParent)
 	caid:SetFrameStrata("LOW")
-	Anchors.Center(caid, 300, -100);
+	Anchors.Center(caid, 0, -100);
 	Frames.Size(caid,width, height)
 
 	Frames.Backdrop(caid, 2);
