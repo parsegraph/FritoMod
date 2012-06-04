@@ -4,7 +4,7 @@ function Suite:TestPredicateFiresActionWhenConditionIsTrue()
 	local pred = Predicate:New("Test");
 
 	local cond = Objects.Value();
-	pred:Condition(cond);
+	local condRemover = pred:Condition(cond);
 
 	cond.AssertSet("Condition is immediately registered");
 
@@ -113,3 +113,20 @@ function Suite:TestConditionsCanBeRemoved()
 
 	flag.AssertUnset("Predicates can be removed");
 end;
+
+function Suite:TestPredicateWithRemovedCondition()
+	local pred = Predicate:New("Test");
+
+	local cond = Objects.Value();
+	local condRemover = pred:Condition(cond);
+
+	local flag = Tests.Flag();
+	pred:Action(flag.Raise);
+
+	condRemover();
+
+	local revoker = cond.Get()();
+
+	flag.AssertUnset("Removed condition does not affect predicate");
+end;
+

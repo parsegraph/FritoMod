@@ -138,7 +138,11 @@ function Predicate:Condition(cond, ...)
 	cond=Curry(cond, ...);
 	self:AttachCondition(cond);
 	self:Run();
-	return Functions.OnlyOnce(self, "RemoveCondition", cond);
+	return Functions.OnlyOnce(function(self)
+		self:DetachCondition(cond);
+		self.conditions[cond] = nil;
+		self:Run();
+	end, self);
 end;
 
 -- Registers a conditions that determines the overall state of this predicate.
@@ -203,29 +207,31 @@ function Predicate:AttachCondition(cond)
 	self.conditions[cond] = false;
 	if self:IsAttached() then
 		local conditionSetter = Curry(self, "SetConditionState", cond);
+		local removed = false;
 		local revoker = cond(function()
+			if removed then
+				return Noop;
+			end;
 			conditionSetter(true);
 			return Functions.OnlyOnce(conditionSetter, false);
 		end);
-		if IsCallable(revoker) then
-			self.conditionRemovers[cond] = revoker;
+		self.conditionRemovers[cond] = function()
+			removed = true;
+			if IsCallable(revoker) then
+				revoker();
+				revoker = nil;
+			end;
 		end;
 	end;
 end;
 
 function Predicate:DetachCondition(cond)
-	assert(self.conditions[cond], "Condition must be registered in order to be removed");
+	assert(self.conditions[cond] ~= nil, "Condition must be registered in order to be removed");
 	local revoker = self.conditionRemovers[cond];
 	if revoker then
 		revoker();
 	end;
 	self.conditions[cond] = false;
-end;
-
-function Predicate:RemoveCondition(cond)
-	self:DetachCondition(cond);
-	self.conditions[cond] = nil;
-	self:Run();
 end;
 
 -- Sets the active/inactive state for the specified condition.
