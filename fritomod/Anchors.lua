@@ -825,6 +825,8 @@ local function CenterJustifyStrategy(name, reverseJustify)
 	InjectIntoAnchors({
 			"%sCJustify",
 			"%sCenterJustify",
+			"%sCJustifyTo",
+			"%sCenterJustifyTo",
 		},
 		name,
 		function(anchor, ...)
@@ -898,8 +900,8 @@ modes.Horizontal = {
 		BOTTOMLEFT = "BOTTOMRIGHT",
 		LEFT	   = "RIGHT"
 	},
-	setVerb = "%sFlipFrom",
-	reverseSetVerb = { "%sFlipTo", "%sFlip" },
+	setVerb = { "%sAnchorTo", "%sFlipFrom" },
+	reverseSetVerb = { "%sFlipTo", "%sFlip", "%sFlipOver" },
 	reverseJustify = {
 		TOPLEFT = true,
 		LEFT = true,
@@ -966,8 +968,8 @@ modes.Vertical = {
 		BOTTOMLEFT  = "TOPLEFT",
 		BOTTOM	  = "TOP"
 	},
-	setVerb = "%sFlipFrom",
-	reverseSetVerb = { "%sFlipTo", "%sFlip" },
+	setVerb = { "%sAnchorTo", "%sFlipFrom" },
+	reverseSetVerb = { "%sFlipTo", "%sFlip", "%sFlipOver" },
 	reverseJustify = {
 		TOPLEFT = true,
 		TOP = true,
@@ -1074,8 +1076,8 @@ modes.Diagonal = {
 		TOPLEFT  = "BOTTOMRIGHT",
 		TOPRIGHT = "BOTTOMLEFT",
 	},
-	setVerb = "%sFlipFrom",
-	reverseSetVerb = { "%sFlipTo", "%sFlip" },
+	setVerb = { "%sAnchorTo", "%sFlipFrom" },
+	reverseSetVerb = { "%sFlipTo", "%sFlip", "%sFlipOver" },
 	reverseJustify = {
 		TOP = true,
 		TOPLEFT = true,
