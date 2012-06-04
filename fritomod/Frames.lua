@@ -243,6 +243,28 @@ function Frames.Insets(f)
 	return INSETS_ZERO;
 end;
 
+function Frames.InnerWidth(f)
+	f=Frames.AsRegion(f);
+	local insets = Frames.Insets(f);
+	return f:GetWidth() - insets.left - insets.right;
+end;
+Frames.Width = Frames.InnerWidth;
+
+function Frames.OuterWidth(f)
+	return f:GetWidth();
+end;
+
+function Frames.InnerHeight(f)
+	f=Frames.AsRegion(f);
+	local insets = Frames.Insets(f);
+	return f:GetHeight() - insets.top - insets.bottom;
+end;
+Frames.Height = Frames.InnerHeight;
+
+function Frames.OuterHeight(f)
+	return f:GetHeight();
+end;
+
 do
 	-- Maximum value we'll tolerate before we give up.
 	local TOLERANCE=3
