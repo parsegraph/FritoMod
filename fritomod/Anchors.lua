@@ -432,7 +432,7 @@ local function AnchorSetStrategy(name, setVerb)
 		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 		local anchorTo = AnchorPair(anchor);
 		assert(anchorTo, "Frames cannot be "..mode.." aligned using the "..anchor.." anchor");
-		Anchors.Set(frame, anchor, ref, anchorTo, Gap(anchorTo, x, y, ref));
+		return Anchors.Set(frame, anchor, ref, anchorTo, Gap(anchorTo, x, y, ref));
 	end);
 end;
 
@@ -479,7 +479,7 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 			local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 			local anchorTo = AnchorPair(anchor);
 			assert(anchorTo, "No anchor pair found for "..mode.." set: "..anchor);
-			Anchors.Set(frame, anchorTo, ref, anchor, Gap(anchor, x, y, ref));
+			return Anchors.Set(frame, anchorTo, ref, anchor, Gap(anchor, x, y, ref));
 		end
 	);
 end;
@@ -520,6 +520,7 @@ local function EdgeSetStrategy(name, setVerb)
 			for i=1, #anchors do
 				SetPoint(frame, anchors[i], ref, x, y);
 			end;
+			return ref;
 		end;
 	end;
 	InjectIntoAnchors(setVerb.."Left",
@@ -1188,6 +1189,7 @@ function Anchors.Center(frame, ref)
 end;
 
 function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
+	local origRef = ref;
 	anchor=anchor:upper();
 	anchorTo=anchorTo:upper();
 	local region = GetAnchorable(frame, anchor);
@@ -1207,6 +1209,7 @@ function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
 		);
 	end;
 	region:SetPoint(anchor, ref, anchorTo, x, y);
+	return ref;
 end;
 
 function Anchors.Clear(...)
