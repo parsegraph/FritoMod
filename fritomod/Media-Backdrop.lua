@@ -87,6 +87,7 @@ backdrops.slider={
 	tileSize=8,
 	insets = insets.slider
 };
+backdrops.small=backdrops.slider;
 
 backdrops.test={
 	edgeFile=FRITOMOD.."Test-16-Border",
