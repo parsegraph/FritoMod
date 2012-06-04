@@ -103,10 +103,8 @@ Media.SetAlias("backdrops", "border", "borders", "edge", "edges");
 Frames=Frames or {};
 
 function Frames.Backdrop(f, backdrop, bg)
-	if type(backdrop)=="string" or not backdrop then
+	if type(backdrop)~="table" or not backdrop.edgeFile then
 		backdrop=Media.backdrop[backdrop];
-	else
-		backdrop=backdrop;
 	end;
 	if bg then
 		local usedBackdrop=Tables.Clone(backdrop);

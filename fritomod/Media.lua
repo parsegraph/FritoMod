@@ -70,13 +70,14 @@ Media = setmetatable({
 			mediaType=mediaType:lower();
 		end;
 		if not registry[mediaType] then
+			local providers = {};
 			rawset(self,mediaType, setmetatable({}, {
 				__call=function(self, provider)
 					assert(provider, "provider must not be nil");
 					if not registry[mediaType] then
 						registry[mediaType] = {};
 					end;
-					table.insert(registry[mediaType], provider);
+					table.insert(providers, provider);
 					return provider;
 				end,
 				__index=function(self, k)
@@ -87,8 +88,8 @@ Media = setmetatable({
 					if reg==nil then
 						return nil;
 					end;
-					for i=1, #reg do
-						local provider=reg[i];
+					for i=1, #providers do
+						local provider=providers[i];
 						local v;
 						if type(provider) == "function" then
 							v=provider(k);
