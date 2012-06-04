@@ -101,23 +101,26 @@ function Labs.CAID()
 	   { B  , CS }
 	}
 
-	local h = caid:GetHeight() - (gridGapV*(#cdgrid+1))
+	local insets = Frames.Insets(caid)
+	local insetsH = insets.left + insets.right
+	local insetsV = insets.top + insets.bottom
+	local h = (caid:GetHeight()-insetsV) - (gridGapV*(#cdgrid+1))
 	h = h/#cdgrid
 	local w
 
 	for k,v in ipairs(cdgrid) do
-	   w = caid:GetWidth() - (gridGapH*(#v+1))
-	   w = w/#v
-	   for l,u in ipairs(v) do
-	      if u then
-		 u:SetSize(w,h)
-		 u:SetPoint(
-		    "TopLeft",caid,"TopLeft",
-		    gridGapH*l+w*(l-1), -(gridGapV*k+h*(k-1))
-		 )
-		 u.bar:SetSize(w,h)
-	      end
-	   end
+		w = (caid:GetWidth()-insetsH) - (gridGapH*(#v+1))
+		w = w/#v
+		for l,u in ipairs(v) do
+			if u then
+				u:SetSize(w,h)
+				u:SetPoint(
+				"TopLeft",caid,"TopLeft",
+				gridGapH*l+w*(l-1)+insets.left, -(gridGapV*k+h*(k-1)+insets.top)
+				)
+				u.bar:SetSize(w,h)
+			end
+		end
 	end
 
 	Timing.Every(0.05, function()
