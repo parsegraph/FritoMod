@@ -26,50 +26,27 @@ function Labs.CAID()
 	Anchors.Center(caid, 300, -100);
 	Frames.Size(caid,width, height)
 
-	Frames.Backdrop(caid);
+	Frames.Backdrop(caid, 2);
 	Frames.Color(caid, bgColor);
 	Frames.BorderColor(caid, borderColor);
 
-	local CreateBorderTexture = function()
-	   local b = caid:CreateTexture(nil, "border")
-	   b:SetBlendMode(blendType)
-	   b:SetTexture(unpack(borderColor))
-	   return b
-	end
-
-	caid.topbar = CreateBorderTexture()
-	caid.topbar:SetSize(width,2)
-	caid.topbar:SetPoint("Top")
-
-	caid.bottombar = CreateBorderTexture()
-	caid.bottombar:SetSize(width,2)
-	caid.bottombar:SetPoint("Bottom")
-
-	caid.leftbar = CreateBorderTexture()
-	caid.leftbar:SetSize(2,height)
-	caid.leftbar:SetPoint("Left")
-
-	caid.rightbar = CreateBorderTexture()
-	caid.rightbar:SetSize(2,height)
-	caid.rightbar:SetPoint("Right")
-
 	if enableGCD then
 	   caid.gcdbar = CreateFrame("Frame",nil,caid)
-	   caid.gcdbar:SetSize(width,2)
+	   Anchors.ShareHorizontals(caid.gcdbar);
 	   caid.gcdbar:SetFrameLevel(caid:GetFrameLevel()+5)
-	   caid.gcdbar.texture = caid.gcdbar:CreateTexture(nil, "background")
-	   caid.gcdbar.texture:SetAllPoints(caid.gcdbar)
-	   caid.gcdbar.texture:SetBlendMode(blendType)
-	   caid.gcdbar.texture:SetTexture(unpack(borderColor))
+	   caid.gcdbar:SetHeight(2);
+	   Frames.Color(caid.gcdbar, borderColor);
+
 	   local start, dur, perc
-	   Timing.Every(0.01, function() 
+	   Timing.Every(0.01, function()
+		 local height = Frames.Height(caid);
 		 start,dur = GetSpellCooldown(gcd)
 		 caid.gcdbar:Hide()
 		 if start ~= 0 then
 		    perc = (GetTime() - start) / dur
 		    if perc < 1 then
 		       caid.gcdbar:Show()
-		       caid.gcdbar:SetPoint("Bottom",caid,"Bottom",0,height*perc)
+			   Anchors.Share(caid.gcdbar, "bottom", 0, height*perc);
 		    end
 		 end
 		 
