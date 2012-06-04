@@ -31,12 +31,12 @@ function Labs.CAID()
 	if UnitName("player") == "Khthon" then
 
 		spells = {
-			{"Cone of Cold",{0,0,1,1} },
-			{"Frost Nova", {0,0,1,1}  },
-			{"Dragon's Breath", {1,0,0,1}  },
-			{"Blast Wave", {1,0,0,1}  },
-			{"Blink", {1,0,1,1}  },
-			{"Counterspell", {1,0,1,1}  }
+			{"Cone of Cold",    "blue" },
+			{"Frost Nova",      "blue" },
+			{"Dragon's Breath", "red"  },
+			{"Blast Wave",      "red"  },
+			{"Blink",           "pink" },
+			{"Counterspell",    "pink" },
 		}
 
 		grid = {
@@ -217,7 +217,7 @@ function Labs.CAID()
 
 	for k,v in ipairs(spells) do
 		spells[k] = CreateCooldownBar(v[1])
-		spells[k].bar:SetVertexColor( unpack(v[2]) )
+		Frames.Color(spells[k].bar, v[2]);:SetVertexColor( unpack(v[2]) )
 		for l, u in ipairs(grid) do
 			for m,w in ipairs(u) do
 				if w == k then
