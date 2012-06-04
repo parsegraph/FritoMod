@@ -98,3 +98,18 @@ function Suite:TestPredicateWithDifferentEvaluators()
 	pred:ConstantCondition(true);
 	flag.AssertSet("Predicate with 'majority' evaluator is active if majority of conditions are truthy");
 end;
+
+function Suite:TestConditionsCanBeRemoved()
+	local pred = Predicate:New("Test");
+
+	local remover = pred:ConstantCondition(true);
+
+	local flag = Tests.Flag();
+	pred:Action(flag.Raise);
+
+	flag.AssertSet();
+
+	remover();
+
+	flag.AssertUnset("Predicates can be removed");
+end;

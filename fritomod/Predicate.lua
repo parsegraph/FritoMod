@@ -215,12 +215,17 @@ end;
 
 function Predicate:DetachCondition(cond)
 	assert(self.conditions[cond], "Condition must be registered in order to be removed");
-	self.conditions[cond] = false;
 	local revoker = self.conditionRemovers[cond];
 	if revoker then
 		revoker();
-		self.conditionRemovers[cond] = nil;
 	end;
+	self.conditions[cond] = false;
+end;
+
+function Predicate:RemoveCondition(cond)
+	self:DetachCondition(cond);
+	self.conditions[cond] = nil;
+	self:Run();
 end;
 
 -- Sets the active/inactive state for the specified condition.
