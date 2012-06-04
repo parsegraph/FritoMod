@@ -7,7 +7,7 @@ function Labs.CAID()
 
 	enableGCD = true
 	enableCast = true
-
+	enableMageArmorBorder = true -- border and gcdbar are colored based on mage armor, not the settings below
 	width = 80
 	height = 55
 	gridGapV = 5
@@ -32,11 +32,14 @@ function Labs.CAID()
 	Frames.BorderColor(caid, borderColor);
 
 	if enableGCD then
-	   caid.gcdbar = CreateFrame("Frame",nil,caid)
-	   Anchors.ShareHorizontals(caid.gcdbar);
-	   caid.gcdbar:SetFrameLevel(caid:GetFrameLevel()+5)
-	   caid.gcdbar:SetHeight(2);
-	   Frames.Color(caid.gcdbar, borderColor);
+		caid.gcdbar = CreateFrame("Frame",nil,caid)
+		Anchors.ShareHorizontals(caid.gcdbar);
+		caid.gcdbar:SetFrameLevel(caid:GetFrameLevel()+5)
+		caid.gcdbar:SetHeight(2);
+		caid.gcdbar.texture = caid.gcdbar:CreateTexture(nil,"background")
+		caid.gcdbar.texture:SetAllPoints(caid.gcdbar)
+		Frames.Color(caid.gcdbar.texture, borderColor);
+
 
 	   local start, dur, perc
 	   Timing.Every(0.01, function()
@@ -140,4 +143,24 @@ function Labs.CAID()
 		 end
 	      end
 	end)
+	if enableMageArmorBorder then
+		local color
+		Timing.Every(0.1, function()
+			if UnitBuff("player", "Mage Armor") then
+				color = "purple"
+			elseif UnitBuff("player", "Molten Armor") then
+				color = "red"
+			elseif UnitBuff("player", "Frost Armor") then
+				color = "cyan"
+			else
+				color = "black"
+			end
+			if enableGCD then
+				Frames.Color(caid.gcdbar.texture, color)
+			end
+			Frames.BorderColor(caid, color)
+
+		end)
+	end
 end;
+
