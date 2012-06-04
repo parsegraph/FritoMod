@@ -16,6 +16,7 @@ function Labs.CAID()
 	bgColor = Media.color(0.1);
 	borderColor = "purple";
 	gcdbarColor = "violet";
+	cdbarTexture = "Interface\\Buttons\\WHITE8X8"
 
 	----
 	----
@@ -70,7 +71,7 @@ function Labs.CAID()
 	   cd:SetFrameLevel(caid:GetFrameLevel()+4)
 	   cd.spell = spell
 	   cd.bar = cd:CreateTexture(nil,"artwork")
-	   cd.bar:SetTexture("Interface\\Buttons\\WHITE8X8")
+	   cd.bar:SetTexture(cdbarTexture)
 	   cd.bar:SetBlendMode(blendType)
 	   cd.bar:SetPoint("Left")
 	   cd.onTrueCooldown = false
