@@ -6,7 +6,8 @@ function Labs.CAID()
 
 
 	enableGCD = true
-	enableCast = true
+	enableCastBar = true -- uses the gcdbar as a cast bar, unsure if I like it
+	enableCastIcon = true
 	enableMageArmorBorder = true -- border and gcdbar are colored based on mage armor, not the settings below
 	enablePowerBar = true
 	width = 80
@@ -30,12 +31,12 @@ function Labs.CAID()
 	if UnitName("player") == "Khthon" then
 
 		spells = {
-		{"Cone of Cold",{0,0,1,1} },
-		{"Frost Nova", {0,0,1,1}  },
-		{"Dragon's Breath", {1,0,0,1}  },
-		{"Blast Wave", {1,0,0,1}  },
-		{"Blink", {1,0,1,1}  },
-		{"Counterspell", {1,0,1,1}  }
+			{"Cone of Cold",{0,0,1,1} },
+			{"Frost Nova", {0,0,1,1}  },
+			{"Dragon's Breath", {1,0,0,1}  },
+			{"Blast Wave", {1,0,0,1}  },
+			{"Blink", {1,0,1,1}  },
+			{"Counterspell", {1,0,1,1}  }
 		}
 
 		grid = {
@@ -64,7 +65,7 @@ function Labs.CAID()
 	Frames.Color(caid, bgColor);
 	Frames.BorderColor(caid, borderColor);
 
-	if enableGCD then
+	if enableGCD  or enableCastBar then
 		caid.gcdbar = CreateFrame("Frame",nil,caid)
 		Anchors.ShareHorizontals(caid.gcdbar);
 		caid.gcdbar:SetFrameLevel(caid:GetFrameLevel()+5)
@@ -73,21 +74,77 @@ function Labs.CAID()
 		caid.gcdbar.texture:SetAllPoints(caid.gcdbar)
 		Frames.Color(caid.gcdbar.texture, borderColor);
 
+		local start, dur, perc
+		local name, subText, text, texture, startTime, endTime
+		local isTradeSkill, castID, notInterruptible
+		local castdur
+		Timing.Every(0.01, function()
+			local height = Frames.Height(caid)
+			caid.gcdbar:Hide()
+			perc = 0
+			if enableCastBar then
+				name, subText, text, texture, startTime, endTime = UnitCastingInfo("player")
+				if not name then
+					name, subText, text, texture, startTime, endTime = UnitChannelInfo("player")
+				end
+				if startTime then
+					startTime = startTime/1000
+					endTime = endTime/1000
+					castdur = endTime - startTime
+				end
+			end
+			if enableGCD then
+				start,dur = GetSpellCooldown(gcd)
+			end
+			-- show castbar over gcdbar, but total length is whichever is longer
+			if enableGCD and enableCastBar and name and start~=0 then
+				if dur > castdur then
+					perc = (GetTime() - start) / dur
+				else
+					perc = (GetTime() - startTime)/ castdur
+				end
+			elseif enableGCD and start ~= 0 then
+				perc = (GetTime() - start) / dur
+			elseif enableCastBar and name then
+				perc = (GetTime() - startTime)/ castdur
+			end
+			if perc < 1 and perc > 0 then
+				caid.gcdbar:Show()
+				Anchors.Share(caid.gcdbar, "bottom", 0, (height-caid.gcdbar:GetHeight())*perc)
+			end
+		end)
+	end
 
-	   local start, dur, perc
-	   Timing.Every(0.01, function()
-		 local height = Frames.Height(caid);
-		 start,dur = GetSpellCooldown(gcd)
-		 caid.gcdbar:Hide()
-		 if start ~= 0 then
-		    perc = (GetTime() - start) / dur
-		    if perc < 1 then
-		       caid.gcdbar:Show()
-			   Anchors.Share(caid.gcdbar, "bottom", 0, (height-caid.gcdbar:GetHeight())*perc);
-		    end
-		 end
+	if enableCastIcon then
+	local name, subText, text, texture, startTime, endTime, timeLeft
+	caid.castIcon = CreateFrame("Frame",nil,caid)
+	caid.castIcon:SetSize(30,30)
+	caid.castIcon:SetPoint("Bottom",caid,"Top",0,30)
+	caid.castIcon.texture = caid.castIcon:CreateTexture(nil,"background")
+	caid.castIcon.texture:SetAllPoints(caid.castIcon)
+	caid.castIcon.text = caid.castIcon:CreateFontString(nil, 'OVERLAY')
+	caid.castIcon.text:SetAllPoints(caid.castIcon)
+	caid.castIcon.text:SetFont(STANDARD_TEXT_FONT, 12, 'OUTLINE')
+	caid.castIcon.text:SetText("")
 
-	   end)
+	Timing.Every(0.01, function()
+		name, subText, text, texture, startTime, endTime = UnitCastingInfo("player")
+		if not name then
+			name, subText, text, texture, startTime, endTime = UnitChannelInfo("player")
+		end
+		if name then
+			timeLeft = math.round(endTime/1000 - GetTime(),1)
+		if timeLeft % 1 == 0 then
+			timeLeft = timeLeft..".0"
+		end
+		caid.castIcon.texture:SetTexture(texture)
+		caid.castIcon.text:SetText(timeLeft)
+		caid.castIcon:Show()
+		elseif caid.castIcon:IsVisible() then
+			caid.castIcon:Hide()
+		end
+
+		end)
 	end
 
 	local ss = function (frame, current, max)
