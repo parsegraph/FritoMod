@@ -4,7 +4,6 @@ function Suite:TestPredicateFiresActionWhenConditionIsTrue()
 	local pred = Predicate:New("Test");
 
 	local cond = Objects.Value();
-
 	pred:Condition(cond);
 
 	cond.AssertSet("Condition is immediately registered");
@@ -13,7 +12,6 @@ function Suite:TestPredicateFiresActionWhenConditionIsTrue()
 
 	local flag = Tests.Flag();
 	pred:Action(flag.Raise);
-
 	flag.AssertUnset("Action is invoked only if conditions are met");
 
 	-- Invoke conditional
