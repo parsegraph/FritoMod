@@ -49,7 +49,7 @@ function Labs.CAID()
 			   Anchors.Share(caid.gcdbar, "bottom", 0, height*perc);
 		    end
 		 end
-		 
+
 	   end)
 	end
 
@@ -66,7 +66,7 @@ function Labs.CAID()
 	end
 
 	local CreateCooldownBar = function(spell)
-	   local cd = CreateFrame("Frame", nil, CAID)
+	   local cd = CreateFrame("Frame", nil, caid)
 	   cd:SetFrameLevel(caid:GetFrameLevel()+4)
 	   cd.spell = spell
 	   cd.bar = cd:CreateTexture(nil,"artwork")
@@ -125,7 +125,7 @@ function Labs.CAID()
 		 for l,u in ipairs(v) do
 		    cd = 0
 		    if u then
-		       
+
 		       u:SetCooldown(GetSpellCooldown(u.spell))
 		       if u.onTrueCooldown then
 		          u.bar:SetAlpha(0.5)
