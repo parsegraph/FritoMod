@@ -6,6 +6,50 @@ end;
 
 Predicate = OOP.Class();
 
+local evaluators = {};
+function evaluators.any(conditions)
+	local cumulativeResult = nil;
+	for cond, result in pairs(conditions) do
+		if result then
+			cumulativeResult = true;
+			break;
+		end;
+		cumulativeResult = false;
+	end;
+	-- If cumulativeResult is nil, then no
+	-- conditions were registered.
+	return cumulativeResult == true;
+end;
+
+function evaluators.all(conditions)
+	local cumulativeResult = nil;
+	for cond, result in pairs(conditions) do
+		if not result then
+			cumulativeResult = false;
+			break;
+		end;
+		cumulativeResult = true;
+	end;
+	-- If cumulativeResult is nil, then no
+	-- conditions were registered.
+	return cumulativeResult == true;
+end;
+
+function evaluators.majority(conditions)
+	local cumulativeResult = nil;
+	for cond, result in pairs(conditions) do
+		cumulativeResult = cumulativeResult or 0;
+		if result then
+			cumulativeResult = cumulativeResult + 1;
+		else
+			cumulativeResult = cumulativeResult - 1;
+		end;
+	end;
+	-- Zero is truthy, so accept any positive result as
+	-- active.
+	return cumulativeResult and cumulativeResult > 0;
+end;
+
 function Predicate:Constructor(name)
 	name=name or "";
 	self.name = name;
@@ -16,6 +60,8 @@ function Predicate:Constructor(name)
 	self.actions = ImmediateToggleDispatcher:New("Actions for predicate "..self.name);
 
 	self.attached = true;
+
+	self.evaluator = evaluators.all;
 
 end;
 
@@ -216,25 +262,19 @@ end;
 -- this method to implement their own evaluation logic.
 function Predicate:Evaluate()
 	trace("Evaluating predicate %q", self.name);
-	local result = nil;
-	for cond, condResult in pairs(self.conditions) do
-		if condResult == false then
-			-- False conditional, so everything's false.
-			result=false;
-			break;
-		end;
-		result=true;
-		trace("Predicate %q condition %s has result %s",
-			self.name,
-			tostring(cond),
-			tostring(condResult));
-	end;
-	if result == nil then
-		-- There were no conditions present, so return false.
-		result=false;
-	end;
+	local result = self.evaluator(self.conditions);
 	trace("Predicate %q has result: %q", self.name, tostring(result));
 	return result;
+end;
+
+function Predicate:SetEvaluator(func, ...)
+	if type(func) == "string" and select("#", ...) then
+		func = assert(evaluators[func], "Invalid evaluator name: "..func);
+	else
+		func=Curry(func, ...);
+	end;
+	self.evaluator = func;
+	self:Run();
 end;
 
 function Predicate:Destroy()

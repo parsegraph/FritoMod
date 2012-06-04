@@ -78,3 +78,23 @@ function Suite:TestConstantCondition()
 
 	flag.AssertUnset("Predicate is inactive if constant is falsy");
 end;
+
+function Suite:TestPredicateWithDifferentEvaluators()
+	local pred = Predicate:New("Test");
+	local flag = Tests.Flag();
+	pred:Action(flag.Raise);
+
+	pred:ConstantCondition(true);
+	pred:ConstantCondition(false);
+
+	flag.AssertUnset("Predicate is inactive if any condition is falsy");
+
+	pred:SetEvaluator("any");
+	flag.AssertSet("Predicate with 'any' evaluator is active if any condition is truthy");
+
+	pred:SetEvaluator("majority");
+	flag.AssertUnset("Predicate with 'majority' evaluator is inactive if 1/2 of conditions are false");
+
+	pred:ConstantCondition(true);
+	flag.AssertSet("Predicate with 'majority' evaluator is active if majority of conditions are truthy");
+end;
