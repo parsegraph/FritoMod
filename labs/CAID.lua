@@ -119,7 +119,7 @@ function Labs.CAID()
 	local name, subText, text, texture, startTime, endTime, timeLeft
 	caid.castIcon = CreateFrame("Frame",nil,caid)
 	caid.castIcon:SetSize(30,30)
-	caid.castIcon:SetPoint("Bottom",caid,"Top",0,30)
+	caid.castIcon:SetPoint("Top",caid,"Bottom",0,-30)
 	caid.castIcon.texture = caid.castIcon:CreateTexture(nil,"background")
 	caid.castIcon.texture:SetAllPoints(caid.castIcon)
 	caid.castIcon.text = caid.castIcon:CreateFontString(nil, 'OVERLAY')
