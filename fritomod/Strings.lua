@@ -200,11 +200,11 @@ function Strings.PrettyList(value)
 	assert(type(value) == "table", "value is not a table. Type: " .. type(value));
 	local size = #value;
 	if size == 0 then
-		return "{<empty>}";
+		return "[<empty>]";
 	end;
 	local size = Strings.PrettyNamedNumber(Strings.PrettyNumber(size), "item");
 	local contents = Lists.Map(value, Strings.Pretty);
-	return ("{<%s> %s}"):format(size, Strings.JoinArray(", ", contents));
+	return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", contents));
 end;
 
 function Strings.PrettyMap(map)
