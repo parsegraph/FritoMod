@@ -55,11 +55,46 @@ end;
 -- when it is "active".  The given listener will return a function that the
 -- specified condition should fire when the condition is no longer true.
 function Predicate:Condition(cond, ...)
+	if select("#", ...) == 0 and OOP.InstanceOf(Predicate, cond) then
+		return self:PredicateCondition(cond);
+	end;
 	trace("Adding condition to predicate %q", self.name);
 	cond=Curry(cond, ...);
 	self:AttachCondition(cond);
 	self:Run();
 	return Functions.OnlyOnce(self, "RemoveCondition", cond);
+end;
+
+-- Registers a conditions that determines the overall state of this predicate.
+
+-- A value condition is a callback function that will send a value that determines
+-- its state. A truthy value is considered as active for the predicate.
+function Predicate:ValueCondition(cond, ...)
+	trace("Adding value condition to predicate %q", self.name);
+	cond=Curry(cond, ...);
+	return self:Condition(function(listener)
+		local active = false;
+		local remover;
+		return cond(function(value)
+			if not active and value then
+				remover = listener();
+			elseif active and not value then
+				remover();
+				remover = nil;
+			end;
+		end);
+	end);
+end;
+
+-- Registers the specified predicate as a condition for this predicate.
+--
+-- If the specified predicate is active, then it is considered true as
+-- a condition for this predicate.
+function Predicate:PredicateCondition(predicate)
+	trace("Adding predicate condition to predicate %q", self.name);
+	return self:Condition(function(listener)
+		return predicate:Action(listener);
+	end);
 end;
 
 -- Register an action that will fire when this predicate evaluates to true.
