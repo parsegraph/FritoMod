@@ -44,6 +44,7 @@ end;
 function Icon:SetTexture(texture)
 	Frames.Texture(self.texture, texture);
 end;
+Icon.Set = Icon.SetTexture;
 
 function Icon:SetPortraitTexture(target)
 	if self.texture then
