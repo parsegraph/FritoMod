@@ -10,3 +10,9 @@ end;
 
 function Frame:GetDrawLayer()
 end;
+
+function Frame:GetBlendMode()
+end;
+
+function Frame:SetBlendMode()
+end;
