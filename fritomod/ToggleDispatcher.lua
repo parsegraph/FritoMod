@@ -38,6 +38,7 @@ function ToggleDispatcher:Fire(...)
 	if self.fired then
 		return;
 	end;
+	trace("Firing dispatcher %q", self.name);
 	ToggleDispatcher.super.Fire(self, ...);
 	self.fired=true;
 	return Seal(self, "Reset");
