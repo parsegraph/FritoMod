@@ -709,34 +709,50 @@ local function CenterStackStrategy(name)
 end;
 
 -- A strategy for lining up a series of frames, with the ordering of frames
--- always matching the ordering of the arguments.
+-- always matching the ordering of the arguments. This allows you to keep
+-- the visible arrangement of frames consistent, while ensuring you can safely
+-- anchor to the specified anchor without overlapping the stack's content.
 --
--- local ref = Anchors.HJustifyTo("right", a, b, c)
--- +---+---+---+
--- | a>| b>| c |
--- +---+---+---+
---
--- local ref = Anchors.HJustifyTo("left", a, b, c)
+-- local ref = Anchors.HJustify("left", a, b, c)
 -- +---+---+---+
 -- | a |<b |<c |
 -- +---+---+---+
 --
+-- local ref = Anchors.HJustify("right", a, b, c)
+-- +---+---+---+
+-- | a>| b>| c |
+-- +---+---+---+
+--
 -- Observe how the specified ordering is preserved in the visible ordering
 -- of the frames. This differs from StackTo:
+--
 -- local ref = Anchors.HStackTo("left", a, b, c)
 -- +---+---+---+
 -- | c |<b |<a |
 -- +---+---+---+
 --
--- local ref = Anchors.HJustifyFrom("right", a, b, c)
+-- local ref = Anchors.HStackTo("right", a, b, c)
 -- +---+---+---+
--- | a |<b |<c |
+-- | a>| b>| c |
 -- +---+---+---+
--- This invocation behaves identically to Anchors.HJustifyto("left", a, b, c)
 --
 -- Use justify when you always want the visible ordering to be in a specified
 -- order, regardless of where the frames are aligned. The frames will be aligned
 -- lexicographically, with left-to-right and top-to-bottom being preferred.
+--
+-- Internally, Justify uses Stack to actually arrange the frames. This means that there's
+-- nothing you can do with Justify that you can't do with Stack. However, Justify is
+-- typically what you want. If you need to work with more complicated arrangements, you'll
+-- have to mess with anchor pairs and/or StackFrom.
+--
+-- There's a second form of Justify, called JustifyFrom. It was intended to be analogous
+-- to StackFrom, but it's usually just very confusing to use since it's "backwards" from
+-- what you'd expect. Specifically, the anchor specified to JustifyFrom will be opposite
+-- of the actual reference frame. This usually results in UI bugs.
+--
+-- The only time I use JustifyFrom is if I'm doing something programmatically and don't
+-- want to deal with anchor pairs. As you might imagine, this is very rare. My advice is
+-- to forget about JustifyFrom unless you're working with a very unusual UI scenario.
 local function JustifyStrategy(name, reverseJustify, defaultAnchor)
 	local mode = CanonicalModeName(name);
 	local AnchorPair = Anchors[mode.."AnchorPair"];
