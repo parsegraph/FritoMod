@@ -590,6 +590,7 @@ local function StackStrategy(name, defaultAnchor)
 	local AnchorPair = Anchors[mode.."AnchorPair"];
 
 	local function Stack(towardsFirst, anchor, gap, ...)
+		assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
 		anchor=anchor:upper();
 		if anchor == "CENTER" and defaultAnchor then
 			local CStack = Anchors[mode.."CStack"];
@@ -682,6 +683,7 @@ local function CenterStackStrategy(name)
 		},
 		name,
 		function(anchor, gap, ...)
+			assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
 			anchor=anchor:upper();
 			local gap, frames = GetGapAndFrames(gap, ...);
 			local count = #frames;
@@ -748,6 +750,7 @@ local function JustifyStrategy(name, reverseJustify, defaultAnchor)
 		},
 		name,
 		function(anchor, ...)
+			assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
 			anchor=anchor:upper();
 			if anchor == "CENTER" and defaultAnchor then
 				local CJustify = Anchors[mode.."CJustify"];
@@ -763,6 +766,7 @@ local function JustifyStrategy(name, reverseJustify, defaultAnchor)
 		"%sJustifyFrom",
 		name,
 		function(anchor, ...)
+			assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
 			anchor=anchor:upper();
 			if anchor == "CENTER" and defaultAnchor then
 				local CJustify = Anchors[mode.."CJustify"];
@@ -831,6 +835,7 @@ local function CenterJustifyStrategy(name, reverseJustify)
 		},
 		name,
 		function(anchor, ...)
+			assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
 			anchor=anchor:upper();
 			if reverseJustify[anchor] then
 				return CStack(AnchorPair(anchor), ...);
