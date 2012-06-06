@@ -441,9 +441,9 @@ end;
 -- anchor pairs are "reversed".
 
 -- For example, the following two lines of code will produce the same result:
--- Anchors.HFlipFrom(f, "topright", ref) causes f to be flipped over its topright
+-- Anchors.HAnchorTo(f, "topright", ref) causes f to be flipped over its topright
 -- anchor.
--- Anchors.HFlipTo(f, ref, "topleft") causes f to be flipped over ref's topleft
+-- Anchors.HFlipOver(f, ref, "topleft") causes f to be flipped over ref's topleft
 -- anchor.
 -- +---+---+
 -- | f |   |
@@ -586,7 +586,7 @@ local function StackStrategy(name, defaultAnchor)
 	if type(setVerb) == "table" then
 		setVerb = setVerb[1];
 	end;
-	local FlipTo = Anchors[mode.."FlipTo"];
+	local FlipOver = Anchors[mode.."FlipOver"];
 	local AnchorPair = Anchors[mode.."AnchorPair"];
 
 	local function Stack(towardsFirst, anchor, gap, ...)
@@ -633,7 +633,7 @@ local function StackStrategy(name, defaultAnchor)
 				thisGap = thisGap[1 + (i % #thisGap)]
 				i=i + 1;
 			end;
-			FlipTo(first, second, anchor, thisGap);
+			FlipOver(first, second, anchor, thisGap);
 		end);
 	end
 	InjectIntoAnchors({
