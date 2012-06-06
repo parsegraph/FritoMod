@@ -666,12 +666,30 @@ end;
 -- | c>| b |<a |
 -- +---+---+---+
 --
+-- It's possible to specify a frame you'd like to become the reference frame, while preserving
+-- the visible order of the stack:
+--
+-- local ref = Anchors.HCStack(b, "right", a, b, c, d)
+-- +---+---+---+---+
+-- | a>| b |<c |<d |
+-- +---+---+---+---+
+--
+-- Specify a reference frame from a series of frames is useful when you want to be precise in
+-- how centrally-aligned UI objects line up. Of course, if you just want the middle frame, then
+-- you're free to omit the reference frame.
+--
+-- You can also specify the frame by index. These two calls are equivalent:
+--
+-- Anchors.HCStack(2, "right", a, b, c, d)
+-- Anchors.HCStack(b, "right", a, b, c, d)
+--
 -- The visible order of the frames will match the ordering produced by StackTo,
 -- however the anchoring will always place the middle frame as the reference
 -- frame.
 --
 -- Personally, I rarely use CStack directly. It's more often used as a result of
--- CJustify.
+-- CJustify. You can also implicitly run CStack by passing "CENTER" to Stack, assuming
+-- the mode supports this.
 local function CenterStackStrategy(name)
 	local mode = CanonicalModeName(name);
 	local StackFrom = Anchors[mode.."StackFrom"];
@@ -682,27 +700,46 @@ local function CenterStackStrategy(name)
 			"%sCenterStack",
 		},
 		name,
-		function(anchor, gap, ...)
+		function(anchorOrMid, ...)
+			local mid, anchor, gap, frames;
+			if type(anchorOrMid) ~= "string" then
+				-- We were given an explicit middle frame, so use it
+				mid = anchorOrMid;
+				anchor = select(1, ...);
+				gap, frames = GetGapAndFrames(select(2, ...));
+				if type(mid) ~= "number" then
+					local oldMid = mid;
+					mid = Lists.IndexOf(frames, mid);
+					assert(mid, "Reference frame was not found in provided frames: "..tostring(oldMid));
+				elseif mid < 0 then
+					-- We were given a negative index, so loop around. -1 should refer to the last item
+					-- in the list.
+					local oldMid = mid;
+					mid = #frames + mid + 1;
+					assert(mid > 0 and mid <= #frames, "Reference index is out of range: "..tostring(oldMid));
+				else
+					assert(mid > 0, "Zero index is not allowed");
+				end;
+			else
+				-- We were only given an anchor, so choose the middle frame.
+				anchor = anchorOrMid;
+				gap, frames = GetGapAndFrames(...);
+				local count = #frames;
+				if count % 2 == 0 then
+					-- We have an even number of frames, so
+					-- we need to pick one arbitrarily to be
+					-- the "middle".
+					mid = count / 2;
+				else
+					mid = (count + 1) / 2;
+				end;
+			end;
 			assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
 			anchor=anchor:upper();
-			local gap, frames = GetGapAndFrames(gap, ...);
-			local count = #frames;
-			local mid;
-			if count % 2 == 0 then
-				-- We have an even number of frames, so
-				-- we need to pick one arbitrarily to be
-				-- the "middle".
-				mid = count / 2;
-			else
-				mid = (count + 1) / 2;
-			end;
-			-- Align the leading slice
-			StackTo(anchor, gap,
-				Lists.Slice(frames, 1, mid));
-			-- Align the trailing slice
-			StackFrom(anchor, gap,
-				Lists.Slice(frames, mid, #frames));
-			-- Return the middle
+			-- Align the leading and trailing slices
+			StackTo(  anchor, gap, Lists.Slice(frames, 1,   mid    ));
+			StackFrom(anchor, gap, Lists.Slice(frames, mid, #frames));
+			-- Return the reference frame
 			return frames[mid];
 		end
 	);
@@ -810,10 +847,10 @@ end;
 -- | a>| b |<c |
 -- +---+---+---+
 --
--- As you can see, when CJustify is used, the anchor provided specifies very
--- little. For example, for HCJustify, "right" and "left" produce identical
--- results: the frames are aligned such that their centers are vertically aligned.
--- If "topright" or "topleft" are given, then the topmost anchors are vertically
+-- When CJustify is used, many specified anchors can produce the same result.
+-- For example, for HCJustify, "right" and "left" produce identical results:
+-- the frames are aligned such that their centers are vertically aligned.  If
+-- "topright" or "topleft" are given, then the topmost anchors are vertically
 -- aligned.
 --
 -- I use CJustify when I want to perform two alignments. I want to vertically
@@ -831,17 +868,37 @@ end;
 --
 -- Anchors.HCJustify("right", sourceName, icon, targetName)
 --
--- I want each UI object to be vertically aligned, so I need a stack or a justify.
--- I also want the visible ordering to be consistent, regardless of whether I use
--- the first or the last frame as the reference for the whole list, so I need to
--- use justify.
+-- If the center, left, or right frame is not the one that you want to align with, you
+-- can specify it explicitly to CJustify. Assume the following UI:
+--
+-- 60 [x] Foo [=====   ]
+--
+-- CJustify would attempt to align on the "Foo" text, which may be undesirable. Instead, we
+-- want to align using the x (which I will call classIcon):
+--
+-- Anchors.HCJustify(classIcon, "right", levelText, classIcon, name, healthBar);
+--
+-- Returning to our example, I want each UI object to be vertically aligned, so
+-- I need a stack or a justify.  I also want the visible ordering to be
+-- consistent, regardless of whether I use the first or the last frame as the
+-- reference for the whole list, so I need to use justify.
 --
 -- local ref = Anchors.VJustify("top", foo, edward, karl);
 -- assert(ref == foo, "foo is the reference frame");
+--
+-- If you wanted to have the bottom frame become the reference, you would specify a bottom
+-- anchor. The exact anchor specified will affect where each UI object lines up. If you
+-- wanted the middle or some other frame to become the reference, then you could use CJustify
+-- to do so.
 local function CenterJustifyStrategy(name, reverseJustify)
 	local mode = CanonicalModeName(name);
 	local AnchorPair = Anchors[mode.."AnchorPair"];
 	local CStack = Anchors[mode.."CStack"];
+
+	local function GetAnchor(anchor)
+		assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
+		return anchor:upper();
+	end;
 
 	InjectIntoAnchors({
 			"%sCJustify",
@@ -850,17 +907,26 @@ local function CenterJustifyStrategy(name, reverseJustify)
 			"%sCenterJustifyTo",
 		},
 		name,
-		function(anchor, ...)
-			assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
-			anchor=anchor:upper();
-			if reverseJustify[anchor] then
-				return CStack(AnchorPair(anchor), ...);
+		function(anchorOrMid, ...)
+			local anchor;
+			if type(anchorOrMid) == "string" then
+				-- No mid provided, so just pass directly to CStack
+				anchor = GetAnchor(anchorOrMid);
+				if reverseJustify[anchor] then
+					return CStack(AnchorPair(anchor), ...);
+				end;
+				return CStack(anchor, ...);
+			else
+				local mid = anchorOrMid;
+				anchor = GetAnchor(...);
+				if reverseJustify[anchor] then
+					return CStack(mid, AnchorPair(anchor), select(2, ...));
+				end;
+				return CStack(mid, anchor, select(2, ...));
 			end;
-			return CStack(anchor, ...);
 		end
 	);
 end;
-
 
 local modes = {};
 
