@@ -142,6 +142,8 @@ function CheckBox:Anchor(anchor)
 	Anchors.ShareVertical(self.hitbox, self.icon);
 	anchor = Frames.HComp(anchor);
 	if anchor == "CENTER" then
+		-- There's no horizontal component, so just anchor from the
+		-- leftmost element.
 		anchor = "LEFT";
 	end;
 	return Anchors.HJustify(anchor, self.style.gap, first, second);
