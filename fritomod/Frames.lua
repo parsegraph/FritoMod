@@ -79,10 +79,12 @@ do
 	function Frames.VerticalComponent(anchor)
 		return verticals[anchor];
 	end;
+	Frames.VComp = Frames.VerticalComponent;
 
 	function Frames.HorizontalComponent(anchor)
 		return horizontals[anchor];
 	end;
+	Frames.HComp = Frames.HorizontalComponent;
 end;
 
 function Frames.Inject(frame)
