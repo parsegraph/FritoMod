@@ -462,6 +462,8 @@ do
 			heightMultiplier = heightMultiplier - 1;
 		end;
 	end;
+	Frames.ShrinkText = Frames.ShrinkFontToFit;
+	Frames.ShrinkFont = Frames.ShrinkFontToFit;
 end;
 
 function Frames.Destroy(...)
