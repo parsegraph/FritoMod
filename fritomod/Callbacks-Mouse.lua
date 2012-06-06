@@ -144,6 +144,9 @@ function Callbacks.Click(f, func, ...)
 			Lists.Each(f, Headless(Callbacks.Click, func))
 		);
 	end;
+	f=Frames.AsRegion(f);
+	assert(Frames.IsFrame(f), "Provided frame must be a true frame");
+	assert(f.HasScript, "Provided frame must support script handlers");
 	if f:HasScript("OnClick") then
 		if not f.doClick then
 			local listeners={};
