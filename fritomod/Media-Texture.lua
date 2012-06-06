@@ -6,6 +6,13 @@ if nil ~= require then
 	require "fritomod/Tables";
 end;
 
+-- Return a texture directly.
+Media.texture(function(obj)
+	if type(obj)=="table" and obj.name and obj.coords then
+		return obj;
+	end;
+end);
+
 -- All keys to this table must be lowercase.
 local textures={};
 
@@ -58,12 +65,6 @@ do
 		return classTextures[targetClass];
 	end);
 end;
-
-Media.texture(function(obj)
-	if type(obj)=="table" and obj.name and obj.coords then
-		return obj;
-	end;
-end);
 
 -- These are the texture coords for all Blizzard icons in Interface\Icons. There's
 -- a few that deviate from this, but not by a noticeable amount. There's also a few
