@@ -38,6 +38,8 @@ function CheckBox:Constructor(parent, style, text)
 	assert(parent.CreateTexture, "Provided parent must be a real frame");
 	assert(parent.CreateFontString, "Provided parent must be a real frame");
 
+	self.hitbox = CreateFrame("Frame", nil, parent);
+
 	self.style = Metatables.StyleClient(style);
 	self.style:Inherits(DEFAULT_STYLE);
 
@@ -86,8 +88,8 @@ function CheckBox:Constructor(parent, style, text)
 	self.listeners = ListenerList:New();
 
 	self.callbacks = {
-		Callbacks.Click(self.icon, self, "Toggle"),
-		Callbacks.EnterFrame(self.icon, Frames.Show, self.highlight)
+		Callbacks.Click(self.hitbox, self, "Toggle"),
+		Callbacks.EnterFrame(self.hitbox, Frames.Show, self.highlight)
 	};
 
 	self.listeners:Add(function(self, value)
@@ -130,11 +132,14 @@ end;
 
 function CheckBox:Anchor(anchor)
 	trace("Anchoring checkbox to " ..anchor);
-	Anchors.Clear(self.icon, self.text);
+	Anchors.Clear(self.icon, self.text, self.hitbox);
 	local first, second = self.icon, self.text;
 	if self.iconPosition == "RIGHT" then
 		first, second = self.text, self.icon;
 	end;
+	Anchors.ShareOuter(self.hitbox, first, "LEFT");
+	Anchors.ShareOuter(self.hitbox, second, "RIGHT");
+	Anchors.ShareVertical(self.hitbox, self.icon);
 	anchor = Frames.HComp(anchor);
 	if anchor == "CENTER" then
 		anchor = "LEFT";
@@ -146,6 +151,9 @@ function CheckBox:Bounds(anchor)
 	local hcomp = Frames.HorizontalComponent(anchor);
 	-- Return the text only if it's really necessary. By default, we
 	-- prefer returning the icon.
+	--
+	-- It's important not to return the hitbox here. It can be quite buggy
+	-- to return a frame with complicated bounding rules like the hitbox has.
 	if     self.style.iconPosition == "LEFT"  and hcomp == "RIGHT"
 		or self.style.iconPosition == "RIGHT" and hcomp == "LEFT" then
 		return self.text;
@@ -160,5 +168,5 @@ function CheckBox:Destroy()
 		Lists.CallEach(self.callbacks);
 		self.callbacks = nil;
 	end;
-	Frames.Destroy(self.icon, self.text, self.mark, self.highlight);
+	Frames.Destroy(self.icon, self.text, self.mark, self.highlight, self.hitbox);
 end;
