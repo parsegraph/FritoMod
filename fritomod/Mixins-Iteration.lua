@@ -1095,6 +1095,15 @@ function Mixins.Iteration(library)
 			end;
 		end;
 	end;
+	if library.IndexOf == nil then
+		library.IndexOf = CurryNamedFunction(library, "KeyFor");
+	end;
+	if library.FirstIndexOf == nil then
+		library.FirstIndexOf = CurryNamedFunction(library, "KeyFor");
+	end;
+	if library.FirstKeyFor == nil then
+		library.FirstKeyFor = CurryNamedFunction(library, "KeyFor");
+	end;
 
 	if library.LastKeyFor == nil then
 		-- Returns the last key for the specified value. Comparison is defined by the specified
@@ -1130,6 +1139,9 @@ function Mixins.Iteration(library)
 				end;
 			end;
 		end;
+	end;
+	if library.LastIndexOf == nil then
+		library.LastIndexOf = CurryNamedFunction(library, "LastKeyFor");
 	end;
 
 	if library.ContainsAllValues == nil then
