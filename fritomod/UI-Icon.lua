@@ -19,7 +19,13 @@ local DEFAULT_STYLE = {
 	size = 50,
 
 	-- The backdrop and border of the icon
-	backdrop = "default"
+	backdrop = "default",
+
+	-- The blend mode of the texture
+	blendMode = "DISABLE",
+
+	-- The draw layer for the texture
+	drawLayer = "ARTWORK"
 };
 
 function Icon:Constructor(parent, style)
@@ -34,9 +40,13 @@ function Icon:Constructor(parent, style)
 	self.style:Inherits(DEFAULT_STYLE);
 
 	Frames.Size(self.frame, self.style.size);
-	Frames.Backdrop(self.frame, self.style.backdrop);
+
+	if self.style.backdrop and self.style.backdrop ~= "none" then
+		Frames.Backdrop(self.frame, self.style.backdrop);
+	end;
 	self.texture = self.frame:CreateTexture();
-	self.texture:SetDrawLayer("ARTWORK");
+	self.texture:SetDrawLayer(self.style.drawLayer);
+	self.texture:SetBlendMode(self.style.blendMode);
 	assert(self.texture:GetParent());
 	Anchors.ShareAll(self.texture);
 end;
