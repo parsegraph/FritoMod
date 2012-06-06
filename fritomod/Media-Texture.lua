@@ -250,7 +250,26 @@ do
 	Media.texture(function(name)
 		return Media.item[name] or Media.spell[name];
 	end);
+
 end;
+
+Media.texture(function(name)
+	if type(name) ~= "string" then
+		return;
+	end;
+	if name:find("[._-]") then
+		return Media.texture[name:gsub("[._-]", " ")];
+	end;
+end);
+
+Media.texture(function(name)
+	if type(name) ~= "string" then
+		return;
+	end;
+	if Strings.StartsWith(name:lower(), "interface[/\\]") then
+		return name;
+	end;
+end);
 
 Media.SetAlias("texture", "textures", "background", "backgrounds");
 
