@@ -148,7 +148,7 @@ function CheckBox:Anchor(anchor)
 end;
 
 function CheckBox:Bounds(anchor)
-	local hcomp = Frames.HorizontalComponent(anchor);
+	local hcomp = Frames.HComp(anchor);
 	-- Return the text only if it's really necessary. By default, we
 	-- prefer returning the icon.
 	--
