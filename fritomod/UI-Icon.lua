@@ -46,6 +46,10 @@ function Icon:SetTexture(texture)
 end;
 Icon.Set = Icon.SetTexture;
 
+function Icon:GetInternalTexture()
+	return self.texture;
+end;
+
 function Icon:SetPortraitTexture(target)
 	if self.texture then
 		Frames.PortraitTexture(self.texture, target:Name());
