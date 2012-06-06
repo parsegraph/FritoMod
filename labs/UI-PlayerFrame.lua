@@ -61,5 +61,6 @@ end;
 
 function PlayerFrame:Destroy()
 	trace("Destroying player frame");
-	Frames.Destroy(self.bounds, self.icon, self.nameText);
+	Frames.Destroy(self.icon, self.nameText);
 end;
+
