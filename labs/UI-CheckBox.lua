@@ -156,5 +156,5 @@ function CheckBox:Destroy()
 		Lists.CallEach(self.callbacks);
 		self.callbacks = nil;
 	end;
-	Frames.Destroy(self.icon, self.text);
+	Frames.Destroy(self.icon, self.text, self.mark, self.highlight);
 end;
