@@ -23,24 +23,43 @@ textures.black  ="Interface/DialogFrame/UI-DialogBox-Background";
 textures.tooltip="Interface/Tooltips/UI-Tooltip-Background";
 textures.chat   ="Interface/Tooltips/ChatBubble-Background";
 
+-- A generic collection of textures
 Media.texture(textures);
 
+-- A strategy for extracting textures from objects, such as WoW Textures
+-- and UI.Icon.
+--
+-- It's not necessary to check if it's a texture with coordinates, since we
+-- already have a strategy for that.
 Media.texture(function(obj)
-	if type(obj) == "table" then
-		if obj.Texture then
-			return obj:Texture();
-		end;
-		if obj.Icon then
-			return obj:Icon();
-		end;
-		if obj.Value then
-			return Media.texture[obj:Value()];
-		end;
+	if type(obj) ~= "table" then
+		return;
+	end;
+	if obj.GetTexture then
+		-- Extract a texture from a WoW texture
+		return Media.texture[obj:GetTexture()];
+	end;
+	if obj.GetInternalTexture then
+		-- Extract a texture from a UI.Icon
+		return Media.texture[obj:GetInternalTexture()];
+	end;
+
+	-- These are just some guesses
+	if obj.Texture then
+		return Media.texture[obj:Texture()];
+	end;
+	if obj.Icon then
+		return Media.texture[obj:Icon()];
+	end;
+	if obj.Value then
+		return Media.texture[obj:Value()];
 	end;
 end);
 
 do
 	local classTextures;
+	-- Textures for every WoW class. These are in one actual file, so we need to also
+	-- supply texcoords with them.
 	Media.texture(function(targetClass)
 		if type(targetClass) ~= "string" then
 			return;
@@ -66,28 +85,27 @@ do
 	end);
 end;
 
--- These are the texture coords for all Blizzard icons in Interface\Icons. There's
+-- These are the texture coords for all Blizzard icons in Interface/Icons. There's
 -- a few that deviate from this, but not by a noticeable amount. There's also a few
 -- that are much larger (probably 256px or so), but the ratio is the same, so these
 -- coordinates should work for those as well.
 local ICON_COORDS = {4/64, 60/64, 4/64, 60/64};
 
-Media.texture(function(texture)
-	if type(texture)=="string" and texture:match("[/\\]") then
-		if Strings.StartsWith(texture, "interface\\icons") then
-			return {
-				name = texture,
-				coords = ICON_COORDS
-			};
-		else
-			return texture;
-		end;
-	end;
-end);
-
 do
-	local coords = ICON_COORDS;
+	Media.texture(function(texture)
+		if type(texture)=="string" and texture:match("[/\\]") then
+			if Strings.StartsWith(texture, "interface\\icons") then
+				return {
+					name = texture,
+					coords = ICON_COORDS
+				};
+			else
+				return texture;
+			end;
+		end;
+	end);
 
+	-- Aliases for commonly used icons
 	local namedIcons = {};
 
 	namedIcons["melee swing"] ="Interface/ICONS/Ability_SteelMelee";
@@ -113,6 +131,7 @@ do
 		end;
 	end;
 
+	-- Hunter pet icons all have a standard name
 	HunterPetIcon("Boar", "Pig");
 	HunterPetIcon("Bear");
 	HunterPetIcon("Lion", "Tiger", "Cat", "Tigress");
@@ -143,6 +162,7 @@ do
 	namedIcons.wolf = "Interface/ICONS/Ability_Mount_WhiteDireWolf";
 	namedIcons.coyote = namedIcons.wolf;
 
+	-- Try to get some reasonable icons for some other animals
 	namedIcons.tentacle = "Interface/ICONS/Achievement_Boss_YoggSaron_01";
 	namedIcons.chicken = "Interface/ICONS/Spell_Magic_PolymorphChicken";
 	namedIcons.rabbit = "Interface/ICONS/Spell_Magic_PolymorphRabbit";
@@ -156,11 +176,13 @@ do
 	namedIcons.imp = "Interface/ICONS/Spell_Shadow_SummonImp";
 	namedIcons.succubus = "Interface/ICONS/Spell_Shadow_SummonSuccubus";
 
+	-- Provide some reasonable defaults when we're attacking a target dummy
 	namedIcons.dummy = "Interface/ICONS/Ability_Mount_RocketMount";
 	namedIcons.targetdummy = namedIcons.dummy;
 	namedIcons["target dummy"] = namedIcons.dummy;
 	namedIcons["raider's target dummy"] = namedIcons.dummy;
 
+	-- Humanoid races, playable or otherwise
 	namedIcons.draenei = "Interface/ICONS/Achievement_Character_Draenei_Male";
 	namedIcons.bloodelf = "Interface/ICONS/Achievement_Character_BloodElf_Female";
 	namedIcons.dwarf = "Interface/ICONS/Achievement_Character_Dwarf_Male";
@@ -181,7 +203,7 @@ do
 		if texture and type(texture) == "string" then
 			return {
 				name = texture,
-				coords = coords
+				coords = ICON_COORDS
 			};
 		end;
 	end);
@@ -190,6 +212,7 @@ end;
 do
 	local coords = ICON_COORDS;
 
+	-- Spell textures for a given spell name
 	Media.spell(function(spell)
 		if type(spell) ~= "string" and type(spell) ~= "number" then
 			return;
@@ -202,9 +225,9 @@ do
 			};
 		end;
 	end);
-
 	Media.SetAlias("spell", "ability", "cast", "action");
 
+	-- Item textures for a given item ID
 	Media.item(function(item)
 		if type(item) ~= "number" then
 			return;
@@ -218,8 +241,9 @@ do
 		end;
 	end);
 
+	-- Item textures for an itemLink, item name, or itemString
 	Media.item(function(item)
-		if type(item) ~= "string" and type(item) ~= "number" then
+		if type(item) ~= "string" then
 			return;
 		end;
 		item = select(10, GetItemInfo(item));
@@ -230,9 +254,10 @@ do
 			};
 		end;
 	end);
-
 	Media.SetAlias("item", "items", "icon", "icons", "loot", "drop", "treasure");
 
+	-- A heuristic for using item or spell textures. We support "s640" for a spell with
+	-- id 640, and "i640" for an item of that same id.
 	Media.texture(function(name)
 		if type(name) ~= "string" then
 			return;
@@ -248,12 +273,15 @@ do
 		end;
 	end);
 
+	-- Fallback strategy for interpreting either an item or a spell. They can have the
+	-- same ID so this strategy isn't perfect.
 	Media.texture(function(name)
 		return Media.item[name] or Media.spell[name];
 	end);
 
 end;
 
+-- A fallback to allow for many different separators to be used.
 Media.texture(function(name)
 	if type(name) ~= "string" then
 		return;
@@ -263,6 +291,8 @@ Media.texture(function(name)
 	end;
 end);
 
+-- A fallback to return a texture string directly. We keep this last since we provide special
+-- coords for some textures, such as icons.
 Media.texture(function(name)
 	if type(name) ~= "string" then
 		return;
