@@ -52,27 +52,44 @@ end;
 Frames.GetFrame=Frames.AsRegion;
 
 do
+	-- Anchor that have no directional component will use NONE.
+	-- I debated having this be false or nil, but I prefer "CENTER" since
+	-- Justify and Stack will react naturally in the face of something like
+	-- this:
+	--
+	-- Anchors.HJustify(Frames.HComp(anchor), ...)
+	--
+	-- I've also considered changing this to be "MIDDLE" for vertical components
+	-- and "CENTER" for horizontal, similar to how WoW's text justification code
+	-- works. I don't think there's any benefit to having different names, so I
+	-- decided to settle on center, since it's already an anchor name.
+	local NONE = "CENTER";
+
 	local verticals = {
-		TOPLEFT = "TOP",
-		TOP = "TOP",
-		TOPRIGHT = "TOP",
-		LEFT = "CENTER",
-		CENTER = "CENTER",
-		RIGHT = "CENTER",
-		BOTTOMLEFT = "BOTTOM",
-		BOTTOM = "BOTTOM",
+		TOPLEFT     = "TOP",
+		TOP         = "TOP",
+		TOPRIGHT    = "TOP",
+
+		LEFT        = NONE,
+		CENTER      = NONE,
+		RIGHT       = NONE,
+
+		BOTTOMLEFT  = "BOTTOM",
+		BOTTOM      = "BOTTOM",
 		BOTTOMRIGHT = "BOTTOM",
 	};
 
 	local horizontals = {
-		TOPLEFT = "LEFT",
-		BOTTOMLEFT = "LEFT",
-		LEFT = "LEFT",
-		TOP = "CENTER",
-		CENTER = "CENTER",
-		BOTTOM = "CENTER",
-		TOPRIGHT = "RIGHT",
-		RIGHT = "RIGHT",
+		TOPLEFT     = "LEFT",
+		BOTTOMLEFT  = "LEFT",
+		LEFT        = "LEFT",
+
+		TOP         = NONE,
+		CENTER      = NONE,
+		BOTTOM      = NONE,
+
+		TOPRIGHT    = "RIGHT",
+		RIGHT       = "RIGHT",
 		BOTTOMRIGHT = "RIGHT",
 	}
 
