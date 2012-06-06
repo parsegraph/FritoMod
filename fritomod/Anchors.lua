@@ -543,19 +543,19 @@ local function EdgeSetStrategy(name, setVerb)
 		name,
 		FlipEdge("LEFT", "RIGHT", "TOP", "BOTTOM")
 	);
-	InjectIntoAnchors(setVerb.."Orthogonal",
+	InjectIntoAnchors({setVerb.."Orthogonal", setVerb.."Orthogonals"},
 		name,
 		FlipEdge("LEFT", "RIGHT", "TOP", "BOTTOM")
 	);
-	InjectIntoAnchors(setVerb.."Diagonals",
+	InjectIntoAnchors({setVerb.."Diagonal", setVerb.."Diagonals"},
 		name,
 		FlipEdge("TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT")
 	);
-	InjectIntoAnchors(setVerb.."Verticals",
+	InjectIntoAnchors({setVerb.."Vertical", setVerb.."Verticals"},
 		name,
 		FlipEdge("TOP", "BOTTOM")
 	);
-	InjectIntoAnchors(setVerb.."Horizontals",
+	InjectIntoAnchors({setVerb.."Horizontal", setVerb.."Horizontals"},
 		name,
 		FlipEdge("LEFT", "RIGHT")
 	);
