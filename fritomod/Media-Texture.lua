@@ -23,6 +23,47 @@ textures.black  ="Interface/DialogFrame/UI-DialogBox-Background";
 textures.tooltip="Interface/Tooltips/UI-Tooltip-Background";
 textures.chat   ="Interface/Tooltips/ChatBubble-Background";
 
+do
+	CHECKBOX_COORDS = {3/32, 28/32, 4/32, 27/32};
+
+	textures.darkbox = {
+		name = "Interface/BUTTONS/UI-CheckBox-Up",
+		coords = CHECKBOX_COORDS
+	};
+	textures["checkbox"]   = textures.darkbox;
+	textures["check box"]  = textures.darkbox;
+
+	textures["check"] = {
+		name   = "Interface/BUTTONS/UI-CheckBox-Check",
+		coords = CHECKBOX_COORDS
+	};
+	textures["checked"]    = textures.check;
+	textures["checkmark"]  = textures.check;
+	textures["check mark"] = textures.check;
+
+	textures["disabled check"] = {
+		name = "Interface/BUTTONS/UI-CheckBox-Check-Disabled",
+		coords = CHECKBOX_COORDS
+	};
+	textures["check gray"]     = textures["disabled check"];
+	textures["check grey"]     = textures["disabled check"];
+	textures["check off"]      = textures["disabled check"];
+	textures["gray check"]     = textures["disabled check"];
+	textures["grey check"]     = textures["disabled check"];
+	textures["off check"]      = textures["disabled check"];
+	textures["check disabled"] = textures["disabled check"];
+
+	textures["check highlight"] = {
+		name = "Interface/BUTTONS/UI-CheckBox-Highlight",
+		coords = CHECKBOX_COORDS
+	};
+	textures["check highlighted"] = textures["check highlight"];
+	textures["check hilight"]     = textures["check highlight"];
+	textures["check hilighted"]   = textures["check highlight"];
+	textures["check mouseover"]   = textures["check highlight"];
+	textures["check glow"]        = textures["check highlight"];
+end;
+
 -- A generic collection of textures
 Media.texture(textures);
 
