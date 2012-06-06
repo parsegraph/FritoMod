@@ -1,3 +1,6 @@
+-- Textures with coordinates.
+--
+-- coords must be specified as {left, right, top, bottom}
 if nil ~= require then
 	require "fritomod/Media";
 	require "fritomod/Tables";
