@@ -27,7 +27,7 @@ end;
 --
 -- This is still half-baked, but something like this will probably get written.
 
-function Metatables.StyleClient(t)
+function Metatables.StyleClient(t, ...)
 	if not t then
 		t = {};
 	end;
@@ -107,7 +107,7 @@ function Metatables.StyleClient(t)
 		return rv;
 	end);
 
-	return setmetatable(t, {
+	setmetatable(t, {
 		__index = function(self, key)
 			if key == nil then
 				return nil;
@@ -141,4 +141,11 @@ function Metatables.StyleClient(t)
 			Lists.CallEach(listeners, key, self[key]);
 		end
 	});
+
+	for i=1, select("#", ...) do
+		local parent = select(i, ...);
+		t:Inherits(parent);
+	end;
+
+	return t;
 end;
