@@ -135,7 +135,11 @@ function CheckBox:Anchor(anchor)
 	if self.iconPosition == "RIGHT" then
 		first, second = self.text, self.icon;
 	end;
-	return Anchors.HJustifyFrom(anchor, self.style.gap, first, second);
+	anchor = Frames.HComp(anchor);
+	if anchor == "CENTER" then
+		anchor = "LEFT";
+	end;
+	return Anchors.HJustify(anchor, self.style.gap, first, second);
 end;
 
 function CheckBox:Bounds(anchor)
