@@ -230,7 +230,7 @@ function Labs.CAID()
 
 	for k,v in ipairs(spells) do
 		spells[k] = CreateCooldownBar(v[1])
-		Frames.Color(spells[k].bar, v[2]);:SetVertexColor( unpack(v[2]) )
+		Frames.Color(spells[k].bar, v[2])
 		for l, u in ipairs(grid) do
 			for m,w in ipairs(u) do
 				if w == k then
