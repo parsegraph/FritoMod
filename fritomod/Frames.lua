@@ -96,11 +96,13 @@ do
 	function Frames.VerticalComponent(anchor)
 		return verticals[anchor];
 	end;
+	Frames.VComponent = Frames.VerticalComponent;
 	Frames.VComp = Frames.VerticalComponent;
 
 	function Frames.HorizontalComponent(anchor)
 		return horizontals[anchor];
 	end;
+	Frames.HComponent = Frames.HorizontalComponent;
 	Frames.HComp = Frames.HorizontalComponent;
 end;
 
