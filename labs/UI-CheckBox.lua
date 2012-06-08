@@ -16,7 +16,7 @@ UI.Checkbox = UI.CheckBox;
 local DEFAULT_STYLE = {
 
 	-- Height of the checkbox and the text
-	height = 16,
+	size = 16,
 
 	-- Gap between the checkbox and the text
 	gap = 4,
@@ -43,10 +43,6 @@ function CheckBox:Constructor(parent, style, text)
 	self.style = Metatables.StyleClient(style);
 	self.style:Inherits(DEFAULT_STYLE);
 
-	if not self.style.size then
-		self.style.size = self.style.height;
-	end;
-
 	self.style.backdrop = "none";
 
 	-- This should ideally use something like PrefixedStyleClient
@@ -69,7 +65,7 @@ function CheckBox:Constructor(parent, style, text)
 	self.highlight:Hide();
 
 	if not self.style.fontSize then
-		self.style.fontSize = self.style.height;
+		self.style.fontSize = self.style.size;
 	end;
 
 	if self.style.iconPosition then
@@ -82,8 +78,8 @@ function CheckBox:Constructor(parent, style, text)
 		or self.style.iconPosition == "RIGHT",
 		"Invalid icon position: " .. self.style.iconPosition);
 
-	self.text = Frames.Text(parent, self.style.font, self.style.height);
-	self.text:SetHeight(self.style.height);
+	self.text = Frames.Text(parent, self.style.font, self.style.size);
+	self.text:SetHeight(self.style.size);
 
 	self.listeners = ListenerList:New();
 
