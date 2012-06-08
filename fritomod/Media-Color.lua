@@ -49,6 +49,7 @@ colors.orange={1.0, 0.5,  0.0, 1.0};
 colors.yellow={1.0, 1.0,  0.0, 1.0};
 colors.pink  ={1.0, 0.0,  1.0, 1.0};
 colors.purple={0.5, 0.0,  1.0, 1.0};
+colors.cyan = {0.0, 1.0,  1.0, 1.0};
 colors.gold  ={1.0, 0.82, 0.0, 1.0}; -- This is the yellow/gold color Blizzard uses in text.
 colors.violet=colors.purple;
 
@@ -166,9 +167,20 @@ function Frames.Color(f,...)
 	elseif f.SetTexture then
 		f:SetTexture(r,g,b,a);
 	elseif f.CreateTexture then
-		local t=f:CreateTexture();
+		local t = nil;
+		local regions = {f:GetRegions()};
+		for _, region in ipairs(regions) do
+			if region.__colored then
+				t=region.__colored;
+				break;
+			end;
+		end;
+		if not t then
+			t=f:CreateTexture();
+		end;
 		t:SetAllPoints();
 		t:SetTexture(r,g,b,a);
+		t.__colored = true;
 		f=t;
 	end;
 	return f;
