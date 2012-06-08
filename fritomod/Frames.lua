@@ -286,6 +286,14 @@ function Frames.HeightWidth(f, h, w)
 end;
 Frames.HW=Frames.HeightWidth;
 
+function Frames.Width(f, amount)
+	Frames.AsRegion(f):SetWidth(amount);
+end;
+
+function Frames.Height(f, amount)
+	Frames.AsRegion(f):SetHeight(amount);
+end;
+
 local INSETS_ZERO={
 	left=0,
 	top=0,
