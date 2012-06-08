@@ -74,6 +74,16 @@ buttons.slot={
 };
 buttons.default=buttons.slot;
 
+buttons.dropdown={
+	normal    = "Interface\\CHATFRAME\\UI-ChatIcon-ScrollDown-Up",
+	pushed    = "Interface\\CHATFRAME\\UI-ChatIcon-ScrollDown-Down",
+	highlight = "Interface\\Buttons\\UI-Common-MouseHilight",
+	disabled  = "Interface\\CHATFRAME\\UI-ChatIcon-ScrollDown-Disabled",
+	Finish		 =function(button)
+		BlendHighlights(button);
+	end
+};
+
 local function ApplyStandardButton(layout, button)
 	if button:GetObjectType():find("Button$") then
 		button:SetNormalTexture(layout.normal);
