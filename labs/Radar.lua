@@ -18,7 +18,7 @@ function Labs.Radar()
 	if not GLOBAL_RADARFRAME then
 	   GLOBAL_RADARFRAME = CreateFrame("FRAME")
 	end
-	-- to make shit easier on my poor fingersS
+	-- to make shit easier on my poor fingers
 	local f=GLOBAL_RADARFRAME
 	-- converts a string into an array of the various words
 	local function StringSplit(subject)
@@ -37,15 +37,17 @@ function Labs.Radar()
 	   ["Orc"] = true,
 	   ["Undead"] = true,
 	   ["Blood Elf"] = true,
-	   ["Tauren"] = true
+	   ["Tauren"] = true,
+	   ["Goblin"] = true
 	}
-	--used to figure out wtf undead were called without spam
+
 	local ALLIANCE = {
-	   Gnome = true,
-	   Dwarf = true,
-	   Human = true,
+	   ["Gnome"] = true,
+	   ["Dwarf"] = true,
+	   ["Human"] = true,
 	   ["Night Elf"] = true,
-	   Draenei=true
+	   ["Draenei"] = true,
+	   ["Worgen"] = true
 	}
 	-- the players faction
 	local FACTION = ALLIANCE
@@ -59,20 +61,20 @@ function Labs.Radar()
 	local SEEK_TIMER = 5
 
 	-- the main function
-	f:SetScript("OnEvent",function(self,mainEvent,timestamp,secondEvent,sourceGUID,sourceName,sourceFlags,targetGUID,targetName,targetFlags,spellid,spellName)
+	f:SetScript("OnEvent",function(self, mainEvent, timestamp, secondEvent,hideCaster, sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellid,spellName)
 		  local knownTypes = {[0]="player", [3]="NPC", [4]="pet", [5]="vehicle"}
 		  local race,class
 		  local enemyName,enemyTarget = nil,nil
 		  --converts the 5th char of the GUID string to a hex number
 		  local B = tonumber(sourceGUID:sub(5,5), 16)
-		  local C = tonumber(targetGUID:sub(5,5), 16)
+		  local C = tonumber(destGUID:sub(5,5), 16)
 		  -- finding out if its the source or the target that is the enemy player
 		  -- defaults to source
-		  if knownTypes[C] == "player" and targetName then
-		     class = GetPlayerInfoByGUID(targetGUID)
-		     race = select(3,GetPlayerInfoByGUID(targetGUID))
+		  if knownTypes[C] == "player" and destName then
+		     class = GetPlayerInfoByGUID(destGUID)
+		     race = select(3,GetPlayerInfoByGUID(destGUID))
 		     if not FACTION[race] then
-		        enemyName = targetName
+		        enemyName = destName
 		        enemyTarget = sourceName
 		     end
 		  end
@@ -81,7 +83,7 @@ function Labs.Radar()
 		     race = select(3,GetPlayerInfoByGUID(sourceGUID))
 		     if not FACTION[race] then
 		        enemyName = sourceName
-		        enemyTarget = targetName
+		        enemyTarget = destName
 		     end
 		  end
 
@@ -147,10 +149,10 @@ function Labs.Radar()
 		     end
 		  end
 		  -- an enemy player died so give them time to run back to corpse
-		  if secondEvent == "UNIT_DIED" and ENEMY[targetName] then
-		     local v = ENEMY[targetName]
-		     print("Killed:",targetName,v.race,v.class)
-		     ENEMY[targetName].dead = true
+		  if secondEvent == "UNIT_DIED" and ENEMY[destName] then
+		     local v = ENEMY[destName]
+		     print("Killed:",destName,v.race,v.class)
+		     ENEMY[destName].dead = true
 		  end
 
 	end)
