@@ -2,16 +2,28 @@ if nil ~= require then
 	-- TODO This requires WoW's UnitHealth, UnitPower, etc.
 	require "fritomod/currying";
 	require "fritomod/Events";
+	require "fritomod/Math";
 end;
 
 Callbacks = Callbacks or {};
+
+function Callbacks.Percent(callback, listener, ...)
+	listener = Curry(listener, ...);
+	return callback(function(min, value, max)
+		listener(Math.Percent(min, value, max));
+	end);
+end;
 
 local function HealthCallback(event)
 	return function(who, listener, ...)
 		listener = Curry(listener, ...);
 		who = tostring(who):lower();
 		local function Fire()
-			listener(UnitHealth(who));
+			local value = UnitHealth(who);
+			local max = UnitHealthMax(who);
+			if value ~= nil and max ~= nil then
+				listener(0, value, max);
+			end;
 		end;
 		Fire();
 		return Events[event](function(target)
@@ -27,24 +39,17 @@ Callbacks.FrequentHealth = Callbacks.Health;
 
 Callbacks.ThrottledHealth = HealthCallback("UNIT_HEALTH");
 
-function Callbacks.HealthPercent(who, listener, ...)
-	listener=Curry(listener, ...);
-	return Callbacks.Health(who, function(amount)
-		if amount ~= nil then
-			listener(amount / UnitHealthMax(who));
-		else
-			listener(nil);
-		end;
-	end);
-end;
-
 local function PowerCallback(event)
 	return function(who, power, listener, ...)
 		listener = Curry(listener, ...);
 		who = tostring(who):lower();
 		power = tostring(power):upper();
 		local function Fire()
-			listener(UnitPower(who, power));
+			local value = UnitPower(who, power);
+			local max = UnitPowerMax(who, power);
+			if value ~= nil and max ~= nil then
+				listener(0, value, max);
+			end;
 		end;
 		Fire();
 		return Events[event](function(target, targetPower)
@@ -60,13 +65,15 @@ Callbacks.FrequentPower = Callbacks.Power;
 
 Callbacks.ThrottledPower = PowerCallback("UNIT_POWER");
 
-function Callbacks.PowerPercent(who, powerType, listener, ...)
+function Callbacks.ComboPoints(listener, ...)
 	listener=Curry(listener, ...);
-	return Callbacks.Power(who, powerType, function(amount)
-		if amount ~= nil then
-			listener(amount / UnitPowerMax(who, powerType));
-		else
-			listener(nil);
+	local function Fire()
+		local value = GetComboPoints("player");
+		if value ~= nil then
+			listener(0, value, 5);
 		end;
+	end;
+	return Events.UNIT_COMBO_POINTS(function()
+		Fire();
 	end);
 end;
