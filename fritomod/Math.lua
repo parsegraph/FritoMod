@@ -2,8 +2,7 @@ if nil ~= require then
 	require "fritomod/Lists";
 end;
 
-Math = {};
-local Math = Math;
+Math = Math or {};
 
 function Math.Distance(...)
 	local x1, y1, x2, y2 = ...;
