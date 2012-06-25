@@ -26,6 +26,7 @@ local function HealthCallback(event)
 			local value = UnitHealth(who);
 			local max = UnitHealthMax(who);
 			if value ~= nil and max ~= nil then
+				trace("Firing health callback: " .. value .. " " ..max);
 				listener(0, value, max);
 			end;
 		end;
