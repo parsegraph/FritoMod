@@ -95,7 +95,7 @@ backdrops.test={
 	edgeSize = 16,
 	tile=true,
 	tileSize=16,
-	insets = insets[1]
+	insets = insets[16]
 };
 
 backdrops.solid={
