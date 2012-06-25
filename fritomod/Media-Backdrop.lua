@@ -141,6 +141,7 @@ function Frames.Backdrop(f, backdrop, bg)
 	local oldInsets = Frames.Insets(f);
 	do
 		local regions = {f:GetRegions()};
+		Lists.InsertAll(regions, f:GetChildren());
 		for _, region in ipairs(regions) do
 			if Frames.IsInsetted(region, f) then
 				trace("Found insetted region!");
