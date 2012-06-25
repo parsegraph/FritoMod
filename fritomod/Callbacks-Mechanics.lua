@@ -83,13 +83,14 @@ SpecificPower("Mana");
 
 function Callbacks.ComboPoints(listener, ...)
 	listener=Curry(listener, ...);
-	local function Fire()
+	local function Update()
 		local value = GetComboPoints("player");
-		if value ~= nil then
-			listener(0, value, 5);
-		end;
+		assert(type(value) == "number", "GetComboPoints must return a number");
+		listener(0, value, 5);
 	end;
-	return Events.UNIT_COMBO_POINTS(function()
-		Fire();
-	end);
+	local events = {
+		"UNIT_COMBO_POINTS",
+		"PLAYER_TARGET_CHANGED"
+	};
+	return Events[events](Update);
 end;
