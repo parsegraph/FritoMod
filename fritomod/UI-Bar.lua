@@ -100,6 +100,15 @@ function Bar:SetMonitor(monitor, frequency)
 	});
 end;
 
+function Bar:SetAmount(amount)
+	if self.callback then
+		self.callback();
+	end;
+	self.callback = amount:OnChange(function(min, value, max)
+		self:SetPercent(amount:Percent());
+	end);
+end;
+
 function Bar:SetPercentCallback(callback, ...)
 	callback=Curry(callback, ...);
 	if self.callback then
