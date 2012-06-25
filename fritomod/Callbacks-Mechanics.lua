@@ -48,31 +48,38 @@ Callbacks.FrequentHealth = Callbacks.Health;
 
 Callbacks.ThrottledHealth = HealthCallback("UNIT_HEALTH");
 
-local function PowerCallback(event)
-	return function(who, power, listener, ...)
-		listener = Curry(listener, ...);
-		who = tostring(who):lower();
-		power = tostring(power):upper();
-		local function Fire()
-			local value = UnitPower(who, power);
-			local max = UnitPowerMax(who, power);
-			if value ~= nil and max ~= nil then
-				listener(0, value, max);
-			end;
+function Callbacks.Power(who, power, listener, ...)
+	listener = Curry(listener, ...);
+	who = tostring(who):lower();
+	power = tostring(power):upper();
+	local oldValue, oldMax;
+	local function Fire()
+		if not UnitExists(who) then
+			return;
 		end;
-		Fire();
-		return Events[event](function(target, targetPower)
-			if target == who and targetPower == power then
-				Fire();
-			end;
-		end);
+		local value = UnitPower(who, power);
+		local max = UnitPowerMax(who, power);
+
+		if oldValue ~= value or oldMax ~= max then
+			oldValue = value;
+			oldMax = max;
+			listener(0, value, max);
+		end;
+	end;
+	Fire();
+	return Timing.Every(Fire);
+end;
+
+local function SpecificPower(what)
+	Callbacks[what] = function(who, ...)
+		return Callbacks.Power(who, what:upper(), ...);
 	end;
 end;
 
-Callbacks.Power = PowerCallback("UNIT_POWER_FREQUENT");
-Callbacks.FrequentPower = Callbacks.Power;
-
-Callbacks.ThrottledPower = PowerCallback("UNIT_POWER");
+SpecificPower("Rage");
+SpecificPower("Energy");
+SpecificPower("Focus");
+SpecificPower("Mana");
 
 function Callbacks.ComboPoints(listener, ...)
 	listener=Curry(listener, ...);
