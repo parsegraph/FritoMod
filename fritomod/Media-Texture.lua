@@ -8,7 +8,7 @@ end;
 
 -- Return a texture directly.
 Media.texture(function(obj)
-	if type(obj)=="table" and obj.name and obj.coords then
+	if type(obj)=="table" and obj.name and (obj.coords or obj.blend) then
 		return obj;
 	end;
 end);
@@ -349,9 +349,12 @@ Frames=Frames or {};
 function Frames.Texture(f, texture)
 	f=Frames.AsRegion(f);
 	texture = Media.texture[texture];
-	local coords;
+	local coords, blend;
 	if type(texture) == "table" then
 		coords = texture.coords;
+		blend = texture.blend;
+		-- Be sure that this line ends up last, since it
+		-- blows away the original texture.
 		texture = texture.name;
 	end;
 	if f:GetObjectType():find("Button$") then
@@ -369,6 +372,9 @@ function Frames.Texture(f, texture)
 		f:SetTexCoord(unpack(coords));
 	else
 		f:SetTexCoord(0, 1, 0, 1);
+	end;
+	if blend then
+		f:SetBlendMode(blend);
 	end;
 	return f;
 end;
