@@ -69,3 +69,23 @@ function Callbacks.Key(key, func, ...)
 		end)
 	});
 end;
+
+function Callbacks.Modifier(key, func, ...)
+	key=key:upper();
+	func=Curry(func, ...);
+
+	local onUp;
+	return Events.MODIFIER_STATE_CHANGED(function(what, isDown)
+		-- I use EndsWith to allow for key to be either 'ALT' or 'LALT' without
+		-- requiring any extra code.
+		if not Strings.EndsWith(what, key) then
+			return;
+		end;
+		if isDown == 1 and not onUp then
+			onUp = func() or Noop;
+		elseif onUp then
+			onUp();
+			onUp = nil;
+		end;
+	end);
+end;
