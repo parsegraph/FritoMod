@@ -44,6 +44,7 @@ Events._eventListeners = eventListeners;
 Events._call = function(event, ...)
 	local listeners = eventListeners[event];
 	if listeners then
+		trace("EVENT: %s %s", event, Strings.Pretty({...}));
 		listeners:Fire(...);
 	end;
 end;
