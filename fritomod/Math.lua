@@ -4,6 +4,14 @@ end;
 
 Math = Math or {};
 
+function Math.IsReal(value)
+	-- This odd-looking boolean will return false for
+	-- non-real values, such as 1/0 and 0/0 (which will
+	-- return false for any numeric comparision, including
+	-- 0/0 == 0/0.
+	return value < 0 or value > 0 or value == 0;
+end;
+
 local function CheckRange(min, value, max)
 	assert(type(min) == "number", "min must be a number");
 	assert(type(value) == "number", "value must be a number");
