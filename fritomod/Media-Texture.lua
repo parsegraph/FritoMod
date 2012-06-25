@@ -62,6 +62,11 @@ do
 	textures["check hilighted"]   = textures["check highlight"];
 	textures["check mouseover"]   = textures["check highlight"];
 	textures["check glow"]        = textures["check highlight"];
+
+	textures["bar"] = {
+		name = "Interface/TARGETINGFRAME/UI-StatusBar",
+		blend = "MOD"
+	};
 end;
 
 -- A generic collection of textures

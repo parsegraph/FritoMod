@@ -22,10 +22,10 @@ local DEFAULT_STYLE = {
 	height = 30,
 
 	-- Optional texture. This will override the bar color if provided.
-	barTexture = nil,
+	barTexture = "bar",
 
 	-- Color for the bar. This will modify the bar texture if provided.
-	barColor = nil,
+	barColor = "green",
 
 	-- Background texture, visible when the bar is depleted. Overrides background color
 	backgroundTexture = nil,
@@ -44,33 +44,47 @@ function Bar:Constructor(parent, style)
 	self.style:Inherits(DEFAULT_STYLE);
 
 	self.frame = CreateFrame("Frame", nil, parent);
-	self.background = self.frame:CreateTexture(nil, "BACKGROUND");
-	self.bar = self.frame:CreateTexture(nil, "ARTWORK");
+	self.frame:Lower();
 
-	Anchors.ShareAll(self.background, self.frame);
+	-- Here's the intended frame/texture configuration, for future reference.
+	-- self.frame (f)   - background
+	-- self.bar (f)
+	--   +-- color      - background
+	--   +-- barTexture - artwork
+	--   +-- self.spark - overlay
+
+	-- I use a frame here to ensure the bar appears above the background
+	-- and any backdrop I use.
+	self.bar = CreateFrame("Frame", nil, self.frame);
+	self.bar:Hide();
 
 	Frames.WH(self.frame, self.style.width, self.style.height);
-	Frames.WH(self.bar, self.style.width, self.style.height);
 
-	if self.style.barTexture then
-		Frames.Texture(self.bar, self.style.barTexture);
-		if self.style.barColor then
-			self.bar:SetVertexColor(Media.color[self.style.barColor]);
-		end;
-	else
-		Frames.Color(self.bar, self.style.barColor or "green");
-	end;
+	self.barTexture = Frames.Texture(self.bar, self.style.barTexture);
+	self.barTexture:SetDrawLayer("ARTWORK");
+
+	local color = self.bar:CreateTexture();
+	color:SetDrawLayer("BACKGROUND");
+	Frames.Color(color, self.style.barColor);
+	Anchors.ShareAll(color, self.bar);
 
 	if self.style.backgroundTexture then
-		Frames.Texture(self.background, self.style.backgroundTexture);
+		Frames.Texture(self.frame, self.style.backgroundTexture);
 		if self.style.backgroundColor then
 			self.bar:SetVertexColor(Media.color[self.style.backgroundColor]);
 		end;
 	else
-		Frames.Color(self.background, self.style.backgroundColor or "red");
+		Frames.Color(self.frame, self.style.backgroundColor or "black");
 	end;
-	
+
+	self.spark = self.bar:CreateTexture(nil, "OVERLAY");
+	self.spark:SetTexture("Interface/CastingBar/UI-CastingBar-Spark");
+	self.spark:SetBlendMode("ADD");
+	self.spark:SetWidth(32);
+	self.spark:SetPoint("CENTER", self.bar, "RIGHT", -1, 0);
+
 	Anchors.Share(self.bar, self.frame, self.style.barAnchor);
+	Anchors.ShareVerticals(self.bar);
 end;
 
 function Bar:SetMonitor(monitor, frequency)
@@ -95,7 +109,31 @@ function Bar:SetPercentCallback(callback, ...)
 end;
 
 function Bar:SetPercent(percent)
-	Frames.WH(self.bar, self.style.width * percent, self.style.height);
+	percent = Math.Clamp(0, percent, 1);
+	if not Math.IsReal(percent) or percent == 0 then
+		self.spark:SetAlpha(0);
+		self.bar:Hide();
+		return;
+	end;
+
+	self.bar:Show();
+
+	self.bar:SetWidth(Frames.IWidth(self) * percent);
+	self.barTexture:SetTexCoord(0, percent, 0, 1);
+
+	-- Set the height again.
+	self.spark:SetHeight(self.style.height * (32 / 18));
+
+	-- Set the spark opacity
+	if percent >= 1 then
+		self.spark:SetAlpha(0);
+	elseif percent > .9 then
+		self.spark:SetAlpha(Math.Interpolate(1, 10 * (percent - .9), 0));
+	elseif percent < .1 then
+		self.spark:SetAlpha(Math.Interpolate(0, 10 * percent, 1));
+	else
+		self.spark:SetAlpha(1);
+	end;
 end;
 
 function Bar:Destroy()
