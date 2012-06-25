@@ -264,12 +264,26 @@ function Frames.Insets(f)
 	return INSETS_ZERO;
 end;
 
+function Frames.HorizontalInsets(f)
+	local insets = Frames.Insets(f);
+	return insets.left + insets.right;
+end;
+Frames.HInset  = Frames.HorizontalInsets;
+Frames.HInsets = Frames.HorizontalInsets;
+
+function Frames.VerticalInsets(f)
+	local insets = Frames.Insets(f);
+	return insets.top + insets.bottom;
+end;
+Frames.VInset  = Frames.VerticalInsets;
+Frames.VInsets = Frames.VerticalInsets;
+
 function Frames.InnerWidth(f)
 	f=Frames.AsRegion(f);
-	local insets = Frames.Insets(f);
-	return f:GetWidth() - insets.left - insets.right;
+	return f:GetWidth() - Frames.HInsets(f);
 end;
-Frames.Width = Frames.InnerWidth;
+Frames.Width  = Frames.InnerWidth;
+Frames.IWidth = Frames.InnerWidth;
 
 function Frames.OuterWidth(f)
 	return f:GetWidth();
@@ -277,10 +291,10 @@ end;
 
 function Frames.InnerHeight(f)
 	f=Frames.AsRegion(f);
-	local insets = Frames.Insets(f);
-	return f:GetHeight() - insets.top - insets.bottom;
+	return f:GetHeight() - Frames.VInsets(f);
 end;
-Frames.Height = Frames.InnerHeight;
+Frames.Height  = Frames.InnerHeight;
+Frames.IHeight = Frames.InnerHeight;
 
 function Frames.OuterHeight(f)
 	return f:GetHeight();
