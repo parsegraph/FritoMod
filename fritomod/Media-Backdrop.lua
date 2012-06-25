@@ -91,7 +91,7 @@ backdrops.small=backdrops.slider;
 
 backdrops.test={
 	edgeFile=FRITOMOD.."Test-16-Border",
-	bgFile  ="Interface/Tooltips/UI-Tooltip-Background",
+	bgFile  ="Interface/Buttons/UI-SliderBar-Background",
 	edgeSize = 16,
 	tile=true,
 	tileSize=16,
@@ -100,7 +100,7 @@ backdrops.test={
 
 backdrops.solid={
 	edgeFile=FRITOMOD.."Solid-Border",
-	bgFile  ="Interface/Tooltips/UI-Tooltip-Background",
+	bgFile  ="Interface/Buttons/UI-SliderBar-Background",
 	edgeSize = 2,
 	tile=true,
 	tileSize=16,
