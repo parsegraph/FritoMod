@@ -19,6 +19,10 @@ local function HealthCallback(event)
 		listener = Curry(listener, ...);
 		who = tostring(who):lower();
 		local function Fire()
+			if not UnitExists(who) then
+				trace("Health callback fired, but unit doesn't exist");
+				return;
+			end;
 			local value = UnitHealth(who);
 			local max = UnitHealthMax(who);
 			if value ~= nil and max ~= nil then
