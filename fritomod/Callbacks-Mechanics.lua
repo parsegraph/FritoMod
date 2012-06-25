@@ -31,11 +31,15 @@ local function HealthCallback(event)
 			end;
 		end;
 		Fire();
-		return Events[event](function(target)
-			if target == who then
-				Fire();
-			end;
-		end);
+		local events = {
+			event,
+			"UNIT_MAXHEALTH",
+			-- This event is really superfluous for some targets; we really
+			-- should only listen for those events that are relevant to the
+			-- target.
+			"PLAYER_TARGET_CHANGED"
+		};
+		return Events[events](Fire);
 	end;
 end;
 
