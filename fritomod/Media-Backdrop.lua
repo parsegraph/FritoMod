@@ -9,7 +9,7 @@ end;
 local FRITOMOD="Interface/AddOns/FritoMod/media/";
 
 local insets=setmetatable({
-	dialog = { left = 11, right = 8,  top = 11, bottom = 10 },
+	dialog = { left = 11, right = 10,  top = 11, bottom = 10 },
 	slider = { left = 3,  right = 3,  top = 6,  bottom = 6  },
 }, {
 	__index=function(self, k)
