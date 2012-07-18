@@ -134,14 +134,27 @@ local function CallOriginal(frame, name, ...)
 	end;
 end;
 
-function Frames.Child(frame, t, name, ...)
-	frame=Frames.AsRegion(frame);
-	assert(frame.GetChildren, "Frame cannot handle children");
-	local child=CreateFrame(t, name, frame, ...);
-	if Frames.IsInjected(frame) then
+-- Creates a new frame of the specified type that is the child of the
+-- specified parent.
+--
+-- Additional arguments will be considered as inherited frames or handlers.
+function Frames.Child(parent, frameType, ...)
+	parent=Frames.AsRegion(parent);
+	assert(frame.GetChildren, "Specified parent cannot handle children");
+	local child=CreateFrame(frameType, nil, parent, ...);
+	if Frames.IsInjected(parent) then
 		Frames.Inject(child);
 	end;
 	return child;
+end;
+
+-- Creates a new Frame that is the child of the specified parent.
+-- If the parent is not specified, UIParent is used.
+--
+-- Additional arguments will be considered as inherited frames or handlers.
+function Frames.New(parent, ...)
+	parent = parent or UIParent;
+	return Frames.Child(parent, "Frame", ...);
 end;
 
 -- Sets the size of the specified frame.
