@@ -15,12 +15,6 @@ local DEFAULT_STYLE = {
 	-- Which direction is the "minimum"
 	barAnchor = "left",
 
-	-- The size of a full bar. This will be used even if the bar is "vertical"
-	width = 100,
-
-	-- The static height of the bar. This will be used even if the bar is "vertical"
-	height = 30,
-
 	-- Optional texture. This will override the bar color if provided.
 	barTexture = "bar",
 
@@ -57,8 +51,6 @@ function Bar:Constructor(parent, style)
 	-- and any backdrop I use.
 	self.bar = CreateFrame("Frame", nil, self.frame);
 	self.bar:Hide();
-
-	Frames.WH(self.frame, self.style.width, self.style.height);
 
 	self.barTexture = Frames.Texture(self.bar, self.style.barTexture);
 	self.barTexture:SetDrawLayer("ARTWORK");
@@ -131,7 +123,7 @@ function Bar:SetPercent(percent)
 	self.barTexture:SetTexCoord(0, percent, 0, 1);
 
 	-- Set the height again.
-	self.spark:SetHeight(self.style.height * (32 / 18));
+	self.spark:SetHeight(Frames.IHeight(self) * (32 / 18));
 
 	-- Set the spark opacity
 	if percent >= 1 then
