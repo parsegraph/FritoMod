@@ -367,11 +367,13 @@ function Frames.Texture(f, texture)
 		f=f:GetNormalTexture();
 	elseif f:GetObjectType() == "Texture" then
 		f:SetTexture(texture);
-	else
+	elseif f.CreateTexture then
 		local t=f:CreateTexture();
 		Anchors.ShareAll(t, f);
 		t:SetTexture(texture);
 		f=t;
+	else
+		error("Object does not directly support textures");
 	end;
 	if coords then
 		f:SetTexCoord(unpack(coords));
