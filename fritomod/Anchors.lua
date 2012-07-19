@@ -295,17 +295,17 @@ end;
 -- when writing anchor functions that involve multiple frames combined with a gap.
 local function GetGapAndFrames(gap, ...)
 	local frames;
-	if Frames.IsFrame(gap) then
+	if Frames.AsRegion(gap) then
 		frames={gap, ...};
 		gap=0;
 	elseif select("#", ...) == 0 and type(gap) == "table" then
-		if Frames.IsFrame(gap) then
+		if Frames.AsRegion(gap) then
 			frames = {gap}
 		else
 			frames = gap;
 		end;
 		gap=0;
-	elseif select("#", ...) == 1 and not Frames.IsFrame(...) then
+	elseif select("#", ...) == 1 and not Frames.AsRegion(...) then
 		frames = ...;
 	else
 		frames={...};
