@@ -591,6 +591,7 @@ local function StackStrategy(name, defaultAnchor)
 
 	local function Stack(towardsFirst, anchor, gap, ...)
 		assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
+		assert(select("#", ...) > 0, "At least one argument must be given");
 		anchor=anchor:upper();
 		if anchor == "CENTER" and defaultAnchor then
 			local CStack = Anchors[mode.."CStack"];
@@ -598,6 +599,10 @@ local function StackStrategy(name, defaultAnchor)
 		end;
 		local frames;
 		gap, frames = GetGapAndFrames(gap, ...);
+		assert(#frames > 0, "At least one frame must be given");
+		for i=1, #frames do
+			assert(frames[i], "Frame #"..i.." must not be falsy");
+		end;
 		local marcher=Lists.March;
 		if towardsFirst then
 			-- We want A<B<C (stack from the right), so we need to reverse-march
