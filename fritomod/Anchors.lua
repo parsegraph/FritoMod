@@ -1289,7 +1289,30 @@ end;
 
 function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
 	local origRef = ref;
+	if type(anchor) == "table" and #anchor > 0 then
+		-- If we're given tables for both, assume they're meant to be used in tandem.
+		if type(anchorTo) == "table" and #anchorTo > 0 then
+			assert(#anchor == #anchorTo, "Anchor sizes must align");
+			for i=1, #anchor do
+				Anchors.Set(frame, anchor[i], ref, anchorTo[i], x, y);
+			end;
+			return;
+		end;
+		for i=1, #anchor do
+			Anchors.Set(frame, anchor[i], ref, anchorTo, x, y);
+		end;
+		return;
+	end;
 	anchor=anchor:upper();
+	if anchorTo and type(anchorTo) == "table" and #anchorTo > 0 then
+		for i=1, #anchorTo do
+			Anchors.Set(frame, anchor, ref, anchorTo[i], x, y);
+		end;
+		return;
+	end;
+	if not anchorTo then
+		anchorTo = anchor;
+	end;
 	anchorTo=anchorTo:upper();
 	local region = GetAnchorable(frame, anchor);
 	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
