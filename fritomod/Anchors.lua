@@ -933,6 +933,512 @@ local function CenterJustifyStrategy(name, reverseJustify)
 	);
 end;
 
+local function AdjustGap(anchor, ref, anchorTo, x, y)
+	local insets=Frames.Insets(ref);
+	if x == nil and y == nil then
+		x = 0;
+		y = 0;
+	elseif x == nil then
+		assert(y ~= nil);
+		x = 0;
+	elseif y == nil then
+		assert(x ~= nil);
+		-- Y is allowed to be nil.
+	else
+		assert(x ~= nil);
+		assert(y ~= nil);
+	end;
+
+	local function Starts(prefix)
+		return Strings.StartsWith(anchor, prefix) and Strings.StartsWith(anchorTo, prefix);
+	end;
+	local function Ends(postfix)
+		return Strings.EndsWith(anchor, postfix) and Strings.EndsWith(anchorTo, postfix);
+	end;
+	local function Same(name)
+		return anchor == anchorTo and anchor == name;
+	end;
+	local function Pair(a, b)
+		return anchor == a and anchorTo == b
+	end;
+
+	-- Remember that, in WoW, gap values are NOT relative to the anchors.
+	-- Positive X gaps are towards the right side of the screen
+	-- Positive Y gaps are towards the top side of the screen
+
+	if anchor == "TOPLEFT" then
+		if anchorTo == "TOPLEFT" then
+			-- Frame shares ref's topleft
+			if y == nil then
+				y = x;
+			end;
+			x = x + insets.left;
+			y = y + insets.top;
+			y = -y;
+		elseif anchorTo == "TOP" then
+			-- Frame shares ref's top edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = y + insets.top;
+			y = -y;
+		elseif anchorTo == "TOPRIGHT" then
+			-- Frame is horizontally flipped over ref's right edge
+			if y == nil then
+				y = 0;
+			end;
+		elseif anchorTo == "RIGHT" then
+			-- Frame is horizontally flipped over ref's right edge
+			if y == nil then
+				y = 0;
+			end;
+		elseif anchorTo == "BOTTOMRIGHT" then
+			-- Frame is diagonally flipped over ref's bottomright corner
+			if y == nil then
+				y = x;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOM" then
+			-- Frame is flipped over ref's bottom edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOMLEFT" then
+			-- Frame is vertically flipped over ref's bottomleft corner
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = -y;
+			x = -x;
+		elseif anchorTo == "LEFT" then
+			-- Frame is inside ref's left
+			if y == nil then
+				y = 0;
+			end;
+			x = x + insets.left;
+		else
+			error("Invalid anchorTo: "..tostring(anchorTo));
+		end;
+	elseif anchor == "TOP" then
+		if anchorTo == "TOP" then
+			-- Frame shares ref's top edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = y + insets.top;
+			y = -y;
+		elseif anchorTo == "TOPRIGHT" then
+			-- Frame is horizontally centered on ref's right edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+		elseif anchorTo == "RIGHT" then
+			-- Frame is horizontally centered on ref's right edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+		elseif anchorTo == "BOTTOMRIGHT" then
+			-- Frame is horizontally centered on ref's right edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOM" then
+			-- Frame is vertically flipped over ref's bottom edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOMLEFT" then
+			-- Frame is horizontally centered on ref's left edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			x = -x;
+			y = -y;
+		elseif anchorTo == "LEFT" then
+			-- Frame is horizontally centered on ref's left edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOPLEFT" then
+			-- Frame is horizontally centered on ref's left edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			x = -x;
+		else
+			error("Invalid anchorTo: "..tostring(anchorTo));
+		end;
+	elseif anchor == "TOPRIGHT" then
+		if anchorTo == "TOPRIGHT" then
+			-- Frame shares ref's topright
+			if y == nil then
+				y = x;
+			end;
+			x = x + insets.right;
+			x = -x;
+			y = y + insets.top;
+			y = -y;
+		elseif anchorTo == "RIGHT" then
+			-- Frame shares ref's right edge
+			if y == nil then
+				y = 0;
+			end;
+			x = x + insets.right;
+			x = -x;
+		elseif anchorTo == "BOTTOMRIGHT" then
+			-- Frame is vertically flipped over ref's bottom edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOM" then
+			-- Frame is vertically flipped over ref's bottom edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOMLEFT" then
+			-- Frame is diagonally flipped over ref's bottomleft corner
+			if y == nil then
+				y = x;
+			end;
+			x = -x;
+			y = -y;
+		elseif anchorTo == "LEFT" then
+			-- Frame is horizontally flipped over ref's left edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOPLEFT" then
+			-- Frame is horizontally flipped over ref's left edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOP" then
+			-- Frame is inside ref's top edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = y + insets.top;
+			y = -y;
+		else
+			error("Invalid anchorTo: "..tostring(anchorTo));
+		end;
+	elseif anchor == "RIGHT" then
+		if anchorTo == "RIGHT" then
+			-- Frame shares ref's right edge
+			if y == nil then
+				y = 0;
+			end;
+			x = x + insets.right;
+			x = -x;
+		elseif anchorTo == "BOTTOMRIGHT" then
+			-- Frame is vertically centered on ref's bottom edge
+			if y == nil then
+				y = 0;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOM" then
+			-- Frame is vertically centered on ref's bottom edge
+			if y == nil then
+				y = 0;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOMLEFT" then
+			-- Frame is vertically centered on ref's bottom edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "LEFT" then
+			-- Frame is horizontally flipped over ref's left edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOPLEFT" then
+			-- Frame is vertically centered on ref's top edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOP" then
+			-- Frame is vertically centered on ref's top edge
+			if y == nil then
+				y = 0;
+			end;
+		elseif anchorTo == "TOPRIGHT" then
+			-- Frame is vertically centered on ref's top edge
+			if y == nil then
+				y = 0;
+			end;
+		else
+			error("Invalid anchorTo: "..tostring(anchorTo));
+		end;
+	elseif anchor == "BOTTOMRIGHT" then
+		if anchorTo == "BOTTOMRIGHT" then
+			-- Frame shares ref's bottomright
+			if y == nil then
+				y = x;
+			end;
+			x = x + insets.right;
+			x = -x;
+			y = y + insets.bottom;
+		elseif anchorTo == "BOTTOM" then
+			-- Frame shares ref's bottom edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = y + insets.bottom;
+		elseif anchorTo == "BOTTOMLEFT" then
+			-- Frame is horizontally flipped over ref's left edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+			y = -y;
+		elseif anchorTo == "LEFT" then
+			-- Frame is horizontally flipped over ref's left edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOPLEFT" then
+			-- Frame is diagonally flipped over ref's topleft corner
+			if y == nil then
+				y = x;
+			end;
+			x = -x;
+		elseif anchorTo == "TOP" then
+			-- Frame is vertically flipped over ref's top edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+		elseif anchorTo == "TOPRIGHT" then
+			-- Frame is vertically flipped over ref's top edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+		elseif anchorTo == "RIGHT" then
+			-- Frame shares ref's right edge
+			if y == nil then
+				y = 0;
+			end;
+			x = x + insets.right;
+			x = -x;
+		else
+			error("Invalid anchorTo: "..tostring(anchorTo));
+		end;
+	elseif anchor == "BOTTOM" then
+		if anchorTo == "BOTTOM" then
+			-- Frame shares ref's bottom edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = y + insets.bottom;
+			y = -y;
+		elseif anchorTo == "BOTTOMLEFT" then
+			-- Frame is horizontally centered on ref's left edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			x = -x;
+			y = -y;
+		elseif anchorTo == "LEFT" then
+			-- Frame is horizontally centered on ref's left edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOPLEFT" then
+			-- Frame is horizontally centered on ref's left edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOP" then
+			-- Frame is vertically flipped over ref's top edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+		elseif anchorTo == "TOPRIGHT" then
+			-- Frame is horizontally centered on ref's right edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+		elseif anchorTo == "RIGHT" then
+			-- Frame is horizontally centered on ref's right edge
+			if y == nil then
+				y = 0;
+			end;
+		elseif anchorTo == "BOTTOMRIGHT" then
+			-- Frame is horizontally centered on ref's right edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = -y;
+		else
+			error("Invalid anchorTo: "..tostring(anchorTo));
+		end;
+	elseif anchor == "BOTTOMLEFT" then
+		if anchorTo == "BOTTOMLEFT" then
+			-- Frame shares ref's bottomleft corner
+			if y == nil then
+				y = x;
+			end;
+			x = x + insets.left;
+			y = y + insets.bottom;
+		elseif anchorTo == "LEFT" then
+			-- Frame shares ref's left edge
+			if y == nil then
+				y = 0;
+			end;
+			x = x + insets.left;
+		elseif anchorTo == "TOPLEFT" then
+			-- Frame is vertically flipped over ref's top edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOP" then
+			-- Frame is vertically flipped over ref's top edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+		elseif anchorTo == "TOPRIGHT" then
+			-- Frame is diagonally flipped over ref's topright corner
+			if y == nil then
+				y = x;
+			end;
+		elseif anchorTo == "RIGHT" then
+			-- Frame is horizontally flipped over ref's right edge
+			if y == nil then
+				y = 0;
+			end;
+		elseif anchorTo == "BOTTOMRIGHT" then
+			-- Frame is horizontally flipped over ref's right edge
+			if y == nil then
+				y = 0;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOM" then
+			-- Frame shares ref's bottom edge
+			if y == nil then
+				y = x;
+				x = 0;
+			end;
+			y = y + insets.bottom;
+			y = -y;
+		else
+			error("Invalid anchorTo: "..tostring(anchorTo));
+		end;
+	elseif anchor == "LEFT" then
+		if anchorTo == "LEFT" then
+			-- Frame shares ref's left edge
+			if y == nil then
+				y = 0;
+			end;
+			x = x + insets.left;
+		elseif anchorTo == "TOPLEFT" then
+			-- Frame is vertically centered on ref's top edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+		elseif anchorTo == "TOP" then
+			-- Frame is vertically centered on ref's top edge
+			if y == nil then
+				y = 0;
+			end;
+		elseif anchorTo == "TOPRIGHT" then
+			-- Frame is vertically centered on ref's top edge
+			if y == nil then
+				y = 0;
+			end;
+		elseif anchorTo == "RIGHT" then
+			-- Frame is horizontally flipped over ref's right edge
+			if y == nil then
+				y = 0;
+			end;
+		elseif anchorTo == "BOTTOMRIGHT" then
+			-- Frame is vertically centered on ref's bottom edge
+			if y == nil then
+				y = 0;
+			end;
+			y = -y;
+		elseif anchorTo == "BOTTOM" then
+			-- Frame is vertically centered on ref's bottom edge
+			if y == nil then
+				y = 0;
+			end;
+		elseif anchorTo == "BOTTOMLEFT" then
+			-- Frame is vertically centered on ref's bottom edge
+			if y == nil then
+				y = 0;
+			end;
+			x = -x;
+		else
+			error("Invalid anchorTo: "..tostring(anchorTo));
+		end;
+	elseif anchorTo == "EXAMPLE_ANCHOR" then
+		-- I have this final case here to ensure I know what criteria I'm resolving
+		-- whenever I start messing with the above if-statements
+		if anchorTo == "EXAMPLE_REF_ANCHOR" then
+			-- What's the visual relationship?
+			if y == nil then
+				-- What does a one-arg gap mean?
+			end;
+			-- What direction does the x push?
+			-- What direction does the y push?
+		end;
+	else
+		error("Invalid anchor: "..tostring(anchor));
+	end;
+
+	--[[if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
+		y=y+insets.top;
+	elseif insets.bottom > 0 and Strings.StartsWith(anchor, "BOTTOM") then
+		y=y-insets.bottom;
+	end;
+	if insets.left > 0 and Strings.EndsWith(anchor, "LEFT") then
+		x=x+insets.left;
+	elseif insets.right > 0 and Strings.EndsWith(anchor, "RIGHT") then
+		x=x-insets.right;
+	end;]]
+	return x, y;
+end;
+
 local modes = {};
 
 -- Anchors.HorizontalFlip(f, "TOPRIGHT", ref);
@@ -1192,27 +1698,7 @@ modes.ShareInner = {
 			return Anchors.DiagonalGap("topright", x, y);
 		end;
 		assert(ref, "Reference frame must be provided for determining gap strategy");
-		local insets=Frames.Insets(ref);
-		if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
-			y=y or 0;
-			y=y+insets.top;
-		elseif insets.bottom > 0 and Strings.StartsWith(anchor, "BOTTOM") then
-			y=y or 0;
-			y=y+insets.bottom;
-		end;
-		if insets.left > 0 and Strings.EndsWith(anchor, "LEFT") then
-			x=x or 0;
-			x=x+insets.left;
-		elseif insets.right > 0 and Strings.EndsWith(anchor, "RIGHT") then
-			x=x or 0;
-			x=x+insets.right;
-		end;
-		if x ~= nil then
-			x=-x;
-		end;
-		if y ~= nil then
-			y=-y;
-		end;
+		x, y = AdjustGap(anchor, ref, anchor, x, y);
 		return Anchors.DiagonalGap(anchor, x, y);
 	end,
 	anchorPairs = {
@@ -1287,26 +1773,26 @@ function Anchors.Center(frame, ...)
 	return Anchors.Share(frame, "CENTER", ...);
 end;
 
-function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
+local function DoSet(useInner, frame, anchor, ref, anchorTo, x, y)
 	local origRef = ref;
 	if type(anchor) == "table" and #anchor > 0 then
 		-- If we're given tables for both, assume they're meant to be used in tandem.
 		if type(anchorTo) == "table" and #anchorTo > 0 then
 			assert(#anchor == #anchorTo, "Anchor sizes must align");
 			for i=1, #anchor do
-				Anchors.Set(frame, anchor[i], ref, anchorTo[i], x, y);
+				DoSet(useInner, frame, anchor[i], ref, anchorTo[i], x, y);
 			end;
 			return;
 		end;
 		for i=1, #anchor do
-			Anchors.Set(frame, anchor[i], ref, anchorTo, x, y);
+			DoSet(useInner, frame, anchor[i], ref, anchorTo, x, y);
 		end;
 		return;
 	end;
 	anchor=anchor:upper();
 	if anchorTo and type(anchorTo) == "table" and #anchorTo > 0 then
 		for i=1, #anchorTo do
-			Anchors.Set(frame, anchor, ref, anchorTo[i], x, y);
+			DoSet(useInner, frame, anchor, ref, anchorTo[i], x, y);
 		end;
 		return;
 	end;
@@ -1320,6 +1806,9 @@ function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
 	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
 	x = x or 0;
 	y = y or 0;
+	if useInner then
+		x, y = AdjustGap(anchor, ref, anchorTo, x, y);
+	end;
 	if DEBUG_TRACE_ANCHORS then
 		trace("%s:SetPoint(%q, %s, %q, %d, %d)",
 			tostring(region),
@@ -1333,6 +1822,14 @@ function Anchors.Set(frame, anchor, ref, anchorTo, x, y)
 	region:SetPoint(anchor, ref, anchorTo, x, y);
 	return ref;
 end;
+
+Anchors.OuterSet = Curry(DoSet, false);
+Anchors.OSet = Anchors.OuterSet;
+
+Anchors.InnerSet = Curry(DoSet, true);
+Anchors.ISet = Anchors.InnerSet;
+
+Anchors.Set = Anchors.OuterSet;
 
 function Anchors.Clear(...)
 	if select("#", ...) == 1 and #(...) > 0 then
