@@ -245,7 +245,7 @@ do
 	namedIcons["lost one"] = namedIcons.lostone;
 
 	Media.texture(function(texture)
-		local texture = textures[texture];
+		local texture = namedIcons[texture];
 		if texture and type(texture) == "string" then
 			return {
 				name = texture,
