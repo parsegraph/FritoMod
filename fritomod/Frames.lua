@@ -301,10 +301,10 @@ function Frames.OuterWidth(f)
 	return f:GetWidth();
 end;
 
-function Frames.Width(f, width)
-	Frames.AsRegion(f):SetWidth(width);
+function Frames.SetWidth(f, width)
+	CallOriginal(Frames.AsRegion(f), "SetWidth", width);
 end;
-Frames.SetWidth = Frames.Width;
+Frames.Width = Frames.SetWidth;
 
 function Frames.InnerHeight(f)
 	f=Frames.AsRegion(f);
@@ -316,10 +316,10 @@ function Frames.OuterHeight(f)
 	return f:GetHeight();
 end;
 
-function Frames.Height(f, height)
-	Frames.AsRegion(f):SetHeight(height);
+function Frames.SetHeight(f, height)
+	CallOriginal(Frames.AsRegion(f), "SetHeight", height);
 end;
-Frames.SetHeight = Frames.Height;
+Frames.Height = Frames.SetHeight;
 
 do
 	-- Maximum value we'll tolerate before we give up.
