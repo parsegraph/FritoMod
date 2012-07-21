@@ -295,23 +295,31 @@ function Frames.InnerWidth(f)
 	f=Frames.AsRegion(f);
 	return f:GetWidth() - Frames.HInsets(f);
 end;
-Frames.Width  = Frames.InnerWidth;
 Frames.IWidth = Frames.InnerWidth;
 
 function Frames.OuterWidth(f)
 	return f:GetWidth();
 end;
 
+function Frames.Width(f, width)
+	Frames.AsRegion(f):SetWidth(width);
+end;
+Frames.SetWidth = Frames.Width;
+
 function Frames.InnerHeight(f)
 	f=Frames.AsRegion(f);
 	return f:GetHeight() - Frames.VInsets(f);
 end;
-Frames.Height  = Frames.InnerHeight;
 Frames.IHeight = Frames.InnerHeight;
 
 function Frames.OuterHeight(f)
 	return f:GetHeight();
 end;
+
+function Frames.Height(f, height)
+	Frames.AsRegion(f):SetHeight(height);
+end;
+Frames.SetHeight = Frames.Height;
 
 do
 	-- Maximum value we'll tolerate before we give up.
