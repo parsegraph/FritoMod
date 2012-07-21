@@ -520,7 +520,7 @@ do
 end;
 
 function Frames.Destroy(...)
-	if select("#", ...) == 1 and #(...) > 0 then
+	if select("#", ...) == 1 and type(...) == "table" and #(...) > 0 then
 		trace("Unpacking list for destruction")
 		return Frames.Destroy(unpack(...));
 	end;
