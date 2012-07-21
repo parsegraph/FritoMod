@@ -29,8 +29,6 @@ function DamageEvent:Constructor(...)
 	self:Set(...);
 end;
 
--- XXX I don't use the school parameter in this object, as it seems redundant. I
--- might be wrong, though.
 function DamageEvent:Set(amount, excess, school, resisted, blocked, absorbed, isCritical, isGlancing, isCrushing)
 	DamageEvent.super.Set(self, school, amount, excess);
 	self.resisted = resisted;

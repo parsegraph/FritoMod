@@ -1,3 +1,9 @@
+-- A combat object that represents an amount. This is typically
+-- inherited by more specialized amounts, like damage or heals.
+--
+-- See CombatObjects-Damage
+-- See CombatObjects-Heal
+
 if nil ~= require then
 	require "fritomod/OOP-Class";
 	require "fritomod/CombatObjects";
