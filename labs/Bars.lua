@@ -1,3 +1,5 @@
+Labs = Labs or {};
+
 function Labs.Bar()
         local bar, remover;
         function Destroy()
