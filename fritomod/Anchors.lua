@@ -1770,8 +1770,7 @@ Anchors.OSet = Anchors.OuterSet;
 
 Anchors.InnerSet = Curry(DoSet, true);
 Anchors.ISet = Anchors.InnerSet;
-
-Anchors.Set = Anchors.OuterSet;
+Anchors.Set = Anchors.InnerSet;
 
 function Anchors.Clear(...)
 	if select("#", ...) == 1 and #(...) > 0 then
