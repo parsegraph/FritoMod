@@ -392,6 +392,7 @@ function Frames.Texture(f, texture)
 		-- blows away the original texture.
 		texture = texture.name;
 	end;
+	texture = texture:gsub("/", "\\");
 	if f:GetObjectType():find("Button$") then
 		f:SetNormalTexture(texture);
 		f=f:GetNormalTexture();
