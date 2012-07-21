@@ -27,6 +27,8 @@ local DEFAULT_STYLE = {
 	-- Background color. This will be the background's vertex color if provided.
 	backgroundColor = nil,
 
+	useSpark = false,
+
 	invert = false
 };
 
@@ -52,8 +54,10 @@ function Bar:Constructor(parent, style)
 	self.bar = CreateFrame("Frame", nil, self.frame);
 	self.bar:Hide();
 
-	self.barTexture = Frames.Texture(self.bar, self.style.barTexture);
-	self.barTexture:SetDrawLayer("ARTWORK");
+	if self.style.barTexture and self.style.barTexture ~= "none" and self.barTexture ~= "" then
+		self.barTexture = Frames.Texture(self.bar, self.style.barTexture);
+		self.barTexture:SetDrawLayer("ARTWORK");
+	end;
 
 	local color = self.bar:CreateTexture();
 	color:SetDrawLayer("BACKGROUND");
@@ -65,15 +69,17 @@ function Bar:Constructor(parent, style)
 		if self.style.backgroundColor then
 			self.bar:SetVertexColor(Media.color[self.style.backgroundColor]);
 		end;
-	else
+	elseif self.style.backgroundColor then
 		Frames.Color(self.frame, self.style.backgroundColor or "black");
 	end;
 
-	self.spark = self.bar:CreateTexture(nil, "OVERLAY");
-	self.spark:SetTexture("Interface/CastingBar/UI-CastingBar-Spark");
-	self.spark:SetBlendMode("ADD");
-	self.spark:SetWidth(32);
-	self.spark:SetPoint("CENTER", self.bar, "RIGHT", -1, 0);
+	if self.style.useSpark then
+		self.spark = self.bar:CreateTexture(nil, "OVERLAY");
+		self.spark:SetTexture("Interface/CastingBar/UI-CastingBar-Spark");
+		self.spark:SetBlendMode("ADD");
+		self.spark:SetWidth(32);
+		self.spark:SetPoint("CENTER", self.bar, "RIGHT", -1, 0);
+	end;
 
 	Anchors.Share(self.bar, self.frame, self.style.barAnchor);
 	Anchors.ShareVerticals(self.bar);
@@ -112,7 +118,9 @@ end;
 function Bar:SetPercent(percent)
 	percent = Math.Clamp(0, percent, 1);
 	if not Math.IsReal(percent) or percent == 0 then
-		self.spark:SetAlpha(0);
+		if self.spark then
+			self.spark:SetAlpha(0);
+		end;
 		self.bar:Hide();
 		return;
 	end;
@@ -120,20 +128,24 @@ function Bar:SetPercent(percent)
 	self.bar:Show();
 
 	self.bar:SetWidth(Frames.IWidth(self) * percent);
-	self.barTexture:SetTexCoord(0, percent, 0, 1);
+	if self.barTexture then
+		self.barTexture:SetTexCoord(0, percent, 0, 1);
+	end;
 
-	-- Set the height again.
-	self.spark:SetHeight(Frames.IHeight(self) * (32 / 18));
+	if self.spark then
+		-- Set the height again.
+		self.spark:SetHeight(Frames.IHeight(self) * (32 / 18));
 
-	-- Set the spark opacity
-	if percent >= 1 then
-		self.spark:SetAlpha(0);
-	elseif percent > .9 then
-		self.spark:SetAlpha(Math.Interpolate(1, 10 * (percent - .9), 0));
-	elseif percent < .1 then
-		self.spark:SetAlpha(Math.Interpolate(0, 10 * percent, 1));
-	else
-		self.spark:SetAlpha(1);
+		-- Set the spark opacity
+		if percent >= 1 then
+			self.spark:SetAlpha(0);
+		elseif percent > .9 then
+			self.spark:SetAlpha(Math.Interpolate(1, 10 * (percent - .9), 0));
+		elseif percent < .1 then
+			self.spark:SetAlpha(Math.Interpolate(0, 10 * percent, 1));
+		else
+			self.spark:SetAlpha(1);
+		end;
 	end;
 end;
 
