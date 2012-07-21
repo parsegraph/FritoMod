@@ -426,14 +426,13 @@ local function AnchorSetStrategy(name, setVerb)
 	end;
 
 	local mode = CanonicalModeName(name);
-	local Gap = Anchors[mode.."Gap"];
 	local AnchorPair = Anchors[mode.."AnchorPair"];
 
 	InjectIntoAnchors(setVerb, name, function(frame, ...)
 		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 		local anchorTo = AnchorPair(anchor);
 		assert(anchorTo, "Frames cannot be "..mode.." aligned using the "..anchor.." anchor");
-		return Anchors.Set(frame, anchor, ref, anchorTo, Gap(anchorTo, x, y, ref));
+		return Anchors.Set(frame, anchor, ref, anchorTo, x, y);
 	end);
 end;
 
@@ -467,7 +466,6 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 
 	local mode = CanonicalModeName(name);
 	local AnchorPair = Anchors[mode.."AnchorPair"];
-	local Gap = Anchors[mode.."Gap"];
 
 	if type(reversingVerb) == "table" then
 		reversingVerb = reversingVerb[1];
@@ -480,7 +478,7 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 			local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 			local anchorTo = AnchorPair(anchor);
 			assert(anchorTo, "No anchor pair found for "..mode.." set: "..anchor);
-			return Anchors.Set(frame, anchorTo, ref, anchor, Gap(anchor, x, y, ref));
+			return Anchors.Set(frame, anchorTo, ref, anchor, x, y);
 		end
 	);
 end;
@@ -933,8 +931,18 @@ local function CenterJustifyStrategy(name, reverseJustify)
 	);
 end;
 
-local function AdjustGap(anchor, ref, anchorTo, x, y)
-	local insets=Frames.Insets(ref);
+function Anchors.CalculateGap(anchor, ref, anchorTo, x, y)
+	local insets;
+	if ref ~= nil then
+		insets = Frames.Insets(ref);
+	else
+		insets = {
+			left = 0,
+			right = 0,
+			top = 0,
+			bottom = 0
+		};
+	end;
 	if x == nil and y == nil then
 		x = 0;
 		y = 0;
@@ -948,6 +956,9 @@ local function AdjustGap(anchor, ref, anchorTo, x, y)
 		assert(x ~= nil);
 		assert(y ~= nil);
 	end;
+
+	anchor=tostring(anchor):upper();
+	anchorTo=tostring(anchorTo):upper();
 
 	-- Remember that, in WoW, gap values are NOT relative to the anchors.
 	-- Positive X gaps are towards the right side of the screen
@@ -1474,15 +1485,6 @@ local modes = {};
 
 modes.Horizontal = {
 	name = {"Horizontal", "H"},
-	gapSigns = {
-		TOPRIGHT	=  {  1,  1 },
-		RIGHT	   =  {  1,  1 },
-		BOTTOMRIGHT =  {  1, -1 },
-		BOTTOMLEFT  =  { -1, -1 },
-		LEFT		=  { -1,  1 },
-		TOPLEFT	 =  { -1,  1 }
-	},
-	gapMask = { 1, 0 },
 	anchorPairs = {
 		TOPLEFT	= "TOPRIGHT",
 		BOTTOMLEFT = "BOTTOMRIGHT",
@@ -1542,15 +1544,6 @@ modes.Horizontal = {
 
 modes.Vertical = {
 	name = {"Vertical", "V"},
-	gapSigns = {
-		TOPRIGHT	=  {  1,  1 },
-		TOP		 =  {  1,  1 },
-		TOPLEFT	 =  { -1,  1 },
-		BOTTOMRIGHT =  {  1, -1 },
-		BOTTOM	  =  {  1, -1 },
-		BOTTOMLEFT  =  { -1, -1 }
-	},
-	gapMask = { 0, 1 },
 	anchorPairs = {
 		BOTTOMRIGHT = "TOPRIGHT",
 		BOTTOMLEFT  = "TOPLEFT",
@@ -1638,26 +1631,6 @@ modes.Diagonal = {
 		"D",
 		""
 	},
-	gapSigns = {
-		TOP		 = {  1,  1 },
-		TOPRIGHT	= {  1,  1 },
-		RIGHT	   = {  1,  1 },
-		BOTTOMRIGHT = {  1, -1 },
-		BOTTOM	  = {  1, -1 },
-		BOTTOMLEFT  = { -1, -1 },
-		LEFT		= { -1, -1 },
-		TOPLEFT	 = { -1,  1 },
-	},
-	gapMask = {
-		TOP		 = {  0,  1 },
-		TOPRIGHT	= {  1,  1 },
-		RIGHT	   = {  1,  0 },
-		BOTTOMRIGHT = {  1,  1 },
-		BOTTOM	  = {  0,  1 },
-		BOTTOMLEFT  = {  1,  1 },
-		LEFT		= {  1,  0 },
-		TOPLEFT	 = {  1,  1 },
-	},
 	anchorPairs = {
 		TOP	  = "BOTTOM",
 		RIGHT	= "LEFT",
@@ -1681,15 +1654,6 @@ modes.ShareInner = {
 		"Sharing",
 		"S",
 	},
-	gapSigns = function(anchor, x, y, ref)
-		anchor=tostring(anchor):upper();
-		if anchor == "CENTER" then
-			return Anchors.DiagonalGap("topright", x, y);
-		end;
-		assert(ref, "Reference frame must be provided for determining gap strategy");
-		x, y = AdjustGap(anchor, ref, anchor, x, y);
-		return Anchors.DiagonalGap(anchor, x, y);
-	end,
 	anchorPairs = {
 		RIGHT  = "RIGHT",
 		TOPRIGHT  = "TOPRIGHT",
@@ -1711,30 +1675,12 @@ modes.ShareOuter = setmetatable({
 			"OS"
 		},
 		setVerb = "ShareOuter",
-		gapSigns = function(anchor, x, y, ref)
-			anchor=tostring(anchor):upper();
-			if x ~= nil then
-				x=-x;
-			end;
-			if y ~= nil then
-				y=-y;
-			end;
-			if anchor == "CENTER" then
-				return Anchors.DiagonalGap("topright", x, y);
-			end;
-			return Anchors.DiagonalGap(anchor, x, y);
-		end
 	}, {
 		__index = modes.ShareInner
 });
 
 for _, strategy in pairs(modes) do
 	local name = strategy.name;
-	GapAnchorStrategy(
-		name,
-		strategy.gapSigns,
-		strategy.gapMask
-	);
 	AnchorPairStrategy(name, strategy.anchorPairs);
 	AnchorSetStrategy(name, strategy.setVerb);
 	if strategy.reverseSetVerb then
@@ -1793,10 +1739,10 @@ local function DoSet(useInner, frame, anchor, ref, anchorTo, x, y)
 	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
 	ref=GetBounds(ref or region:GetParent(), anchorTo);
 	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
-	x = x or 0;
-	y = y or 0;
 	if useInner then
-		x, y = AdjustGap(anchor, ref, anchorTo, x, y);
+		x, y = Anchors.CalculateGap(anchor, ref, anchorTo, x, y);
+	else
+		x, y = Anchors.CalculateGap(anchor, nil, anchorTo, x, y);
 	end;
 	if DEBUG_TRACE_ANCHORS then
 		trace("%s:SetPoint(%q, %s, %q, %d, %d)",
