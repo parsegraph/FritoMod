@@ -71,6 +71,24 @@ do
 	};
 end;
 
+-- A generic collection of textures
+Media.texture(function(name)
+	local t = textures[name];
+	if t == nil then
+		return;
+	elseif type(t) == "string" then
+		textures[name] = {
+			name = t,
+			coords = {0, 1, 0, 1},
+			blend = false
+		};
+	else
+		assert(type(t) == "table");
+	end;
+	textures[name].name = textures[name].name:gsub("/", "\\");
+	return textures[name];
+end);
+
 do
 	local function LocalBar(name, blend)
 		return {
@@ -98,9 +116,6 @@ do
 	Assign(LocalBar("minimalist"));
 	Assign(LocalBar("bantobar"), "banto");
 end;
-
--- A generic collection of textures
-Media.texture(textures);
 
 -- A strategy for extracting textures from objects, such as WoW Textures
 -- and UI.Icon.
