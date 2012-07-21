@@ -44,7 +44,7 @@ backdrops.goldDialog={
 	bgFile  ="Interface/DialogFrame/UI-DialogBox-Gold-Background",
 	edgeSize = 32,
 	tile=true,
-	tileSize=32,
+	tileSize=8,
 	insets = insets.dialog
 };
 backdrops.gold=backdrops.goldDialog;
@@ -54,7 +54,7 @@ backdrops.blackdialog={
 	bgFile  ="Interface/DialogFrame/UI-DialogBox-Background",
 	edgeSize = 32,
 	tile=true,
-	tileSize=32,
+	tileSize=8,
 	insets = insets.dialog
 };
 backdrops.dialog=backdrops.blackdialog;
@@ -65,7 +65,7 @@ backdrops.chatbubble={
 	bgFile  ="Interface/Tooltips/ChatBubble-Background",
 	edgeSize = 32,
 	tile=true,
-	tileSize=32,
+	tileSize=8,
 	insets = insets[32]
 };
 backdrops.chat=backdrops.chatbubble;
@@ -75,7 +75,7 @@ backdrops.tooltip={
 	bgFile  ="Interface/Tooltips/UI-Tooltip-Background",
 	edgeSize = 16,
 	tile=true,
-	tileSize=16,
+	tileSize=8,
 	insets = insets[4]
 };
 backdrops.default=backdrops.tooltip;
