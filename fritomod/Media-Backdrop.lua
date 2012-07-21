@@ -1,6 +1,7 @@
 if nil ~= require then
 	require "fritomod/Tables";
 	require "fritomod/Media";
+	require "fritomod/Media-Texture";
 	require "fritomod/Frames";
 
 	require "wow/Frame-Container";
@@ -132,7 +133,7 @@ function Frames.Backdrop(f, backdrop, bg)
 	end;
 	if bg then
 		local usedBackdrop=Tables.Clone(backdrop);
-		usedBackdrop.bgFile=bg;
+		usedBackdrop.bgFile=Media.texture[bg].name;
 		backdrop=usedBackdrop;
 	end;
 	f=Frames.AsRegion(f);
