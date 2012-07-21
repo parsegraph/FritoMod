@@ -19,7 +19,8 @@ function ActionPlate:Constructor(parent)
 	assert(parent, "Parent frame must be provided");
 	assert(parent.CreateTexture, "Provided parent must be a real frame");
 
-	self.actionIcon = UI.Icon:New(parent, 36);
+	self.actionIcon = UI.Icon:New(parent);
+	Frames.WH(self.actionIcon, 36);
 	self.sourceFrame = UI.PlayerFrame:New(parent);
 	self.targetFrame = UI.PlayerFrame:New(parent);
 end;

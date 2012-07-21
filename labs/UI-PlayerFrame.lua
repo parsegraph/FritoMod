@@ -22,7 +22,8 @@ function PlayerFrame:Constructor(parent, height)
 	assert(parent.CreateTexture, "Provided parent must be a real frame");
 
 	height = height or 30;
-	self.icon = UI.Icon:New(parent, height);
+	self.icon = UI.Icon:New(parent);
+	Frames.WH(self.icon, height);
 
 	self.nameText = Frames.Text(parent, "default", 12, "outline");
 	self.nameText:SetHeight(height);
