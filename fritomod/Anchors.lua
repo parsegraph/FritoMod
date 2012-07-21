@@ -953,7 +953,9 @@ local function AdjustGap(anchor, ref, anchorTo, x, y)
 	-- Positive X gaps are towards the right side of the screen
 	-- Positive Y gaps are towards the top side of the screen
 
-	if anchor == "TOPLEFT" then
+	if anchor == "CENTER" or anchorTo == "CENTER" then
+		y = y or 0;
+	elseif anchor == "TOPLEFT" then
 		if anchorTo == "TOPLEFT" then
 			-- Frame shares ref's topleft
 			if y == nil then
