@@ -11,12 +11,9 @@ end;
 CombatObjects = CombatObjects or {};
 
 do
-	-- Mapping of conventional names to the underlying combat object class.
-	local eventTypes = {};
-
 	-- Mapping of conventional names (like "Source" or "Spell") to the underlying
 	-- shared object.
-	local events = {};
+	local sharedObjects = {};
 
 	-- Register a combat object, referred to by eventType, as a shared object.
 	-- Shared objects are used by combat event handlers to minimize the creation
@@ -26,7 +23,9 @@ do
 	-- "Target". If eventType is unspecified, then name will be used.
 	function CombatObjects.AddSharedEvent(name, eventType)
 		eventType = eventType or name;
-		eventTypes[name] = eventType;
+		assert(sharedObjects[name] == nil or sharedObjects[name] == eventType,
+			"Refusing to overwrite the shared object with name: "..name);
+		sharedObjects[name] = eventType;
 	end;
 
 	-- Use a shared combat object by passing the specified arguments to it. The
@@ -35,16 +34,17 @@ do
 	-- It's important that client do not retain access to thse objects, since they
 	-- will be modified as other combat events are recorded.
 	function CombatObjects.SetSharedEvent(name, ...)
-		local event = events[name];
-		if event then
-			event:Set(...);
-			return event;
+		local sharedObject = sharedObjects[name];
+		if type(sharedObject) == "string" then
+			sharedObject = CombatObjects[sharedObject]:New(...);
+			sharedObjects[name] = sharedObject;
+			return sharedObject;
+		elseif sharedObject ~= nil then
+			sharedObject:Set(...);
+			return sharedObject;
+		else
+			error("No registered object for name: "..name);
 		end;
-		local eventType = eventTypes[name];
-		assert(eventType, "No registered type for event name: "..name);
-		event = CombatObjects[eventType]:New(...);
-		events[name] = event;
-		return event;
 	end;
 end;
 
