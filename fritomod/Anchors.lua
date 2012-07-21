@@ -949,19 +949,6 @@ local function AdjustGap(anchor, ref, anchorTo, x, y)
 		assert(y ~= nil);
 	end;
 
-	local function Starts(prefix)
-		return Strings.StartsWith(anchor, prefix) and Strings.StartsWith(anchorTo, prefix);
-	end;
-	local function Ends(postfix)
-		return Strings.EndsWith(anchor, postfix) and Strings.EndsWith(anchorTo, postfix);
-	end;
-	local function Same(name)
-		return anchor == anchorTo and anchor == name;
-	end;
-	local function Pair(a, b)
-		return anchor == a and anchorTo == b
-	end;
-
 	-- Remember that, in WoW, gap values are NOT relative to the anchors.
 	-- Positive X gaps are towards the right side of the screen
 	-- Positive Y gaps are towards the top side of the screen
