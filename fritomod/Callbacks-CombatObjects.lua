@@ -71,6 +71,7 @@ function Callbacks.CombatObjectEvent(targetEvent, func, ...)
 		end;
 	end);
 end;
+Callbacks.CombatEvent = Callbacks.CombatObjectEvent;
 
 -- Listens for combat log events with the specified suffix.
 function Callbacks.SuffixedCombatObjects(suffix, func, ...)
