@@ -19,54 +19,63 @@ function AmountEvent:Constructor(...)
 	self:SetAmount(...);
 end;
 
-function AmountEvent:Set(amountType, amount, excess)
+function AmountEvent:Set(amountType)
 	self.amountType = amountType;
-	self.amount = amount;
-	self.excess = excess;
 end;
 
 function AmountEvent:Clone()
-	return AmountEvent:New(
-		self:Type(),
-		self:Amount(),
-		self:Excess()
-	);
+	return AmountEvent:New(self:Type());
 end;
 
 function AmountEvent:Type()
 	return self.amountType or "(Unknown)";
 end;
 
-function AmountEvent:Amount()
-	return self.amount or 0;
+-- Returns the unmodified amount, before any reductions have taken place.
+-- Overages are also included in this total.
+--
+-- Generally speaking, this will return the biggest number of the three
+-- *Amount methods.
+function AmountEvent:GrossAmount()
+	return self:NetAmount() + self:Reduction() + self:Excess();
 end;
-AmountEvent.GrossAmount = Headless("Amount");
 
-function AmountEvent:NetAmount()
+-- Returns the amount that the spell or damage hit for in-game. Excess
+-- quantities like overheals or overkills will be included in this total,
+-- though mitigation like absorptions and blocks will not.
+function AmountEvent:RealAmount()
 	return self:GrossAmount() - self:Reduction();
 end;
+AmountEvent.Amount = Headless("RealAmount");
 
-function AmountEvent:RealAmount()
-	return self:NetAmount() - self:Excess();
+-- Returns the "useful" amount of the spell or damage. Both excess
+-- quantities and reductions are included in this total.
+--
+-- Generally speaking, this will return the smallest number of the three
+-- *Amount methods.
+function AmountEvent:NetAmount()
+	return self:RealAmount() - self:Excess();
 end;
 
+-- Returns the "excess" amount. Excess amounts are those that
+-- were not necessary to achieve some effect, like overheals or
+-- overkills.
+--
+-- This should always be a positive number.
 function AmountEvent:Excess()
-	return self.excess or 0;
+	return 0;
 end;
--- I use Headless here to allow subclasses to override
--- Excess; without it, subclasses would need to override
--- every alias.
 AmountEvent.Overage = Headless("Excess");
-AmountEvent.Overkill = Headless("Excess");
-AmountEvent.Overheal = Headless("Excess");
-AmountEvent.Overhealing = Headless("Excess");
 
+-- Returns the "reduced" amount. Reductions are things like
+-- blocked damage and absorptions that have reduced the real
+-- impact of this amount.
+--
+-- This should always be a positive number.
 function AmountEvent:Reduction()
 	return 0;
 end;
 AmountEvent.Reduced = Headless("Reduction");
-AmountEvent.Mitigated = Headless("Reduction");
-AmountEvent.Mitigation = Headless("Reduction");
 
 CombatObjects.AddSharedEvent("Power", "Amount");
 CombatObjects.AddSharedEvent("Leeched", "Amount");

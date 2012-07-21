@@ -29,8 +29,10 @@ function DamageEvent:Constructor(...)
 	self:Set(...);
 end;
 
-function DamageEvent:Set(amount, excess, school, resisted, blocked, absorbed, isCritical, isGlancing, isCrushing)
-	DamageEvent.super.Set(self, school, amount, excess);
+function DamageEvent:Set(amount, overkill, school, resisted, blocked, absorbed, isCritical, isGlancing, isCrushing)
+	DamageEvent.super.Set(self, school);
+	self.amount = amount;
+	self.overkill = overkill
 	self.resisted = resisted;
 	self.blocked = blocked;
 	self.absorbed = absorbed;
@@ -39,13 +41,26 @@ function DamageEvent:Set(amount, excess, school, resisted, blocked, absorbed, is
 	self.isCrushing = isCrushing;
 end;
 
+function DamageEvent:NetAmount()
+	return self.amount or 0;
+end;
+
 function DamageEvent:Reduction()
 	return self:Resisted() + self:Blocked() + self:Absorbed();
 end;
 DamageEvent.Mitigated = Headless("Reduction");
 DamageEvent.Mitigation = Headless("Reduction");
 
-DamageEvent.Overkill = DamageEvent.Excess;
+function DamageEvent:Excess()
+	if self.overkill < 0 then
+		-- Some targets, like training dummies, do not actually take damage. Blizzard
+		-- indicates this by returning -1 for the overkill. For our API, we'll just
+		-- pretend there was no overkill at all.
+		return 0;
+	end;
+	return self.overkill;
+end;
+DamageEvent.Overkill = Headless("Excess");
 
 function DamageEvent:IsKillingBlow()
 	return self:Overkill() > 0;

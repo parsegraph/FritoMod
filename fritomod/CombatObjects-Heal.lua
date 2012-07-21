@@ -29,8 +29,10 @@ end;
 
 -- The "absorbed" element in Blizzard's event is the effect of a hostile shield
 -- (like that given by a Death Knight) rather than a positive friendly effect.
-function HealEvent:Set(amount, excess, reduction, isCritical)
-	HealEvent.super.Set(self, "HEAL", amount, excess);
+function HealEvent:Set(amount, overheal, reduction, isCritical)
+	HealEvent.super.Set(self, "HEAL");
+	self.amount = amount;
+	self.overheal = overheal;
 	self.reduction = reduction;
 	self.isCritical = isCritical;
 end;
@@ -43,10 +45,20 @@ function HealEvent:Clone()
 		self:IsCritical());
 end;
 
+function HealEvent:NetAmount()
+	return self.amount or 0;
+end;
+
 function HealEvent:Reduction()
 	return self.reduction or 0;
 end;
 HealEvent.Absorbed = HealEvent.Reduction;
+
+function HealEvent:Excess()
+	return self.overheal or 0;
+end;
+HealEvent.Overheal = Headless("Excess");
+HealEvent.Overhealing = Headless("Excess");
 
 function HealEvent:IsCritical()
 	return Bool(self.isCritical);
