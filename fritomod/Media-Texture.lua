@@ -6,6 +6,8 @@ if nil ~= require then
 	require "fritomod/Tables";
 end;
 
+local FRITOMOD="Interface/AddOns/FritoMod/media/";
+
 -- Return a texture directly.
 Media.texture(function(obj)
 	if type(obj)=="table" and obj.name and (obj.coords or obj.blend) then
@@ -67,6 +69,34 @@ do
 		name = "Interface/TARGETINGFRAME/UI-StatusBar",
 		blend = "MOD"
 	};
+end;
+
+do
+	local function LocalBar(name, blend)
+		return {
+			name = FRITOMOD.."bar/"..name,
+			blend = blend or "MOD"
+		};
+	end;
+
+	local function Assign(texture, ...)
+		local function AssignOne(name)
+			textures[name] = texture;
+			textures["bar "..name] = texture;
+			textures[name.." bar"] = texture;
+		end;
+		AssignOne(texture.name);
+		for i=1, select("#", ...) do
+			AssignOne(select(i, ...));
+		end;
+	end;
+
+	-- Textures taken from Recount
+	Assign(LocalBar("otravi"));
+	Assign(LocalBar("aluminium"), "aluminum");
+	Assign(LocalBar("flat"));
+	Assign(LocalBar("minimalist"));
+	Assign(LocalBar("bantobar"), "banto");
 end;
 
 -- A generic collection of textures
