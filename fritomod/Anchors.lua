@@ -417,10 +417,10 @@ end;
 --
 --see
 --	ReverseAnchorSetStrategy
-local function AnchorSetStrategy(name, setVerb)
+local function AnchorSetStrategy(name, setVerb, anchorSet)
 	if type(setVerb) == "table" then
 		for i=1, #setVerb do
-			AnchorSetStrategy(name, setVerb[i]);
+			AnchorSetStrategy(name, setVerb[i], anchorSet);
 		end;
 		return;
 	end;
@@ -429,10 +429,12 @@ local function AnchorSetStrategy(name, setVerb)
 	local AnchorPair = Anchors[mode.."AnchorPair"];
 
 	InjectIntoAnchors(setVerb, name, function(frame, ...)
+		local AnchorSet = Anchors[anchorSet];
+		assert(IsCallable(AnchorSet), "AnchorSet is not callable");
 		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 		local anchorTo = AnchorPair(anchor);
 		assert(anchorTo, "Frames cannot be "..mode.." aligned using the "..anchor.." anchor");
-		return Anchors.Set(frame, anchor, ref, anchorTo, x, y);
+		return AnchorSet(frame, anchor, ref, anchorTo, x, y);
 	end);
 end;
 
@@ -456,10 +458,10 @@ end;
 
 --see
 --	AnchorSetStrategy
-local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
+local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb, anchorSet)
 	if type(setVerb) == "table" then
 		for i=1, #setVerb do
-			ReverseAnchorSetStrategy(name, setVerb[i], reversingVerb);
+			ReverseAnchorSetStrategy(name, setVerb[i], reversingVerb, anchorSet);
 		end;
 		return;
 	end;
@@ -475,10 +477,12 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb)
 		setVerb,
 		name,
 		function(frame, ...)
+			local AnchorSet = Anchors[anchorSet];
+			assert(IsCallable(AnchorSet), "AnchorSet is not callable");
 			local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 			local anchorTo = AnchorPair(anchor);
 			assert(anchorTo, "No anchor pair found for "..mode.." set: "..anchor);
-			return Anchors.Set(frame, anchorTo, ref, anchor, x, y);
+			return AnchorSet(frame, anchorTo, ref, anchor, x, y);
 		end
 	);
 end;
@@ -1675,6 +1679,7 @@ modes.ShareOuter = setmetatable({
 			"OS"
 		},
 		setVerb = "ShareOuter",
+		setAnchor = "OSet"
 	}, {
 		__index = modes.ShareInner
 });
@@ -1682,11 +1687,13 @@ modes.ShareOuter = setmetatable({
 for _, strategy in pairs(modes) do
 	local name = strategy.name;
 	AnchorPairStrategy(name, strategy.anchorPairs);
-	AnchorSetStrategy(name, strategy.setVerb);
+	strategy.anchorSet = strategy.anchorSet or "Set";
+	AnchorSetStrategy(name, strategy.setVerb, strategy.anchorSet);
 	if strategy.reverseSetVerb then
 		ReverseAnchorSetStrategy(name,
 			strategy.reverseSetVerb,
-			strategy.setVerb);
+			strategy.setVerb,
+			strategy.anchorSet);
 	end;
 	EdgeSetStrategy(name, strategy.setVerb);
 	StackStrategy(name, strategy.defaultAnchor);
