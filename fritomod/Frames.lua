@@ -317,18 +317,34 @@ do
 	-- Maximum value we'll tolerate before we give up.
 	local TOLERANCE=3
 
+	local insetAnchors = {
+		TOPLEFT =     {"TOP",    "LEFT"},
+		TOPRIGHT =    {"TOP",    "RIGHT"},
+		BOTTOMRIGHT = {"BOTTOM", "RIGHT"},
+		BOTTOMLEFT =  {"BOTTOM", "LEFT"},
+	};
+	for name, anchors in pairs(insetAnchors) do
+		for i=1, #anchors do
+			anchors[anchors[i]] = true;
+		end;
+	end;
+
 	local function CheckOnePoint(f, ref, insets, i)
 		local anchor, parent, anchorTo, x, y = f:GetPoint(i);
 		trace("Checking point %d (%s to %s, x:%d, y:%d)", i, anchor, anchorTo, x, y);
 		if parent and parent ~= ref then
 			return TOLERANCE * 100;
 		end;
-		if anchorTo and anchor ~= anchorTo then
-			return TOLERANCE * 100;
-		end;
-		if anchor == "CENTER" then
+
+		if anchor == "CENTER" or anchorTo == "CENTER" then
 			-- Ignore center anchor
 			return 0;
+		end;
+		if anchor ~= anchorTo then
+			local insetted = insetAnchors[anchor];
+			if not insetted or not insetted[anchorTo] then
+				return 0;
+			end;
 		end;
 		local xdiff, ydiff = 0, 0;
 		if DEBUG_TRACE then
@@ -337,14 +353,14 @@ do
 			trace("Right inset: %d", insets.right);
 			trace("Bottom inset: %d", insets.bottom);
 		end;
-		if anchor:match("LEFT$") then
+		if anchorTo:match("LEFT$") then
 			xdiff = abs(insets.left - x);
-		elseif anchor:match("RIGHT$") then
+		elseif anchorTo:match("RIGHT$") then
 			xdiff = abs(insets.right + x);
 		end;
-		if anchor:match("^TOP") then
+		if anchorTo:match("^TOP") then
 			ydiff = abs(insets.top + y);
-		elseif anchor:match("^BOTTOM") then
+		elseif anchorTo:match("^BOTTOM") then
 			ydiff = abs(insets.bottom - y);
 		end;
 		trace("xdiff is %d, ydiff is %d", xdiff, ydiff);

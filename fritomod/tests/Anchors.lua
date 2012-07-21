@@ -36,7 +36,7 @@ local function PointMapTest(runner, expectedPoints)
 end;
 
 function Suite:TestGapReturnsSensibleValues()
-	Assert.Equals({-2, 2}, {Anchors.DiagonalGap("topleft", 2)});
+	Assert.Equals({2, -2}, {Anchors.CalculateGap("topleft", nil, "topleft", 2)});
 end;
 
 Suite.TestSharingAnchorsCausesThemToOverlap = PointTest(

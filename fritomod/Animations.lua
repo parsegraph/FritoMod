@@ -63,9 +63,7 @@ function Animations.Origin(animation, anchor, xOffset, yOffset)
 	if xOffset==nil then
 		xOffset=0;
 	end;
-	if yOffset==nil then
-		xOffset, yOffset=Anchors.DiagonalGap(anchor, xOffset);
-	end;
+	xOffset, yOffset=Anchors.CalculateGap(anchor, nil, anchorTo, xOffset, yOffset);
 	animation:SetOrigin(anchor, xOffset, yOffset);
 end;
 
