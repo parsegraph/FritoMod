@@ -295,7 +295,7 @@ end;
 -- when writing anchor functions that involve multiple frames combined with a gap.
 local function GetGapAndFrames(gap, ...)
 	local frames;
-	if Frames.AsRegion(gap) then
+	if type(gap) == "table" and Frames.AsRegion(gap) then
 		frames={gap, ...};
 		gap=0;
 	elseif select("#", ...) == 0 and type(gap) == "table" then
@@ -310,6 +310,7 @@ local function GetGapAndFrames(gap, ...)
 	else
 		frames={...};
 	end;
+	assert(type(gap) == "number", "Gap must be a number");
 	return gap, frames;
 end;
 
@@ -589,7 +590,7 @@ local function StackStrategy(name, defaultAnchor)
 	local FlipOver = Anchors[mode.."FlipOver"];
 	local AnchorPair = Anchors[mode.."AnchorPair"];
 
-	local function Stack(towardsFirst, anchor, gap, ...)
+	local function Stack(towardsFirst, anchor, ...)
 		assert(type(anchor) == "string", "Anchor must be a string, but was a " .. type(anchor));
 		assert(select("#", ...) > 0, "At least one argument must be given");
 		anchor=anchor:upper();
@@ -597,8 +598,7 @@ local function StackStrategy(name, defaultAnchor)
 			local CStack = Anchors[mode.."CStack"];
 			return CStack(defaultAnchor, ...);
 		end;
-		local frames;
-		gap, frames = GetGapAndFrames(gap, ...);
+		local gap, frames = GetGapAndFrames(...);
 		assert(#frames > 0, "At least one frame must be given");
 		for i=1, #frames do
 			assert(frames[i], "Frame #"..i.." must not be falsy");
