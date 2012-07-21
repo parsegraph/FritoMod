@@ -412,7 +412,12 @@ function Frames.Texture(f, texture)
 		f:SetTexCoord(0, 1, 0, 1);
 	end;
 	if blend then
-		f:SetBlendMode(blend);
+		if blend == true then
+			blend = "BLEND";
+		elseif blend == false then
+			blend = "DISABLE";
+		end;
+		f:SetBlendMode(blend:upper());
 	end;
 	return f;
 end;
