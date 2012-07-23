@@ -10,6 +10,8 @@ Callbacks=Callbacks or {};
 
 -- Easy callback for registering OnFoo events, in a more FritoMod-esque fashion.
 function Callbacks.Script(frame, event, callback, ...)
+	frame = Frames.AsRegion(frame);
+	assert(IsCallable(frame.SetScript), "Frame does not support SetScript");
 	callback=Curry(callback, ...);
 	trace("Registering script event %q", event);
 	frame:SetScript(event, function(frame, ...)
@@ -27,6 +29,8 @@ Callbacks.OnUpdate=Headless(Callbacks.Script, "OnUpdate");
 
 -- Easy callback for registering OnFoo events, in a more FritoMod-esque fashion.
 function Callbacks.HookScript(frame, event, callback, ...)
+	assert(IsCallable(frame.HookScript), "Frame does not support HookScript");
+	frame = Frames.AsRegion(frame);
 	callback=Curry(callback, ...);
 	frame:HookScript(event, function(frame, ...)
 		if callback then
