@@ -6,6 +6,8 @@ if nil ~= require then
 	require "fritomod/Media";
 end;
 
+local FRITOMOD="Interface/AddOns/FritoMod/media";
+
 local fonts={
 	default="Fonts\\FRIZQT__.TTF",
 	skurri="Fonts\\skurri.ttf",
@@ -13,6 +15,13 @@ local fonts={
 	arial="Fonts\\ARIALN.ttf",
 	arialn="Fonts\\ARIALN.ttf",
 };
+
+fonts.inconsolata = FRITOMOD.."/fonts/Inconsolata.ttf";
+fonts.consolas    = fonts.inconsolata;
+fonts.mono        = fonts.inconsolata;
+fonts.monospace   = fonts.inconsolata;
+
+fonts.veramono = FRITOMOD.."/fonts/VeraMono.ttf";
 
 fonts["Fritz Quadrata"]=fonts.default;
 fonts.friz=fonts.default;
