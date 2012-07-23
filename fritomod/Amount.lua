@@ -187,7 +187,16 @@ do
 end;
 
 function Amount:OnChange(listener, ...)
-	return self.listeners:Add(listener, ...);
+	listener=Curry(listener, ...);
+	local remover = self.listeners:Add(listener);
+	-- It's important to add it to the list before we check if we have values.
+	-- This is because it's common to use installers to provide values. Since
+	-- these installers can provide the amount a value only when listeners are
+	-- added, we add it to the list first.
+	if self:HasAll() then
+		listener(self:Min(), self:Value(), self:Max());
+	end;
+	return remover;
 end;
 Amount.OnChanged = Amount.OnChange;
 
