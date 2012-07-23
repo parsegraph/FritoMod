@@ -493,6 +493,15 @@ Frames.ToggleShow=Frames.ToggleShowing;
 Frames.ToggleHide=Frames.ToggleShowing;
 Frames.ToggleHidden=Frames.ToggleShowing;
 
+function Frames.KeepHidden(f)
+	local Hide = Seal(Frames.Hide, f);
+	Hide();
+	return Functions.OnlyOnce(Lists.CallEach, {
+		Callbacks.Script(f, "OnShow", Hide),
+		Timing.Every(Hide)
+	});
+end;
+
 local disallowsNilParent = {
 	Texture = true,
 	FontString = true
