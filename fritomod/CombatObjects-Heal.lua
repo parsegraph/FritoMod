@@ -45,7 +45,7 @@ function HealEvent:Clone()
 		self:IsCritical());
 end;
 
-function HealEvent:NetAmount()
+function HealEvent:RealAmount()
 	return self.amount or 0;
 end;
 

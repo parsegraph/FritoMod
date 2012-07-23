@@ -41,7 +41,7 @@ function DamageEvent:Set(amount, overkill, school, resisted, blocked, absorbed, 
 	self.isCrushing = isCrushing;
 end;
 
-function DamageEvent:NetAmount()
+function DamageEvent:RealAmount()
 	return self.amount or 0;
 end;
 
