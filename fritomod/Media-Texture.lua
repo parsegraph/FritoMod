@@ -93,7 +93,8 @@ do
 	local function LocalBar(name, blend)
 		return {
 			name = FRITOMOD.."bar/"..name,
-			blend = blend or "MOD"
+			blend = blend or "MOD",
+			shortName = name
 		};
 	end;
 
@@ -103,7 +104,7 @@ do
 			textures["bar "..name] = texture;
 			textures[name.." bar"] = texture;
 		end;
-		AssignOne(texture.name);
+		AssignOne(texture.shortName);
 		for i=1, select("#", ...) do
 			AssignOne(select(i, ...));
 		end;
