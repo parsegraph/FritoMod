@@ -1,5 +1,6 @@
 if nil ~= require then
 	require "fritomod/Amount";
+	require "fritomod/Callbacks-Mechanics";
 end;
 
 Amounts = Amounts or {};
