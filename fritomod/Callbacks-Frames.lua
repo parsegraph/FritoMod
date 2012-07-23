@@ -3,6 +3,7 @@ if nil ~= require then
 
 	require "fritomod/currying";
 	require "fritomod/Functions";
+	require "fritomod/Frames";
 end;
 
 Callbacks=Callbacks or {};
