@@ -96,6 +96,7 @@ function Bar:SetMonitor(monitor, frequency)
 		monitor:OnState("Completed", self, "SetPercent", 1),
 		monitor:OnState("Inactive", self, "SetPercent", 0)
 	});
+	return self.callback;
 end;
 
 function Bar:SetAmount(amount)
@@ -105,6 +106,7 @@ function Bar:SetAmount(amount)
 	self.callback = amount:OnChange(function(min, value, max)
 		self:SetPercent(amount:Percent());
 	end);
+	return self.callback;
 end;
 
 function Bar:SetPercentCallback(callback, ...)
@@ -113,6 +115,7 @@ function Bar:SetPercentCallback(callback, ...)
 		self.callback();
 	end;
 	self.callback = callback(self, "SetPercent");
+	return self.callback;
 end;
 
 function Bar:SetPercent(percent)
