@@ -157,5 +157,5 @@ function Bar:Destroy()
 		self.callback();
 		self.callback = nil;
 	end;
-	Frames.Destroy(self.bar, self.frame);
+	Frames.Destroy(self.bar, self.frame, self.barTexture, self.spark);
 end;
