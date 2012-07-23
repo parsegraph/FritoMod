@@ -21,8 +21,12 @@ function Amount:AddInstaller(installer, ...)
 	return self.listeners:AddInstaller(installer, ...);
 end;
 
+function Amount:HasMin()
+	return type(self.min) == "number";
+end;
+
 function Amount:Min()
-	assert(type(self.min) == "number", "Amount has no minimum value");
+	assert(self:HasMin(), "Amount has no minimum value");
 	return self.min;
 end;
 Amount.GetMin     = Amount.Min;
@@ -33,8 +37,12 @@ function Amount:SetMin(min)
 end;
 Amount.SetMinimum = Amount.SetMin;
 
+function Amount:HasMax()
+	return type(self.max) == "number";
+end;
+
 function Amount:Max()
-	assert(type(self.max) == "number", "Amount has no maximum value");
+	assert(self:HasMax(), "Amount has no maximum value");
 	return self.max;
 end;
 Amount.GetMax     = Amount.Max;
@@ -69,8 +77,12 @@ function Amount:Range()
 	return self:Max() - self:Min();
 end;
 
+function Amount:HasValue()
+	return type(self.value) == "number";
+end;
+
 function Amount:Value()
-	assert(type(self.value) == "number", "Amount has no current value");
+	assert(self:HasValue(), "Amount has no current value");
 	return self.value;
 end;
 Amount.GetValue = Amount.Value;
@@ -123,10 +135,19 @@ function Amount:SetAll(min, value, max)
 	self.max = oldMax;
 	self.rawValue = oldRawValue;
 	self.value = oldValue;
+
+function Amount:HasBounds()
+	return self:HasMin() and self:HasMax();
+end;
+
+function Amount:HasAll()
+	return self:HasBounds() and self:HasValue();
 end;
 
 function Amount:Fire()
-	self.listeners:Fire(self:Min(), self:Value(), self:Max());
+	if self:HasAll() then
+		self.listeners:Fire(self:Min(), self:Value(), self:Max());
+	end;
 end;
 
 do
