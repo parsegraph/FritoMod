@@ -9,6 +9,8 @@ cat - <<EOF
 ## SavedVariables: _Persistence
 tooltip.xml
 files.xml
+Bindings.xml
+hack\Hack.xml
 EOF
 
 # vim: set filetype=sh :

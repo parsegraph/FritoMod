@@ -32,7 +32,13 @@ fonts.frizqt=fonts.default;
 fonts.fritzqt=fonts.default;
 fonts.fritzqt=fonts.default;
 
-Media.font(fonts);
+Media.font(function(name)
+	local font = fonts[name];
+	if font then
+		return font:gsub("/", "\\");
+	end;
+end);
+
 Media.font(Curry(Media.SharedMedia, "font"));
 Media.SetAlias("font", "fonts", "text", "fontface", "fontfaces");
 

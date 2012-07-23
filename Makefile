@@ -1,4 +1,4 @@
-dirs = fritomod labs deps
+dirs = fritomod labs deps hack
 ifndef NO_TEST
 dirs += fritomod/tests labs/tests
 endif
