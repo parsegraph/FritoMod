@@ -127,14 +127,21 @@ function Amount:SetAll(min, value, max)
 		= self.min, self.max, self.value, self.rawValue;
 	local bchanged = self:InternalSetBounds(min, max);
 	local vchanged = self:InternalSetValue(value);
-	if bchanged or vchanged then
+	if not self.quiet or bchanged or vchanged then
 		self:Fire();
 		return;
 	end;
-	self.min = oldMin;
-	self.max = oldMax;
-	self.rawValue = oldRawValue;
-	self.value = oldValue;
+	if not bchanged and not vchanged then
+		self.min = oldMin;
+		self.max = oldMax;
+		self.rawValue = oldRawValue;
+		self.value = oldValue;
+	end;
+end;
+
+function Amount:SetQuiet(quiet)
+	self.quiet = quiet;
+end;
 
 function Amount:HasBounds()
 	return self:HasMin() and self:HasMax();
