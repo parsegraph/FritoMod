@@ -56,7 +56,11 @@ function TargetEvent:SetName(name)
 	assert(self:GUID(), "GUID must be present, but was: "..tostring(self:GUID()));
 	name = name or select(6, TryGUID(self:GUID()));
 	if name then
-		self.name = Strings.Trim(Strings.Split("-", name, 2)[1]);
+		if self:IsPlayer() then
+			self.name = Strings.Trim(Strings.Split("-", name, 2)[1]);
+		else
+			self.name = name;
+		end;
 	else
 		self.name = "Unknown";
 	end;
