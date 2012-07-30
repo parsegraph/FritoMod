@@ -152,9 +152,21 @@ end;
 -- If the parent is not specified, UIParent is used.
 --
 -- Additional arguments will be considered as inherited frames or handlers.
-function Frames.New(parent, ...)
-	parent = parent or UIParent;
-	return Frames.Child(parent, "Frame", ...);
+function Frames.New(...)
+	if select("#", ...) == 0 then
+		return Frames.Child(UIParent, "Frame");
+	elseif select("#", ...) == 1 then
+		local first = ...;
+		if type(first) == "string" then
+			return Frames.Child(UIParent, first);
+		elseif first then
+			return Frames.Child(first, "Frame");
+		else
+			return Frames.Child(UIParent, "Frame");
+		end;
+	else
+		return Frames.Child(...);
+	end;
 end;
 
 -- Sets the size of the specified frame.
