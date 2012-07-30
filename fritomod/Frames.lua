@@ -169,6 +169,20 @@ function Frames.New(...)
 	end;
 end;
 
+function Frames.Reparent(f, parent)
+	parent = Frames.AsRegion(parent);
+	if type(f) == "table" and #f > 0 then
+		for i=1, #f do
+			Frames.Reparent(f[i], parent);
+		end;
+		return;
+	end;
+	f = Frames.AsRegion(f);
+	if f ~= parent then
+		f:SetParent(parent);
+	end;
+end;
+
 -- Sets the size of the specified frame.
 function Frames.Square(f, size)
 	return Frames.Rectangle(f, size, size);
