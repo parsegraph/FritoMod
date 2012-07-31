@@ -482,12 +482,14 @@ end;
 Frames.Opacity=Frames.Alpha;
 Frames.Visibility=Frames.Alpha;
 
+-- TODO Accept multiple frames
 function Frames.Show(f)
 	f=Frames.AsRegion(f);
 	CallOriginal(f, "Show");
 	return Functions.OnlyOnce(CallOriginal, f, "Hide");
 end;
 
+-- TODO Accept multiple frames
 function Frames.Hide(f)
 	f=Frames.AsRegion(f);
 	CallOriginal(f, "Hide");

@@ -25,6 +25,7 @@ local DEFAULT_STYLE = {
 	blendMode = "DISABLE",
 
 	-- The draw layer for the texture
+	-- TODO Support sublayer
 	drawLayer = "ARTWORK"
 };
 
