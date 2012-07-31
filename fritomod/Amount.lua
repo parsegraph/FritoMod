@@ -153,7 +153,10 @@ end;
 
 function Amount:Fire()
 	if self:HasAll() then
+		trace("Firing listeners for amount");
 		self.listeners:Fire(self:Min(), self:Value(), self:Max());
+	else
+		trace("Tried to fire amount listeners, but missing values");
 	end;
 end;
 
