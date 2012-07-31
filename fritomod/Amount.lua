@@ -202,10 +202,13 @@ Amount.OnChanged = Amount.OnChange;
 
 function Amount:OnMinChanged(listener, ...)
 	listener=Curry(listener, ...);
-	local oldMin = self:Min();
+	local old;
+	if self:HasMin() then
+		old = self:Min();
+	end;
 	return self:OnChange(function(min, value, max)
-		if oldMin ~= min then
-			oldMin = min;
+		if old ~= min then
+			old = min;
 			return listener(min);
 		end;
 	end);
@@ -214,7 +217,10 @@ Amount.OnMinChange = Amount.OnMinChanged;
 
 function Amount:OnValueChanged(listener, ...)
 	listener=Curry(listener, ...);
-	local old = self:Value();
+	local old;
+	if self:HasValue() then
+		old = self:Value();
+	end;
 	return self:OnChange(function(min, value, max)
 		if old ~= value then
 			old = value;
@@ -226,7 +232,10 @@ Amount.OnValueChange = Amount.OnValueChanged;
 
 function Amount:OnMaxChanged(listener, ...)
 	listener=Curry(listener, ...);
-	local old = self:Max();
+	local old;
+	if self:HasMax() then
+		old = self:Max();
+	end;
 	return self:OnChange(function(min, value, max)
 		if old ~= max then
 			old = max;
