@@ -59,6 +59,8 @@ function SpellCounter:Constructor(parent, style)
     -- Progress represents the progress (in terms of mana regen) to the next cast
     self.progress = UI.Bar:New(parent);
     Frames.Height(self.progress, 8);
+
+    self.mana:OnChange(self, "Update");
 end;
 
 function SpellCounter:SetSpell(spell)
