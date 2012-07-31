@@ -22,9 +22,7 @@ function SpellCounter:Constructor(parent, style)
     -- TODO Don't hardcode the size here
     local width = 48;
 
-    self.icon = UI.Icon:New(parent, {
-        drawLayer = "BACKGROUND"
-    });
+    self.icon = UI.Icon:New(parent, {});
     Frames.WH(self.icon, width);
 
     self.mana = Amounts.Energy("player");
@@ -44,18 +42,18 @@ function SpellCounter:Constructor(parent, style)
     self.progress:SetAmount(self.fractionalCasts);
     Frames.WH(self.progress, width, 8);
 
-    self.tint = Frames.Color(self.icon, "red", 0);
-    self.tint:SetDrawLayer("BACKGROUND", 1);
+    self.tint = Frames.Color(self.icon, "red");
+    self.tint:SetDrawLayer("ARTWORK", 1);
 
     -- Count will hold the number of available casts remaining for the spell
     self.count = Frames.Text(self.icon, "friz", 24, "outline");
-    self.count:SetDrawLayer("ARTWORK");
+    self.count:SetDrawLayer("ARTWORK", 2);
     Anchors.Center(self.count);
     self.casts:OnValueChanged(self.count, "SetText");
 
     -- MaxCount will hold the maximum number of casts possible
     self.maxCount = Frames.Text(self.icon, "friz", 10, "outline");
-    self.maxCount:SetDrawLayer("ARTWORK");
+    self.maxCount:SetDrawLayer("ARTWORK", 2);
     Anchors.Share(self.maxCount, self.icon, "bottomright", -4);
     self.casts:OnMaxChanged(self.maxCount, "SetText");
 end;
