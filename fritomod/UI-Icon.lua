@@ -41,15 +41,15 @@ function Icon:Constructor(parent, style)
 	self.style:Inherits(DEFAULT_STYLE);
 
 	Frames.Size(self.frame, self.style.size);
-
-	if self.style.backdrop and self.style.backdrop ~= "none" then
-		Frames.Backdrop(self.frame, self.style.backdrop);
-	end;
 	self.texture = self.frame:CreateTexture();
 	self.texture:SetDrawLayer(self.style.drawLayer);
 	self.texture:SetBlendMode(self.style.blendMode);
 	assert(self.texture:GetParent());
 	Anchors.ShareAll(self.texture);
+
+	if self.style.backdrop and self.style.backdrop ~= "none" then
+		Frames.Backdrop(self.frame, self.style.backdrop);
+	end;
 end;
 
 function Icon:SetTexture(texture)
