@@ -116,7 +116,7 @@ function SpellCounter:Update()
     else
         -- We're at the maximum available casts
         assert(self.casts:Value() == self.casts:Max());
-        self.maxCount:SetAlpha(.7);
+        self.maxCount:SetAlpha(0);
         Frames.Hide(self.progress);
         Frames.Color(self.count, "green");
     end;
