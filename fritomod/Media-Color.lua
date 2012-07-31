@@ -162,9 +162,7 @@ function Frames.Color(f,...)
 		end;
 	end;
 	f=Frames.AsRegion(f);
-	if f.GetBackdrop and f:GetBackdrop() then
-		f:SetBackdropColor(r,g,b,a);
-	elseif f.SetTextColor then
+	if f.SetTextColor then
 		f:SetTextColor(r,g,b,a);
 	elseif f.SetTexture then
 		f:SetTexture(r,g,b,a);
