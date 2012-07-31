@@ -46,11 +46,13 @@ function SpellCounter:Constructor(parent, style)
 
     -- Count will hold the number of available casts remaining for the spell
     self.count = Frames.Text(self.icon, "friz", 24, "outline");
+    self.count:SetDrawLayer("ARTWORK");
     Anchors.Center(self.count);
     self.casts:OnValueChanged(self.count, "SetText");
 
     -- MaxCount will hold the maximum number of casts possible
     self.maxCount = Frames.Text(self.icon, "friz", 10, "outline");
+    self.maxCount:SetDrawLayer("ARTWORK");
     Anchors.Share(self.maxCount, self.icon, "bottomright", -4);
     self.casts:OnMaxChanged(self.maxCount, "SetText");
 
