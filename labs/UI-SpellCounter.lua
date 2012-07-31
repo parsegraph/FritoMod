@@ -129,6 +129,7 @@ function SpellCounter:Update()
     elseif pct > .4 then
         Frames.Color(self.progress, "yellow", .6);
     else
+        assert(pct <= .4);
         Frames.Color(self.progress, "red");
         self.tint:Show();
         self.tint:SetAlpha(.5*(1-(pct / .4)));
