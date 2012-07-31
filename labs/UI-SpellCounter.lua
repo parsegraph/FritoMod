@@ -70,7 +70,7 @@ function SpellCounter:Anchor(anchor)
 end;
 
 function SpellCounter:Bounds(anchor)
-    local vcomp = Frames.HorizontalComponent(anchor);
+    local vcomp = Frames.VComp(anchor);
     if vcomp == "BOTTOM" then
         return self.progress;
     end;
