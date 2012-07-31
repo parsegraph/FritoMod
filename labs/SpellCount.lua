@@ -113,3 +113,5 @@ function Labs.IconSpellCounts()
        parent():Hide();
     end;
 end;
+
+-- vim: set ts=4 sw=4 et :
