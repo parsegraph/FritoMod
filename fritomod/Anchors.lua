@@ -1263,7 +1263,6 @@ function Anchors.CalculateGap(anchor, ref, anchorTo, x, y)
 				x = 0;
 			end;
 			y = y + insets.bottom;
-			y = -y;
 		elseif anchorTo == "BOTTOMLEFT" then
 			-- Frame is horizontally centered on ref's left edge
 			if y == nil then
