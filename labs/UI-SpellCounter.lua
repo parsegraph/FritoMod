@@ -79,7 +79,7 @@ function SpellCounter:Bounds(anchor)
 end;
 
 function SpellCounter:Update()
-    if not self.mana:HasAll() then
+    if not self.mana:HasAll() or not self.spell then
         return;
     end;
 
