@@ -54,7 +54,7 @@ function SpellCounter:Constructor(parent, style)
     -- MaxCount will hold the maximum number of casts possible
     self.maxCount = Frames.Text(self.icon, "friz", 10, "outline");
     self.maxCount:SetDrawLayer("ARTWORK", 2);
-    Anchors.Share(self.maxCount, self.icon, "bottomright", -4);
+    Anchors.Share(self.maxCount, self.icon, "bottomright", -2, 0);
     self.casts:OnMaxChanged(self.maxCount, "SetText");
 end;
 
