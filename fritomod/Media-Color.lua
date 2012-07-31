@@ -168,7 +168,7 @@ function Frames.Color(f,...)
 		f:SetTexture(r,g,b,a);
 	elseif f.CreateTexture then
 		local t=f:CreateTexture();
-		t:SetAllPoints();
+		Anchors.ShareAll(t);
 		t:SetTexture(r,g,b,a);
 		f=t;
 	end;
