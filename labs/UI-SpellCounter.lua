@@ -25,7 +25,7 @@ function SpellCounter:Constructor(parent, style)
     self.icon = UI.Icon:New(parent, {});
     Frames.WH(self.icon, width);
 
-    self.mana = Amounts.Energy("player");
+    self.mana = Amounts.Power("player");
     -- We need to register at least one listener so that self.mana has values
     self.mana:OnChange(self, "Update");
 
