@@ -1,8 +1,10 @@
 if nil ~= require then
 	-- TODO This requires WoW's UnitHealth, UnitPower, etc.
+	require "wow/api/Units";
 	require "fritomod/currying";
 	require "fritomod/Events";
 	require "fritomod/Math";
+	require "fritomod/Timing";
 end;
 
 Callbacks = Callbacks or {};
