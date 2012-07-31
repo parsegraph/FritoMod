@@ -17,3 +17,7 @@ end;
 function Texture:GetTexture(...)
 
 end;
+
+function Texture:SetTexCoord(...)
+
+end;

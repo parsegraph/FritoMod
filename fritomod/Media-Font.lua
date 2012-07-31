@@ -1,6 +1,8 @@
 -- Sets up fonts for Media.font
 
 if nil ~= require then
+    require "wow/FontString";
+
 	require "fritomod/Frames";
 	require "fritomod/currying";
 	require "fritomod/Media";

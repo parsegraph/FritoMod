@@ -99,3 +99,9 @@ function Frame:GetNumPoints()
 	return #self.pointOrder;
 end;
 
+function Frame:Raise()
+end;
+
+function Frame:Lower()
+
+end;

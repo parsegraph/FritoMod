@@ -1,5 +1,6 @@
 if nil ~= require then
 	require "wow/Frame-Container";
+	require "wow/Frame-Alpha";
 	require "fritomod/Frames";
 	require "fritomod/UI-Icon";
 	require "fritomod/OOP-Class";
