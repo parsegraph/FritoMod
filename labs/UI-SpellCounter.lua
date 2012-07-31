@@ -19,15 +19,6 @@ function SpellCounter:Constructor(parent, style)
 
     self.style = Metatables.StyleClient(style);
 
-    self.mana = Amounts.Energy("player");
-
-    -- Available casts
-    self.casts = Mechanics.Amount:New();
-
-    -- Fraction of mana till next cast
-    self.fractionalCasts = Mechanics.Amount:New();
-    self.fractionalCasts:SetBounds(0, 1);
-
     -- TODO Don't hardcode the size here
     local width = 48;
 
@@ -36,12 +27,24 @@ function SpellCounter:Constructor(parent, style)
     });
     Frames.WH(self.icon, width);
 
+    self.mana = Amounts.Energy("player");
+    -- We need to register at least one listener so that self.mana has values
+    self.mana:OnChange(self, "Update");
+
+    -- Available casts
+    self.casts = Mechanics.Amount:New();
+
+    -- Fraction of mana till next cast
+    self.fractionalCasts = Mechanics.Amount:New();
+    self.fractionalCasts:SetBounds(0, 1);
+
+    -- Progress represents the progress (in terms of mana regen) to the next cast
     -- TODO Update the style here
     self.progress = UI.Bar:New(parent, {});
     self.progress:SetAmount(self.fractionalCasts);
     Frames.WH(self.progress, width, 8);
 
-    self.tint = Frames.Color(self.icon, "red");
+    self.tint = Frames.Color(self.icon, "red", 0);
     self.tint:SetDrawLayer("BACKGROUND", 1);
 
     -- Count will hold the number of available casts remaining for the spell
@@ -55,12 +58,6 @@ function SpellCounter:Constructor(parent, style)
     self.maxCount:SetDrawLayer("ARTWORK");
     Anchors.Share(self.maxCount, self.icon, "bottomright", -4);
     self.casts:OnMaxChanged(self.maxCount, "SetText");
-
-    -- Progress represents the progress (in terms of mana regen) to the next cast
-    self.progress = UI.Bar:New(parent);
-    Frames.Height(self.progress, 8);
-
-    self.mana:OnChange(self, "Update");
 end;
 
 function SpellCounter:SetSpell(spell)
