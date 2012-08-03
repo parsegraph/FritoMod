@@ -1757,8 +1757,12 @@ local function DoSet(useInner, frame, anchor, ref, anchorTo, x, y)
 	end;
 	anchorTo=anchorTo:upper();
 	local region = GetAnchorable(frame, anchor);
-	assert(Frames.IsRegion(region), "frame must be a frame. Got: "..type(region));
-	ref=GetBounds(ref or region:GetParent(), anchorTo);
+	assert(region and IsCallable(region.SetPoint), "frame must be a frame. Got: "..type(region));
+	if not ref then
+		assert(region.GetParent, "Frame does not support retrieving a parent");
+		ref = region:GetParent();
+	end;
+	ref=GetBounds(ref, anchorTo);
 	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
 	if useInner then
 		x, y = Anchors.CalculateGap(anchor, ref, anchorTo, x, y);
