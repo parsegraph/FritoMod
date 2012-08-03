@@ -44,5 +44,7 @@ function Groups.Iterator(name)
 			member:Set(i);
 			return member:Name(), member;
 		end;
+	else
+		error("Unexpected group name: "..tostring(name));
 	end;
 end;
