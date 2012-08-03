@@ -244,6 +244,7 @@ end;
 -- these conversions to be shared across Anchors functions, so this function
 -- was written to ensure the conversion is consistent.
 local function GetAnchorArguments(frame, ...)
+	assert(frame ~= nil, "Frame must not be nil");
 	local anchor, ref, x, y, parent;
 	if type(select(1, ...)) == "string" then
 		-- Since type() is a C function, it makes a nuisance of itself
