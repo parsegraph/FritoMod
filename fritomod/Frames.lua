@@ -140,7 +140,7 @@ end;
 -- Additional arguments will be considered as inherited frames or handlers.
 function Frames.Child(parent, frameType, ...)
 	parent=Frames.AsRegion(parent);
-	assert(frame.GetChildren, "Specified parent cannot handle children");
+	assert(parent.GetChildren, "Specified parent cannot handle children");
 	local child=CreateFrame(frameType, nil, parent, ...);
 	if Frames.IsInjected(parent) then
 		Frames.Inject(child);
