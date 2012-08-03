@@ -25,50 +25,83 @@ textures.black  ="Interface/DialogFrame/UI-DialogBox-Background";
 textures.tooltip="Interface/Tooltips/UI-Tooltip-Background";
 textures.chat   ="Interface/Tooltips/ChatBubble-Background";
 
+textures["bar"] = {
+    name = "Interface/TARGETINGFRAME/UI-StatusBar",
+    blend = "MOD"
+};
+
 do
-	CHECKBOX_COORDS = {3/32, 28/32, 4/32, 27/32};
+	-- Checkbox texture.
 
-	textures.darkbox = {
-		name = "Interface/BUTTONS/UI-CheckBox-Up",
-		coords = CHECKBOX_COORDS
-	};
-	textures["checkbox"]   = textures.darkbox;
-	textures["check box"]  = textures.darkbox;
+	local function Texture(name)
+		local COORDS = {3/32, 28/32, 4/32, 27/32};
+		return {
+			name = "Interface/BUTTONS/UI-CheckBox-"..name,
+			coords = COORDS
+		};
+	end;
 
-	textures["check"] = {
-		name   = "Interface/BUTTONS/UI-CheckBox-Check",
-		coords = CHECKBOX_COORDS
-	};
-	textures["checked"]    = textures.check;
-	textures["checkmark"]  = textures.check;
-	textures["check mark"] = textures.check;
+	textures["checkbox normal"] = Texture("Up");
+	textures["checkbox pushed"] = Texture("Down");
+	textures["checkbox checked"] = Texture("Check");
+	textures["checkbox disabledChecked"] = Texture("Check-Disabled");
+	textures["checkbox highlight"] = Texture("Highlight");
+end;
 
-	textures["disabled check"] = {
-		name = "Interface/BUTTONS/UI-CheckBox-Check-Disabled",
-		coords = CHECKBOX_COORDS
-	};
-	textures["check gray"]     = textures["disabled check"];
-	textures["check grey"]     = textures["disabled check"];
-	textures["check off"]      = textures["disabled check"];
-	textures["gray check"]     = textures["disabled check"];
-	textures["grey check"]     = textures["disabled check"];
-	textures["off check"]      = textures["disabled check"];
-	textures["check disabled"] = textures["disabled check"];
+do
+	-- Close button.
 
-	textures["check highlight"] = {
-		name = "Interface/BUTTONS/UI-CheckBox-Highlight",
-		coords = CHECKBOX_COORDS
-	};
-	textures["check highlighted"] = textures["check highlight"];
-	textures["check hilight"]     = textures["check highlight"];
-	textures["check hilighted"]   = textures["check highlight"];
-	textures["check mouseover"]   = textures["check highlight"];
-	textures["check glow"]        = textures["check highlight"];
+	local function Texture(name)
+		local COORDS = {6/32, 25/32, 7/32, 25/32};
+		return {
+			name = "Interface/BUTTONS/UI-Panel-MinimizeButton-"..name,
+			coords = COORDS
+		};
+	end;
 
-	textures["bar"] = {
-		name = "Interface/TARGETINGFRAME/UI-StatusBar",
-		blend = "MOD"
-	};
+	textures["close normal"] = Texture("Up");
+	textures["close pushed"] = Texture("Down");
+	textures["close highlight"] = Texture("Highlight");
+end;
+
+do
+	-- Slot texture family. Used for action buttons.
+
+	local function Texture(name)
+		local COORDS = {12/64, 51/64, 12/64, 51/64};
+		return {
+			name = name,
+			coords = COORDS
+		};
+	end;
+
+	textures["slot normal"] = Texture("Interface\\Buttons\\UI-Quickslot2");
+	textures["slot"] = textures["slot normal"];
+
+	textures["slot pushed"] = Texture("Interface\\Buttons\\UI-Quickslot-Depress");
+
+	textures["slot highlight"] = Texture("Interface\\Buttons\\ButtonHilight-Square");
+
+	textures["slot checked"] = Texture("Interface\\Buttons\\CheckButtonHilight");
+	textures["slot checked"].blend = "ADD";
+end;
+
+do
+	-- Downward facing arrow. Used in dropdowns.
+
+	local function Texture(name)
+		-- TODO Ensure these coords are right
+		local COORDS = {12/64, 51/64, 12/64, 51/64};
+		return {
+			name = name,
+			coords = COORDS
+		};
+	end;
+	textures["dropdown normal"] = Texture("Interface\\CHATFRAME\\UI-ChatIcon-ScrollDown-Up");
+	textures["dropdown"] = textures["dropdown normal"];
+	textures["dropdown pushed"] = Texture("Interface\\CHATFRAME\\UI-ChatIcon-ScrollDown-Down");
+	textures["dropdown highlight"] = Texture("Interface\\Buttons\\UI-Common-MouseHilight");
+	textures["dropdown disabled"] = Texture("Interface\\CHATFRAME\\UI-ChatIcon-ScrollDown-Disabled");
 end;
 
 -- A generic collection of textures

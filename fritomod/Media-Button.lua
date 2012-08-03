@@ -107,7 +107,6 @@ local function ApplyStandardButton(layout, button)
 	if button.SetDisabledCheckedTexture then
 		button:SetDisabledCheckedTexture(layout.disabledChecked);
 	end;
-	end;
 	if layout.Finish then
 		layout.Finish(button, layout);
 	end;
