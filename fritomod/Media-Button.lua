@@ -85,21 +85,28 @@ buttons.dropdown={
 };
 
 local function ApplyStandardButton(layout, button)
-	if button:GetObjectType():find("Button$") then
+	if button.SetNormalTexture then
 		button:SetNormalTexture(layout.normal);
-		button:SetPushedTexture(layout.pushed);
-		button:SetHighlightTexture(layout.highlight);
-		if button:GetObjectType():find("CheckButton$") then
-			button:SetCheckedTexture(layout.checked);
-			button:SetDisabledCheckedTexture(layout.disabledChecked);
-		end;
-	elseif button:GetObjectType() == "Texture" then
+	elseif button.SetTexture then
 		button:SetTexture(layout.normal);
-	else
+	elseif button.CreateTexture then
 		local t=button:CreateTexture();
 		t:SetAllPoints();
 		t:SetTexture(layout.normal);
 		button=t;
+	end;
+	if button.SetPushedTexture then
+		button:SetPushedTexture(layout.pushed);
+	end;
+	if button.SetHighlightTexture then
+		button:SetHighlightTexture(layout.highlight);
+	end;
+	if button.SetCheckedTexture then
+		button:SetCheckedTexture(layout.checked);
+	end;
+	if button.SetDisabledCheckedTexture then
+		button:SetDisabledCheckedTexture(layout.disabledChecked);
+	end;
 	end;
 	if layout.Finish then
 		layout.Finish(button, layout);
