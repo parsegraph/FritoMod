@@ -275,7 +275,21 @@ end;
 --- name. It is up to the UI object whether this change should result in a
 --- visual appearance change or not.
 local function GetAnchorable(frame, anchor)
-	return Frames.AsRegion(frame) or GetAnchorable(frame:Anchor(anchor), anchor);
+	local anchorable = Frames.AsRegion(frame);
+	if anchorable then
+		-- Return regions by default
+		return anchorable;
+	end;
+	-- Invoke Anchor proxy method
+	anchorable = frame:Anchor(anchor);
+	if anchorable and anchorable ~= frame then
+		-- If a different object was returned from Anchor, then recurse.
+		return GetAnchorable(anchorable, anchor);
+	end;
+	if frame.SetPoint then
+		return frame;
+	end;
+	error("No anchorable was determined");
 end;
 
 -- Returns a region that represents the bounds of the specified object. Frames, regions,
