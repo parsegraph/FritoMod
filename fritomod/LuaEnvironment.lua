@@ -39,15 +39,22 @@ function LuaEnvironment:LoadString(str)
 end;
 
 function LuaEnvironment:LoadFile(file)
+	local errors = {};
 	for _, loader in ipairs(self.loaders) do
-		local runner=loader(self, file);
+		local runner, err = loader(self, file);
 		if IsCallable(runner) then
 			return self:LoadFunction(runner);
 		elseif runner==false then
 			return Noop;
+		elseif err then
+			errors[loader] = err;
 		end;
 	end;
-	error("Could not load: "..file);
+	local str = "Could not load: "..file;
+	for loader, err in pairs(errors) do
+		str = str .. "\nError from loader: " .. err;
+	end;
+	error(str);
 end;
 
 function LuaEnvironment:Require(package)
@@ -109,6 +116,7 @@ function loaders.Filesystem(loader, env, package)
 		if runner then
 			return runner;
 		end;
+		return nil, err;
 	end;
 end;
 
