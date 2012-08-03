@@ -314,13 +314,13 @@ local function GetGapAndFrames(gap, ...)
 		frames={gap, ...};
 		gap=0;
 	elseif select("#", ...) == 0 and type(gap) == "table" then
-		if Frames.AsRegion(gap) then
-			frames = {gap}
-		else
+		if #gap > 0 then
 			frames = gap;
+		else
+			frames = {gap}
 		end;
 		gap=0;
-	elseif select("#", ...) == 1 and not Frames.AsRegion(...) then
+	elseif select("#", ...) == 1 and #(...) > 0 then
 		frames = ...;
 	else
 		frames={...};
