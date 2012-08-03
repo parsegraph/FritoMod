@@ -9,7 +9,7 @@ end;
 
 UI = UI or {};
 
-local CheckBox = OOP.Class(UI.Icon);
+local CheckBox = OOP.Class();
 UI.CheckBox = CheckBox;
 UI.Checkbox = UI.CheckBox;
 
