@@ -60,6 +60,7 @@ Icon.Set = Icon.SetTexture;
 function Icon:GetInternalTexture()
 	return self.texture;
 end;
+Icon.GetNormalTexture=Icon.GetInternalTexture;
 
 function Icon:SetPortraitTexture(target)
 	if self.texture then
