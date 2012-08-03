@@ -430,16 +430,21 @@ end);
 Media.SetAlias("texture", "textures", "background", "backgrounds");
 
 Frames=Frames or {};
-function Frames.Texture(f, texture)
+function Frames.Texture(f, texture, blendMode)
 	f=Frames.AsRegion(f);
 	texture = Media.texture[texture];
-	local coords, blend;
+	local coords;
 	if type(texture) == "table" then
 		coords = texture.coords;
-		blend = texture.blend;
 		-- Be sure that this line ends up last, since it
 		-- blows away the original texture.
 		texture = texture.name;
+		if not blendMode then
+			blendMode = texture.blend;
+		end;
+	end;
+	if blendMode == nil then
+		blendMode = Bool(texture:find("Highlight") or texture:find("Hilight"));
 	end;
 	texture = texture:gsub("/", "\\");
 	if f:GetObjectType():find("Button$") then
@@ -463,13 +468,13 @@ function Frames.Texture(f, texture)
 	else
 		f:SetTexCoord(0, 1, 0, 1);
 	end;
-	if blend then
-		if blend == true then
-			blend = "BLEND";
-		elseif blend == false then
-			blend = "DISABLE";
+	if blendMode then
+		if blendMode == true then
+			blendMode = "BLEND";
+		elseif blendMode == false then
+			blendMode = "DISABLE";
 		end;
-		f:SetBlendMode(blend:upper());
+		f:SetBlendMode(blendMode:upper());
 	end;
 	return f;
 end;
