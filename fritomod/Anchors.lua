@@ -1790,15 +1790,46 @@ Anchors.InnerSet = Curry(DoSet, true);
 Anchors.ISet = Anchors.InnerSet;
 Anchors.Set = Anchors.InnerSet;
 
-function Anchors.Clear(...)
+function Anchors.ConditionalClear(strategy, ...)
 	if select("#", ...) == 1 and #(...) > 0 then
 		trace("Unpacking list for clearing")
-		return Anchors.Clear(unpack(...));
+		return Anchors.ConditionalClear(strategy, unpack(...));
 	end;
 	for i=1, select("#", ...) do
 		local frame = select(i, ...);
 		if frame then
-			Frames.AsRegion(frame):ClearAllPoints();
+			local points = {};
+			frame=Frames.AsRegion(frame);
+			for i=1, frame:GetNumPoints() do
+				local anchor, ref, anchorTo, x, y = frame:GetPoint(i);
+				if strategy(Frames.AsRegion(frame)) then
+					table.insert(points, {anchor, ref, anchorTo, x, y});
+				end;
+			end;
+			frame:ClearAllPoints();
+			for i=1, #points do
+				frame:SetPoint(unpack(points[i]));
+			end;
 		end;
 	end;
+end;
+
+Anchors.Clear = Curry(Anchors.ConditionalClear, Operator.False);
+Anchors.ClearVertical = Curry(Anchors.ConditionalClear, function(anchor, ...)
+	return Frames.VComp(anchor) == "CENTER";
+end);
+Anchors.VClear = Anchors.ClearVertical;
+Anchors.ClearV = Anchors.ClearVertical;
+
+Anchors.ClearHorizontal = Curry(Anchors.ConditionalClear, function(anchor, ...)
+	return Frames.HComp(anchor) == "CENTER";
+end);
+Anchors.HClear = Anchors.ClearHorizontal;
+Anchors.ClearH = Anchors.ClearHorizontal;
+
+function Anchors.ClearPoint(point, ...)
+	point=point:upper();
+	return Anchors.ConditionalClear(function(anchor)
+		return anchor ~= point;
+	end, ...);
 end;
