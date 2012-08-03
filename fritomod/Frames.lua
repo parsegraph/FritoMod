@@ -556,6 +556,35 @@ do
 	Frames.ShrinkFont = Frames.ShrinkFontToFit;
 end;
 
+function Frames.Saturate(texture)
+	texture = Frames.AsRegion(texture);
+	assert(texture, "texture must be a region");
+
+	if texture.SetDesaturated and texture:SetDesaturated(nil) then
+		local noop = false; -- just fall through
+	elseif texture.SetVertexColor and texture.GetVertexColor then
+		texture:SetVertexColor(1, 1, 1);
+	else
+		error("No method of saturation supported for "..tostring(texture));
+	end;
+
+	return Functions.OnlyOnce(Frames.Desaturate, texture);
+end;
+
+function Frames.Desaturate(texture)
+	texture = Frames.AsRegion(texture);
+	assert(texture, "texture must be a region");
+	if texture.SetDesaturated and texture:SetDesaturated(1) then
+		return Functions.OnlyOnce(texture, "SetDesaturated", nil);
+	end;
+	if texture.SetVertexColor and texture.GetVertexColor then
+		local r,g,b,a = texture:GetVertexColor();
+		texture:SetVertexColor(0.5, 0.5, 0.5);
+		return Functions.OnlyOnce(texture, "SetVertexColor", r, g, b, a);
+	end;
+	error("No method of desaturation supported for "..tostring(texture));
+end
+
 function Frames.Destroy(...)
 	if select("#", ...) == 1 and type(...) == "table" and #(...) > 0 then
 		trace("Unpacking list for destruction")
