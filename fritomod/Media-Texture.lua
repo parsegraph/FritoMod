@@ -443,8 +443,11 @@ function Frames.Texture(f, texture)
 	end;
 	texture = texture:gsub("/", "\\");
 	if f:GetObjectType():find("Button$") then
-		f:SetNormalTexture(texture);
-		f=f:GetNormalTexture();
+		local t=f:CreateTexture();
+		Anchors.ShareAll(t, f);
+		t:SetTexture(texture);
+		f:SetNormalTexture(t);
+		f=t;
 	elseif f:GetObjectType() == "Texture" then
 		f:SetTexture(texture);
 	elseif f.CreateTexture then
