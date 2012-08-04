@@ -1,0 +1,31 @@
+Features and Wishlist
+
+## Predicate Builder
+
+A UI for using Predicates to build up sophisticated callbacks without a lot
+of headache. This work could possibly be rolled into the Asset system, with
+constructed predicates being a provided asset.
+
+## Catalog
+
+A catalog is a compendium of WoW spell information. It'd be designed to
+aggregate lots of different spell and ability information, like cooldowns
+and buffs.
+
+Something like this:
+
+local types = Catalog.Types("Psychic Scream");
+Assert.Equals({
+	"CC",
+	"Priest",
+	"Fear"
+}, types);
+
+### Minimap Icon
+
+The icon should be draggable. It should stack locked to the perimeter of the
+minimap, but our draggable stuff doesn't yet support this. I'd like to have
+draggable-like stuff like this be easy to use (meaning pluggable), but I'm not
+quite sure how it should look yet.
+
+vim: set tw=80 :
