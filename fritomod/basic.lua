@@ -181,3 +181,7 @@ function trace(str, ...)
 		return printf(str, ...);
 	end;
 end;
+
+function tracef(format, ...)
+    return trace(format:format(...));
+end;
