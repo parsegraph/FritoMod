@@ -38,6 +38,10 @@ function Frame:SetAllPoints(ref)
 	-- TODO Stub
 end;
 
+function Frame:ClearAllPoints(ref)
+	-- TODO Stub
+end;
+
 function Frame:SetPoint(anchor, ...)
 	WoW.AssertAnchor(anchor);
 	if select("#", ...) == 0 then
