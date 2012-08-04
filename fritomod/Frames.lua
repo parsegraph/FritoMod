@@ -283,6 +283,9 @@ Frames.Size=Frames.Rectangle;
 Frames.WidthHeight=Frames.Rectangle;
 Frames.WH=Frames.WidthHeight;
 function Frames.HeightWidth(f, h, w)
+	if w == nil then
+		w = h;
+	end;
 	Frames.Rectangle(f, w, h);
 end;
 Frames.HW=Frames.HeightWidth;
