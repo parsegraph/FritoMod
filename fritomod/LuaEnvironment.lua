@@ -9,6 +9,7 @@ end;
 LuaEnvironment=OOP.Class();
 
 function LuaEnvironment:Constructor(globals)
+	globals = globals or _G;
 	self.globals=setmetatable({}, {
 		__index=function(self, k)
 			-- We use a function to hide the reference to globals.
