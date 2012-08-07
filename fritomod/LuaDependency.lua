@@ -32,6 +32,7 @@ function LuaDependency:Process(file)
 		if not package:find("\.lua$") then
 			package=package..".lua";
 		end;
+		package = package:gsub("\\", "/");
 		return package;
 	end;
 
