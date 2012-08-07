@@ -267,6 +267,9 @@ function Strings.JoinArray(delimiter, items)
 end
 
 function Strings.JoinValues(delimiter, ...)
+	for i=1, select("#", ...) do
+		assert(select(i, ...) ~= nil, "Argument "..i.." must not be nil");
+	end;
 	return Strings.JoinArray(delimiter, { ... });
 end
 Strings.Join=Strings.JoinValues;
