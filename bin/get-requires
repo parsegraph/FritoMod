@@ -52,6 +52,8 @@ for i=1,#arg do
 		end;
 	elseif lfs.attributes(arg[i], "mode") == "file" and arg[i]:find("\.lua$") then
 		table.insert(files, arg[i]);
+	else
+		error("Unexpected argument: "..tostring(arg[i]));
 	end;
 end;
 
