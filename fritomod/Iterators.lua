@@ -134,6 +134,12 @@ end;
 -- end;
 function Iterators.Repeat(...)
 	local args = { ... };
+	assert(#args > 0, "Args must have at least one element");
+	for i=1, #args do
+		-- Throw on nils. We could have a special value and perform the
+		-- translation later, but that'd be unconventional.
+		assert(args[i] ~= nil, "Nil values must not be given");
+	end;
 	local iterator=Iterators.IterateList(args);
 	return function()
 		local _,v=iterator();
