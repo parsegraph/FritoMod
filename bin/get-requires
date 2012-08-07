@@ -97,11 +97,11 @@ for i=1,#arg do
 	local o=arg[i];
 	if o=="-M" or o=="--make" then
 		processor = MakefileWriter();
-	elseif o=="-T" or o=="--text" or o=="--toc" then
+	elseif o=="-t" or o=="--text" or o=="--toc" then
 		processor = PlainTextWriter();
-	elseif o=="-X" or o=="--xml" then
+	elseif o=="-x" or o=="--xml" then
 		processor = XMLWriter();
-	elseif o=="-L" or o=="--lua" then
+	elseif o=="-l" or o=="--lua" then
 		processor = LuaWriter();
 	elseif o=="-a" or o=="--all" then
 		ALL=true;
