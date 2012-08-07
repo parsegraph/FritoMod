@@ -28,4 +28,4 @@ minimap, but our draggable stuff doesn't yet support this. I'd like to have
 draggable-like stuff like this be easy to use (meaning pluggable), but I'm not
 quite sure how it should look yet.
 
-vim: set tw=80 :
+vim: set tw=80 ft=markdown :
