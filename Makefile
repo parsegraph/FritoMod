@@ -15,7 +15,7 @@ toc: FritoMod.toc
 
 FritoMod.toc: $(dirs) bin/get-requires FritoMod.toc.in
 	./FritoMod.toc.in >.FritoMod.toc
-	./bin/get-requires $(dirs) >>.FritoMod.toc
+	./bin/get-requires --windows $(dirs) >>.FritoMod.toc
 	mv .FritoMod.toc FritoMod.toc
 
 clean:
