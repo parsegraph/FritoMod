@@ -7,42 +7,6 @@ end;
 
 local Suite=CreateTestSuite("fritomod.UI-Layered");
 
-function Suite:TestLayered()
-    local lay = UI.Layered:New(UIParent);
-    lay:Order("A", "B", "D", "C", "E", "F", "G");
-    lay:Order("C", "D", "G");
-    Assert.Equals(
-        {"A", "B", "C", "D", "E", "F", "G"},
-        lay:GetOrder());
-end;
-
-function Suite:TestLayeredWithEqualHead()
-    local lay = UI.Layered:New(UIParent);
-    lay:Order("A", "B", "C", "D", "E", "F", "G");
-    lay:Order("A", "B", "C");
-    Assert.Equals(
-        {"A", "B", "C", "D", "E", "F", "G"},
-        lay:GetOrder());
-end;
-
-function Suite:TestLayeredWithEqualTail()
-    local lay = UI.Layered:New(UIParent);
-    lay:Order("A", "B", "C", "D", "E", "F", "G");
-    lay:Order("E", "F", "G");
-    Assert.Equals(
-        {"A", "B", "C", "D", "E", "F", "G"},
-        lay:GetOrder());
-end;
-
-function Suite:TestLayeredWithTail()
-    local lay = UI.Layered:New(UIParent);
-    lay:Order("A", "B", "C", "D");
-    lay:Order("E", "F", "G");
-    Assert.Equals(
-        {"A", "B", "C", "D", "E", "F", "G"},
-        lay:GetOrder());
-end;
-
 function Suite:TestRemovals()
     local lay = UI.Layered:New(UIParent);
     lay:AddColor("background", "black");
