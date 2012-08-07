@@ -10,6 +10,9 @@ end;
 
 MappedTestSuite = OOP.Class(TestSuite);
 
+-- Empty suite is used to differentiate functions provided by MappedTestSuite from those
+-- provided by clients. As a result, EMPTY_SUITE should never contain tests or be used
+-- anywhere but here.
 local EMPTY_SUITE;
 
 function MappedTestSuite:GetTests(matcher, ...)
