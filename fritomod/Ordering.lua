@@ -1,6 +1,7 @@
 if nil ~= require then
     require "fritomod/OOP-Class";
     require "fritomod/Lists";
+    require "fritomod/Strings";
 end;
 
 
@@ -45,6 +46,10 @@ function Ordering:Order(order, ...)
             .. "duplicate ordering names are ambiguous and not allowed");
             names[name] = true;
         end;
+    end;
+
+    if DEBUG_TRACE then
+        trace("Reordering with: " .. Strings.Join(" ", order));
     end;
 
     local ourIndex = 1;
