@@ -46,7 +46,7 @@ function Curry(...)
 			return CurryHeadlessMethod(potentialCallable);
 		end;
 	end;
-	objOrFunc, funcOrName = ...;
+	local objOrFunc, funcOrName = ...;
 	if not objOrFunc then
 		error("objOrFunc is falsy");
 	end;
