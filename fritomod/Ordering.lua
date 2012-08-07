@@ -122,3 +122,7 @@ end;
 function Ordering:Remove(name)
     Lists.Remove(self.order, name);
 end;
+
+function Ordering:Filter(filter, ...)
+    self.order = Lists.Filter(self.order, filter, ...);
+end;
