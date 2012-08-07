@@ -38,10 +38,9 @@ local CLEAN = UnixClean;
 
 local files={};
 local function AddFile(file)
-	if lfs.attributes(file, "mode") == "file" and file:find("\.lua$") then
-		file = tostring(file):gsub("^\./", "");
-		table.insert(files, file);
-	end;
+	assert(lfs.attributes(file, "mode" == "file", "Argument is not a file: "..tostring(file)));
+	file = tostring(file):gsub("^\./", "");
+	table.insert(files, file);
 end;
 
 local function PlainTextWriter()
@@ -114,8 +113,12 @@ for i=1,#arg do
 		VERBOSE=true;
 	elseif lfs.attributes(arg[i], "mode") == "directory" then
 		local dir=arg[i];
+		dir = dir:gsub("[/\\]+$", "");
 		for child in lfs.dir(dir) do
-			AddFile(dir.."/"..child);
+			child = dir .. "/" .. child;
+			if lfs.attributes(child, "mode") == "file" and child:find("\.lua$") then
+				AddFile(child);
+			end;
 		end;
 	else
 		AddFile(arg[i]);
