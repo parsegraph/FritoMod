@@ -25,7 +25,6 @@ function LuaDependency:Process(file)
 	local env = self:NewEnvironment(file);
 	env:AddLoader(LuaEnvironment.Loaders.Ignore("bit", "lfs"));
 	env:AddLoader(LuaEnvironment.Loaders.Filesystem(loadfile));
-	env:Require("bin/global");
 
 	local dependencyStack = {};
 
@@ -57,5 +56,6 @@ function LuaDependency:Process(file)
 		assert(package==expected, "Unexpected dependency. Expected: "..expected.." Received: "..package);
 	end;
 
+	env:Require("bin/global");
 	env:Require(file);
 end;
