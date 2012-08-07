@@ -8,6 +8,7 @@ cat - <<EOF
 ## Version: `git describe --tags`
 ## SavedVariables: _Persistence
 tooltip.xml
+files.xml
 EOF
 
 # vim: set filetype=sh :
