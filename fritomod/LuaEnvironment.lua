@@ -73,18 +73,22 @@ function LuaEnvironment:Require(package)
 	end;
 end;
 
+-- Hook that is run immediately before requiring the specified file.
 function LuaEnvironment:OnRequireLoading(package)
 	-- Noop. Free to implement as a listener.
 end;
 
+-- Hook that is run immediately after successfully requiring the specified file.
 function LuaEnvironment:OnRequireFinish(package)
 	-- Noop. Free to implement as a listener.
 end;
 
+-- Hook that is run if the package was intentionally skipped by this environment.
 function LuaEnvironment:OnRequireSkipped(package)
 	-- Noop. Free to implement as a listener.
 end;
 
+-- Hook that is run if the package was already loaded and does not need to be required.
 function LuaEnvironment:OnRequireIgnored(package)
 	-- Noop. Free to implement as a listener.
 end;
