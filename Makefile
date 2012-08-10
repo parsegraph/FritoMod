@@ -26,3 +26,5 @@ clean:
 	rm -f files.xml .files.xml
 .PHONY: clean
 
+count:
+	find -name '*.lua' -print0 | xargs -0 wc -l | tail -1
