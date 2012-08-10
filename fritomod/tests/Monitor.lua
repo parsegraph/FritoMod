@@ -44,7 +44,7 @@ function Suite:TestMonitorStateOrder()
 
 	t:SetWithDuration("5s");
 	self:Tick(10);
-	t:Destroy();
+	t:Clear();
 
 	Assert.Equals({
 		"Active",
@@ -63,7 +63,7 @@ function Suite:TestMonitorStateOrderWithChange()
 	self:Tick(2);
 	t:Delay("2s");
 	self:Tick(15);
-	t:Destroy();
+	t:Clear();
 
 	Assert.Equals({
 		"Active",

@@ -140,7 +140,7 @@ function Monitor:LastTime()
 	return self.lastTime;
 end;
 
-function Monitor:Destroy(...)
+function Monitor:Clear()
 	self.duration = nil;
 	self.startTime = nil;
 	self:SafeFire("Inactive");

@@ -22,7 +22,7 @@ function Monitors.MyCooldown(name, frequency)
 		end;
 		if not startTime then
 			-- Not a spell or an item, so we consider it inactive.
-			m:Destroy();
+			m:Clear();
 			return;
 		end;
 		if enabled == 0 then
