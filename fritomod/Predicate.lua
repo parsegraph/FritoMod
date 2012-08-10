@@ -318,8 +318,3 @@ function Predicate:SetEvaluator(func, ...)
 	self.evaluator = func;
 	self:Run();
 end;
-
-function Predicate:Destroy()
-	self:Detach();
-	self:ForceReset();
-end;
