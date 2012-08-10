@@ -114,4 +114,5 @@ function SpellQueueItem:Destroy()
 		self.monitor=nil;
 	end;
 	Frames.Destroy(self.frame);
+	SpellQueueItem.super.Destroy(self);
 end;

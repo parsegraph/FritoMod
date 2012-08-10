@@ -167,4 +167,5 @@ function CheckBox:Destroy()
 		self.callbacks = nil;
 	end;
 	Frames.Destroy(self.icon, self.text, self.mark, self.highlight, self.hitbox);
+	CheckBox.super.Destroy(self);
 end;

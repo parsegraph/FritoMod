@@ -58,4 +58,5 @@ function ActionPlate:Destroy()
 		self.actionIcon,
 		self.targetFrame
 	);
+	ActionPlate.super.Destroy(self);
 end;

@@ -73,4 +73,5 @@ end;
 
 function WrappingPlates:Destroy()
 	Lists.Each(self.children, Frames.Destroy);
+	WrappingPlates.super.Destroy(self);
 end;

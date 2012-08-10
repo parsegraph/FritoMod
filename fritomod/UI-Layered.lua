@@ -142,4 +142,5 @@ end;
 function Layered:Destroy()
     self.order:Each(self, "RemoveOrder");
     Frames.Destroy(self.frame);
+    Layered.super.Destroy(self);
 end;

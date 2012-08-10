@@ -150,6 +150,6 @@ function SpellQueue:Anchor(anchor)
 end;
 
 function SpellQueue:Destroy()
-	Frames.Destroy(self.root);
-	Frames.Destroy(self.icons);
+	Frames.Destroy(self.root, self.icons);
+	SpellQueue.super.Destroy(self);
 end;
