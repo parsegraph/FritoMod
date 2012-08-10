@@ -143,3 +143,5 @@ OOP.Class = function(...)
 
 	return class;
 end;
+
+-- vim: set noet :
