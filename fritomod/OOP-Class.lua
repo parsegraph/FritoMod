@@ -142,6 +142,10 @@ OOP.Class = function(...)
 		end;
 	end
 
+	if not class.super then
+		class.super = CLASS_METATABLE;
+	end;
+
 	return class;
 end;
 
