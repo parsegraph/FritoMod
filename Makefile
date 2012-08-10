@@ -17,7 +17,7 @@ FritoMod.toc: $(dirs) FritoMod.toc.in
 	./FritoMod.toc.in >.FritoMod.toc
 	mv .FritoMod.toc FritoMod.toc
 
-files.xml: bin/get-requires
+files.xml: $(dirs) bin/get-requires
 	./bin/get-requires --windows --xml $(dirs) >.files.xml
 	mv .files.xml files.xml
 
