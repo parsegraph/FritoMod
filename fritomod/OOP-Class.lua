@@ -32,9 +32,11 @@ local CLASS_METATABLE = {
 		if not object then
 			error("Object is falsy");
 		end;
-		for i=1, #self.constructors do
-			local constructor = self.constructors[i];
-			constructor(object, ...);
+		if self.constructors then
+			for i=1, #self.constructors do
+				local constructor = self.constructors[i];
+				constructor(object, ...);
+			end;
 		end;
 	end,
 
@@ -114,7 +116,6 @@ end
 OOP.Class = function(...)
 	local class = {
 		__index = CLASS_METATABLE,
-		constructors = {},
 		New=New
 	};
 	setmetatable(class, class);
