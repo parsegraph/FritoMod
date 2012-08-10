@@ -73,7 +73,7 @@ function Monitor:Reduce(magnitude)
 	self:SetWithBounds(self:LastTime() - magnitude, self:StartTime());
 end;
 
-function Monitor:Reset()
+function Monitor:Rebase()
 	self:SetWithBounds(self:Duration() + self:CurrentTime(), self:CurrentTime());
 end;
 
