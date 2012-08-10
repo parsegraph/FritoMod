@@ -82,3 +82,50 @@ function Suite:TestAddMixinWithConstructor()
 	Base:New();
 	Base.instances.Assert(2, "Returned constructor was fired twice");
 end;
+
+function Suite:TestClassDestructor()
+    local C = OOP.Class();
+    local f = Tests.Flag();
+    C:AddConstructor(f.Raise);
+    local i = C:New();
+    f:Assert();
+    i:Destroy();
+    f:AssertUnset();
+end;
+
+function Suite:TestInstanceDestructor()
+    local C = OOP.Class();
+    local f = Tests.Flag();
+    local i = C:New();
+    i:AddDestructor(f.Toggle);
+    i:Destroy();
+    f:Assert();
+end;
+
+function Suite:TestClassDestructorWithMultipleInstances()
+    local C = OOP.Class();
+    local f = Tests.Flag();
+    C:AddDestructor(f.Toggle);
+    C:New():Destroy();
+    f:AssertSet();
+    C:New():Destroy();
+    f:AssertUnset();
+end;
+
+function Suite:TestDestructorOrdering()
+    local C = OOP.Class();
+
+    local order = {};
+    function C:Destroy()
+        table.insert(order, "Method");
+        C.super.Destroy(self);
+    end;
+
+    C:AddDestructor(Seal(table.insert, order, "Class"));
+
+    local i = C:New();
+    i:AddDestructor(Seal(table.insert, order, "Instance"));
+
+    i:Destroy();
+    Assert.Equals({"Method", "Instance", "Class"}, order);
+end;

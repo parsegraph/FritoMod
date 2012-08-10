@@ -35,7 +35,10 @@ local CLASS_METATABLE = {
 		if self.constructors then
 			for i=1, #self.constructors do
 				local constructor = self.constructors[i];
-				constructor(object, ...);
+				local destructor = constructor(object, ...);
+				if IsCallable(destructor) then
+					object:AddDestructor(destructor);
+				end;
 			end;
 		end;
 	end,
@@ -62,10 +65,32 @@ local CLASS_METATABLE = {
 	-- Adds the specified constructor function to this class. The constructor will be called
 	-- for all created instances of this class, but before the instance's actual constructor
 	-- is invoked.
+	--
+	-- The return value, if callable, will be treated as a destructor. It will be invoked when
+	-- the object's Destroy method is called.
 	AddConstructor = function(self, constructorFunc, ...)
 		constructorFunc = Curry(constructorFunc, ...);
 		self.constructors = self.constructors or {};
 		table.insert(self.constructors, constructorFunc);
+	end,
+
+	-- Adds the specified destructor function to this class or instance. Instance-specific
+	-- destructors will be invoked when Destroy is called.
+	--
+	-- Note that the instance reference will be provided only to class-specific destructors.
+	-- If you need (or do not need) the instance reference, then you should explicitly
+	-- Seal or Curry it accordingly.
+	AddDestructor = function(self, destructor, ...)
+		destructor = Curry(destructor, ...);
+		-- Note that self could be referring to either the instance or the class. This
+		-- is intentional. For now, I don't see a reason to make it more explicit; I'm
+		-- assuming which one is used will be obvious from the calling context.
+		local destructors = rawget(self, "__destructors");
+		if not destructors then
+			destructors = {};
+			rawset(self, "__destructors", destructors);
+		end;
+		table.insert(destructors, destructor);
 	end,
 
 	ToString = function(self)
@@ -74,6 +99,32 @@ local CLASS_METATABLE = {
 			return "Instance@" .. reference;
 		end;
 		return "Class@" .. reference;
+	end,
+
+	-- Destroy this object. All instance-specific destructors will be run, then all class-
+	-- specific destructors will be run.
+	--
+	-- Subclasses that override this method should always invoke it once their destruction
+	-- has completed.
+	Destroy = function(self)
+		-- Use rawget so we don't get the class-specific destructors
+		local instanceDestructors = rawget(self, "__destructors");
+		if instanceDestructors then
+			for i=1, #instanceDestructors do
+				instanceDestructors[i]();
+			end;
+			-- Clean up our destructors so they're only invoked once, even if Destroy
+			-- is called multiple times.
+			rawset(self, "__destructors", nil);
+		end;
+		if self.class and self.class.__destructors then
+			for i=1, #self.class.__destructors do
+				self.class.__destructors[i](self);
+			end;
+			-- Blow away the class reference, so class-specific destructors are not called.
+			self.__index = nil;
+			self.class = nil;
+		end;
 	end
 }
 
