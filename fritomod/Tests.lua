@@ -202,6 +202,15 @@ function Tests.Flag(isSet)
 			return Functions.OnlyOnce(flag.Lower);
 		end,
 
+		-- Toggles this flag. The returned function will undo
+		-- this toggling.
+		Toggle = function()
+			if flag.IsSet() then
+				return flag.Lower();
+			end;
+			return flag.Raise();
+		end,
+
 		-- Returns whether the flag is raised.
 		--
 		-- returns:boolean
