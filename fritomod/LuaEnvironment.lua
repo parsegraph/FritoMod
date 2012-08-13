@@ -28,21 +28,12 @@ function LuaEnvironment:Constructor(globals)
 	self.loaders={};
 	self.loaded={};
 	self.proxies = {};
-	self.lazyValues = {};
 end;
 
 function LuaEnvironment:Get(name)
 	local value = rawget(self.globals, name);
 	if value ~= nil then
 		return value;
-	end;
-	if self.lazyValues[name] then
-		local proxy = self.lazyValues[name];
-		value = proxy(name);
-		if value ~= nil then
-			self:Set(name, value);
-			return self:Get(name);
-		end;
 	end;
 	if self.proxies[name] then
 		local proxy = self.proxies[name];
@@ -60,17 +51,14 @@ end;
 
 function LuaEnvironment:Lazy(name, provider, ...)
 	provider = Curry(provider, ...);
-	if type(name) == "table" and #name > 0 then
-		local removers = {};
-		for i=1, #name do
-			table.insert(removers, self:Lazy(name[i], provider));
+	return self:Proxy(name, function(self, name)
+		local value = provider(name);
+		if value == nil then
+			return nil;
 		end;
-		return Functions.OnlyOnce(Lists.CallEach, removers);
-	end;
-	self.lazyValues[name] = provider;
-	return Functions.OnlyOnce(function()
-		self.lazyValues[name] = nil;
-	end);
+		self:Set(name, value);
+		return value;
+	end, self);
 end;
 
 function LuaEnvironment:Proxy(name, provider, ...)
