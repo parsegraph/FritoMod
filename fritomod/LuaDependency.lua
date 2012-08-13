@@ -1,6 +1,7 @@
 if nil ~= require then
     require "fritomod/OOP-Class";
     require "fritomod/LuaEnvironment";
+    require "fritomod/LuaEnvironment-Loaders";
 end;
 
 LuaDependency = OOP.Class();

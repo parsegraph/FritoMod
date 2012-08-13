@@ -11,6 +11,7 @@ require "lfs"
 
 require "fritomod/currying";
 require "fritomod/LuaEnvironment";
+require "fritomod/LuaEnvironment-Loaders";
 require "fritomod/AllTests";
 
 if arg then
