@@ -102,3 +102,27 @@ function Suite:TestLuaEnvironmentAcceptsProxies()
         Assert.Equals(8, proxy);
     end);
 end;
+
+function Suite:TestLuaEnvironmentSupportsTableInjection()
+    local env = LuaEnvironment:New();
+
+    local injected = {
+        foo = 37
+    };
+
+    env:Inject(injected);
+    env:Inject(function(name)
+        if name == "bar" then
+            return 38;
+        end;
+    end);
+
+    local f = Tests.Flag();
+    local Assert = Assert;
+    env:Run(function()
+        Assert.Equals(37, foo);
+        Assert.Equals(38, bar);
+        f.Raise();
+    end);
+    f.Assert();
+end;

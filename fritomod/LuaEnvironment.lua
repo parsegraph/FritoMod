@@ -28,6 +28,7 @@ function LuaEnvironment:Constructor(globals)
 	self.loaders={};
 	self.loaded={};
 	self.proxies = {};
+	self.injected = {};
 end;
 
 function LuaEnvironment:Get(name)
@@ -38,6 +39,16 @@ function LuaEnvironment:Get(name)
 	if self.proxies[name] then
 		local proxy = self.proxies[name];
 		value = proxy(name);
+		if value ~= nil then
+			return value;
+		end;
+	end;
+	for _, injected in ipairs(self.injected) do
+		if type(injected) == "table" then
+			value = injected[name];
+		else
+			value = injected(name);
+		end;
 		if value ~= nil then
 			return value;
 		end;
@@ -81,6 +92,13 @@ function LuaEnvironment:Proxy(name, provider, ...)
 	return Functions.OnlyOnce(function()
 		self.proxies[name] = nil;
 	end);
+end;
+
+function LuaEnvironment:Inject(injected, ...)
+	if type(injected) ~= "table" or select("#", ...) > 0 then
+		injected = Curry(injected, ...);
+	end;
+	return Lists.Insert(self.injected, injected);
 end;
 
 function LuaEnvironment:AddLoader(loader, ...)
