@@ -212,3 +212,5 @@ end;
 
 CombatObjects.AddSharedEvent("Source", "Target");
 CombatObjects.AddSharedEvent("Target");
+
+-- vim: set noet :
