@@ -57,6 +57,7 @@ function LuaEnvironment:Lazy(name, provider, ...)
 			return nil;
 		end;
 		self:Set(name, value);
+		self.proxies[name] = nil;
 		return value;
 	end, self);
 end;
