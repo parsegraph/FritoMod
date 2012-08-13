@@ -90,7 +90,8 @@ do
 		["1"] = "OBJECT",
 		["3"] = "NPC",
 		["4"] = "PET",
-		["5"] = "VEHICLE"
+		["5"] = "VEHICLE",
+		["8"] = "PLAYER",
 	};
 
 	function TargetEvent:UnitType()
