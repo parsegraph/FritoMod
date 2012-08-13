@@ -49,6 +49,12 @@ function LuaEnvironment:Set(k, v)
 	self.globals[k]=v;
 end;
 
+function LuaEnvironment:Change(k, v)
+	local old = self:Get(k);
+	self:Set(k, v);
+	return Functions.OnlyOnce(self, "Set", k, old);
+end;
+
 function LuaEnvironment:Lazy(name, provider, ...)
 	provider = Curry(provider, ...);
 	return self:Proxy(name, function(self, name)
@@ -75,12 +81,6 @@ function LuaEnvironment:Proxy(name, provider, ...)
 	return Functions.OnlyOnce(function()
 		self.proxies[name] = nil;
 	end);
-end;
-
-function LuaEnvironment:Change(k, v)
-	local old = self:Get(k);
-	self:Set(k, v);
-	return Functions.OnlyOnce(self, "Set", k, old);
 end;
 
 function LuaEnvironment:AddLoader(loader, ...)
