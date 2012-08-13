@@ -49,6 +49,13 @@ function LuaEnvironment:LoadFunction(runner, ...)
 	return runner;
 end;
 
+function LuaEnvironment:Run(runner, ...)
+	if type(runner) == "string" and select("#", ...) == 0 then
+		return self:LoadString(runner)();
+	end;
+	return self:LoadFunction(runner, ...)();
+end;
+
 function LuaEnvironment:LoadString(str)
 	return self:LoadFunction(loadstring(str));
 end;
