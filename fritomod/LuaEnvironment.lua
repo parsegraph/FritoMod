@@ -29,13 +29,13 @@ function LuaEnvironment:Get(k)
 end;
 
 function LuaEnvironment:Set(k, v)
-	local old=self:Get(k);
 	self.globals[k]=v;
-	return old;
 end;
 
 function LuaEnvironment:Change(k, v)
-	return Functions.OnlyOnce(self, "Set", k, self:Set(k, v));
+	local old = self:Get(k);
+	self:Set(k, v);
+	return Functions.OnlyOnce(self, "Set", k, old);
 end;
 
 function LuaEnvironment:AddLoader(loader, ...)

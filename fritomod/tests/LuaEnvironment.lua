@@ -46,3 +46,16 @@ function Suite:TestLuaEnvironmentAcceptsStrings()
     Assert.Nil(__g1);
     Assert.Equals(44, env:Get("__g1"));
 end;
+
+function Suite:TestLuaEnvCanUndoChange()
+    local env = LuaEnvironment:New();
+    env:Set("foo", 24);
+    Assert.Equals(24, env:Get("foo"), "Original value set");
+    local undo = env:Change("foo", 25);
+    Assert.Equals(25, env:Get("foo"), "Value changed");
+    undo();
+    Assert.Equals(24, env:Get("foo"), "Original value reset");
+    env:Set("foo", 26);
+    undo();
+    Assert.Equals(26, env:Get("foo"), "Undo only works once");
+end;
