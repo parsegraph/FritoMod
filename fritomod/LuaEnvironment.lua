@@ -24,6 +24,20 @@ function LuaEnvironment:Constructor(globals)
 	self.loaded={};
 end;
 
+function LuaEnvironment:Get(k)
+	return self.globals[k];
+end;
+
+function LuaEnvironment:Set(k, v)
+	local old=self:Get(k);
+	self.globals[k]=v;
+	return old;
+end;
+
+function LuaEnvironment:Change(k, v)
+	return Functions.OnlyOnce(self, "Set", k, self:Set(k, v));
+end;
+
 function LuaEnvironment:AddLoader(loader, ...)
 	loader=Curry(loader, ...);
 	return Lists.Insert(self.loaders, loader);
@@ -92,20 +106,6 @@ end;
 -- Hook that is run if the package was already loaded and does not need to be required.
 function LuaEnvironment:OnRequireIgnored(package)
 	-- Noop. Free to implement as a listener.
-end;
-
-function LuaEnvironment:Get(k)
-	return self.globals[k];
-end;
-
-function LuaEnvironment:Set(k, v)
-	local old=self:Get(k);
-	self.globals[k]=v;
-	return old;
-end;
-
-function LuaEnvironment:Change(k, v)
-	return Functions.OnlyOnce(self, "Set", k, self:Set(k, v));
 end;
 
 LuaEnvironment.Loaders={};
