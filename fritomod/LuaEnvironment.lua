@@ -53,6 +53,7 @@ function LuaEnvironment:Get(name)
 			return value;
 		end;
 	end;
+	assert(value == nil, "Non-nil values must not be discarded");
 	return nil;
 end;
 
