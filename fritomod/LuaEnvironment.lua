@@ -22,14 +22,42 @@ function LuaEnvironment:Constructor(globals)
 	self.globals.loadstring=Curry(self, "LoadString");
 	self.loaders={};
 	self.loaded={};
+	self.lazyValues = {};
 end;
 
-function LuaEnvironment:Get(k)
-	return self.globals[k];
+function LuaEnvironment:Get(name)
+	local value = self.globals[name];
+	if value ~= nil then
+		return value;
+	end;
+	if self.lazyValues[name] then
+		local proxy = self.lazyValues[name];
+		value = proxy(name);
+		if value ~= nil then
+			self:Set(name, value);
+			return self:Get(name);
+		end;
+	end;
+	return nil;
 end;
 
 function LuaEnvironment:Set(k, v)
 	self.globals[k]=v;
+end;
+
+function LuaEnvironment:Lazy(name, provider, ...)
+	provider = Curry(provider, ...);
+	if type(name) == "table" and #name > 0 then
+		local removers = {};
+		for i=1, #name do
+			table.insert(removers, self:Lazy(name[i], provider));
+		end;
+		return Functions.OnlyOnce(Lists.CallEach, removers);
+	end;
+	self.lazyValues[name] = provider;
+	return Functions.OnlyOnce(function()
+		self.lazyValues[name] = nil;
+	end);
 end;
 
 function LuaEnvironment:Change(k, v)

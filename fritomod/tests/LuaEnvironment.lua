@@ -59,3 +59,22 @@ function Suite:TestLuaEnvCanUndoChange()
     undo();
     Assert.Equals(26, env:Get("foo"), "Undo only works once");
 end;
+
+function Suite:TestLuaEnvironmentAcceptsLazyValues()
+    local env = LuaEnvironment:New();
+    local counter = Tests.Counter(0);
+    env:Lazy("lazy", function(name)
+        Assert.Equals("lazy", name);
+        counter.Hit();
+        return 45;
+    end);
+    Assert.Equals(45, env:Get("lazy"));
+    counter.Assert(1);
+    Assert.Equals(45, env:Get("lazy"));
+    counter.Assert(1);
+
+    local Assert = Assert;
+    env:Run(function()
+        Assert.Equals(45, lazy);
+    end);
+end;
