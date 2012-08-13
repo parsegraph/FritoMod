@@ -191,3 +191,80 @@ function Suite:TestCountdown()
 	end;
 	Assert.Equals({4,3,2,1},c);
 end;
+
+do
+    local g1, g2, g3;
+    Suite:AddListener(Metatables.Noop({
+        TestStarted = function(self, suite)
+            g1 = __g1;
+            g2 = __g2;
+            g3 = __g3;
+        end,
+        TestFinished = function(self, suite)
+            __g1 = g1;
+            __g2 = g2;
+            __g3 = g3;
+        end
+    }));
+end;
+
+function Suite:TestSetfenvHidesTrueGlobals()
+    local g = {};
+
+    local trueGlobal = _G;
+    local assert = assert;
+    local function Test()
+        __g1 = 42;
+        assert(_G ~= trueGlobal, "_G must not refer to the true global table");
+        assert(_G == nil, "_G must be nil unless otherwise specified");
+    end;
+
+    setfenv(Test, g);
+    Test();
+    Assert.Equals(42, g.__g1);
+    Assert.Nil(__g1);
+end;
+
+function Suite:TestNestedFunctionsIgnoreSetfenv()
+    local grandchild = {};
+    local function Grandchild()
+        __g2 = "grandchild";
+    end;
+    -- I use setfenv here to ensure we don't pollute the global namespace, but
+    -- the test is still valid if we omit this safety mechanism.
+    --
+    -- Specifically, functions invoked from a setfenv'd function will use their
+    -- own environment; they will not inherit.
+    setfenv(Grandchild, grandchild);
+
+    local child = {};
+    local function Child()
+        __g1 = "child";
+        Grandchild();
+    end;
+    setfenv(Child, child);
+
+    Child();
+    Assert.Equals("child", child.__g1);
+    Assert.Nil(child.__g2);
+    Assert.Equals("grandchild", grandchild.__g2);
+end;
+
+function Suite:TestNewFunctionsInheritSetfenvTable()
+    local child = {};
+
+    local function Child()
+        local function GrandChild()
+            __g2 = "grandchild";
+        end;
+        __g1 = "child";
+        GrandChild();
+    end;
+    setfenv(Child, child);
+    Child();
+
+    Assert.Nil(__g1);
+    Assert.Equals("child", child.__g1);
+    Assert.Nil(__g2);
+    Assert.Equals("grandchild", child.__g2);
+end;
