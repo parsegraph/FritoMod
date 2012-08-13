@@ -135,3 +135,5 @@ function loaders.Ignore(...)
 		end;
 	end;
 end;
+
+-- vim: set noet :
