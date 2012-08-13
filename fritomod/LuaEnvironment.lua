@@ -10,10 +10,15 @@ LuaEnvironment=OOP.Class();
 
 function LuaEnvironment:Constructor(globals)
 	globals = globals or _G;
+	local env = self;
 	self.globals=setmetatable({}, {
 		__index=function(self, k)
 			-- We use a function to hide the reference to globals.
-			return globals[k];
+			local value = env:Get(k);
+			if value == nil then
+				value = globals[k];
+			end;
+			return value;
 		end
 	});
 	self.globals._G=self.globals;
@@ -26,7 +31,7 @@ function LuaEnvironment:Constructor(globals)
 end;
 
 function LuaEnvironment:Get(name)
-	local value = self.globals[name];
+	local value = rawget(self.globals, name);
 	if value ~= nil then
 		return value;
 	end;

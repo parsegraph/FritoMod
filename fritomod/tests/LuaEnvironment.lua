@@ -68,6 +68,13 @@ function Suite:TestLuaEnvironmentAcceptsLazyValues()
         counter.Hit();
         return 45;
     end);
+
+    local Assert = Assert;
+    env:Run(function()
+        Assert.Equals(45, lazy);
+    end);
+    Assert.Nil(lazy);
+
     Assert.Equals(45, env:Get("lazy"));
     counter.Assert(1);
     Assert.Equals(45, env:Get("lazy"));
