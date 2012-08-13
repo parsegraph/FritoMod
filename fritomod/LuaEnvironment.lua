@@ -23,7 +23,7 @@ function LuaEnvironment:Constructor(globals)
 	});
 	self.globals._G=self.globals;
 	self.globals.require=Curry(self, "Require");
-	self.globals.loadfile=Curry(self, "LoadFile");
+	self.globals.loadfile=Curry(self, "LoadModule");
 	self.globals.loadstring=Curry(self, "LoadString");
 	self.loaders={};
 	self.loaded={};
@@ -124,7 +124,7 @@ function LuaEnvironment:LoadString(str)
 	return self:LoadFunction(loadstring(str));
 end;
 
-function LuaEnvironment:LoadFile(file)
+function LuaEnvironment:LoadModule(file)
 	local errors = {};
 	for _, loader in ipairs(self.loaders) do
 		local runner, err = loader(self, file);
@@ -148,7 +148,7 @@ function LuaEnvironment:Require(package)
 		self:OnRequireIgnored(package);
 		return;
 	end;
-	local runner=self:LoadFile(package);
+	local runner=self:LoadModule(package);
 	if runner ~= Noop then
 		self:OnRequireLoading(package);
 		runner();
