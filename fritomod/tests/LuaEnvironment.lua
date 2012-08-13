@@ -80,8 +80,25 @@ function Suite:TestLuaEnvironmentAcceptsLazyValues()
     Assert.Equals(45, env:Get("lazy"));
     counter.Assert(1);
 
+end;
+
+function Suite:TestLuaEnvironmentAcceptsProxies()
+    local env = LuaEnvironment:New();
+    local counter = Tests.Counter(0);
+    local v = 2;
+    env:Proxy("proxy", function(name)
+        Assert.Equals("proxy", name);
+        counter.Hit();
+        v = v + 2;
+        return v;
+    end);
+    Assert.Equals(4, env:Get("proxy"));
+    counter.Assert(1);
+    Assert.Equals(6, env:Get("proxy"));
+    counter.Assert(2);
+
     local Assert = Assert;
     env:Run(function()
-        Assert.Equals(45, lazy);
+        Assert.Equals(8, proxy);
     end);
 end;
