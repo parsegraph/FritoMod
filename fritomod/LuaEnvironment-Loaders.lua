@@ -9,6 +9,7 @@ local loaders=LuaEnvironment.Loaders;
 
 function loaders.Filesystem(loader, package)
 	return function(package)
+		package = tostring(package);
 		local file=package;
 		if not file:find("\.lua$") then
 			file=package..".lua";
