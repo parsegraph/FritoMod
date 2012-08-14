@@ -71,6 +71,11 @@ function Suite:TestSplitByDelimiter()
 	Assert.Equals({"Foo", "Time"}, s("Foo_Time"), "Simple delimiters");
 end;
 
+function Suite:TestSplitByDelimiterWithRegexSymbol()
+	local s = Curry(Strings.SplitByDelimiter, "%.");
+	Assert.Equals({"Foo", "Time"}, s("Foo.Time"), "Simple delimiters with regex characters");
+end;
+
 function Suite:TestSplitByDelimiterNoopCase()
 	local s = Curry(Strings.SplitByDelimiter, " ");
 	Assert.Equals({""}, s(""), "Empty string");
