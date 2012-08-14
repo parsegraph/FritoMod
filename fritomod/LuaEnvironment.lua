@@ -1,3 +1,29 @@
+-- An object-oriented view into a Lua scripting context
+--
+-- LuaEnvironments provide environments for global access to
+-- Lua code. This environment originally was created for testing
+-- purposes, since it would isolate global acceses, preventing
+-- leakage from broken test cases. It has since expanded to be a
+-- more general-purpose environment.
+--
+-- When Lua code is executed, it is setfenv'd into this environment.
+-- setfenv allows us to redirect global gets and sets to a table
+-- of our choosing. We exploit this functionality to add several
+-- different ways to provide global values:
+--
+-- * Name-specific proxying
+-- * Table-wide proxying
+-- * Parent access
+--
+-- See :Proxy, :Lazy, and :Inject for more details.
+--
+-- Set operations (global sets if within Lua code) will affect only
+-- this environment. If you want a global set to affect a parent's
+-- environment (such as affecting the true globals table), then you
+-- will need to use :Export.
+--
+-- Importing named modules is supported by require, and it behaves
+-- similarly to the real Lua counterpart.
 if nil ~= require then
 	require "fritomod/basic";
 	require "fritomod/currying";
@@ -187,11 +213,37 @@ function LuaEnvironment:Inject(injected, ...)
 	return Lists.Insert(self.injected, injected);
 end;
 
+-- Adds a module loader into this enivronment. It will be used to
+-- provide modules for LoadModule.
+--
+-- The module loader should expect a given module name as the only
+-- argument.
+--
+-- If the module loader successfully loads that module, then a function
+-- should be returned.
+--
+-- If the module loader does not support the name, then nil should be
+-- returned.
+--
+-- If the module loader supports the name, but failed to load it, then
+-- false, followed by an error message, should be returned.
+--
+-- Errors from module loaders will cause module loading to immediately
+-- fail, whereas unsupported names will be passed up to parents. If a
+-- module is not supported by any module loader in the entire hierarchy,
+-- an error will be thrown.
 function LuaEnvironment:AddLoader(loader, ...)
 	loader = Curry(loader, ...);
 	return Lists.Insert(self.moduleLoaders, loader);
 end;
 
+-- Loads this environment into the specified function. Global accesses from
+-- that function will defer to this environment. Require calls will alsod
+-- defer to this environment.
+--
+-- setfenv will only affect the immediate function provided; functions that
+-- are invoked within the specified function will use their own environment,
+-- unless they were created within the specified function.
 function LuaEnvironment:LoadFunction(runner, ...)
 	runner = Curry(runner, ...);
 	setfenv(runner, self.globals);
@@ -209,6 +261,15 @@ function LuaEnvironment:LoadString(str)
 	return self:LoadFunction(loadstring(str));
 end;
 
+-- Returns a function that will Load a named module into this environment.
+-- Named modules, typically things like files in a filesystem, are provided as
+-- a convenient way to load a logical group of code into this environment.
+--
+-- Modules are provided by module loaders - these are added to this
+-- environment via :AddLoader. If no module loader supports the specified
+-- name, then the parent's module loaders will be used.
+--
+-- A name that was not supported by any loader will cause an error.
 function LuaEnvironment:LoadModule(name)
 	assert(name, "Module name must not be falsy");
 	local errors = {};
@@ -232,11 +293,15 @@ function LuaEnvironment:LoadModule(name)
 	return self:LoadFunction(self.parent:LoadModule(name));
 end;
 
+-- Returns whether the named module has been loaded. A module is considered
+-- if this environment has loaded it, or a parent environment has loaded it.
 function LuaEnvironment:IsLoaded(name)
 	return self.modulesLoaded[name]
 		or self.parent:IsLoaded(name);
 end;
 
+-- Conditionally load a module. The module will be loaded into this environment
+-- if it has not been previously loaded. See :IsLoaded and :LoadModule
 function LuaEnvironment:Require(name)
 	if self:IsLoaded(name) then
 		return;
