@@ -15,6 +15,10 @@ function LuaEnvironment:Constructor(globals, parent)
 		self.parent = parent;
 	end;
 
+	-- TODO Right now, this globals table exists outside of the regular
+	-- LuaEnvironment hierarchy. I'd like to remove this introduced
+	-- table, while still providing true global access is nothing is
+	-- given.
 	globals = globals or _G;
 	local env = self;
 	self.globals=setmetatable({}, {
