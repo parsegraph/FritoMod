@@ -134,7 +134,7 @@ end;
 function Suite:TestLuaEnvironmentCanRetrieveValuesFromParents()
     local parent = LuaEnvironment:New();
 
-    local child = LuaEnvironment:New({}, parent);
+    local child = LuaEnvironment:New(parent);
 
     parent:Set("foo", 97);
     Assert.Equals(97, child:Get("foo"));
@@ -143,7 +143,7 @@ end;
 function Suite:TestLuaEnvironmentCanRetrieveValuesFromParents()
     local parent = LuaEnvironment:New();
 
-    local child = LuaEnvironment:New({}, parent);
+    local child = LuaEnvironment:New(parent);
     child:Set("foo", 45);
 
     child:Export("foo");
@@ -162,7 +162,7 @@ end;
 function Suite:TestGlobalSetsWillUseLuaEnvironment()
     local parent = LuaEnvironment:New();
 
-    local env = LuaEnvironment:New({}, parent);
+    local env = LuaEnvironment:New(parent);
 
     env:Export("__g1");
     env:Run(function()
@@ -194,7 +194,7 @@ function Suite:TestEnvironmentSupportsRequireLoaders()
     env:Require("notime");
     c.Assert(1);
 
-    local child = LuaEnvironment:New({}, env);
+    local child = LuaEnvironment:New(env);
     assert(child:IsLoaded("notime"));
 end;
 
@@ -227,7 +227,7 @@ function Suite:TestLoadModuleWithParent()
         end;
     end);
 
-    local child = LuaEnvironment:New({}, parent);
+    local child = LuaEnvironment:New(parent);
 
     child:Require("foo");
     flag.Assert();

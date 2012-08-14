@@ -5,30 +5,25 @@ if nil ~= require then
 	require "fritomod/OOP";
 	require "fritomod/Functions";
 	require "fritomod/Lists";
+	require "fritomod/FauxLuaEnvironment";
 end;
 
 LuaEnvironment=OOP.Class();
 
-function LuaEnvironment:Constructor(globals, parent)
-	if parent then
-		assert(OOP.InstanceOf(LuaEnvironment, parent), "parent must be a LuaEnvironment");
+function LuaEnvironment:Constructor(parent)
+	if OOP.InstanceOf(LuaEnvironment, parent) then
 		self.parent = parent;
+	else
+		if not parent then
+			parent = _G;
+		end;
+        self.parent = FauxLuaEnvironment:New(parent);
 	end;
 
-	-- TODO Right now, this globals table exists outside of the regular
-	-- LuaEnvironment hierarchy. I'd like to remove this introduced
-	-- table, while still providing true global access is nothing is
-	-- given.
-	globals = globals or _G;
 	local env = self;
 	self.globals=setmetatable({}, {
-		__index=function(self, name)
-			-- We use a function to hide the reference to globals.
-			local value = env:Get(name);
-			if value == nil then
-				value = globals[name];
-			end;
-			return value;
+		__index = function(self, name)
+			return env:Get(name);
 		end,
 
 		__newindex = function(self, name, value)
