@@ -33,11 +33,11 @@ function LuaEnvironment:Constructor(parent)
 
 	-- Ordered list of loader functions, which provide ways
 	-- to load a module specified by name.
-	self.loaders = {};
+	self.moduleLoaders = {};
 
 	-- Table of loaded modules, mapped by module name. If a module
 	-- has been loaded, it will be set to true in this table.
-	self.loaded = {};
+	self.modulesLoaded = {};
 
 	-- Table of proxy functions, mapped by name.
 	self.proxies = {};
@@ -196,7 +196,7 @@ end;
 
 function LuaEnvironment:AddLoader(loader, ...)
 	loader = Curry(loader, ...);
-	return Lists.Insert(self.loaders, loader);
+	return Lists.Insert(self.moduleLoaders, loader);
 end;
 
 function LuaEnvironment:LoadFunction(runner, ...)
@@ -219,7 +219,7 @@ end;
 function LuaEnvironment:LoadModule(name)
 	assert(name, "Module name must not be falsy");
 	local errors = {};
-	for _, loader in ipairs(self.loaders) do
+	for _, loader in ipairs(self.moduleLoaders) do
 		local runner, err = loader(name);
 		if runner then
 			return self:LoadFunction(runner);
@@ -244,7 +244,7 @@ function LuaEnvironment:LoadModule(name)
 end;
 
 function LuaEnvironment:IsLoaded(name)
-	if self.loaded[name] then
+	if self.modulesLoaded[name] then
 		return true;
 	end;
 	if self.parent then
@@ -261,7 +261,7 @@ function LuaEnvironment:Require(name)
 	if runner ~= Noop then
 		self:OnRequireLoading(name);
 		runner();
-		self.loaded[name]=true;
+		self.modulesLoaded[name]=true;
 		self:OnRequireLoaded(name);
 	end;
 end;
