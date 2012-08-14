@@ -19,6 +19,7 @@ function LuaEnvironment:Constructor(parent)
 		end;
         self.parent = FauxLuaEnvironment:New(parent);
 	end;
+	assert(self.parent, "Parent must be provided");
 
 	local env = self;
 	self.globals = setmetatable({}, {
@@ -80,14 +81,7 @@ function LuaEnvironment:Get(name)
 			return value;
 		end;
 	end;
-	if self.parent then
-		value = self.parent:Get(name);
-		if value ~= nil then
-			return value;
-		end;
-	end;
-	assert(value == nil, "Non-nil values must not be discarded");
-	return nil;
+	return self.parent:Get(name);
 end;
 
 -- Set the environment variable with the specified name to the specified
@@ -126,7 +120,6 @@ function LuaEnvironment:Export(name)
 	if self.exported[name] then
 		return;
 	end;
-	assert(self.parent, "Refusing to export without a parent");
 	self.exported[name] = true;
 	local value = self.globals[name];
 	rawset(self.globals, name, nil);
@@ -236,21 +229,12 @@ function LuaEnvironment:LoadModule(name)
 		end;
 		error(str);
 	end;
-	if self.parent then
-		return self:LoadFunction(self.parent:LoadModule(name));
-	else
-		error("No loader found for module: " .. name);
-	end;
+	return self:LoadFunction(self.parent:LoadModule(name));
 end;
 
 function LuaEnvironment:IsLoaded(name)
-	if self.modulesLoaded[name] then
-		return true;
-	end;
-	if self.parent then
-		return self.parent:IsLoaded(name);
-	end;
-	return false;
+	return self.modulesLoaded[name]
+		or self.parent:IsLoaded(name);
 end;
 
 function LuaEnvironment:Require(name)
