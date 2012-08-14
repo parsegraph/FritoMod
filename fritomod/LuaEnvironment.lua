@@ -238,7 +238,6 @@ end;
 
 function LuaEnvironment:Require(package)
 	if self.loaded[package] then
-		self:OnRequireIgnored(package);
 		return;
 	end;
 	local runner=self:LoadModule(package);
@@ -247,8 +246,6 @@ function LuaEnvironment:Require(package)
 		runner();
 		self.loaded[package]=true;
 		self:OnRequireFinish(package);
-	else
-		self:OnRequireSkipped(package);
 	end;
 end;
 
@@ -259,16 +256,6 @@ end;
 
 -- Hook that is run immediately after successfully requiring the specified file.
 function LuaEnvironment:OnRequireFinish(package)
-	-- Noop. Free to implement as a listener.
-end;
-
--- Hook that is run if the package was intentionally skipped by this environment.
-function LuaEnvironment:OnRequireSkipped(package)
-	-- Noop. Free to implement as a listener.
-end;
-
--- Hook that is run if the package was already loaded and does not need to be required.
-function LuaEnvironment:OnRequireIgnored(package)
 	-- Noop. Free to implement as a listener.
 end;
 
