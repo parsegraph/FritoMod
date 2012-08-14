@@ -2,6 +2,7 @@ if nil ~= require then
 	require "fritomod/basic";
 	require "fritomod/currying";
 	require "fritomod/OOP-Class";
+	require "fritomod/OOP";
 	require "fritomod/Functions";
 	require "fritomod/Lists";
 end;
@@ -9,7 +10,11 @@ end;
 LuaEnvironment=OOP.Class();
 
 function LuaEnvironment:Constructor(globals, parent)
-	self.parent = parent;
+	if parent then
+		assert(OOP.InstanceOf(LuaEnvironment, parent), "parent must be a LuaEnvironment");
+		self.parent = parent;
+	end;
+
 	globals = globals or _G;
 	local env = self;
 	self.globals=setmetatable({}, {
