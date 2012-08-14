@@ -155,3 +155,4 @@ function Frames.Backdrop(f, backdrop, bg)
 	return f;
 end;
 
+-- vim: set noet :

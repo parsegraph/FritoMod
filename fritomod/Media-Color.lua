@@ -211,3 +211,5 @@ function Frames.BackdropColor(f, ...)
 	f:SetBackdropColor(r,g,b,a);
 	return f;
 end;
+
+-- vim: set noet :
