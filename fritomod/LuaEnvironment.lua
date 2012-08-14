@@ -30,6 +30,7 @@ function LuaEnvironment:Constructor(globals, parent)
 	self.loaded={};
 	self.proxies = {};
 	self.injected = {};
+	self.exported = {};
 end;
 
 function LuaEnvironment:Get(name)
@@ -72,6 +73,23 @@ function LuaEnvironment:Change(k, v)
 	local old = self:Get(k);
 	self:Set(k, v);
 	return Functions.OnlyOnce(self, "Set", k, old);
+end;
+
+function LuaEnvironment:Export(name)
+	if type(name) == "table" and #name > 0 then
+		for i=1, #name do
+			self:Export(name[i]);
+		end;
+		return;
+	end;
+	if self.exported[name] then
+		return;
+	end;
+	assert(self.parent, "Refusing to export without a parent");
+	self.exported[name] = true;
+	local value = self.globals[name];
+	rawset(self.globals, name, nil);
+	self.parent:Set(name, value);
 end;
 
 function LuaEnvironment:Lazy(name, provider, ...)

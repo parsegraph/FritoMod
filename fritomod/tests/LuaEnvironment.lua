@@ -136,4 +136,16 @@ function Suite:TestLuaEnvironmentCanRetrieveValuesFromParents()
     Assert.Equals(97, child:Get("foo"));
 end;
 
+function Suite:TestLuaEnvironmentCanRetrieveValuesFromParents()
+    local parent = LuaEnvironment:New();
+
+    local child = LuaEnvironment:New({}, parent);
+    child:Set("foo", 45);
+
+    child:Export("foo");
+
+    Assert.Equals(45, parent:Get("foo"));
+    Assert.Equals(45, child:Get("foo"));
+end;
+
 -- vim: set et :
