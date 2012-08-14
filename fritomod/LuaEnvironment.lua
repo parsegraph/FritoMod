@@ -50,10 +50,10 @@ function LuaEnvironment:Constructor(globals, parent)
 	self.exported = {};
 
 	-- Override some globals to call our methods instead
-	self.globals._G=self.globals;
-	self.globals.require=Curry(self, "Require");
-	self.globals.loadfile=Curry(self, "LoadModule");
-	self.globals.loadstring=Curry(self, "LoadString");
+	self:Set("_G", self.globals);
+	self:Set("require",    Curry(self, "Require"));
+	self:Set("loadfile",   Curry(self, "LoadModule"));
+	self:Set("loadstring", Curry(self, "LoadString"));
 end;
 
 -- Get the value in this environment with the specified name. Proxies, lazy values,
