@@ -673,3 +673,5 @@ function ForcedFunction(self, func, ...)
 		return func(maybeSelf, ...);
 	end;
 end;
+
+-- vim: set noet :
