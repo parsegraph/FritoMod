@@ -282,9 +282,10 @@ function LuaEnvironment:LoadModule(name)
 		end;
 	end;
 	if errors.__hadErrors then
-		errors.__hadErrors = false;
+		errors.__hadErrors = nil;
 		local str = "Could not load module: "..name;
 		for loader, err in pairs(errors) do
+			err = tostring(err);
 			str = str .. "\nError from loader: " .. err;
 		end;
 		error(str);
