@@ -217,10 +217,10 @@ function LuaEnvironment:LoadString(str)
 	return self:LoadFunction(loadstring(str));
 end;
 
-function LuaEnvironment:LoadModule(file)
+function LuaEnvironment:LoadModule(name)
 	local errors = {};
 	for _, loader in ipairs(self.loaders) do
-		local runner, err = loader(self, file);
+		local runner, err = loader(self, name);
 		if IsCallable(runner) then
 			return self:LoadFunction(runner);
 		elseif runner==false then
@@ -229,7 +229,7 @@ function LuaEnvironment:LoadModule(file)
 			errors[loader] = err;
 		end;
 	end;
-	local str = "Could not load: "..file;
+	local str = "Could not load module: "..name;
 	for loader, err in pairs(errors) do
 		str = str .. "\nError from loader: " .. err;
 	end;
