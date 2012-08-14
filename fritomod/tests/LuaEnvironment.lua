@@ -126,3 +126,5 @@ function Suite:TestLuaEnvironmentSupportsTableInjection()
     end);
     f.Assert();
 end;
+
+-- vim: set et :
