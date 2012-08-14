@@ -236,16 +236,16 @@ function LuaEnvironment:LoadModule(file)
 	error(str);
 end;
 
-function LuaEnvironment:Require(package)
-	if self.loaded[package] then
+function LuaEnvironment:Require(name)
+	if self.loaded[name] then
 		return;
 	end;
-	local runner=self:LoadModule(package);
+	local runner=self:LoadModule(name);
 	if runner ~= Noop then
-		self:OnRequireLoading(package);
+		self:OnRequireLoading(name);
 		runner();
-		self.loaded[package]=true;
-		self:OnRequireFinish(package);
+		self.loaded[name]=true;
+		self:OnRequireFinish(name);
 	end;
 end;
 
