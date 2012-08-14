@@ -8,7 +8,8 @@ end;
 
 LuaEnvironment=OOP.Class();
 
-function LuaEnvironment:Constructor(globals)
+function LuaEnvironment:Constructor(globals, parent)
+	self.parent = parent;
 	globals = globals or _G;
 	local env = self;
 	self.globals=setmetatable({}, {
@@ -49,6 +50,12 @@ function LuaEnvironment:Get(name)
 		else
 			value = injected(name);
 		end;
+		if value ~= nil then
+			return value;
+		end;
+	end;
+	if self.parent then
+		value = self.parent:Get(name);
 		if value ~= nil then
 			return value;
 		end;

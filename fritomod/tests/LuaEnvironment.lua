@@ -127,4 +127,13 @@ function Suite:TestLuaEnvironmentSupportsTableInjection()
     f.Assert();
 end;
 
+function Suite:TestLuaEnvironmentCanRetrieveValuesFromParents()
+    local parent = LuaEnvironment:New();
+
+    local child = LuaEnvironment:New({}, parent);
+
+    parent:Set("foo", 97);
+    Assert.Equals(97, child:Get("foo"));
+end;
+
 -- vim: set et :
