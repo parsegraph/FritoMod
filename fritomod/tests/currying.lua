@@ -52,7 +52,7 @@ function Suite:TestCurryHandlesCurriedNilValuesInNormalSituations()
 	Assert.Equals(6, c(3));
 end;
 
-function Suite:TestCurryRejectsPassedNilValues()
+function Suite:TestCurryAcceptsPassedNilValues()
 	local c = Curry(Sum, 1, 2);
 	Assert.Equals(15, c(3,4,5));
 	Assert.Equals(12, c(nil,4,5));
