@@ -135,16 +135,7 @@ Media.SetAlias("color", "colors", "colour", "colours");
 
 Frames=Frames or {};
 
--- Sets the color for a frame. This handles Frames, FontStrings, and
--- Textures. The color can be a name, which will be retrieved using
--- Media.color
---
--- -- Sets frame to red.
--- Frames.Color(f, "red");
---
--- -- Sets frame to a half-transparent red.
--- Frames.Color(f, "red", .5);
-function Frames.Color(f,...)
+local function GetColor(...)
 	local r,g,b,a;
 	if select("#", ...)<3 then
 		local color, possibleAlpha=...;
@@ -162,7 +153,21 @@ function Frames.Color(f,...)
 			a=possibleAlpha;
 		end;
 	end;
+	return r,g,b,a;
+end;
+
+-- Sets the color for a frame. This handles Frames, FontStrings, and
+-- Textures. The color can be a name, which will be retrieved using
+-- Media.color
+--
+-- -- Sets frame to red.
+-- Frames.Color(f, "red");
+--
+-- -- Sets frame to a half-transparent red.
+-- Frames.Color(f, "red", .5);
+function Frames.Color(f,...)
 	f=Frames.AsRegion(f);
+	local r,g,b,a = GetColor(...);
 	if f.SetTextColor then
 		f:SetTextColor(r,g,b,a);
 	elseif f.SetTexture then
@@ -190,18 +195,11 @@ Frames.Colored=Frames.Color;
 Frames.Solid=Frames.Color;
 Frames.SolidColor=Frames.Color;
 
-function Frames.BorderColor(f, r, g, b, a)
-	if tonumber(r) == nil then
-		local possibleAlpha=g;
-		r,g,b,a=unpack(Media.color[r]);
-		if possibleAlpha then
-			a=possibleAlpha;
-		end;
-	end;
+function Frames.BorderColor(f, ...)
 	f=Frames.AsRegion(f);
+	local r,g,b,a = GetColor(...);
 	assert(f.SetBackdropBorderColor, "Provided object does not support backdrops");
 	f:SetBackdropBorderColor(r,g,b,a);
 	return f;
 end;
 Frames.BackdropBorderColor=Frames.BorderColor;
-
