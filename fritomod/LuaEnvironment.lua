@@ -134,23 +134,6 @@ function LuaEnvironment:Export(name)
 	self.parent:Set(name, value);
 end;
 
--- Provide a lazy value for the specified name. When the name is
--- Subsequently retrieved, the specified provider function will be
--- invoked to create it. The returned value, if true, will be set
--- within this environment, and the proxy will not be used again.
-function LuaEnvironment:Lazy(name, provider, ...)
-	provider = Curry(provider, ...);
-	return self:Proxy(name, function(self, name)
-		local value = provider(name);
-		if value == nil then
-			return nil;
-		end;
-		self:Set(name, value);
-		self.proxies[name] = nil;
-		return value;
-	end, self);
-end;
-
 -- Provide a proxy for the specified name. If the specified name
 -- is not present within this environment's globals table, then
 -- this proxy will be used to provide it. Subsequent accesses of
@@ -177,6 +160,23 @@ function LuaEnvironment:Proxy(name, provider, ...)
 	return Functions.OnlyOnce(function()
 		self.proxies[name] = nil;
 	end);
+end;
+
+-- Provide a lazy value for the specified name. When the name is
+-- Subsequently retrieved, the specified provider function will be
+-- invoked to create it. The returned value, if true, will be set
+-- within this environment, and the proxy will not be used again.
+function LuaEnvironment:Lazy(name, provider, ...)
+	provider = Curry(provider, ...);
+	return self:Proxy(name, function(self, name)
+		local value = provider(name);
+		if value == nil then
+			return nil;
+		end;
+		self:Set(name, value);
+		self.proxies[name] = nil;
+		return value;
+	end, self);
 end;
 
 -- Inject the specified function or table into this environment.
