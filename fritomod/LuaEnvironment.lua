@@ -249,13 +249,14 @@ function LuaEnvironment:Require(name)
 	end;
 end;
 
--- Hook that is run immediately before requiring the specified file.
-function LuaEnvironment:OnRequireLoading(package)
+-- Hook that is run immediately before requiring the specified named module.
+function LuaEnvironment:OnRequireLoading(name)
 	-- Noop. Free to implement as a listener.
 end;
 
--- Hook that is run immediately after successfully requiring the specified file.
-function LuaEnvironment:OnRequireLoaded(package)
+-- Hook that is run immediately after successfully
+-- requiring the specified named module.
+function LuaEnvironment:OnRequireLoaded(name)
 	-- Noop. Free to implement as a listener.
 end;
 
