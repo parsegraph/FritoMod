@@ -155,6 +155,19 @@ function Suite:TestLuaEnvironmentCanRetrieveValuesFromParents()
     Assert.Equals(45, child:Get("foo"));
 end;
 
+function Suite:TestGlobalSetsWillUseLuaEnvironment()
+    local parent = LuaEnvironment:New();
 
+    local env = LuaEnvironment:New({}, parent);
+
+    env:Export("__g1");
+    env:Run(function()
+        __g1 = 91;
+    end);
+
+    Assert.Nil(__g1);
+    Assert.Equals(91, env:Get("__g1"));
+    Assert.Equals(91, parent:Get("__g1"));
+end;
 
 -- vim: set et :

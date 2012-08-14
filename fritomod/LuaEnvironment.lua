@@ -25,14 +25,12 @@ function LuaEnvironment:Constructor(globals, parent)
 				value = globals[name];
 			end;
 			return value;
+		end,
+
+		__newindex = function(self, name, value)
+			return env:Set(name, value);
 		end
 	});
-
-	-- Override some globals to call our methods instead
-	self.globals._G=self.globals;
-	self.globals.require=Curry(self, "Require");
-	self.globals.loadfile=Curry(self, "LoadModule");
-	self.globals.loadstring=Curry(self, "LoadString");
 
 	-- Ordered list of loader functions, which provide ways
 	-- to load a module specified by name.
@@ -50,6 +48,12 @@ function LuaEnvironment:Constructor(globals, parent)
 
 	-- Table of exported variables, mapped by name.
 	self.exported = {};
+
+	-- Override some globals to call our methods instead
+	self.globals._G=self.globals;
+	self.globals.require=Curry(self, "Require");
+	self.globals.loadfile=Curry(self, "LoadModule");
+	self.globals.loadstring=Curry(self, "LoadString");
 end;
 
 -- Get the value in this environment with the specified name. Proxies, lazy values,
@@ -94,7 +98,7 @@ function LuaEnvironment:Set(name, value)
 	if self.exported[name] then
 		return self.parent:Set(name, value);
 	end;
-	self.globals[name] = value;
+	rawset(self.globals, name, value);
 end;
 
 -- Change the environment variable with the specified name to the
