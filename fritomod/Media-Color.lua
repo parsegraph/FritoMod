@@ -203,3 +203,11 @@ function Frames.BorderColor(f, ...)
 	return f;
 end;
 Frames.BackdropBorderColor=Frames.BorderColor;
+
+function Frames.BackdropColor(f, ...)
+	f=Frames.AsRegion(f);
+	local r,g,b,a = GetColor(...);
+	assert(f.SetBackdropColor, "Provided object does not support backdrops");
+	f:SetBackdropColor(r,g,b,a);
+	return f;
+end;
