@@ -27,17 +27,34 @@ function LuaEnvironment:Constructor(globals, parent)
 			return value;
 		end
 	});
+
+	-- Override some globals to call our methods instead
 	self.globals._G=self.globals;
 	self.globals.require=Curry(self, "Require");
 	self.globals.loadfile=Curry(self, "LoadModule");
 	self.globals.loadstring=Curry(self, "LoadString");
+
+	-- Ordered list of loader functions, which provide ways
+	-- to load a module specified by name.
 	self.loaders={};
+
+	-- Table of loaded modules, mapped by module name. If a module
+	-- has been loaded, it will be set to true in this table.
 	self.loaded={};
+
+	-- Table of proxy functions, mapped by name.
 	self.proxies = {};
+
+	-- Ordered list of injected tables and functions.
 	self.injected = {};
+
+	-- Table of exported variables, mapped by name.
 	self.exported = {};
 end;
 
+-- Get the value in this environment with the specified name. Proxies, lazy values,
+-- injected tables, and parents will all be invoked if necessary to retrieve this
+-- value.
 function LuaEnvironment:Get(name)
 	local value = rawget(self.globals, name);
 	if value ~= nil then
@@ -70,6 +87,9 @@ function LuaEnvironment:Get(name)
 	return nil;
 end;
 
+-- Set the environment variable with the specified name to the specified
+-- value. If the name has been exported, this operation will be forwarded
+-- to the parent.
 function LuaEnvironment:Set(name, value)
 	if self.exported[name] then
 		return self.parent:Set(name, value);
@@ -77,12 +97,22 @@ function LuaEnvironment:Set(name, value)
 	self.globals[name] = value;
 end;
 
+-- Change the environment variable with the specified name to the
+-- specified value. This method behaves identically to :Set, but
+-- a function will be returned to undo this operation.
 function LuaEnvironment:Change(name, value)
 	local old = self:Get(name);
 	self:Set(name, value);
 	return Functions.OnlyOnce(self, "Set", name, old);
 end;
 
+-- Export the variable with the specified name to the parent environment.
+-- Subsequent set operations will be forwarded to the parent, bypassing
+-- this environment's table.The value will be immediately forwarded to
+-- the parent.
+--
+-- The LuaEnvironment must have a parent, otherwise this operation will
+-- fail with an exception.
 function LuaEnvironment:Export(name)
 	if type(name) == "table" and #name > 0 then
 		for i=1, #name do
@@ -100,6 +130,10 @@ function LuaEnvironment:Export(name)
 	self.parent:Set(name, value);
 end;
 
+-- Provide a lazy value for the specified name. When the name is
+-- Subsequently retrieved, the specified provider function will be
+-- invoked to create it. The returned value, if true, will be set
+-- within this environment, and the proxy will not be used again.
 function LuaEnvironment:Lazy(name, provider, ...)
 	provider = Curry(provider, ...);
 	return self:Proxy(name, function(self, name)
@@ -113,6 +147,19 @@ function LuaEnvironment:Lazy(name, provider, ...)
 	end, self);
 end;
 
+-- Provide a proxy for the specified name. If the specified name
+-- is not present within this environment's globals table, then
+-- this proxy will be used to provide it. Subsequent accesses of
+-- the named variable will also invoke the proxy. As a result,
+-- different values may be returned for the same name with the
+-- same proxy.
+--
+-- No set operation is implied by this method; it is up to clients
+-- to set this value within an environment. Otherwise, invocations
+-- will continue to defer to the proxy for a value.
+--
+-- If the specified name is a list, then each name within that
+-- list will be proxied.
 function LuaEnvironment:Proxy(name, provider, ...)
 	provider = Curry(provider, ...);
 	if type(name) == "table" and #name > 0 then
@@ -128,6 +175,15 @@ function LuaEnvironment:Proxy(name, provider, ...)
 	end);
 end;
 
+-- Inject the specified function or table into this environment.
+-- If no value or proxied value can be found for a given name,
+-- these injected values will be invoked. Each injected value
+-- will be called with the given name. If it returns a non-nil
+-- value, it will be used as the variable.
+--
+-- No set operation is implied by this method; it is up to clients
+-- to set this value within an environment. Otherwise, invocations
+-- will continue to defer to this injected for a value.
 function LuaEnvironment:Inject(injected, ...)
 	if type(injected) ~= "table" or select("#", ...) > 0 then
 		injected = Curry(injected, ...);
