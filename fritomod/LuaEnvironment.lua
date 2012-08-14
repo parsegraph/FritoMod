@@ -54,7 +54,7 @@ function LuaEnvironment:Constructor(globals, parent)
 	self.exported = {};
 
 	-- Override some globals to call our methods instead
-	self:Set("_G", self.globals);
+	self:Set("_G",         self.globals);
 	self:Set("require",    Curry(self, "Require"));
 	self:Set("loadfile",   Curry(self, "LoadModule"));
 	self:Set("loadstring", Curry(self, "LoadString"));
