@@ -66,6 +66,9 @@ function LuaEnvironment:Get(name)
 end;
 
 function LuaEnvironment:Set(k, v)
+	if self.exported[k] then
+		return self.parent:Set(k, v);
+	end;
 	self.globals[k]=v;
 end;
 
