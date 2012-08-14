@@ -220,7 +220,7 @@ end;
 function LuaEnvironment:LoadModule(name)
 	local errors = {};
 	for _, loader in ipairs(self.loaders) do
-		local runner, err = loader(self, name);
+		local runner, err = loader(name);
 		if IsCallable(runner) then
 			return self:LoadFunction(runner);
 		elseif runner==false then

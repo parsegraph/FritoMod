@@ -5,8 +5,8 @@ end;
 LuaEnvironment.Loaders={};
 local loaders=LuaEnvironment.Loaders;
 
-function loaders.Filesystem(loader, env, package)
-	return function(env, package)
+function loaders.Filesystem(loader, package)
+	return function(package)
 		local file=package;
 		if not file:find("\.lua$") then
 			file=package..".lua";
@@ -21,7 +21,7 @@ end;
 
 function loaders.Ignore(...)
 	local ignored={...};
-	return function(env, package)
+	return function(package)
 		for i=1, #ignored do
 			if package==ignored[i] then
 				return false;
