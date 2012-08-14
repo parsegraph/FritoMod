@@ -4,6 +4,14 @@
 -- Most functions in this addon use Curry implicitly, so you don't need to call it yourself.
 --
 -- TODO Write more about currying, since we use it everywhere.
+--
+-- Using setfenv with curried functions must be done carefully. For one, builtins do not
+-- support setfenv (they will throw errors when setfenv is used). As a result, currying
+-- cannot reasonably forward a curried function that has been setfenv'd to its underlying
+-- counterpart.
+--
+-- To get the behavior you want, you must use setfenv on the underlying function, NOT the
+-- returned curried function; using setfenv on a curried function will have no effect.
 
 if nil ~= require then
 	require "fritomod/basic";
