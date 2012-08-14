@@ -8,7 +8,7 @@ if nil ~= require then
 	require "fritomod/FauxLuaEnvironment";
 end;
 
-LuaEnvironment=OOP.Class();
+LuaEnvironment = OOP.Class();
 
 function LuaEnvironment:Constructor(parent)
 	if OOP.InstanceOf(LuaEnvironment, parent) then
@@ -21,7 +21,7 @@ function LuaEnvironment:Constructor(parent)
 	end;
 
 	local env = self;
-	self.globals=setmetatable({}, {
+	self.globals = setmetatable({}, {
 		__index = function(self, name)
 			return env:Get(name);
 		end,
@@ -33,11 +33,11 @@ function LuaEnvironment:Constructor(parent)
 
 	-- Ordered list of loader functions, which provide ways
 	-- to load a module specified by name.
-	self.loaders={};
+	self.loaders = {};
 
 	-- Table of loaded modules, mapped by module name. If a module
 	-- has been loaded, it will be set to true in this table.
-	self.loaded={};
+	self.loaded = {};
 
 	-- Table of proxy functions, mapped by name.
 	self.proxies = {};
@@ -195,12 +195,12 @@ function LuaEnvironment:Inject(injected, ...)
 end;
 
 function LuaEnvironment:AddLoader(loader, ...)
-	loader=Curry(loader, ...);
+	loader = Curry(loader, ...);
 	return Lists.Insert(self.loaders, loader);
 end;
 
 function LuaEnvironment:LoadFunction(runner, ...)
-	runner=Curry(runner, ...);
+	runner = Curry(runner, ...);
 	setfenv(runner, self.globals);
 	return runner;
 end;
@@ -257,7 +257,7 @@ function LuaEnvironment:Require(name)
 	if self:IsLoaded(name) then
 		return;
 	end;
-	local runner=self:LoadModule(name);
+	local runner = self:LoadModule(name);
 	if runner ~= Noop then
 		self:OnRequireLoading(name);
 		runner();
