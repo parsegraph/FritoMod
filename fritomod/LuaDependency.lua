@@ -25,7 +25,7 @@ end;
 function LuaDependency:Process(file)
 	local env = self:NewEnvironment(file);
 	env:AddLoader(LuaEnvironment.Loaders.Ignore("bit", "lfs"));
-	env:AddLoader(LuaEnvironment.Loaders.Filesystem(loadfile));
+	env:AddLoader(LuaEnvironment.Loaders.Filesystem());
 
 	local dependencyStack = {};
 

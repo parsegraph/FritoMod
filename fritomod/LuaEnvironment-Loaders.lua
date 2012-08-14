@@ -7,14 +7,21 @@ end;
 LuaEnvironment.Loaders={};
 local loaders=LuaEnvironment.Loaders;
 
-function loaders.Filesystem(loader, package)
-	return function(package)
-		package = tostring(package);
-		local file=package;
-		if not file:find("\.lua$") then
-			file=package..".lua";
+function loaders.Filesystem()
+	return function(name)
+		if not lfs or not loadfile then
+			return;
 		end;
-		local runner, err=loader(file);
+		name = tostring(name);
+		local file=name;
+		if not file:find("\.lua$") then
+			file=name..".lua";
+		end;
+		if not lfs.attributes(file) then
+			-- The file was not accessible, so just return.
+			return;
+		end;
+		local runner, err=loadfile(file);
 		if runner then
 			return runner;
 		end;

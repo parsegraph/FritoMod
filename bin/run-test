@@ -19,7 +19,7 @@ if arg then
 		arg[i]=arg[i]:gsub("^\./", "");
 		local env=LuaEnvironment:New(pristine);
 		env:AddLoader(LuaEnvironment.Loaders.Ignore("bit", "lfs"));
-		env:AddLoader(LuaEnvironment.Loaders.Filesystem(loadfile));
+		env:AddLoader(LuaEnvironment.Loaders.Filesystem());
 		env:Set("AllTests", AllTests);
 		env:Require("bin/global");
 		env:Require(arg[i]);
