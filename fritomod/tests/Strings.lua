@@ -76,17 +76,18 @@ function Suite:TestSplitByDelimiterWithRegexSymbol()
 	Assert.Equals({"Foo", "Time"}, s("Foo.Time"), "Simple delimiters with regex characters");
 end;
 
-function Suite:TestSplitByDelimiterNoopCase()
+function Suite:TestSplitByDelimiterHandlesEmptyString()
 	local s = Curry(Strings.SplitByDelimiter, " ");
-	Assert.Equals({""}, s(""), "Empty string");
+	Assert.Equals({}, s(""), "Empty string");
+end;
+
+function Suite:TestSplitByDelimiterWithNoNonDelimiterCharacters()
+	local s = Curry(Strings.SplitByDelimiter, "_");
+	Assert.Equals({}, s("____"), "String with only delimiters");
 end;
 
 function Suite:TestSplitByDelimiterWithEmptyStringDelimiter()
 	Assert.Equals({'t', 'e', 's', 't'}, Strings.SplitByDelimiter("", "test"));
-end;
-
-function Suite:TestSplitByDelimiterHandlesEmptyString()
-	Assert.Equals({""}, Strings.SplitByDelimiter(" ", ""));
 end;
 
 function Suite:TestSplitByDelimiterWithoutDelimiters()
@@ -102,7 +103,6 @@ end;
 
 function Suite:TestSplitByDelimiterWithEdgeCaseDelimiters()
 	local s = Curry(Strings.SplitByDelimiter, "_");
-	Assert.Equals({""}, s("___"), "Only delimiter");
 	Assert.Equals({"Foo"}, s("___Foo"), "Leading delimiter");
 	Assert.Equals({"Foo"}, s("Foo___"), "Trailing delimiter");
 end;

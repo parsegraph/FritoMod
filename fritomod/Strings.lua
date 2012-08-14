@@ -313,9 +313,6 @@ function Strings.SplitByDelimiter(delimiter, originalString, limit)
 	if #remainder > 0 then
 		table.insert(items, remainder);
 	end;
-	if #items == 0 then
-		Lists.Insert(items, "");
-	end;
 	return items;
 end;
 Strings.Split=Strings.SplitByDelimiter;
