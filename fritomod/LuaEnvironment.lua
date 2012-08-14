@@ -245,7 +245,7 @@ function LuaEnvironment:Require(name)
 		self:OnRequireLoading(name);
 		runner();
 		self.loaded[name]=true;
-		self:OnRequireFinish(name);
+		self:OnRequireLoaded(name);
 	end;
 end;
 
@@ -255,7 +255,7 @@ function LuaEnvironment:OnRequireLoading(package)
 end;
 
 -- Hook that is run immediately after successfully requiring the specified file.
-function LuaEnvironment:OnRequireFinish(package)
+function LuaEnvironment:OnRequireLoaded(package)
 	-- Noop. Free to implement as a listener.
 end;
 

@@ -52,7 +52,7 @@ function LuaDependency:Process(file)
 		table.insert(dependencyStack, package);
 	end;
 
-	function env:OnRequireFinish(package)
+	function env:OnRequireLoaded(package)
 		package = CleanName(package);
 		local expected=table.remove(dependencyStack);
 		assert(package==expected, "Unexpected dependency. Expected: "..expected.." Received: "..package);
