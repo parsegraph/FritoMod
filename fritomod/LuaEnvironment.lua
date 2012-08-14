@@ -245,8 +245,12 @@ end;
 -- are invoked within the specified function will use their own environment,
 -- unless they were created within the specified function.
 function LuaEnvironment:LoadFunction(runner, ...)
-	runner = Curry(runner, ...);
+	assert(type(runner) == "function",
+		"runner must be a function (curried methods are not allowed)");
+	-- We must setfenv before we curry, since currying will introduce
+	-- an intermediate function.
 	setfenv(runner, self.globals);
+	runner = CurryFunction(runner, ...);
 	return runner;
 end;
 
