@@ -1,3 +1,7 @@
+if nil ~= require then
+    require "fritomod/LuaEnvironment-Loaders";
+end;
+
 local Suite = CreateTestSuite("fritomod.LuaEnvironment");
 
 do
@@ -192,6 +196,25 @@ function Suite:TestEnvironmentSupportsRequireLoaders()
 
     local child = LuaEnvironment:New({}, env);
     assert(child:IsLoaded("notime"));
+end;
+
+function Suite:TestIgnoreLoader()
+    local loader = LuaEnvironment.Loaders.Ignore({
+        bit = true,
+        lfs = true
+    });
+
+    Assert.Nil(loader("foo"));
+    Assert.Equals(Noop, loader("bit"));
+
+    loader = LuaEnvironment.Loaders.Ignore("bit", "lfs");
+    Assert.Nil(loader("foo"));
+    Assert.Equals(Noop, loader("bit"));
+
+    loader = LuaEnvironment.Loaders.Ignore();
+    Assert.Equals(Noop, loader("foo"));
+    Assert.Equals(Noop, loader("bit"));
+
 end;
 
 -- vim: set et :
