@@ -170,4 +170,28 @@ function Suite:TestGlobalSetsWillUseLuaEnvironment()
     Assert.Equals(91, parent:Get("__g1"));
 end;
 
+function Suite:TestEnvironmentSupportsRequireLoaders()
+    local env = LuaEnvironment:New();
+
+    local c = Tests.Counter(0);
+    env:AddLoader(function(name)
+        return function()
+            __g1 = name;
+            c.Hit();
+        end;
+    end);
+
+    env:Run(function()
+        require("notime");
+    end);
+    Assert.Nil(__g1);
+    Assert.Equals("notime", env:Get("__g1"));
+    c.Assert(1);
+    env:Require("notime");
+    c.Assert(1);
+
+    local child = LuaEnvironment:New({}, env);
+    assert(child:IsLoaded("notime"));
+end;
+
 -- vim: set et :

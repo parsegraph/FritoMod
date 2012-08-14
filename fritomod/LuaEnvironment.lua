@@ -236,8 +236,18 @@ function LuaEnvironment:LoadModule(name)
 	error(str);
 end;
 
-function LuaEnvironment:Require(name)
+function LuaEnvironment:IsLoaded(name)
 	if self.loaded[name] then
+		return true;
+	end;
+	if self.parent then
+		return self.parent:IsLoaded(name);
+	end;
+	return false;
+end;
+
+function LuaEnvironment:Require(name)
+	if self:IsLoaded(name) then
 		return;
 	end;
 	local runner=self:LoadModule(name);
