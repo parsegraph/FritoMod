@@ -222,22 +222,30 @@ function LuaEnvironment:LoadString(str)
 end;
 
 function LuaEnvironment:LoadModule(name)
+	assert(name, "Module name must not be falsy");
 	local errors = {};
 	for _, loader in ipairs(self.loaders) do
 		local runner, err = loader(name);
-		if IsCallable(runner) then
+		if runner then
 			return self:LoadFunction(runner);
-		elseif runner==false then
-			return Noop;
 		elseif err then
 			errors[loader] = err;
+			errors.__hadErrors = true;
 		end;
 	end;
-	local str = "Could not load module: "..name;
-	for loader, err in pairs(errors) do
-		str = str .. "\nError from loader: " .. err;
+	if errors.__hadErrors then
+		errors.__hadErrors = false;
+		local str = "Could not load module: "..name;
+		for loader, err in pairs(errors) do
+			str = str .. "\nError from loader: " .. err;
+		end;
+		error(str);
 	end;
-	error(str);
+	if self.parent then
+		return self:LoadFunction(self.parent:LoadModule(name));
+	else
+		error("No loader found for module: " .. name);
+	end;
 end;
 
 function LuaEnvironment:IsLoaded(name)

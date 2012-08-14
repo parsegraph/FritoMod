@@ -217,4 +217,20 @@ function Suite:TestIgnoreLoader()
 
 end;
 
+function Suite:TestLoadModuleWithParent()
+    local parent = LuaEnvironment:New();
+
+    local flag = Tests.Flag();
+    parent:AddLoader(function(name)
+        if name == "foo" then
+            return flag.Raise;
+        end;
+    end);
+
+    local child = LuaEnvironment:New({}, parent);
+
+    child:Require("foo");
+    flag.Assert();
+end;
+
 -- vim: set et :
