@@ -167,13 +167,6 @@ end;
 -- list will be proxied.
 function LuaEnvironment:Proxy(name, provider, ...)
 	provider = Curry(provider, ...);
-	if type(name) == "table" and #name > 0 then
-		local removers = {};
-		for i=1, #name do
-			table.insert(removers, self:Proxy(name[i], provider));
-		end;
-		return Functions.OnlyOnce(Lists.CallEach, removers);
-	end;
 	self.proxies[name] = provider;
 	return Functions.OnlyOnce(function()
 		self.proxies[name] = nil;
@@ -186,15 +179,17 @@ end;
 -- within this environment, and the proxy will not be used again.
 function LuaEnvironment:Lazy(name, provider, ...)
 	provider = Curry(provider, ...);
-	return self:Proxy(name, function(self, name)
+	local remover;
+	remover = self:Proxy(name, function(self, name)
 		local value = provider(name);
 		if value == nil then
 			return nil;
 		end;
 		self:Set(name, value);
-		self.proxies[name] = nil;
+		remover();
 		return value;
 	end, self);
+	return remover;
 end;
 
 -- Inject the specified function or table into this environment.
