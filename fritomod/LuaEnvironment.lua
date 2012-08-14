@@ -13,11 +13,11 @@ function LuaEnvironment:Constructor(globals, parent)
 	globals = globals or _G;
 	local env = self;
 	self.globals=setmetatable({}, {
-		__index=function(self, k)
+		__index=function(self, name)
 			-- We use a function to hide the reference to globals.
-			local value = env:Get(k);
+			local value = env:Get(name);
 			if value == nil then
-				value = globals[k];
+				value = globals[name];
 			end;
 			return value;
 		end
@@ -65,17 +65,17 @@ function LuaEnvironment:Get(name)
 	return nil;
 end;
 
-function LuaEnvironment:Set(k, v)
-	if self.exported[k] then
-		return self.parent:Set(k, v);
+function LuaEnvironment:Set(name, value)
+	if self.exported[name] then
+		return self.parent:Set(name, value);
 	end;
-	self.globals[k]=v;
+	self.globals[name] = value;
 end;
 
-function LuaEnvironment:Change(k, v)
-	local old = self:Get(k);
-	self:Set(k, v);
-	return Functions.OnlyOnce(self, "Set", k, old);
+function LuaEnvironment:Change(name, value)
+	local old = self:Get(name);
+	self:Set(name, value);
+	return Functions.OnlyOnce(self, "Set", name, old);
 end;
 
 function LuaEnvironment:Export(name)
