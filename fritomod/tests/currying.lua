@@ -60,6 +60,41 @@ function Suite:TestCurryAcceptsPassedNilValues()
 	Assert.Equals(10, c(3,4,nil));
 end;
 
+do
+    local g1, g2, g3;
+    Suite:AddListener(Metatables.Noop({
+        TestStarted = function(self, suite)
+            g1 = __g1;
+            g2 = __g2;
+            g3 = __g3;
+        end,
+        TestFinished = function(self, suite)
+            __g1 = g1;
+            __g2 = g2;
+            __g3 = g3;
+        end
+    }));
+end;
+
+function Suite:TestGlobalEnvironmentIsClean()
+    Assert.Nil(__g1);
+    Assert.Nil(__g2);
+    Assert.Nil(__g3);
+end;
+
+function Suite:TestCurryPreservesSetfenvWithCurryFunction()
+    local globals = {};
+    local function Foo(a, b)
+        __g1 = a + b;
+    end;
+    setfenv(Foo, globals);
+
+    local curried = Curry(Foo, 3);
+    curried(4);
+    Assert.Nil(__g1);
+    Assert.Equals(7, globals.__g1);
+end;
+
 function Suite:TestCurryRejectsNilsWhenPassedAnExtraordinaryAmountOfArgs()
 
 end;
