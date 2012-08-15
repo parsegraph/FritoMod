@@ -9,6 +9,7 @@ if nil ~= require then
     require "wow/Dialogs";
     require "fritomod/Remote";
     require "fritomod/Timing";
+    require "fritomod/Tables";
 end;
 
 local HackDB = { -- default settings saved variables
@@ -22,7 +23,8 @@ local HackDB = { -- default settings saved variables
     colorTable = 1
 }
 
-Hack = {
+Hack = Hack or {};
+Tables.Update(Hack, {
     tooltips = {
         HackNew         = 'Create new %s',
         HackDelete      = 'Delete this %s\nSHIFT to skip confirmation prompt',
@@ -62,7 +64,7 @@ Hack = {
     MaxWidth       = 572, -- tune to match size of 200 character page name
     MaxVisible     =  50, -- num visible without scrolling; limits num HackListItems we must create
     NumVisible     =   0, -- calculated during list resize
-}
+});
 
 BINDING_HEADER_HACK = 'Hack'  -- used by binding system
 
