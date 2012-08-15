@@ -99,3 +99,5 @@ function Callbacks.ComboPoints(listener, ...)
 	};
 	return Events[events](Update);
 end;
+
+-- vim: set noet :
