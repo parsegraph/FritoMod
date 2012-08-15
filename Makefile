@@ -1,6 +1,6 @@
 dirs = fritomod labs deps hack
 ifndef NO_TEST
-dirs += fritomod/tests labs/tests
+dirs += fritomod/tests labs/tests hack/tests
 endif
 
 all: toc
