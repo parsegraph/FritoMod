@@ -35,6 +35,17 @@ function Suite:TestSingletonAsset()
     assert(a ~= c, "Destruction will reset the singleton");
 end;
 
+function Suite:TestUndoerAsset()
+    local obj = OOP.Class():New();
+
+    local undoer = Assets.Undoer()(obj, "AddDestructor");
+
+    local flag = Tests.Flag();
+    undoer(flag.Raise);
+    obj:Destroy();
+    flag.Assert();
+end;
+
 function Suite:TestFactoryAsset()
     local obj, factory
         = GetObjAndAsset(Assets.Factory(Assets.Flag()));

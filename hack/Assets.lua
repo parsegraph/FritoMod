@@ -1,6 +1,8 @@
 if nil ~= require then
     require "fritomod/currying";
     require "fritomod/Tests";
+    require "fritomod/Frames";
+    require "fritomod/basic";
 end;
 
 Hack = Hack or {};
@@ -46,6 +48,28 @@ function Assets.Singleton(asset, ...)
             end);
         end;
         return singleton;
+    end;
+end;
+
+function Assets.Undoer()
+    return function(dtor, ...)
+        dtor = Curry(dtor, ...);
+        return function(...)
+            if select("#", ...) > 1 or IsCallable(...) then
+                return dtor(...);
+            end;
+            assert(select("#", ...) == 1, "No arguments given to Undoer");
+            local obj = ...;
+            assert(type(obj) == "table",
+                "Unexpected undoer argument: "..type(obj));
+            if IsCallable(obj.Destroy) then
+                return dtor(obj, "Destroy");
+            end;
+            if Frames.AsRegion(obj) then
+                return dtor(Frames.Destroy, obj);
+            end;
+            error("Unexpected undoer argument: "..tostring(obj));
+        end;
     end;
 end;
 
