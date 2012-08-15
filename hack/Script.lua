@@ -25,6 +25,10 @@ function Script:SetContent(content)
     self.content = content;
 end;
 
+function Script:GetContent()
+    return self.content;
+end;
+
 function Script:AddConnector(connector, ...)
     connector = Curry(connector, ...);
     return Lists.Insert(self.connectors, connector);
