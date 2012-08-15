@@ -4,16 +4,20 @@ if nil ~= require then
     require "fritomod/LuaEnvironment";
     require "fritomod/Lists";
     require "hack/Assets";
+    require "hack/Connectors";
 end;
 
 Hack = Hack or {};
 Hack.Script = OOP.Class();
 local Script = Hack.Script;
+local Assets = Hack.Assets;
+local Connectors = Hack.Connectors;
 
 function Script:Constructor()
     self.connectors = {};
     self.content = "";
     self:AddDestructor(self, "Reset");
+    self:AddConnector(Connectors.Global("Undoer", Assets.Undoer()));
 end;
 
 function Script:SetContent(content)
@@ -32,7 +36,6 @@ end;
 function Script:Execute()
     self:Reset();
     self.environment = LuaEnvironment:New();
-    self.environment:Set("Undoer", Curry(self, "AddDestructor"));
     Lists.CallEach(self.connectors, self.environment);
     self.environment:Run(self.content);
 end;
