@@ -13,12 +13,7 @@ local Script = Hack.Script;
 function Script:Constructor()
     self.connectors = {};
     self.content = "";
-    self:AddDestructor(function()
-        if self.environment then
-            self.environment:Destroy();
-            self.environment = nil;
-        end;
-    end);
+    self:AddDestructor(self, "Reset");
 end;
 
 function Script:SetContent(content)
@@ -35,13 +30,19 @@ function Script:AddConnector(connector, ...)
 end;
 
 function Script:Execute()
-    if self.environment then
-        return;
-    end;
+    self:Reset();
     self.environment = LuaEnvironment:New();
     self.environment:Set("Undoer", Curry(self, "AddDestructor"));
     Lists.CallEach(self.connectors, self.environment);
     self.environment:Run(self.content);
+end;
+
+function Script:Reset()
+    if not self.environment then
+        return;
+    end;
+    self.environment:Destroy();
+    self.environment = nil;
 end;
 
 function Script:GetEnvironment()
