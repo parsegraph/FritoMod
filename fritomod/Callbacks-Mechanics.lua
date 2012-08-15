@@ -52,8 +52,11 @@ Callbacks.ThrottledHealth = HealthCallback("UNIT_HEALTH");
 
 function Callbacks.Power(who, power, listener, ...)
 	listener = Curry(listener, ...);
+	assert(who, "who must not be falsy");
 	who = tostring(who):lower();
-	power = tostring(power):upper();
+	if power then
+		power = tostring(power):upper();
+	end;
 	local oldValue, oldMax;
 	local function Fire()
 		if not UnitExists(who) then
