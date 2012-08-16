@@ -46,7 +46,7 @@ end;
 
 function ToggleDispatcher:FireListener(listener, ...)
 	local resetter=listener(...);
-	if resetter then
+	if IsCallable(resetter) then
 		self.resetters=self.resetters or {};
 		table.insert(self.resetters, resetter);
 		self.resetters[listener]=resetter;
