@@ -44,3 +44,5 @@ function Suite:TestList()
     Iterators.EachValue(view:Iterator(), counter.Hit);
     counter.Assert(3);
 end;
+
+-- vim: set et :
