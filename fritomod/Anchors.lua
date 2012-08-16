@@ -226,6 +226,7 @@ if nil ~= require then
 	require "wow/Frame-Container";
 	require "fritomod/Strings";
 	require "fritomod/Metatables";
+	require "fritomod/Callbacks-Timing";
 end;
 
 Anchors={};
@@ -1790,6 +1791,8 @@ Anchors.InnerSet = Curry(DoSet, true);
 Anchors.ISet = Anchors.InnerSet;
 Anchors.Set = Anchors.InnerSet;
 
+local MAGIC_FRAME;
+local USING_FRAME_HACK;
 function Anchors.ConditionalClear(strategy, ...)
 	if select("#", ...) == 1 and #(...) > 0 then
 		trace("Unpacking list for clearing")
@@ -1804,9 +1807,74 @@ function Anchors.ConditionalClear(strategy, ...)
 			end;
 		end;
 		frame:ClearAllPoints();
-		for i=1, #points do
-			frame:SetPoint(unpack(points[i]));
+		if #points > 0 then
+			for i=1, #points do
+				frame:SetPoint(unpack(points[i]));
+			end;
+			return;
 		end;
+		if USING_FRAME_HACK then
+			-- Failsafe to ensure we don't run the
+			-- hack endlessly.
+			return;
+		end;
+		-- WoW won't actually make a frame disappear with
+		-- just ClearAllPoints. Instead, a frame that has
+		-- been cleared will remain on the screen. This
+		-- seems like incorrect behavior to me.
+		--
+		-- As a result, this hack will set a dummy point
+		-- then immediately remove it. This seems to do
+		-- enough to get the frame cleared from the screen.
+		if not MAGIC_FRAME then
+			MAGIC_FRAME = CreateFrame("Frame", nil, UIParent);
+			MAGIC_FRAME:SetAllPoints();
+		end;
+
+		-- Call this hack on the next update, so we give the appearance of
+		-- a cleared frame to users of this frame. Of course, if they
+		-- decide to look during the next frame, they'll bump into our
+		-- hack. Presently, there's not much I can do about that.
+		Callbacks.Later(function()
+			if frame:GetNumPoints() ~= 0 then
+				-- It was given its own layout, so no need for this
+				-- hack.
+				return;
+			end;
+
+			trace("Running ClearAllPoints hack on "..tostring(frame));
+			-- No points were set, so add a dummy point in an attempt to
+			-- hide this frame. Note that this doesn't really "hide" the
+			-- frame. It just pushes it off-screen.
+			--
+			-- Also note that we must use UIParent or another frame that
+			-- has valid points; a dummy frame that's not properly
+			-- SetPoint'd will not correct this bug.
+			frame:SetPoint("LEFT", MAGIC_FRAME, "LEFT", 50000, 50000);
+
+			Callbacks.Later(function()
+				local _, ref = Anchors.Get(frame, "LEFT");
+				if ref ~= MAGIC_FRAME then
+					-- Someone overwrote our layout, so no need
+					-- to continue this hack.
+					return;
+				end;
+				if frame:GetNumPoints() > 1 then
+					-- We still have our bad point, so blow it away.
+					-- I'm 99% sure this won't endlessly recurse, but
+					-- we're in the middle of an ugly hack, so I'm playing
+					-- conservatively.
+					USING_FRAME_HACK=true;
+					Anchors.ClearPoint("LEFT", frame);
+					USING_FRAME_HACK=false;
+				else
+					-- We only have one point, so just use
+					-- :ClearAllPoints and get out of here.
+					frame:ClearAllPoints();
+				end
+				trace("ClearAllPoints hack completed on "..tostring(frame));
+			end);
+		end);
 	end;
 	for i=1, select("#", ...) do
 		local frame = select(i, ...);
