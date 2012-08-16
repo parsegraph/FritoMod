@@ -49,3 +49,45 @@ function Suite:TestMapper()
         c = "baz"
     }, dest);
 end;
+
+function Suite:TestReuse()
+    local values = {
+        "yellow",
+        "yellow",
+    };
+    local mapper = Mapper:New();
+    mapper:SetMapper(function(color)
+        return {
+            name = color
+        };
+    end);
+    mapper:AddSource(values);
+
+    local frames = {};
+    mapper:AddDest(frames);
+
+    -- Don't use Assert.Equals and friends because neither
+    -- value is really an "expected" value.
+    assert(frames[1] ~= frames[2]);
+
+    mapper:AllowReuse();
+    assert(frames[1] == frames[2]);
+end;
+
+function Suite:TestSmartIteration()
+    local mapper = Mapper:New();
+
+    mapper:AddSource({"yellow", "yellow"});
+    mapper:AddSource({"blue"});
+
+    mapper:SetMapper("upper");
+
+    local frames = {};
+    mapper:AddDest(frames);
+
+    Assert.Equals({
+        "YELLOW",
+        "YELLOW",
+        "BLUE"
+    }, frames);
+end;

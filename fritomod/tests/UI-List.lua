@@ -14,7 +14,7 @@ function Suite:TestList()
         "blue"
     };
     local mapper = Mapper:New();
-    mapper:UseValueMapper(function(color)
+    mapper:SetMapper(function(color)
         local frame = Frames.New();
         Frames.WH(frame, 40);
         Frames.Color(frame, color);
