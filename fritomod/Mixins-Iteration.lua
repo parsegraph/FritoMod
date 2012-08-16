@@ -549,6 +549,40 @@ function Mixins.Iteration(library)
 		end;
 	end;
 
+	-- Iterates over items in the specified iterable, sorted by the specified comparator.
+	--
+	-- This is different from a sort operation because no sorting operation is performed
+	-- on the specified iterable. It also allows sorted iteration over iterables that
+	-- may not otherwise support ordering, like keyed tables.
+	Mixins.KeyValuePairOperation(library, "%sSortedIterator", function(chooser, iterable, compareFunc, ...)
+		assert(library.SupportsGet(), "Library does not support random access");
+		compareFunc=library.NewComparator(compareFunc, ...);
+		local keys = library.Keys(iterable);
+		local _, usePairs = chooser(true, true);
+		if usePairs then
+			table.sort(keys, function(a, b)
+				return compareFunc(
+					a, library.Get(iterable, a),
+					b, library.Get(iterable, b)
+				);
+			end);
+		else
+			table.sort(keys, function(a, b)
+				a = chooser(a, library.Get(iterable, a));
+				b = chooser(b, library.Get(iterable, b));
+				return compareFunc(a, b) < 0;
+			end);
+		end;
+		local i = 0;
+		return function()
+			if i >= #keys then
+				return;
+			end;
+			i = i + 1;
+			return keys[i], library.Get(iterable, keys[i]);
+		end;
+    end);
+
 	-- Iterates over all items in the specified iterable.
 	--
 	-- This operation is applicable for either keys, values, or pairs.

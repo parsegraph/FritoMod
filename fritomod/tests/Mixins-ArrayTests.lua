@@ -242,6 +242,19 @@ function Mixins.ArrayTests(Suite, library)
 		Assert.Equals({1,1,1}, results);
 	end;
 
+	function Suite:TestSortedIteratorWithList()
+		if not library.SupportsGet() then
+			return;
+		end;
+		local list = Suite:Array("b", "a", "c");
+		local iter = library.ValueSortedIterator(list);
+		local results = {};
+		for k, v in iter do
+			table.insert(results, v);
+		end;
+		Assert.Equals({"a", "b", "c"}, results);
+	end;
+
 end;
 
 -- vim: set noet :

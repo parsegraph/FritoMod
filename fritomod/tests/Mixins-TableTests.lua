@@ -227,5 +227,22 @@ function Mixins.TableTests(Suite, library)
 		end));
 	end;
 
+    function Suite:TestSortedIteratorWithTable()
+		if not library.SupportsGet() then
+			return;
+		end;
+		local list = Suite:Table({
+            b = 2,
+            c = 3,
+            a = 1
+        });
+		local iter = library.ValueSortedIterator(list);
+		local results = {};
+		for k, v in iter do
+			table.insert(results, k);
+		end;
+		Assert.Equals({"a", "b", "c"}, results);
+    end;
+
 	return Suite;
 end;
