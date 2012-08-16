@@ -65,7 +65,6 @@ end;
 function Iterators.IterateValues(...)
 	return Iterators.IterateList({...});
 end;
-Iterators.Values=Iterators.IterateValues;
 
 function Iterators.IterateString(str)
 	assert(type(str) == "string", "str is not a string. Type: " .. type(str));
