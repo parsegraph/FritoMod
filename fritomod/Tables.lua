@@ -158,3 +158,22 @@ function Tables.LazyInitialize(originalTable, initializerFunc, ...)
 	end;
 	return originalTable;
 end;
+
+-- Returns an iterator that treats numeric indices
+-- specially, while also iterating over named values.
+function Tables.SmartIterator(t)
+    local iter = Tables.PairIterator(t);
+    return function()
+        local k, v = iter();
+        if k == nil then
+            return;
+        end;
+        if type(k) == "number" and k >= 1 and k <= #t then
+            -- It looks like a list value
+            return v;
+        else
+            -- It's a table value
+            return k, v;
+        end;
+    end;
+end;
