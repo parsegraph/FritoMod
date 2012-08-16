@@ -1795,21 +1795,25 @@ function Anchors.ConditionalClear(strategy, ...)
 		trace("Unpacking list for clearing")
 		return Anchors.ConditionalClear(strategy, unpack(...));
 	end;
+	local function ClearOne(frame)
+		local points = {};
+		for i=1, frame:GetNumPoints() do
+			local anchor, ref, anchorTo, x, y = frame:GetPoint(i);
+			if strategy(Frames.AsRegion(frame)) then
+				table.insert(points, {anchor, ref, anchorTo, x, y});
+			end;
+		end;
+		frame:ClearAllPoints();
+		for i=1, #points do
+			frame:SetPoint(unpack(points[i]));
+		end;
+	end;
 	for i=1, select("#", ...) do
 		local frame = select(i, ...);
+		frame = frame and Frames.AsRegion(frame);
 		if frame then
-			local points = {};
-			frame=Frames.AsRegion(frame);
-			for i=1, frame:GetNumPoints() do
-				local anchor, ref, anchorTo, x, y = frame:GetPoint(i);
-				if strategy(Frames.AsRegion(frame)) then
-					table.insert(points, {anchor, ref, anchorTo, x, y});
-				end;
-			end;
-			frame:ClearAllPoints();
-			for i=1, #points do
-				frame:SetPoint(unpack(points[i]));
-			end;
+			-- Falsy objects and non-frames are ignored.
+			ClearOne(frame);
 		end;
 	end;
 end;
