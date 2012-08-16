@@ -4,7 +4,7 @@ PATH=/bin:/usr/bin
 cat - <<EOF
 ## Interface: 40300
 ## Title: FritoMod
-## Notes: A function-oriented library for Lua & WoW
+## Notes: A function-oriented library for Lua & WoW (`git describe --tags`)
 ## Version: `git describe --tags`
 ## SavedVariables: _Persistence
 tooltip.xml
