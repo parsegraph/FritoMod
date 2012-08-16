@@ -240,3 +240,5 @@ function Mixins.ArrayTests(Suite, library)
 	end;
 
 end;
+
+-- vim: set noet :
