@@ -39,7 +39,8 @@ function Frame:SetAllPoints(ref)
 end;
 
 function Frame:ClearAllPoints(ref)
-	-- TODO Stub
+	self.points = {};
+	self.pointOrder = {};
 end;
 
 function Frame:SetPoint(anchor, ...)
