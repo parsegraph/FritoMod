@@ -97,6 +97,9 @@ function Mixins.ArrayTests(Suite, library)
 	end;
 
 	function Suite:TestRandom()
+		if not lib.SupportsGet() then
+			return;
+		end;
 		local a=Suite:Array(true);
 		Assert.Equals(1, lib.Random(a));
 		local r=lib.Random(Suite:Array(true,true,true));

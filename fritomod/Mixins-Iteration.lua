@@ -169,6 +169,16 @@ function Mixins.Iteration(library)
 		-- This function must be explicitly implemented by clients.
 	end;
 
+	-- Returns whether this library supports random access.
+	--
+	-- Generally speaking, one-shot iterators do not, and
+	-- table-backed iterators do.
+	if library.SupportsGet == nil then
+		function library.SupportsGet()
+			return Bool(rawget(library, "Get"));
+		end;
+	end;
+
 	if library.Next == nil then
 		-- This optional function must be explicitly implemented by clients.
 	end;
@@ -353,7 +363,7 @@ function Mixins.Iteration(library)
 		local index = 0;
 		local Get;
 		local keys;
-		if rawget(library, "Get") ~= nil then
+		if library.SupportsGet() then
 			keys = library.Keys(iterable);
 			Get = function()
 				local key = keys[index];
@@ -1210,6 +1220,8 @@ function Mixins.Iteration(library)
 
 	if library.RandomKey == nil then
 		function library.RandomKey(iterable)
+			assert(library.SupportsGet(),
+				"Library does not support random access");
 			assert(not library.IsEmpty(iterable), "iterable must have at least one element");
 			local keys=library.Keys(iterable);
 			return keys[math.ceil(math.random() * #keys)];
@@ -1222,6 +1234,8 @@ function Mixins.Iteration(library)
 
 	if library.RandomValue == nil then
 		function library.RandomValue(iterable)
+			assert(library.SupportsGet(),
+				"Library does not support random access");
 			local key = library.RandomKey(iterable);
 			return library.Get(iterable, key);
 		end;
