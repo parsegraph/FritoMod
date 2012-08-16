@@ -63,6 +63,20 @@ function Mapper:SetMapper(mapper, ...)
     self:Update();
 end;
 
+function Mapper:UseKeyMapper(mapper, ...)
+    mapper = Curry(mapper, ...);
+    self:SetMapper(function(value, key)
+        return mapper(key);
+    end);
+end;
+
+function Mapper:UseValueMapper(mapper, ...)
+    mapper = Curry(mapper, ...);
+    self:SetMapper(function(value, key)
+        return mapper(value);
+    end);
+end;
+
 -- Add the specified source to this mapper. If the source is a table, then
 -- its keys and values will be used as source data.
 --
