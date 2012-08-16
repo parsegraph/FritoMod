@@ -1838,4 +1838,18 @@ function Anchors.ClearPoint(point, ...)
 	end, ...);
 end;
 
+function Anchors.Get(frame, requested)
+	frame = Frames.AsRegion(frame);
+	requested = requested:upper();
+	for i=1, frame:GetNumPoints() do
+		local anchor, ref, anchorTo, gapX, gapY = frame:GetPoint(i);
+		if anchor == requested then
+			-- We return the anchor, even though it's redundant, as a quick
+			-- way to flag that we actually returned something, since it's
+			-- possible to have nil reference frames.
+			return anchor, ref, anchorTo, gapX, gapY;
+		end;
+	end;
+end;
+
 -- vim: set noet :
