@@ -261,3 +261,11 @@ function Suite:TestCenterJustify()
 	end;
 	Anchors.HCenterJustify("topleft", frames);
 end;
+
+function Suite:TestClear()
+    local f = Frames.New();
+    Anchors.Center(f);
+    Assert.Equals(1, f:GetNumPoints());
+    Anchors.Clear(f);
+    Assert.Equals(0, f:GetNumPoints());
+end;
