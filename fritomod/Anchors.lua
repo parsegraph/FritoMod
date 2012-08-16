@@ -1837,3 +1837,5 @@ function Anchors.ClearPoint(point, ...)
 		return anchor ~= point;
 	end, ...);
 end;
+
+-- vim: set noet :
