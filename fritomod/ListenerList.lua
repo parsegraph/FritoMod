@@ -25,7 +25,7 @@ end;
 --
 -- 1. Iteration will operate predictably when listeners are removed, even if they
 -- are removed during a firing operation.
--- 1. The order of functions is dependent only on the time they were inserted; the
+-- 2. The order of functions is dependent only on the time they were inserted; the
 -- returned remover will always remove the correct element, even if the removed
 -- function has duplicates in the listener list.
 --
