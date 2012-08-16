@@ -27,7 +27,7 @@ if nil ~= require then
     require "fritomod/OOP-Class";
     require "fritomod/Tables";
     require "fritomod/Iterators";
-    require "fritomod/ListenerList";
+    require "fritomod/ToggleDispatcher";
     require "fritomod/Anchors";
 end;
 
@@ -42,7 +42,7 @@ UI.List = List;
 -- rendering occurs.
 function List:Constructor()
     -- Listeners for the new reference frame.
-    self.listeners = ListenerList:New();
+    self.listeners = ToggleDispatcher:New();
 
     -- Some sensible defaults.
     self:UseKeySorting();
@@ -164,6 +164,7 @@ end;
 -- The layout will be removed from this list's items, as provided
 -- by the layout strategy's returned function.
 function List:Reset()
+    self.listeners:Reset();
     Iterators.EachValue(self:Iterator(), self.cleaner);
 end;
 
