@@ -88,3 +88,5 @@ function ToggleDispatcher:Toggle(...)
 		self:Fire(...);
 	end;
 end;
+
+-- vim: set noet :
