@@ -29,7 +29,7 @@ if nil ~= require then
     require "fritomod/Functions";
     require "fritomod/Tables";
     require "fritomod/Lists";
-	require "fritomod/ListenerList";
+    require "fritomod/ListenerList";
 end;
 
 Mapper = OOP.Class();
@@ -149,3 +149,5 @@ end;
 function Mapper:OnUpdate(func, ...)
     return self.listeners:Add(func, ...);
 end;
+
+-- vim: set et :
