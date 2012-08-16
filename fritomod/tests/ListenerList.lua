@@ -81,3 +81,107 @@ function Suite:TestRemoverRemovesCorrectFunctionEvenWithDuplicates()
 	list:Fire();
 	c.Assert(4); -- One less than before since the remover has taken away one hit.
 end;
+
+function Suite:TestRemovingALotOfListenersAtOnce()
+	local list = ListenerList:New();
+	local flag = Tests.Flag();
+	local a, b, c;
+	local runFlag = Tests.Flag();
+	list:Add(Noop);
+	list:Add(function()
+		runFlag.Raise();
+		a();
+		b();
+		c();
+	end);
+	a = list:Add(flag.Raise);
+	b = list:Add(flag.Raise);
+	c = list:Add(flag.Raise);
+	list:Fire();
+	runFlag.Assert();
+	flag.AssertUnset();
+end;
+
+function Suite:TestAdditionAndRemovalWithinIteration()
+	local list = ListenerList:New();
+	local flag = Tests.Flag();
+	local remover;
+	local runCount = Tests.Counter(0);
+	list:Add(Noop);
+	list:Add(function()
+		remover = list:Add(flag.Raise);
+		runCount.Hit();
+	end);
+	list:Add(function()
+		remover();
+		runCount.Hit();
+	end);
+	list:Add(Noop);
+	list:Fire();
+
+	runCount.Assert(2);
+	flag.AssertUnset();
+end;
+
+function Suite:TestRemovalBeforeCurrentIndex()
+	local list = ListenerList:New();
+	local runCount = Tests.Counter(0);
+	list:Add(Noop);
+	list:Add(runCount.Hit);
+	remover = list:Add(runCount.Hit);
+	list:Add(function()
+		remover();
+		runCount.Hit();
+	end);
+	list:Add(Noop);
+	list:Fire();
+	runCount.Assert(3);
+end;
+
+function Suite:TestRemovalAfterCurrentIndex()
+	local list = ListenerList:New();
+	local runCount = Tests.Counter(0);
+	list:Add(runCount.Hit)
+	local remover;
+	list:Add(function()
+		remover();
+		runCount.Hit();
+	end);
+	local removedFlag = Tests.Flag();
+	remover = list:Add(removedFlag.Raise);
+	list:Add(runCount.Hit);
+	list:Fire();
+	removedFlag.AssertUnset();
+	runCount.Assert(3);
+end;
+
+function Suite:TestRemovalAtCurrentIndex()
+	local list = ListenerList:New();
+	local runCount = Tests.Counter(0);
+	list:Add(runCount.Hit)
+	local remover;
+	remover = list:Add(function()
+		remover();
+		runCount.Hit();
+	end);
+	list:Add(runCount.Hit);
+	list:Fire();
+	runCount.Assert(3);
+end;
+
+function Suite:TestAddingAListenerDuringIterationDoesNotCauseThatListenerToFire()
+	local list = ListenerList:New();
+	local flag = Tests.Flag();
+	local runFlag = Tests.Flag();
+	list:Add(Noop);
+	list:Add(function()
+		runFlag.Raise();
+		list:Add(flag.Raise);
+	end);
+	list:Add(Noop);
+	list:Fire();
+	runFlag.Assert();
+	flag.AssertUnset();
+end;
+
+-- vim: set noet :

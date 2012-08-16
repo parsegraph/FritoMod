@@ -57,6 +57,7 @@ end;
 
 function ListenerList:Constructor(name)
 	self.name = name or tostring(self);
+	self.listeners = {};
 end;
 
 function ListenerList:AddInstaller(func, ...)
@@ -67,16 +68,12 @@ end;
 function ListenerList:Install()
 	assert(not self:HasListeners(), "Refusing to install populated list %q", self.name);
 	trace("Installing listener list %q", self.name);
-	self.listeners = {};
 	if self.installers then
 		self.uninstallers=Lists.MapCall(self.installers);
 	end;
 end;
 
 function ListenerList:GetListenerCount()
-	if not self.listeners then
-		return 0;
-	end;
 	return #self.listeners;
 end;
 
@@ -101,18 +98,24 @@ function ListenerList:Add(listener, ...)
 	if not self:HasListeners() then
 		self:Install();
 	end;
-	table.insert(self.listeners, 1, listener);
+	table.insert(self.listeners, listener);
 	return Functions.OnlyOnce(self, "RemoveListener", listener);
 end;
 
 function ListenerList:Fire(...)
+	assert(not self:IsFiring(), "Refusing to fire while firing");
 	self.firing=true;
 	trace("Firing all listeners on list %q", self.name);
-	local i=self:GetListenerCount();
-	while i > 0 do
-		self:FireListener(self.listeners[i], ...);
-		i = i - 1;
+	-- Get a local reference to our list, to ensure
+	-- repositioning will not affect our iteration.
+	self.firingMax = #self.listeners;
+	self.firingIndex = 1;
+	while self.firingIndex <= self.firingMax do
+		self:FireListener(self.listeners[self.firingIndex], ...);
+		self.firingIndex = self.firingIndex + 1;
 	end;
+	self.firingIndex = nil;
+	self.firingMax = nil;
 	self.firing=false;
 end;
 
@@ -122,10 +125,20 @@ end;
 
 function ListenerList:RemoveListener(listener)
 	trace("Removing listener %s", tostring(listener));
-	if not self.listeners then
-		return;
+	local removedIndex = Lists.IndexOf(self.listeners, listener);
+	if self:IsFiring() then
+		if removedIndex == nil then
+			-- Nothing found, so just return.
+			return;
+		end;
+		if removedIndex <= self.firingMax then
+			self.firingMax = self.firingMax - 1;
+		end;
+		if removedIndex <= self.firingIndex then
+			self.firingIndex = self.firingIndex - 1;
+		end;
 	end;
-	Lists.RemoveLast(self.listeners, listener);
+	table.remove(self.listeners, removedIndex);
 	if not self:HasListeners() then
 		self:Uninstall();
 	end;
@@ -138,21 +151,21 @@ function ListenerList:Uninstall()
 		Lists.CallEach(self.uninstallers);
 		self.uninstallers=nil;
 	end;
-	self.listeners = nil;
 end;
 function ListenerList:IsFiring()
 	return self.firing;
 end;
 
 function ListenerList:DumpListeners()
-	if self.listeners then
-		trace("%d listener(s) in %q", #self.listeners, self.name);
-		local i=#self.listeners;
-		while i > 0 do
-			trace("%d: %s", #self.listeners - i + 1, tostring(self.listeners[i]));
-			i = i - 1;
-		end;
-	else
+	if #self.listeners == 0 then
 		trace("No listeners in %q", self.name);
 	end;
+	trace("%d listener(s) in %q", #self.listeners, self.name);
+	local i=#self.listeners;
+	while i > 0 do
+		trace("%d: %s", #self.listeners - i + 1, tostring(self.listeners[i]));
+		i = i - 1;
+	end;
 end;
+
+-- vim: set noet :
