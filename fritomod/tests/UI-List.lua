@@ -38,4 +38,9 @@ function Suite:TestList()
 
     flag.Assert();
     Assert.Equals(frames[1], myRef, "reference was set");
+    view:Reset();
+
+    local counter = Tests.Counter();
+    Iterators.EachValue(view:Iterator(), counter.Hit);
+    counter.Assert(3);
 end;
