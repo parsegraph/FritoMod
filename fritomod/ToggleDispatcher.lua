@@ -30,7 +30,7 @@ end;
 ToggleDispatcher=OOP.Class(ListenerList);
 
 function ToggleDispatcher:Constructor(name)
-	self.name=name or tostring(self);
+	ToggleDispatcher.super.Constructor(self, name);
 	self.resetters={};
 end;
 
