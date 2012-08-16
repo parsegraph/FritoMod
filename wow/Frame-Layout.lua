@@ -109,3 +109,5 @@ end;
 function Frame:Lower()
 
 end;
+
+-- vim: set noet :
