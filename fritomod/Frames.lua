@@ -143,6 +143,9 @@ end;
 --
 -- Additional arguments will be considered as inherited frames or handlers.
 function Frames.Child(parent, frameType, ...)
+	if type(frameType) ~= "string" then
+		parent, frameType = frameType, parent;
+	end;
 	parent=Frames.AsRegion(parent);
 	assert(parent.GetChildren, "Specified parent cannot handle children");
 	local child=CreateFrame(frameType, nil, parent, ...);
