@@ -142,7 +142,11 @@ function List:Update()
         return;
     end;
     self:Reset();
-    local ref = self.layout(Iterators.Values(self:Iterator()));
+    local values = Iterators.Values(self:Iterator());
+    local ref = self.layout(values);
+    -- We use a curried function here to ensure any action we take will affect
+    -- the old values we had, rather than the new ones that we might have now.
+    self.resetLayout = Functions.OnlyOnce(Lists.Each, values, self.cleaner);
     self.listeners:Fire(ref);
 end;
 
@@ -165,7 +169,10 @@ end;
 -- by the layout strategy's returned function.
 function List:Reset()
     self.listeners:Reset();
-    Iterators.EachValue(self:Iterator(), self.cleaner);
+    if self.resetLayout then
+        self.resetLayout();
+        self.resetLayout = nil;
+    end;
 end;
 
 -- vim: set et :
