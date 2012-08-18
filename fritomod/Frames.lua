@@ -654,3 +654,5 @@ function Frames.Destroy(...)
 		end;
 	end;
 end;
+
+-- vim: set noet :
