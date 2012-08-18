@@ -560,10 +560,12 @@ function Frames.GetCallbackHandler(frame, event, installer, ...)
 	if listeners == nil then
 		listeners = ListenerList:New();
 		listeners:AddInstaller(function()
+			trace("Installing listener list for event: "..event);
 			assert(not frame[NAME],
-				"Refusing to overwrite an existing listener list");
+				"Refusing to overwrite an existing listener list for event: "..event);
 			frame[NAME] = listeners;
 			return Functions.OnlyOnce(function()
+				trace("Removing listener list for event: "..event);
 				frame[NAME] = nil;
 			end);
 		end);
