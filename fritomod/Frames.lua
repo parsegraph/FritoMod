@@ -565,7 +565,9 @@ function Frames.GetCallbackHandler(frame, event, installer, ...)
 		end);
 		listeners:AddInstaller(
 			Callbacks.Script, frame, event, listeners, "Fire");
-		listeners:AddInstaller(installer, ...);
+		if installer or select("#", ...) > 0 then
+			listeners:AddInstaller(installer, ...);
+		end;
 	end;
 	return listeners;
 end;
