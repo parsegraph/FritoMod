@@ -444,14 +444,22 @@ local function AnchorSetStrategy(name, setVerb, anchorSet)
 	local mode = CanonicalModeName(name);
 	local AnchorPair = Anchors[mode.."AnchorPair"];
 
-	InjectIntoAnchors(setVerb, name, function(frame, ...)
+	local function DoAnchorSet(frame, ...)
+		if type(frame) == "table" and #frame > 0 then
+			local ref;
+			for i=1, #frame do
+				ref = DoAnchorSet(frame[i], ...);
+			end;
+			return ref;
+		end;
 		local AnchorSet = Anchors[anchorSet];
 		assert(IsCallable(AnchorSet), "AnchorSet is not callable");
 		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
 		local anchorTo = AnchorPair(anchor);
 		assert(anchorTo, "Frames cannot be "..mode.." aligned using the "..anchor.." anchor");
 		return AnchorSet(frame, anchor, ref, anchorTo, x, y);
-	end);
+	end;
+	InjectIntoAnchors(setVerb, name, DoAnchorSet);
 end;
 
 -- A strategy for anchoring frames using the mode's pairing strategy. This
@@ -489,18 +497,23 @@ local function ReverseAnchorSetStrategy(name, setVerb, reversingVerb, anchorSet)
 		reversingVerb = reversingVerb[1];
 	end;
 
-	InjectIntoAnchors(
-		setVerb,
-		name,
-		function(frame, ...)
-			local AnchorSet = Anchors[anchorSet];
-			assert(IsCallable(AnchorSet), "AnchorSet is not callable");
-			local anchor, ref, x, y=GetAnchorArguments(frame, ...);
-			local anchorTo = AnchorPair(anchor);
-			assert(anchorTo, "No anchor pair found for "..mode.." set: "..anchor);
-			return AnchorSet(frame, anchorTo, ref, anchor, x, y);
-		end
-	);
+	local function DoReverseAnchorSet(frame, ...)
+		if type(frame) == "table" and #frame > 0 then
+			local ref;
+			for i=1, #frame do
+				ref = DoReverseAnchorSet(frame[i], ...);
+			end;
+			return ref;
+		end;
+		local AnchorSet = Anchors[anchorSet];
+		assert(IsCallable(AnchorSet), "AnchorSet is not callable");
+		local anchor, ref, x, y=GetAnchorArguments(frame, ...);
+		local anchorTo = AnchorPair(anchor);
+		assert(anchorTo, "No anchor pair found for "..mode.." set: "..anchor);
+		return AnchorSet(frame, anchorTo, ref, anchor, x, y);
+	end;
+
+	InjectIntoAnchors(setVerb, name, DoReverseAnchorSet);
 end;
 
 -- A strategy that sets multiple anchors using the AnchorSetStrategy for the
@@ -535,9 +548,10 @@ local function EdgeSetStrategy(name, setVerb)
 
 	local function FlipEdge(...)
 		local anchors = {...};
-		return function(frame, ref, x, y)
+		return function(frame, ...)
+			local ref;
 			for i=1, #anchors do
-				SetPoint(frame, anchors[i], ref, x, y);
+				ref = SetPoint(frame, anchors[i], ...);
 			end;
 			return ref;
 		end;
