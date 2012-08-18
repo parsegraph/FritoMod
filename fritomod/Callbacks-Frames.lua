@@ -43,3 +43,7 @@ function Callbacks.HookScript(frame, event, callback, ...)
 end;
 Callbacks.HookedScript=Callbacks.HookScript;
 Callbacks.ScriptHook=Callbacks.HookScript;
+
+function Callbacks.SimpleEvent(frame, event, callback, ...)
+    return Frames.GetCallbackHandler(frame, event):Add(callback, ...);
+end;
