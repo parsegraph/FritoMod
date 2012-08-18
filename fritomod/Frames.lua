@@ -3,6 +3,7 @@
 if nil ~= require then
 	require "wow/Frame-Layout";
 	require "wow/Frame-Alpha";
+	require "wow/Frame-Container";
 	require "wow/api/UIParent";
 
 	require "fritomod/Functions";
