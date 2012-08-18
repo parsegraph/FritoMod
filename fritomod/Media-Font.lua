@@ -104,3 +104,22 @@ function Frames.Font(frame, font, size, ...)
 	return f;
 end;
 
+function Frames.EditBox(...)
+    local first = ...;
+    local parent, font, size, style;
+    if type(first) == "table" and Frames.AsRegion(first) then
+        parent = first;
+        font, size, style = select(2, ...);
+    else
+        parent = UIParent;
+        font, size, style = ...;
+    end;
+    assert(parent);
+    font = font or "friz";
+    size = size or 12;
+    local editBox = Frames.New("EditBox", parent);
+    Frames.Font(editBox, font, size, style);
+    editBox:SetAutoFocus(false);
+    Callbacks.OnEscape(editBox, editBox, "ClearFocus");
+    return editBox;
+end;
