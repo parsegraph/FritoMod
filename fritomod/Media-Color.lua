@@ -56,6 +56,10 @@ colors.cyan = {0.0, 1.0,  1.0, 1.0};
 colors.gold  ={1.0, 0.82, 0.0, 1.0}; -- This is the yellow/gold color Blizzard uses in text.
 colors.violet=colors.purple;
 
+colors.magenta = {1.0, 0.0, 1.0, 1.0};
+colors.fuchsia = colors.magenta;
+colors.fushia  = colors.magenta;
+
 colors.alliance = {.3, .3, 1};
 colors.horde = {1, .2, .2};
 
@@ -86,6 +90,13 @@ if RAID_CLASS_COLORS then
 		colors[className]=BreakColorTable(classColor);
 	end;
 end;
+colors.pally  = colors.paladin;
+colors.shammy = colors.shaman;
+colors.lock   = colors.warlock;
+colors.warr   = colors.warrior;
+
+colors["death knight"] = colors.deathknight;
+colors.dk              = colors.deathknight;
 
 if PowerBarColor then
 	for name, color in pairs(PowerBarColor) do
