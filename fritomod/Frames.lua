@@ -7,6 +7,7 @@ if nil ~= require then
 
 	require "fritomod/Functions";
 	require "fritomod/Media-Color";
+	require "fritomod/ListenerList";
 end;
 
 Frames=Frames or {};
@@ -547,6 +548,27 @@ local disallowsNilParent = {
 	Texture = true,
 	FontString = true
 }
+
+function Frames.GetCallbackHandler(frame, event, installer, ...)
+	frame = Frames.AsRegion(frame);
+	local NAME = "CallbackHandler_"..event;
+	local listeners = frame[NAME];
+	if listeners == nil then
+		listeners = ListenerList:New();
+		listeners:AddInstaller(function()
+			assert(not frame[NAME],
+				"Refusing to overwrite an existing listener list");
+			frame[NAME] = listeners;
+			return Functions.OnlyOnce(function()
+				frame[NAME] = nil;
+			end);
+		end);
+		listeners:AddInstaller(
+			Callbacks.Script, frame, event, listeners, "Fire");
+		listeners:AddInstaller(installer, ...);
+	end;
+	return listeners;
+end;
 
 do
 	local FONT_HEIGHT_MULTIPLE = 2;
