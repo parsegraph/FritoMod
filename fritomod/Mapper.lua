@@ -173,7 +173,7 @@ function Mapper:AllowReuse()
     self:Update();
 end;
 
--- Prepare thsi mapper for an update.
+-- Prepare this mapper for an update.
 function Mapper:Prepare()
     -- Maps original data to generated content. The keys are weak, so if
     -- original data is no longer used elsewhere, our mapping will eventually
