@@ -53,7 +53,7 @@ function Frame:SetScript(event, handler)
 	assert(type(event)=="string", "Event must be a string");
 	local handlers=self:_GetHandlers(event);
 	if handlers then
-		trace("Adding event handler for %q to frame %q", event, tostring(self.frame));
+		trace("Adding event handler for %q to frame %q", event, tostring(self));
 		handlers.handler=handler;
 	end;
 end;
