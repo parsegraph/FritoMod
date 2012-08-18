@@ -6,23 +6,14 @@ if nil ~= require then
 	require "wow/Button";
 end;
 
-local frameTypes={
-	frame=WoW.Frame,
-	button=WoW.Button,
-};
+WoW = WoW or {};
 
-function CreateFrame(fType, name, parent, inherited)
-	if type(fType) ~= "string" then
-		error("fType must be a string. type: "..type(fType));
-	end;
-	fType=string.lower(fType);
-	if not frameTypes[fType] then
-		error("fType is unknown. fType: "..fType);
-	end;
-	local f=frameTypes[fType]:New(parent, inherited);
+function CreateFrame(frameType, name, parent, inherited)
+	local frame = WoW:NewFrame(frameType, parent, inherited);
 	if name then
-		_G[name]=f;
+		_G[name] = frame;
 	end;
-	return f;
+	return frame;
 end;
 
+-- vim: noet :

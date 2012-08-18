@@ -17,6 +17,24 @@ function WoW.AssertFrame(frame)
 	);
 end;
 
+do
+	local frameTypes = {};
+	function WoW:RegisterFrameType(name, creator, ...)
+		name = tostring(name):lower();
+		creator = Curry(creator, ...);
+		frameTypes[name] = creator;
+	end;
+
+	function WoW:NewFrame(name, ...)
+		name = tostring(name):lower();
+		local creator = frameTypes[name];
+		assert(creator, "No creator for frametype: "..name);
+		return creator(...);
+	end;
+end;
+
+WoW:RegisterFrameType("Frame", WoW.Frame, "New");
+
 function Frame:GetObjectType()
 	return "Frame";
 end;

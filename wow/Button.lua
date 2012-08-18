@@ -6,6 +6,8 @@ end;
 
 WoW.Button=OOP.Class(WoW.Frame);
 
+WoW:RegisterFrameType("Button", WoW.Button, "New");
+
 function WoW.Button:SetHighlightTexture()
 end;
 
