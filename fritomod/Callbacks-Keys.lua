@@ -71,3 +71,5 @@ function Callbacks.Modifier(key, func, ...)
 		end;
 	end);
 end;
+
+-- vim: set noet :
