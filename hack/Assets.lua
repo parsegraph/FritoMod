@@ -16,6 +16,12 @@ function Assets.AsAsset(asset, ...)
     return Curry(asset, ...);
 end;
 
+function Assets.Constant(value)
+    return function()
+        return value;
+    end;
+end;
+
 function Assets.Factory(asset, ...)
     asset = Assets.AsAsset(asset, ...);
     return function(dtor, ...)
