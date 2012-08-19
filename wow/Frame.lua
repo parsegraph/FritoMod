@@ -39,34 +39,6 @@ function Frame:GetObjectType()
 	return "Frame";
 end;
 
-function Frame:SetAlpha()
-
-end;
-
 function Frame:SetFrameStrata()
-
-end;
-
-function Frame:SetBackdrop()
-
-end;
-
-function Frame:SetBackdropBorderColor()
-
-end;
-
-function Frame:SetHeight()
-
-end;
-
-function Frame:GetHeight()
-
-end;
-
-function Frame:SetWidth()
-
-end;
-
-function Frame:GetWidth()
 
 end;

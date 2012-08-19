@@ -31,3 +31,7 @@ end;
 function Frame:IsVisible()
 	return self.shown;
 end;
+
+function Frame:SetAlpha()
+
+end;

@@ -111,4 +111,20 @@ function Frame:Lower()
 
 end;
 
+function Frame:SetHeight()
+
+end;
+
+function Frame:GetHeight()
+
+end;
+
+function Frame:SetWidth()
+
+end;
+
+function Frame:GetWidth()
+
+end;
+
 -- vim: set noet :
