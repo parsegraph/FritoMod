@@ -548,11 +548,6 @@ function Frames.KeepHidden(f)
 	});
 end;
 
-local disallowsNilParent = {
-	Texture = true,
-	FontString = true
-}
-
 function Frames.GetCallbackHandler(frame, event, installer, ...)
 	frame = Frames.AsRegion(frame);
 	local NAME = "CallbackHandler_"..event;
@@ -628,27 +623,34 @@ function Frames.Desaturate(texture)
 	error("No method of desaturation supported for "..tostring(texture));
 end
 
-function Frames.Destroy(...)
-	if select("#", ...) == 1 and type(...) == "table" and #(...) > 0 then
-		trace("Unpacking list for destruction")
-		return Frames.Destroy(unpack(...));
-	end;
-	for i=1, select("#", ...) do
-		local f = select(i, ...);
-		if not f then
-			-- Skip nil frames
-		elseif f.Destroy and f.Destroy ~= Frames.Destroy then
-			f:Destroy();
-		elseif Frames.AsRegion(f) then
-			f=Frames.AsRegion(f);
-			if f then
-				f:Hide();
-				f:ClearAllPoints();
-				local objectType = f:GetObjectType();
-				-- Some objects do not allow a nil parent, so we need
-				-- to exclude them here.
-				if not disallowsNilParent[objectType] then
-					f:SetParent(nil);
+do
+	local disallowsNilParent = {
+		Texture = true,
+		FontString = true
+	}
+
+	function Frames.Destroy(...)
+		if select("#", ...) == 1 and type(...) == "table" and #(...) > 0 then
+			trace("Unpacking list for destruction")
+			return Frames.Destroy(unpack(...));
+		end;
+		for i=1, select("#", ...) do
+			local f = select(i, ...);
+			if not f then
+				-- Skip nil frames
+			elseif f.Destroy and f.Destroy ~= Frames.Destroy then
+				f:Destroy();
+			elseif Frames.AsRegion(f) then
+				f=Frames.AsRegion(f);
+				if f then
+					f:Hide();
+					f:ClearAllPoints();
+					local objectType = f:GetObjectType();
+					-- Some objects do not allow a nil parent, so we need
+					-- to exclude them here.
+					if not disallowsNilParent[objectType] then
+						f:SetParent(nil);
+					end;
 				end;
 			end;
 		end;
