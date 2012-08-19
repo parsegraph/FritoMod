@@ -143,11 +143,17 @@ function List:Update()
     end;
     self:Reset();
     local values = Iterators.Values(self:Iterator());
-    local ref = self.layout(values);
-    -- We use a curried function here to ensure any action we take will affect
-    -- the old values we had, rather than the new ones that we might have now.
-    self.resetLayout = Functions.OnlyOnce(Lists.Each, values, self.cleaner);
-    self.listeners:Fire(ref);
+    if #values > 0 then
+        local ref = self.layout(values);
+        -- We use a curried function here to ensure any action we take will affect
+        -- the old values we had, rather than the new ones that we might have now.
+        self.resetLayout = Functions.OnlyOnce(Lists.Each, values, self.cleaner);
+        self.listeners:Fire(ref);
+    else
+        -- Don't use the layout if we don't have anything to lay out.
+        self.resetLayout = Noop;
+        self.listeners:Fire();
+    end;
 end;
 
 -- Listen for updates to this list.
