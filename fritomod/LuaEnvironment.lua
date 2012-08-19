@@ -257,7 +257,7 @@ function LuaEnvironment:Run(runner, ...)
 end;
 
 function LuaEnvironment:LoadString(str)
-	return self:LoadFunction(loadstring(str));
+	return self:LoadFunction(assert(loadstring(str)));
 end;
 
 -- Returns a function that will Load a named module into this environment.
