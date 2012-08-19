@@ -1745,6 +1745,13 @@ function Anchors.Center(frame, ...)
 end;
 
 local function DoSet(useInner, frame, anchor, ref, anchorTo, x, y)
+	if type(frame) == "table" and #frame > 0 then
+		local ref;
+		for i=1, #frame do
+			ref = DoSet(useInner, frame[i], anchor, ref, anchorTo, x, y);
+		end;
+		return ref;
+	end;
 	local origRef = ref;
 	if type(anchor) == "table" and #anchor > 0 then
 		-- If we're given tables for both, assume they're meant to be used in tandem.
