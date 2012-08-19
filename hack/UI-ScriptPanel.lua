@@ -29,7 +29,7 @@ function ScriptPanel:Constructor(parent)
     Anchors.HFlip(self.panel, self.selector, "right", 2);
     self.selector:SetWidth(100);
 
-    self.scriptText=Frames.EditBox(self);
+    self.scriptText = Frames.EditBox(self);
     self:AddDestructor(Frames.Destroy, self.scriptText);
     self.scriptText:SetMultiLine(true);
     Frames.Font(self.scriptText, "consolas", 13);
