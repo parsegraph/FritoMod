@@ -209,7 +209,8 @@ Frames.SolidColor=Frames.Color;
 function Frames.BorderColor(f, ...)
 	f=Frames.AsRegion(f);
 	local r,g,b,a = GetColor(...);
-	assert(f.SetBackdropBorderColor, "Provided object does not support backdrops");
+	assert(f.SetBackdropBorderColor,
+		"Provided object does not support backdrop border colors");
 	f:SetBackdropBorderColor(r,g,b,a);
 	return f;
 end;
@@ -218,7 +219,8 @@ Frames.BackdropBorderColor=Frames.BorderColor;
 function Frames.BackdropColor(f, ...)
 	f=Frames.AsRegion(f);
 	local r,g,b,a = GetColor(...);
-	assert(f.SetBackdropColor, "Provided object does not support backdrops");
+	assert(f.SetBackdropColor,
+		"Provided object does not support backdrop colors");
 	f:SetBackdropColor(r,g,b,a);
 	return f;
 end;
