@@ -163,10 +163,15 @@ buttons.close=StandardButton("Interface/Buttons/UI-Panel-MinimizeButton", {
 	textureHeight=32
 });
 Metatables.OverloadCallable(buttons.close, function(layout, button)
-	AdjustTexCoords(layout, button:GetNormalTexture());
-	AdjustTexCoords(layout, button:GetPushedTexture());
-	AdjustTexCoords(layout, button:GetDisabledTexture());
-
+	if button.GetNormalTexture then
+		AdjustTexCoords(layout, button:GetNormalTexture());
+	end;
+	if button.GetPushedTexture then
+		AdjustTexCoords(layout, button:GetPushedTexture());
+	end;
+	if button.GetDisabledTexture then
+		AdjustTexCoords(layout, button:GetDisabledTexture());
+	end;
 	return button;
 end);
 
