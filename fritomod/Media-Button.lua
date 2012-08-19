@@ -302,3 +302,4 @@ function Frames.ButtonTexture(button, layout)
 end;
 Frames.Button=Frames.ButtonTexture;
 
+-- vim: noet :
