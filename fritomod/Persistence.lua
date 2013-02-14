@@ -62,7 +62,7 @@ function Callbacks.PersistentValue(key, func, ...)
 end;
 
 Events.ADDON_LOADED(function(addon)
-	if addon~="FritoMod" then
+	if addon:lower() ~= "fritomod" then
 		return;
 	end;
 	loaded=true;
