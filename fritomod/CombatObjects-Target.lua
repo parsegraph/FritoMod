@@ -32,7 +32,7 @@ local DUMMY_GUID = "0x0010000000000000";
 function TargetEvent:GUID()
 	-- By default, return a GUID of an anonymous
 	-- world object.
-	if not self.guid or self.guid == "0x0000000000000000" then
+	if not self.guid or self.guid == "" or self.guid == "0x0000000000000000" then
 		self.guid = DUMMY_GUID;
 	end;
 	return self.guid;
