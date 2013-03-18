@@ -741,7 +741,7 @@ do
     }
     CreateFrame('Frame', 'HackSendMenu', HackListFrame, 'UIDropDownMenuTemplate')
     function Hack.Send()
-        menu[2].disabled = GetNumPartyMembers() == 0
+        menu[2].disabled = not UnitInParty("player")
         menu[3].disabled = not UnitInRaid('player')
         menu[4].disabled = not IsInGuild()
         EasyMenu(menu, HackSendMenu, 'cursor', nil, nil, 'MENU')
