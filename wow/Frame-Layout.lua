@@ -9,52 +9,67 @@ end;
 
 local Frame = WoW.Frame;
 
-do
-	local validAnchors = {
-		"TOPLEFT", "TOP", "TOPRIGHT",
-		"LEFT", "CENTER", "RIGHT",
-		"BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT",
-	};
-
-	function WoW.AssertAnchor(anchor)
-		assert(
-			type(anchor)=="string",
-			"Anchor must be a string. Given: " .. type(anchor)
-		);
-		anchor=anchor:upper();
-		assert(
-			Lists.Contains(validAnchors, anchor),
-			"Anchor name is invalid. Given: "..anchor
-		);
-	end;
+function Frame:Raise()
+	trace("STUB Frame:Raise");
 end;
 
-WoW.Frame:AddConstructor(function(self)
-	self.points = {};
-	self.pointOrder = {};
-end);
+function Frame:Lower()
+	trace("STUB Frame:Lower");
+end;
+
+function Frame:SetFrameStrata()
+	trace("STUB Frame:SetFrameStrata");
+end;
 
 function Frame:SetAllPoints(ref)
-	-- TODO Stub
+	ref = ref or self:GetParent();
+	assert(ref, "Frame must have a reference frame when setting all points");
+	self:SetPoint("TOPLEFT", ref);
+	self:SetPoint("BOTTOMRIGHT", ref);
 end;
 
-function Frame:ClearAllPoints(ref)
+WoW.Delegate(Frame, "layout", {
+	"SetPoint",
+	"GetPoint",
+	"ClearAllPoints",
+	"GetNumPoints",
+
+	"SetHeight",
+	"GetHeight",
+	"SetWidth",
+	"GetWidth",
+});
+
+local TestingLayoutDelegate = OOP.Class();
+
+WoW.SetFrameDelegate("Frame", "layout", TestingLayoutDelegate, "New");
+
+function TestingLayoutDelegate:Constructor(frame)
+	self.frame = frame;
 	self.points = {};
 	self.pointOrder = {};
 end;
 
-function Frame:SetPoint(anchor, ...)
+function TestingLayoutDelegate:ClearAllPoints(ref)
+	self.points = {};
+	self.pointOrder = {};
+end;
+
+function TestingLayoutDelegate:SetPoint(anchor, ...)
 	WoW.AssertAnchor(anchor);
 	if select("#", ...) == 0 then
 		-- SetPoint(anchor)
 		return self:SetPoint(anchor, self.frame:GetParent(), anchor, 0, 0);
+	elseif select("#", ...) == 1 then
+		local ref = ...;
+		return self:SetPoint(anchor, ref, anchor, 0, 0);
 	elseif select("#", ...) == 2 then
-		-- SetPoint(anchor, x, y)
-		-- SetPoint(anchor, ref, anchorTo)
 		local first, second = ...;
 		if type(first) == "number" and type(second) == "number" then
+			-- SetPoint(anchor, x, y)
 			return self:SetPoint(anchor, self.frame:GetParent(), anchor, ...);
 		else
+			-- SetPoint(anchor, ref, anchorTo)
 			return self:SetPoint(anchor, first, second, 0, 0);
 		end;
 	end;
@@ -84,7 +99,7 @@ function Frame:SetPoint(anchor, ...)
 	table.insert(self.pointOrder, anchor);
 end;
 
-function Frame:GetPoint(index)
+function TestingLayoutDelegate:GetPoint(index)
 	Assert.Number(index, "index must be a number");
 	local anchorName = self.pointOrder[index];
 	assert(anchorName, "index must not be out of range. Given: "..tostring(index));
@@ -100,31 +115,44 @@ function Frame:GetPoint(index)
 		anchor.y
 end;
 
-function Frame:GetNumPoints()
+function TestingLayoutDelegate:GetNumPoints()
 	return #self.pointOrder;
 end;
 
-function Frame:Raise()
+function TestingLayoutDelegate:SetWidth(width)
+	self.width = width;
 end;
 
-function Frame:Lower()
-
+function TestingLayoutDelegate:GetWidth()
+	return self.width;
 end;
 
-function Frame:SetHeight()
-
+function TestingLayoutDelegate:GetHeight()
+	return self.height;
 end;
 
-function Frame:GetHeight()
-
+function TestingLayoutDelegate:SetHeight(height)
+	self.height = height;
 end;
 
-function Frame:SetWidth()
+do
+	local validAnchors = {
+		"TOPLEFT", "TOP", "TOPRIGHT",
+		"LEFT", "CENTER", "RIGHT",
+		"BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT",
+	};
 
-end;
-
-function Frame:GetWidth()
-
+	function WoW.AssertAnchor(anchor)
+		assert(
+			type(anchor)=="string",
+			"Anchor must be a string. Given: " .. type(anchor)
+		);
+		anchor=anchor:upper();
+		assert(
+			Lists.Contains(validAnchors, anchor),
+			"Anchor name is invalid. Given: "..anchor
+		);
+	end;
 end;
 
 -- vim: set noet :

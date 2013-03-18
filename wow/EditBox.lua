@@ -9,7 +9,7 @@ WoW = WoW or {};
 WoW.EditBox=OOP.Class(WoW.Frame);
 local EditBox = WoW.EditBox;
 
-WoW:RegisterFrameType("EditBox", WoW.EditBox, "New");
+WoW.RegisterFrameType("EditBox", WoW.EditBox, "New");
 
 function EditBox:SetFont()
 
