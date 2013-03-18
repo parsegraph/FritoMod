@@ -82,6 +82,10 @@ function LuaEnvironment:Constructor(parent)
 	self:Set("loadstring", Curry(self, "LoadString"));
 end;
 
+function LuaEnvironment:Globals()
+	return self.globals;
+end;
+
 -- Get the value in this environment with the specified name. Proxies, lazy values,
 -- injected tables, and parents will all be invoked if necessary to retrieve this
 -- value.
@@ -239,7 +243,12 @@ end;
 -- setfenv will only affect the immediate function provided; functions that
 -- are invoked within the specified function will use their own environment,
 -- unless they were created within the specified function.
+--
+-- setfenv was removed in Lua 5.2, so this function will not work if you're
+-- running that version. There are ways to emulate setfenv's behavior, but
+-- it's hackish so I'd prefer not to have it here.
 function LuaEnvironment:LoadFunction(runner, ...)
+	assert(setfenv ~= nil, "setfenv must be defined for LoadFunction to work");
 	assert(type(runner) == "function",
 		"runner must be a function (curried methods are not allowed)");
 	-- We must setfenv before we curry, since currying will introduce
@@ -256,8 +265,11 @@ function LuaEnvironment:Run(runner, ...)
 	return self:LoadFunction(runner, ...)();
 end;
 
-function LuaEnvironment:LoadString(str)
-	return self:LoadFunction(assert(loadstring(str)));
+function LuaEnvironment:LoadString(str, source)
+	if _VERSION == "Lua 5.1" then
+		return self:LoadFunction(assert(loadstring(str)));
+	end;
+	return load(str, source, "t", self:Globals());
 end;
 
 -- Returns a function that will Load a named module into this environment.
