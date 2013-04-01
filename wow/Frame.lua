@@ -37,6 +37,8 @@ do
         end;
         if frameInheritance[name] then
             InstallDelegates(frameInheritance[name], frame, installedDelegates);
+        elseif name ~= "frame" then
+            InstallDelegates("frame", frame, installedDelegates);
         end;
     end;
 
@@ -54,7 +56,9 @@ do
     function WoW.RegisterFrameInheritance(name, parent)
         name = tostring(name):lower();
         parent = tostring(parent):lower();
-        frameInheritance[name] = parent;
+        if parent ~= "frame" then
+            frameInheritance[name] = parent;
+        end;
     end;
 
     function WoW.SetFrameDelegate(name, category, delegateCreator, ...)

@@ -8,7 +8,6 @@ local FontString=OOP.Class(WoW.Frame);
 WoW.FontString = FontString;
 
 WoW.RegisterFrameType("FontString", FontString, "New");
-WoW.RegisterFrameInheritance("FontString", "Frame");
 
 local Frame = WoW.Frame;
 
