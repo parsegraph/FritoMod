@@ -59,7 +59,7 @@ function Frames.Text(parent, font, size, ...)
 	local text;
 	if type(parent) ~= "table" then
 		text=parent;
-		parent=UIParent:CreateFontString();
+		parent=UIParent;
 	elseif not parent.CreateFontString then
 		parent=Frames.AsRegion(parent);
 	end;
