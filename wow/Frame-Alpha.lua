@@ -13,14 +13,14 @@ end);
 function Frame:Show()
 	if not self.shown then
 		self.shown=true;
-		self:_FireEvent("OnShow");
+		self:FireEvent("OnShow");
 	end;
 end;
 
 function Frame:Hide()
 	if self.shown then
 		self.shown=false;
-		self:_FireEvent("OnHide");
+		self:FireEvent("OnHide");
 	end;
 end;
 
