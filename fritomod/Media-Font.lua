@@ -67,11 +67,10 @@ function Frames.Text(parent, font, size, ...)
 	if not font:match("\\") then
 		font=Media.font[font];
 	end;
-	local options = {...};
 	local color;
 	local flags;
-	for i=1, #options do
-		local option = options[i]:lower();
+	for i=1, select("#", ...) do
+		local option = tostring(select(i, ...)):lower();
 		if outlines[option] then
 			if flags then
 				flags=flags..","..outlines[option];
