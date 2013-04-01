@@ -41,7 +41,7 @@ Events = {};
 local eventListeners = {};
 Events._eventListeners = eventListeners;
 
-Events._call = function(event, ...)
+function Events.Dispatch(event, ...)
 	local listeners = eventListeners[event];
 	if listeners then
 		trace("EVENT: %s %s", event, Strings.Pretty({...}));
@@ -49,12 +49,25 @@ Events._call = function(event, ...)
 	end;
 end;
 
-local eventsFrame;
-eventsFrame = CreateFrame("Frame");
+local Delegate = OOP.Class();
 
-eventsFrame:SetScript("OnEvent", function(frame, event, ...)
-	Events._call(event, ...);
-end);
+function Delegate:Constructor()
+    self.eventsFrame = CreateFrame("Frame");
+
+    self.eventsFrame:SetScript("OnEvent", function(frame, event, ...)
+        Events.Dispatch(event, ...);
+    end);
+end;
+
+function Delegate:RegisterEvent(event)
+    self.eventsFrame:RegisterEvent(event);
+end;
+
+function Delegate:UnregisterEvent(event)
+    self.eventsFrame:UnregisterEvent(event);
+end;
+
+Events.delegate = Seal(Delegate, "New");
 
 setmetatable(Events, {
 	-- A metatable that allows the succinct Events.EVENT_NAME(eventListener) syntax. This creates new
@@ -72,11 +85,17 @@ setmetatable(Events, {
 		end;
 		eventListeners[key] = ListenerList:New("Event listeners for "..tostring(key));
 		eventListeners[key]:AddInstaller(function()
-			eventsFrame:RegisterEvent(key);
+            local delegate = rawget(self, "delegate");
+            assert(delegate, "Events has no event delegate");
+            if type(delegate) == "function" then
+                delegate = delegate();
+                rawset(self, "delegate", delegate);
+            end;
+			delegate:RegisterEvent(key);
 			trace("Listening for event %q", key);
 			return function()
 				trace("Unregistering event %q", key);
-				eventsFrame:UnregisterEvent(key);
+				delegate:UnregisterEvent(key);
 			end;
 		end);
 		self[key] = function(func, ...)

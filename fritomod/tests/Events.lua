@@ -7,9 +7,9 @@ function Suite:TestEvents()
 		f.AssertUnset("Events calls listeners only once per each event");
 		f.Raise();
 	end);
-	Events._call("FOO", true);
+	Events.Dispatch("FOO", true);
 	f.Assert("Events calls listeners exactly once per event");
 	r();
 	-- Test to ensure the remover actually worked
-	Events._call("FOO", true);
+	Events.Dispatch("FOO", true);
 end;
