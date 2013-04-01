@@ -11,11 +11,18 @@ function WoW.Frame:CreateTexture()
 end;
 
 function Texture:SetTexture(...)
+    if select("#", ...) > 1 then
+        self.color = {...};
+        return;
+    end;
+    print("STUB SetTexture");
+end;
 
+function Texture:GetColor()
+    return unpack(self.color);
 end;
 
 function Texture:GetTexture(...)
-
 end;
 
 function Texture:SetTexCoord(...)
