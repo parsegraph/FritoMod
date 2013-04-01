@@ -61,6 +61,11 @@ do
         frameDelegates[name][category] = Curry(delegateCreator, ...);
     end;
 
+    function WoW.GetFrameDelegate(name, category)
+        name = tostring(name):lower();
+        return frameDelegates[name] and frameDelegates[name][category];
+    end;
+
 	function WoW.NewFrame(name, ...)
 		name = tostring(name):lower();
 		local klass = frameTypes[name];
