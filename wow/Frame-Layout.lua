@@ -28,34 +28,7 @@ function Frame:SetAllPoints(ref)
 	self:SetPoint("BOTTOMRIGHT", ref);
 end;
 
-WoW.Delegate(Frame, "layout", {
-	"SetPoint",
-	"GetPoint",
-	"ClearAllPoints",
-	"GetNumPoints",
-
-	"SetHeight",
-	"GetHeight",
-	"SetWidth",
-	"GetWidth",
-});
-
-local TestingLayoutDelegate = OOP.Class();
-
-WoW.SetFrameDelegate("Frame", "layout", TestingLayoutDelegate, "New");
-
-function TestingLayoutDelegate:Constructor(frame)
-	self.frame = frame;
-	self.points = {};
-	self.pointOrder = {};
-end;
-
-function TestingLayoutDelegate:ClearAllPoints(ref)
-	self.points = {};
-	self.pointOrder = {};
-end;
-
-function TestingLayoutDelegate:SetPoint(anchor, ...)
+function Frame:SetPoint(anchor, ...)
 	WoW.AssertAnchor(anchor);
 	if select("#", ...) == 0 then
 		-- SetPoint(anchor)
@@ -87,6 +60,38 @@ function TestingLayoutDelegate:SetPoint(anchor, ...)
 	anchorTo=anchorTo:upper();
 	Assert.Number(x, "X offset must be a number");
 	Assert.Number(y, "Y offset must be a number");
+	self:GetDelegate("layout"):SetPoint(anchor, ref, anchorTo, x, y);
+end;
+
+WoW.Delegate(Frame, "layout", {
+	"GetPoint",
+	"ClearAllPoints",
+	"GetNumPoints",
+
+	"SetHeight",
+	"GetHeight",
+	"SetWidth",
+	"GetWidth",
+});
+
+local TestingLayoutDelegate = OOP.Class();
+
+if not WoW.GetFrameDelegate("Frame", "layout") then
+	WoW.SetFrameDelegate("Frame", "layout", TestingLayoutDelegate, "New");
+end;
+
+function TestingLayoutDelegate:Constructor(frame)
+	self.frame = frame;
+	self.points = {};
+	self.pointOrder = {};
+end;
+
+function TestingLayoutDelegate:ClearAllPoints(ref)
+	self.points = {};
+	self.pointOrder = {};
+end;
+
+function TestingLayoutDelegate:SetPoint(anchor, ref, anchorTo, x, y)
 	self.points[anchor] = {
 		frame = self.frame,
 		anchor = anchor,
