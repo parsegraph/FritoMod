@@ -5,6 +5,8 @@ if nil ~= require then
 	require "fritomod/Strings";
 	require "fritomod/Colors";
 	require "fritomod/Media";
+
+	require "wow/Texture";
 end;
 
 local colors=setmetatable({}, {
