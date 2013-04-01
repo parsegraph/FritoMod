@@ -91,7 +91,7 @@ function Frames.Text(parent, font, size, ...)
 		Frames.Color(fontstring, color);
 	end;
 	if text then
-		fonstring:SetText(text);
+		fontstring:SetText(text);
 	end;
 	return fontstring;
 end;
