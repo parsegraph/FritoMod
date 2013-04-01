@@ -208,6 +208,8 @@ function Frames.Color(f,...)
 		t:SetTexture(r,g,b,a);
 		t.__colored = true;
 		f=t;
+	else
+		error("Frame must support color setting");
 	end;
 	return f;
 end;
