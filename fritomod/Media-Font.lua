@@ -56,11 +56,7 @@ Tables.Expand(outlines);
 
 function Frames.Text(parent, font, size, ...)
 	font=font or "default";
-	local text;
-	if type(parent) ~= "table" then
-		text=parent;
-		parent=UIParent;
-	elseif not parent.CreateFontString then
+	if not parent.CreateFontString then
 		parent=Frames.AsRegion(parent);
 	end;
 	assert(parent.CreateFontString, "Provided object does not support font strings");
@@ -89,9 +85,6 @@ function Frames.Text(parent, font, size, ...)
 	fontstring:SetFont(font, size, flags);
 	if color then
 		Frames.Color(fontstring, color);
-	end;
-	if text then
-		fontstring:SetText(text);
 	end;
 	return fontstring;
 end;
