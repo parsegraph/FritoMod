@@ -72,14 +72,21 @@ colors.message=ConvertToTable(0xFF6495ED);
 
 if RED_FONT_COLOR then
 	colors.red=BreakColorTable(RED_FONT_COLOR);
+else
+	colors.red = {1.0, 0.0, 0.0, 1.0};
 end;
 if GREEN_FONT_COLOR then
 	colors.green=BreakColorTable(GREEN_FONT_COLOR);
+else
+	colors.green = {0.0, 1.0, 0.0, 1.0};
 end;
+
 if GRAY_FONT_COLOR then
 	colors.gray=BreakColorTable(GRAY_FONT_COLOR);
-	colors.grey=colors.gray;
+else
+	colors.gray = {0.5, 0.5, 0.5, 1.0};
 end;
+colors.grey=colors.gray;
 
 if MATERIAL_TEXT_COLOR_TABLE then
 	for k,v in pairs(MATERIAL_TEXT_COLOR_TABLE) do
