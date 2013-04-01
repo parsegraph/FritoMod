@@ -3,4 +3,4 @@ if nil ~= require then
 	require "wow/api/Frame";
 end;
 
-UIParent=CreateFrame("Frame");
+UIParent=WoW.CreateUIParent();

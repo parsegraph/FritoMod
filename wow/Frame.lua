@@ -115,3 +115,9 @@ function WoW.Delegate(klass, category, name)
         return delegateFunc(delegate, ...);
     end;
 end;
+
+if WoW.CreateUIParent == nil then
+    function WoW.CreateUIParent()
+        return WoW.Frame:New();
+    end;
+end;
