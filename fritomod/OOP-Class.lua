@@ -32,9 +32,9 @@ local CLASS_METATABLE = {
 		if not object then
 			error("Object is falsy");
 		end;
-		if self.constructors then
-			for i=1, #self.constructors do
-				local constructor = self.constructors[i];
+		if self.__constructors then
+			for i=1, #self.__constructors do
+				local constructor = self.__constructors[i];
 				local destructor = constructor(object, ...);
 				if IsCallable(destructor) then
 					object:AddDestructor(destructor);
@@ -70,8 +70,14 @@ local CLASS_METATABLE = {
 	-- the object's Destroy method is called.
 	AddConstructor = function(self, constructorFunc, ...)
 		constructorFunc = Curry(constructorFunc, ...);
-		self.constructors = self.constructors or {};
-		table.insert(self.constructors, constructorFunc);
+		-- Use rawget here to ensure we don't get the constructors for this class, instead of
+		-- deferring to a super class.
+		local constructors = rawget(self, "__constructors");
+		if not constructors then
+			constructors = {};
+			rawset(self, "__constructors", constructors);
+		end;
+		table.insert(constructors, constructorFunc);
 	end,
 
 	-- Adds the specified destructor function to this class or instance. Instance-specific
