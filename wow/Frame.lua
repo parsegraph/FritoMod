@@ -2,6 +2,7 @@ if nil ~= require then
 	require "fritomod/Metatables";
 	require "fritomod/OOP-Class";
 	require "fritomod/Lists"
+	require "fritomod/ListenerList";
 
 	require "wow/World";
 end;
@@ -45,6 +46,7 @@ do
 
         klass:AddConstructor(function(frame)
             frame.delegates = {};
+            frame.delegateListeners = ListenerList:New();
             InstallDelegates(name, frame);
         end);
 	end;
@@ -85,8 +87,13 @@ function Frame:GetDelegate(category)
 end;
 Frame.delegate = Frame.GetDelegate;
 
-function Frame:SetDelegate(category, obj)
-    self.delegates[category] = obj;
+function Frame:SetDelegate(category, delegate)
+    self.delegates[category] = delegate;
+    self.delegateListeners:Fire(category, delegate);
+end;
+
+function Frame:OnDelegateSet(func, ...)
+    return self.delegateListeners:Add(func, ...);
 end;
 
 function WoW.Delegate(klass, category, name)
