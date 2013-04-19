@@ -58,7 +58,6 @@ if nil ~= require then
 	require "fritomod/currying";
 	require "fritomod/Functions";
 	require "fritomod/Lists";
-	require "fritomod/Callbacks-Frames";
 	require "fritomod/ListenerList";
 end;
 

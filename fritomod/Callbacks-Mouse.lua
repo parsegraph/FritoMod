@@ -14,6 +14,7 @@ if nil ~= require then
 	require "fritomod/Timing";
 	require "fritomod/ToggleDispatcher";
 	require "fritomod/Callbacks";
+	require "fritomod/Callbacks-Frames";
 	require "fritomod/Functions";
 end;
 

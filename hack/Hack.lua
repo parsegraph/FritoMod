@@ -10,6 +10,7 @@ if nil ~= require then
     require "fritomod/Remote";
     require "fritomod/Timing";
     require "fritomod/Tables";
+	require "fritomod/Callbacks-Frames";
 end;
 
 local HackDB = { -- default settings saved variables
