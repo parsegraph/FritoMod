@@ -8,11 +8,6 @@ end;
 
 local Frame = WoW.Frame;
 
-function Frame:EnableMouse(enabled)
-	-- TODO Frame:EnableMouse stub
-	-- XXX What does this function do in-game?
-end;
-
 WoW.Delegate(Frame, "event", {
     "HasScript",
     "SetScript",
