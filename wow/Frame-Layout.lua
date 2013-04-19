@@ -72,6 +72,12 @@ WoW.Delegate(Frame, "layout", {
 	"GetHeight",
 	"SetWidth",
 	"GetWidth",
+
+	"GetCenter",
+	"GetLeft",
+	"GetRight",
+	"GetTop",
+	"GetBottom",
 });
 
 local TestingLayoutDelegate = OOP.Class();
@@ -138,6 +144,26 @@ end;
 
 function TestingLayoutDelegate:SetHeight(height)
 	self.height = height;
+end;
+
+function TestingLayoutDelegate:GetCenter()
+	return 0, 0;
+end;
+
+function TestingLayoutDelegate:GetLeft()
+	return 0;
+end;
+
+function TestingLayoutDelegate:GetRight()
+	return 0;
+end;
+
+function TestingLayoutDelegate:GetTop()
+	return 0;
+end;
+
+function TestingLayoutDelegate:GetBottom()
+	return 0;
 end;
 
 do
