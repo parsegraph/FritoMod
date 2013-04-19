@@ -2,7 +2,7 @@ local Suite = CreateTestSuite("fritomod.Monitor");
 
 function Suite:Tick(value)
 	self.time=self.time+value;
-	Timing._Tick(value);
+	Timing.Tick(value);
 end;
 
 Suite:AddListener(Metatables.Noop({

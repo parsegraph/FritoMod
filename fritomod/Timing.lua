@@ -66,36 +66,35 @@ local Timing = Timing;
 
 do
 	local listeners = ListenerList:New("Timing");
-	local timingFrame;
-
 
 	listeners:AddInstaller(function()
-		if timingFrame == nil then
-			timingFrame = CreateFrame("Frame", nil, UIParent);
-		end;
-		return Callbacks.OnUpdate(timingFrame, Timing._Tick);
+        if IsCallable(Timing.delegate) then
+            Timing.delegate = Timing.delegate();
+        end;
+        return Timing.delegate:Start();
 	end);
 
-	-- Replace our listener tables with new ones.
-	--
-	-- You'll never call this function unless you're developing this addon.
-	function Timing._Mask(newListeners)
-		local oldListeners = listeners;
-		listeners=newListeners;
-		return function()
-			listeners=oldListeners;
-		end;
-	end;
+    local Delegate = OOP.Class();
 
-	-- Iterate our timers.
-	--
-	-- There's never a need to directly call this function unless you're developing or
-	-- testing this addon.
-	function Timing._Tick(...)
-		-- We don't use currying here to ensure we can override listeners
-		-- during testing.
-		listeners:Fire(...);
-	end;
+    function Delegate:Constructor()
+        self.frame = CreateFrame("Frame");
+    end;
+
+    function Delegate:Start()
+        return Callbacks.OnUpdate(self.frame, Timing.Tick);
+    end;
+
+    Timing.delegate = Seal(Delegate, "New");
+
+    -- Iterate our timers.
+    --
+    -- There's never a need to directly call this function unless you're developing or
+    -- testing this addon.
+    function Timing.Tick(...)
+        -- We don't use currying here to ensure we can override listeners
+        -- during testing.
+        listeners:Fire(...);
+    end;
 
 	-- Adds a function that is fired every update. This is the highest-precision timing
 	-- function though its precision is dependent on framerate.
@@ -108,6 +107,17 @@ do
 		-- We don't use currying here to ensure we can override listeners
 		-- during testing.
 		return listeners:Add(func, ...);
+	end;
+
+	-- Replace our listener tables with new ones.
+	--
+	-- You'll never call this function unless you're developing this addon.
+	function Timing._Mask(newListeners)
+		local oldListeners = listeners;
+		listeners=newListeners;
+		return function()
+			listeners=oldListeners;
+		end;
 	end;
 end;
 
