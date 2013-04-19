@@ -219,7 +219,6 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
 	else
 		f.dragging=1;
 		local startX, startY = f:GetCenter();
-		f:ClearAllPoints();
 		if f:GetParent() ~= UIParent then
 			-- Remove the local scale and re-add it once we've reparented. If we
 			-- don't do this, startX and startY will use an out-of-date scale and
@@ -236,9 +235,14 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
 		if offsetY then
 			startY = startY + offsetY;
 		end;
-		f.dragBehavior=Callbacks.CursorOffset(f, function(x, y)
+
+        local function SetPoint(x, y)
 			f:SetPoint("center", UIParent, "bottomleft", startX+x, startY+y);
-		end);
+        end;
+		f.dragBehavior=Callbacks.CursorOffset(f, SetPoint);
+
+		f:ClearAllPoints();
+        SetPoint(0, 0);
 	end;
 	return Functions.OnlyOnce(function()
 		f.dragging=f.dragging-1;
