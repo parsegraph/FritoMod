@@ -21,6 +21,10 @@ function Frame:SetFrameStrata()
 	trace("STUB Frame:SetFrameStrata");
 end;
 
+function Frame:GetEffectiveScale()
+	return 1;
+end;
+
 function Frame:SetAllPoints(ref)
 	ref = ref or self:GetParent();
 	assert(ref, "Frame must have a reference frame when setting all points");

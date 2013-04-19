@@ -26,3 +26,15 @@ end;
 function Delegate:EnableMouse(enabled)
     self.enabled = enabled;
 end;
+
+if IsMouseButtonDown == nil then
+    function IsMouseButtonDown(button)
+        return false;
+    end;
+end;
+
+if GetCursorPosition == nil then
+    function GetCursorPosition()
+        return 0, 0;
+    end;
+end;
