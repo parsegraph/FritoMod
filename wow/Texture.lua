@@ -15,7 +15,7 @@ function Texture:SetTexture(...)
         self.color = {...};
         return;
     end;
-    print("STUB SetTexture");
+    trace("STUB SetTexture");
 end;
 
 function Texture:GetColor()
