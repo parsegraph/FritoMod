@@ -247,7 +247,7 @@ end;
 local function GetAnchorArguments(frame, ...)
 	assert(frame ~= nil, "Frame must not be nil");
 	local anchor, ref, x, y, parent;
-	if type(select(1, ...)) == "string" then
+	if type(select(1, ...) or nil) == "string" then
 		-- Since type() is a C function, it makes a nuisance of itself
 		-- by demanding we always pass at least one argument. This is true
 		-- even if the argument is nil. Since select(2, ...) can return
