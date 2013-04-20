@@ -682,4 +682,13 @@ function ForcedFunction(self, func, ...)
 	end;
 end;
 
+-- Strip the first argument before invoking the specified function. This is useful for overriding
+-- methods via forwarding to another object.
+function Override(func, ...)
+	local curried = Curry(func, ...);
+	return function(_, ...)
+		return curried(...);
+	end;
+end;
+
 -- vim: set noet :
