@@ -1,0 +1,85 @@
+dirs = fritomod labs deps hack
+ifndef NO_TEST
+dirs += fritomod/tests labs/tests hack/tests
+endif
+
+export RPMDIR ?= $$HOME/rpmbuild
+
+PACKAGE_NAME=fritomod
+PACKAGE_VERSION=1.3
+PACKAGE_RELEASE=1
+
+RPMFLAGS ?= --ba
+SRCRPM=$(PACKAGE_NAME)-$(PACKAGE_VERSION)-1.src.rpm
+
+tarfile=$(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
+
+all: toc
+.PHONY: all
+
+Makefile: Makefile.in configure
+	$(SRCDIR)/configure ${PREFIX}
+
+test:
+	./bin/run-test.sh
+.PHONY: test
+
+toc: FritoMod.toc files.xml
+.PHONY: toc
+
+FritoMod.toc: $(dirs) FritoMod.toc.in
+	./FritoMod.toc.in >.FritoMod.toc
+	mv .FritoMod.toc FritoMod.toc
+
+files.xml: $(dirs) bin/get-requires
+	./bin/get-requires --windows --xml $(dirs) >.files.xml
+	mv .files.xml files.xml
+
+luadir=${DATADIR}/lua/5.1
+
+install: $(addprefix $(DESTDIR)/$(luadir)/, fritomod wow wow/api)
+
+$(DESTDIR)/$(luadir)/fritomod: fritomod
+	mkdir -p $@
+	cp $^/*.lua $@
+
+$(DESTDIR)/$(luadir)/wow: wow
+	mkdir -p $@
+	cp $^/*.lua $@
+
+$(DESTDIR)/$(luadir)/wow/api: wow/api
+	mkdir -p $@
+	cp $^/*.lua $@
+
+rpm:
+	$(MAKE) $(tarfile) $(RPMDIR)
+	cp -u $(tarfile) $(RPMDIR)/SOURCES
+	cp -u rpm.spec $(RPMDIR)/SPECS/$(PACKAGE_NAME).spec
+	rpmbuild $(RPMFLAGS) $(RPMDIR)/SPECS/$(PACKAGE_NAME).spec
+	for package in `rpm -q --specfile rpm.spec`; do \
+		arch=`echo $$package | grep -E -o '[^.]+$$'`; \
+		filename="$(RPMDIR)/RPMS/$$arch/$$package.rpm"; \
+		[ -e `basename $$filename` ] || ln -s $$filename; \
+	done
+	rm -f $(SRCRPM)
+	ln -s $(RPMDIR)/SRPMS/$(PACKAGE_NAME)-$(PACKAGE_VERSION)-$(PACKAGE_RELEASE)`rpmbuild -E '%{?dist}' rpm.spec`.src.rpm $(SRCRPM)
+.PHONY: rpm
+
+dist-gzip: $(tarfile)
+.PHONY: dist-gzip
+
+$(tarfile):
+	tar czf $@ --transform='s|^|$(PACKAGE_NAME)-$(PACKAGE_VERSION)/|' configure Makefile.in fritomod wow
+.PHONY: $(tarfile)
+
+uninstall:
+	rm -rf $(DESTDIR)/$(luadir)/fritomod
+	rm -rf $(DESTDIR)/$(luadir)/wow
+
+clean:
+	rm -f FritoMod.toc .FritoMod.toc
+	rm -f files.xml .files.xml
+.PHONY: clean
+
+count:
+	find -name '*.lua' -print0 | xargs -0 wc -l | tail -1
