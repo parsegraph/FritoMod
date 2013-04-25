@@ -40,3 +40,16 @@ function Serializers.SavePoint(frame, pointNum)
 	return location;
 end;
 
+function Serializers.SaveAllPoints(frame)
+    local points = {};
+    for pointNum=1, frame:GetNumPoints() do
+        table.insert(points, Serializers.SavePoint(frame, pointNum));
+    end;
+    return points;
+end;
+
+function Serializers.LoadAllPoints(points, frame)
+    for _, location in ipairs(points) do
+        Serializers.LoadPoint(location, frame);
+    end;
+end;
