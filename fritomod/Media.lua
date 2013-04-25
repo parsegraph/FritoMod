@@ -103,9 +103,6 @@ Media = setmetatable({
 					if k ~= "default" then
 						return self.default
 					end;
-				end,
-				__newindex=function(self)
-					error(mediaType.." table is not directly editable");
 				end
 			}));
 		end;
