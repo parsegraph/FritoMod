@@ -36,7 +36,7 @@ function Frame:SetPoint(anchor, ...)
 	WoW.AssertAnchor(anchor);
 	if select("#", ...) == 0 then
 		-- SetPoint(anchor)
-		return self:SetPoint(anchor, self.frame:GetParent(), anchor, 0, 0);
+		return self:SetPoint(anchor, nil, anchor, 0, 0);
 	elseif select("#", ...) == 1 then
 		local ref = ...;
 		return self:SetPoint(anchor, ref, anchor, 0, 0);
@@ -44,7 +44,7 @@ function Frame:SetPoint(anchor, ...)
 		local first, second = ...;
 		if type(first) == "number" and type(second) == "number" then
 			-- SetPoint(anchor, x, y)
-			return self:SetPoint(anchor, self.frame:GetParent(), anchor, ...);
+			return self:SetPoint(anchor, nil, anchor, ...);
 		else
 			-- SetPoint(anchor, ref, anchorTo)
 			return self:SetPoint(anchor, first, second, 0, 0);
@@ -55,6 +55,7 @@ function Frame:SetPoint(anchor, ...)
 		"Invalid number of arguments. Given: "..select("#", ...)
 	);
 	local ref, anchorTo, x, y = ...;
+	ref = ref or self:GetParent();
 	if type(ref) == "string" then
 		ref = _G[ref];
 	end;
