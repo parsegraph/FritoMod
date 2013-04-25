@@ -1,5 +1,6 @@
 *.swp
 *~
 files.xml
+.files.xml
 *.toc
 Makefile
