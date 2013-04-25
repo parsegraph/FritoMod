@@ -8,35 +8,43 @@ if nil ~= require then
 	require "fritomod/Media";
 end;
 
-local FRITOMOD="Interface/AddOns/FritoMod/media";
+local fonts;
+function Media.font.wowDelegate(name)
+    if not fonts then
+        local FRITOMOD="Interface/AddOns/FritoMod/media";
 
-local fonts={
-	default="Fonts\\FRIZQT__.TTF",
-	skurri="Fonts\\skurri.ttf",
-	morpheus="Fonts\\MORPHEUS.ttf",
-	arial="Fonts\\ARIALN.ttf",
-	arialn="Fonts\\ARIALN.ttf",
-};
+        fonts={
+            default="Fonts\\FRIZQT__.TTF",
+            skurri="Fonts\\skurri.ttf",
+            morpheus="Fonts\\MORPHEUS.ttf",
+            arial="Fonts\\ARIALN.ttf",
+            arialn="Fonts\\ARIALN.ttf",
+        };
 
-fonts.inconsolata = FRITOMOD.."/fonts/Inconsolata.ttf";
-fonts.consolas    = fonts.inconsolata;
-fonts.mono        = fonts.inconsolata;
-fonts.monospace   = fonts.inconsolata;
+        fonts.inconsolata = FRITOMOD.."/fonts/Inconsolata.ttf";
+        fonts.consolas    = fonts.inconsolata;
+        fonts.mono        = fonts.inconsolata;
+        fonts.monospace   = fonts.inconsolata;
 
-fonts.veramono = FRITOMOD.."/fonts/VeraMono.ttf";
+        fonts.veramono = FRITOMOD.."/fonts/VeraMono.ttf";
 
-fonts["Fritz Quadrata"]=fonts.default;
-fonts.friz=fonts.default;
-fonts.fritz=fonts.default;
-fonts.frizqt=fonts.default;
-fonts.fritzqt=fonts.default;
-fonts.fritzqt=fonts.default;
+        fonts["Fritz Quadrata"]=fonts.default;
+        fonts.friz=fonts.default;
+        fonts.fritz=fonts.default;
+        fonts.frizqt=fonts.default;
+        fonts.fritzqt=fonts.default;
+        fonts.fritzqt=fonts.default;
+    end;
+    local font = fonts[name];
+    if font then
+        return font:gsub("/", "\\");
+    end;
+end;
 
 Media.font(function(name)
-	local font = fonts[name];
-	if font then
-		return font:gsub("/", "\\");
-	end;
+    if rawget(Media.font, "wowDelegate") then
+        return rawget(Media.font, "wowDelegate")(name);
+    end;
 end);
 
 Media.font(Curry(Media.SharedMedia, "font"));
