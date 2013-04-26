@@ -6,6 +6,8 @@ end;
 local Texture = OOP.Class(WoW.Frame);
 WoW.Texture = Texture;
 
+WoW.RegisterFrameType("Texture", Texture);
+
 function WoW.Frame:CreateTexture()
 	return Texture:New(self);
 end;
