@@ -2,6 +2,7 @@ if nil ~= require then
     require "fritomod/currying";
     require "fritomod/OOP-Class";
     require "fritomod/LuaEnvironment";
+    require "fritomod/ListenerList";
     require "fritomod/Lists";
     require "hack/Assets";
     require "hack/Connectors";
@@ -16,12 +17,14 @@ local Connectors = Hack.Connectors;
 function Script:Constructor()
     self.connectors = {};
     self.content = "";
+    self.listeners = ListenerList:New();
     self:AddDestructor(self, "Reset");
     self:AddConnector(Connectors.Global("Undoer", Assets.Undoer()));
 end;
 
 function Script:SetContent(content)
     self.content = content;
+    self.listeners:Fire();
 end;
 
 function Script:GetContent()
@@ -50,4 +53,8 @@ end;
 
 function Script:GetEnvironment()
     return self.environment;
+end;
+
+function Script:OnChange(func, ...)
+    return self.listeners:Add(func, ...);
 end;
