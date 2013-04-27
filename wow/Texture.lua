@@ -12,21 +12,41 @@ function WoW.Frame:CreateTexture()
 	return Texture:New(self);
 end;
 
-function Texture:SetTexture(...)
+WoW.Delegate(Texture, "texture", {
+    "GetTexture",
+    "SetTexture",
+    "GetColor"
+});
+
+local Delegate = OOP.Class();
+
+function Texture:SetTexCoord(...)
+
+end;
+
+local Delegate = OOP.Class();
+
+function Delegate:SetTexture(...)
     if select("#", ...) > 1 then
         self.color = {...};
+        Rainback.Update();
         return;
     end;
     trace("STUB SetTexture");
 end;
 
-function Texture:GetColor()
-    return unpack(self.color);
+function Delegate:GetTexture()
+    if self.color then
+        return self:GetColor();
+    end;
 end;
 
-function Texture:GetTexture(...)
+function Delegate:GetColor()
+    if self.color then
+        return unpack(self.color);
+    end;
 end;
 
-function Texture:SetTexCoord(...)
-
+if not WoW.GetFrameDelegate("Texture", "texture") then
+    WoW.SetFrameDelegate("Texture", "texture", Delegate, "New");
 end;
