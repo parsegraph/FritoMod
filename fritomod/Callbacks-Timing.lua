@@ -2,19 +2,30 @@
 
 if nil ~= require then
 	require "fritomod/Timing";
+	require "fritomod/Lists";
 end;
 
 Callbacks=Callbacks or {};
+Timing = Timing or {};
+
+local callbacks = {};
+
+function Timing.Flush()
+    while #callbacks > 0 do
+        local cb = Lists.ShiftOne(callbacks);
+        cb();
+    end;
+end;
 
 -- Call the specified callback "later." This allows for functions to be called after
 -- a OnUpdate event has fired, which may be necessary if changes to UI elements don't
 -- propagate immediately.
 --
 function Callbacks.Later(func, ...)
-	func=Curry(func, ...);
+    table.insert(callbacks, Curry(func, ...));
 	local remover;
 	remover=Timing.OnUpdate(function()
-		func();
+        Timing.Flush();
 		remover();
 	end);
 	return remover;
