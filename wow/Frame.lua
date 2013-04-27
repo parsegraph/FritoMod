@@ -103,6 +103,12 @@ function Frame:OnDelegateSet(func, ...)
     return self.delegateListeners:Add(func, ...);
 end;
 
+function Frame:Destroy()
+    self:ClearAllPoints();
+    self:Hide();
+    self.class.super.Destroy(self);
+end;
+
 function WoW.Delegate(klass, category, name)
     if type(name) == "table" and #name > 0 then
         for i=1, #name do
