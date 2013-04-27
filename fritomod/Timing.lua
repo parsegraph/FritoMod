@@ -61,7 +61,7 @@ if nil ~= require then
 	require "fritomod/ListenerList";
 end;
 
-Timing = {};
+Timing = Timing or {};
 local Timing = Timing;
 
 do
