@@ -79,10 +79,12 @@ function Frames.DumpPosition(name)
 	end;
 end;
 
+local VERSION = 2;
+
 local function Upgrade(persistedFrames)
     if persistedFrames.__version == nil then
         local upgraded = {
-            __version = 2
+            __version = VERSION
         };
         for name, position in pairs(persistedFrames) do
             if name ~= "__version" then
@@ -117,7 +119,9 @@ Callbacks.PersistentValue(PERSISTENCE_KEY, function(persistedFrames)
 		if not #positionedFrames then
 			return;
 		end;
-		persistedFrames=persistedFrames or {};
+		persistedFrames=persistedFrames or {
+            __version = VERSION
+        };
 		for name,frame in pairs(positionedFrames) do
 			local rv, savedPosition=pcall(Serializers.SaveAllPoints, frame, 1);
 			if rv then
