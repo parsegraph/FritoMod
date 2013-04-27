@@ -20,19 +20,21 @@ local function LoadPoint(name, frame, savedPosition, defaultPosition)
         else
             frame:SetPoint("center");
         end;
+        return;
 	end;
 	if type(savedPosition)=="table" and savedPosition.error then
 		print(("Save error found during loading %s: %s"):format(name, savedPosition.error));
 		savedPosition.error=nil;
 	end;
-	if frame:GetNumPoints()==0 then
-		local rv, err=pcall(Serializers.LoadAllPoints, savedPosition, frame);
-		if not rv then
-			-- This works for now, but it'd be nice if we could be more obvious
-			-- when this stuff fails.
-			print(("Error while loading %s: %s"):format(name, err));
-		end;
-	end;
+    local rv, err=pcall(function()
+        frame:ClearAllPoints();
+        Serializers.LoadAllPoints(savedPosition, frame);
+    end);
+    if not rv then
+        -- This works for now, but it'd be nice if we could be more obvious
+        -- when this stuff fails.
+        print(("Error while loading %s: %s"):format(name, err));
+    end;
 end;
 
 function Frames.Position(frame, ...)
