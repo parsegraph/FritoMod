@@ -217,6 +217,10 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
 	if f.dragging then
 		f.dragging=f.dragging+1;
 	else
+        if f.FireEvent then
+            f:FireEvent("DragStart");
+        end;
+
 		f.dragging=1;
 		local startX, startY = f:GetCenter();
 		if f:GetParent() ~= UIParent then
@@ -251,6 +255,10 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
 			AdjustPoint(f);
 			f.dragBehavior=nil;
 			f.dragging=nil;
+
+            if f.FireEvent then
+                f:FireEvent("DragEnd");
+            end;
 		end;
 	end);
 end;
