@@ -26,10 +26,10 @@ local function LoadPoint(name, frame, savedPosition, defaultPosition)
 		print(("Save error found during loading %s: %s"):format(name, savedPosition.error));
 		savedPosition.error=nil;
 	end;
-    local rv, err=pcall(function()
+    local rv, err=xpcall(function()
         frame:ClearAllPoints();
         Serializers.LoadAllPoints(savedPosition, frame);
-    end);
+    end, debug.traceback);
     if not rv then
         -- This works for now, but it'd be nice if we could be more obvious
         -- when this stuff fails.
@@ -123,7 +123,7 @@ Callbacks.PersistentValue(PERSISTENCE_KEY, function(persistedFrames)
             __version = VERSION
         };
 		for name,frame in pairs(positionedFrames) do
-			local rv, savedPosition=pcall(Serializers.SaveAllPoints, frame, 1);
+			local rv, savedPosition=xpcall(Seal(Serializers.SaveAllPoints, frame), debug.traceback);
 			if rv then
 				persistedFrames[name]=savedPosition;
 			elseif persistedFrames[name] then
