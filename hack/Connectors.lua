@@ -31,6 +31,13 @@ function Connectors.Proxy(name, asset, ...)
     end;
 end;
 
+function Connectors.Use(name, asset, ...)
+    asset = Assets.AsAsset(asset, ...);
+    return function(env)
+        return asset(env, Curry(env, "AddDestructor"));
+    end;
+end;
+
 function Connectors.Member(klassName, name, asset, ...)
     asset = Assets.AsAsset(asset, ...);
     return function(env)
