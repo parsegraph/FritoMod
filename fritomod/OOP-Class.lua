@@ -116,7 +116,7 @@ local CLASS_METATABLE = {
 		-- Use rawget so we don't get the class-specific destructors
 		local instanceDestructors = rawget(self, "__destructors");
 		if instanceDestructors then
-			for i=1, #instanceDestructors do
+			for i=#instanceDestructors, 1, -1  do
 				instanceDestructors[i]();
 			end;
 			-- Clean up our destructors so they're only invoked once, even if Destroy
@@ -124,7 +124,7 @@ local CLASS_METATABLE = {
 			rawset(self, "__destructors", nil);
 		end;
 		if self.class and self.class.__destructors then
-			for i=1, #self.class.__destructors do
+			for i=#self.class.__destructors, 1, -1 do
 				self.class.__destructors[i](self);
 			end;
 			-- Blow away the class reference, so class-specific destructors are not called.
