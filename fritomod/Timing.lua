@@ -64,7 +64,6 @@ if nil ~= require then
 end;
 
 Timing = Timing or {};
-local Timing = Timing;
 
 do
 	local listeners = ListenerList:New("Timing");
