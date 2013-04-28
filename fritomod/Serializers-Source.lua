@@ -101,10 +101,13 @@ printer=setmetatable({
 			PrintPair(k);
 		end;
 		out("}");
-	end
+	end,
+    ["unknown"] = function(out, v)
+        out("nil --[["..type(v).."]]");
+    end
 }, {
 	__index=function(self, k)
-		error("Unexpected type: "..k);
+		return self["unknown"];
 	end,
 	__call=function(self, out, v, newline)
 		newline=newline or "\n";
