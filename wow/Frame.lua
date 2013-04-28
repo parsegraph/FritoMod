@@ -106,7 +106,7 @@ end;
 function Frame:Destroy()
     self:ClearAllPoints();
     self:Hide();
-    self.class.super.Destroy(self);
+    Frame.super.Destroy(self);
 end;
 
 function WoW.Delegate(klass, category, name)
