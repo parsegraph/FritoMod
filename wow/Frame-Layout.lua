@@ -171,6 +171,10 @@ function TestingLayoutDelegate:GetBottom()
 	return 0;
 end;
 
+function TestingLayoutDelegate:ToString()
+	return "[Testing Layout Delegate]";
+end;
+
 do
 	local validAnchors = {
 		"TOPLEFT", "TOP", "TOPRIGHT",
