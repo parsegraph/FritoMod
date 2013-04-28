@@ -4,7 +4,6 @@ if nil ~= require then
 	require "wow/Frame-Layout";
 	require "wow/Frame-Alpha";
 	require "wow/Frame-Container";
-	require "wow/api/UIParent";
 
 	require "fritomod/Functions";
 	require "fritomod/Media-Color";
@@ -161,14 +160,17 @@ end;
 -- Additional arguments will be considered as inherited frames or handlers.
 function Frames.New(...)
 	if select("#", ...) == 0 then
+		assert(UIParent, "UIParent must be available");
 		return Frames.Child(UIParent, "Frame");
 	elseif select("#", ...) == 1 then
 		local first = ...;
 		if type(first) == "string" then
+			assert(UIParent, "UIParent must be available");
 			return Frames.Child(UIParent, first);
 		elseif first then
 			return Frames.Child(first, "Frame");
 		else
+			assert(UIParent, "UIParent must be available");
 			return Frames.Child(UIParent, "Frame");
 		end;
 	else
