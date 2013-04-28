@@ -59,6 +59,8 @@ if nil ~= require then
 	require "fritomod/Functions";
 	require "fritomod/Lists";
 	require "fritomod/ListenerList";
+
+	require "fritomod/Callbacks-Frames";
 end;
 
 Timing = Timing or {};
