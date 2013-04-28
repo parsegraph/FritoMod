@@ -247,22 +247,21 @@ end;
 -- setfenv was removed in Lua 5.2, so this function will not work if you're
 -- running that version. There are ways to emulate setfenv's behavior, but
 -- it's hackish so I'd prefer not to have it here.
-function LuaEnvironment:LoadFunction(runner, ...)
+function LuaEnvironment:LoadFunction(runner)
 	assert(setfenv ~= nil, "setfenv must be defined for LoadFunction to work");
 	assert(type(runner) == "function",
 		"runner must be a function (curried methods are not allowed)");
 	-- We must setfenv before we curry, since currying will introduce
 	-- an intermediate function.
 	setfenv(runner, self.globals);
-	runner = CurryFunction(runner, ...);
 	return runner;
 end;
 
 function LuaEnvironment:Run(runner, ...)
-	if type(runner) == "string" and select("#", ...) == 0 then
-		return self:LoadString(runner)();
+	if type(runner) == "string" then
+		return self:LoadString(runner)(...);
 	end;
-	return self:LoadFunction(runner, ...)();
+	return self:LoadFunction(runner)(...);
 end;
 
 function LuaEnvironment:LoadString(str, source)

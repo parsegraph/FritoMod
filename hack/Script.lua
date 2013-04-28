@@ -36,11 +36,11 @@ function Script:AddConnector(connector, ...)
     return Lists.Insert(self.connectors, connector);
 end;
 
-function Script:Execute()
+function Script:Execute(...)
     self:Reset();
     self.environment = LuaEnvironment:New();
     Lists.CallEach(self.connectors, self.environment);
-    self.environment:Run(self.content);
+    return self.environment:Run(self.content, ...);
 end;
 
 function Script:Reset()
