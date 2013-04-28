@@ -64,17 +64,17 @@ function Assets.Undoer()
             if select("#", ...) > 1 or IsCallable(...) then
                 return dtor(...);
             end;
-            assert(select("#", ...) == 1, "No arguments given to Undoer");
             local obj = ...;
-            assert(type(obj) == "table",
-                "Unexpected undoer argument: "..type(obj));
+            if not obj or type(obj) ~= "table" then
+                return;
+            end;
             if IsCallable(obj.Destroy) then
                 return dtor(obj, "Destroy");
             end;
             if Frames.AsRegion(obj) then
                 return dtor(Frames.Destroy, obj);
             end;
-            error("Unexpected undoer argument: "..tostring(obj));
+            -- Nothing we could destroy, so just return
         end;
     end;
 end;
