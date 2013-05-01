@@ -38,6 +38,13 @@ function Connectors.Use(func, ...)
     end;
 end;
 
+function Connectors.Metadata(func, ...)
+    func = Curry(func, ...);
+    return function(env)
+        return func(env:Metadata());
+    end;
+end;
+
 function Connectors.Member(klassName, name, asset, ...)
     asset = Assets.AsAsset(asset, ...);
     return function(env)
