@@ -75,6 +75,8 @@ function LuaEnvironment:Constructor(parent)
 	-- Table of exported variables, mapped by name.
 	self.exported = {};
 
+	self.metadata = {};
+
 	-- Override some globals to call our methods instead
 	self:Set("_G",         self.globals);
 	self:Set("require",    Curry(self, "Require"));
@@ -84,6 +86,11 @@ end;
 
 function LuaEnvironment:Globals()
 	return self.globals;
+end;
+
+-- Arbitrary storage for use with connectors that are aware of the environment.
+function LuaEnvironment:Metadata()
+	return self.metadata;
 end;
 
 -- Get the value in this environment with the specified name. Proxies, lazy values,
