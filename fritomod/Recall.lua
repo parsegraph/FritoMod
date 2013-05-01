@@ -62,8 +62,10 @@ function Recall.Position(context, frame, name)
     end;
     name = name or Recall.Anonymous(context.position);
     local saved = context.position[name];
-    if saved then
+    if saved and #saved > 0 then
         Serializers.LoadAllPoints(saved, frame);
+    else
+        saved = nil;
     end;
     return saved ~= nil, function()
         context.position[name] = Serializers.SaveAllPoints(frame);
