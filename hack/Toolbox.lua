@@ -20,7 +20,7 @@ end;
 
 function Toolbox:AddScript(name, script)
     self.scripts[name] = script;
-    self:Fire();
+    self:FireUpdate();
     return Functions.OnlyOnce(self, "RemoveScript", name);
 end;
 
@@ -30,13 +30,13 @@ function Toolbox:RenameScript(name, newName)
     end;
     self.scripts[newName] = self.scripts[name];
     self.scripts[name] = nil;
-    self:Fire();
+    self:FireUpdate();
     print(unpack(Tables.Keys(self.scripts)));
 end;
 
 function Toolbox:RemoveScript(name)
     self.scripts[name] = nil;
-    self:Fire();
+    self:FireUpdate();
 end;
 
 function Toolbox:GetScripts()
@@ -51,7 +51,7 @@ function Toolbox:NameFor(script)
     return Tables.KeyFor(self.scripts, script);
 end;
 
-function Toolbox:Fire(...)
+function Toolbox:FireUpdate(...)
     self.listeners:Fire(...);
 end;
 
