@@ -105,41 +105,31 @@ local function WrapTestRunner(testRunner)
 	end;
 end;
 
-local function InterpretTestResult(stackTraces, testRanSuccessfully, result, extendedReason)
+local function InterpretTestResult(testRanSuccessfully, result, reason)
 	if testRanSuccessfully and result ~= false then
 		return "Successful";
 	end;
 	if result == false then
-		return "Failed", tostring(extendedReason or "Test returned false");
+		return "Failed", tostring(reason or "Test failed because it returned false");
 	end;
-	if #stackTraces > 0 then
-		local stackTrace = table.remove(stackTraces);
-		local file, num, reason = unpack(Strings.SplitByDelimiter(":", tostring(result), 3));
-		return "Failed", ("Assertion failed: \"%s\"\n%s"):format(Strings.Trim(reason), stackTrace);
-	end;
-	return "Crashed", tostring(result);
+	return "Failed", tostring(result);
 end;
 
 local function RunTest(self, test, testName)
-	local success, result = pcall(CoerceTest, test);
+    local function ErrorHandler(msg)
+        local trace = Strings.Join("\n\t", Strings.Split("\n", Tests.FormattedPartialStackTrace(2, 10, 0)));
+        return msg .. "\n\t" .. trace;
+    end;
+	local success, result = xpcall(Curry(CoerceTest, test), ErrorHandler);
 	if not success then
 		self.listener:InternalError(self, testName, result);
 		return false;
 	end;
 	local testRunner = result;
-	local stackTraces = {};
-	self.listener:TestStarted(self, testName, testRunner);
-	local unhookAssert = Functions.SpyGlobal("assert", function(expression, message, ...)
-		if not expression then
-			table.insert(stackTraces, Tests.FormattedPartialStackTrace(4, 10, 0));
-		end;
-	end);
-	local unhookError = Functions.SpyGlobal("error", function()
-		table.insert(stackTraces, Tests.FormattedPartialStackTrace(4, 10, 0));
-	end);
-	local testState, reason = InterpretTestResult(stackTraces, pcall(testRunner));
-	unhookAssert();
-	unhookError();
+
+    self.listener:TestStarted(self, testName, testRunner);
+    local testState, reason = InterpretTestResult(xpcall(testRunner, ErrorHandler));
+
 	testRunner = WrapTestRunner(testRunner);
 	self.listener["Test" .. testState](self.listener, self, testName, testRunner, reason);
 	self.listener:TestFinished(self, testName, testRunner, testState, reason);

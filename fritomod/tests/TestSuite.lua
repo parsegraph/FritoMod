@@ -13,19 +13,16 @@ function Suite:TestErrorStackTraceOutputsProperly()
 			end;
 		};
 	end;
-	suite:AddListener(Metatables.Defensive({
-		StartAllTests = Noop,
-		TestStarted = Noop,
+    local flag = Tests.Flag();
+	suite:AddListener(Metatables.Noop({
 		TestFailed = function(self, suite, testName, testRunner, reason)
-			local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
-			Assert.Equals("Assertion failed: \"Intentional error\"", reason);
-			assert(trace:match(".*tests[/\\]TestSuite\.lua:[0-9]+"),
-				"First line of stack trace is relevant. Trace: " .. trace);
+            flag.Raise();
+			local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason));
+            assert(reason:match("Intentional error$"), reason);
 		end,
-		TestFinished = Noop,
-		FinishAllTests = Noop,
 	}));
 	suite:Run();
+    flag.Assert();
 end;
 
 function Suite:TestAssertStackTraceOutputsProperly()
@@ -37,19 +34,16 @@ function Suite:TestAssertStackTraceOutputsProperly()
 			end;
 		};
 	end;
-	suite:AddListener(Metatables.Defensive({
-		StartAllTests = Noop,
-		TestStarted = Noop,
+    local flag = Tests.Flag();
+	suite:AddListener(Metatables.Noop({
 		TestFailed = function(self, suite, testName, testRunner, reason)
-			local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason, 3));
-			Assert.Equals("Assertion failed: \"Intentional false assertion\"", reason);
-			assert(trace:match(".*tests[/\\]TestSuite\.lua:[0-9]+"),
-				"First line of stack trace is relevant. Trace: " .. trace);
+            flag.Raise();
+			local reason, trace = unpack(Strings.SplitByDelimiter("\n", reason));
+            assert(reason:match("Intentional false assertion$"), reason);
 		end,
-		TestFinished = Noop,
-		FinishAllTests = Noop,
 	}));
 	suite:Run();
+    flag.Assert();
 end;
 
 function Suite:TestCrashStackTraceOutputsProperly()
@@ -64,13 +58,16 @@ function Suite:TestCrashStackTraceOutputsProperly()
 			end;
 		};
 	end;
+    local flag = Tests.Flag();
 	suite:AddListener(Metatables.Noop({
-		TestCrashed = function(self, suite, testName, testRunner, reason)
+		TestFailed = function(self, suite, testName, testRunner, reason)
+            flag.Raise();
 			assert(reason:match(".*tests[/\\]TestSuite\.lua:[0-9]+: attempt to"),
 				"Reason contains stack trace");
 		end
 	}));
 	suite:Run();
+    flag.Assert();
 end;
 
 function Suite:TestThatTestSuiteErrorsWhenNotOverridden()
@@ -182,10 +179,10 @@ function Suite:TestThatTestSuiteEmitsFailureOnAssertion()
 			end,
 		};
 	end;
-	local counter = Tests.Counter();
+	local flag = Tests.Flag();
 	suite:AddRecursiveListener(Metatables.Noop({
-		TestFailed = counter.Hit
+		TestFailed = flag.Raise
 	}));
 	suite:Run();
-	counter.Assert(1);
+    flag.Assert();
 end;

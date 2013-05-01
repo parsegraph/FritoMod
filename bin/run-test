@@ -27,7 +27,7 @@ if arg then
 end;
 
 if #arg > 0 and AllTests:GetCount() > 0 then
-	local tests, numRan, numSuccessful, numCrashed, numFailed;
+	local tests, numRan, numSuccessful, numFailed;
 
 	AllTests:AddListener(Metatables.Noop({
 		StartAllTests = function(self, suite, name, runner, reason)
@@ -35,18 +35,17 @@ if #arg > 0 and AllTests:GetCount() > 0 then
 			numRan = 0;
 			numSuccessful = 0;
 			numFailed = 0;
-			numCrashed = 0;
 		end,
 
 		FinishAllTests = function(self, suite, successful, report)
 			if successful then
 				print(("Cumulative: All %d tests ran successfully."):format(numRan));
 			else
-				print(("Cumulative: %d of %d tests ran successfuly. %d failed, %d crashed"):format(
+				print(("Cumulative: %d of %d tests ran successfuly. %d failed"):format(
 					numSuccessful,
 					numRan,
-					numFailed,
-					numCrashed));
+					numFailed
+                ));
 			end;
 		end
 	}));
@@ -63,17 +62,9 @@ if #arg > 0 and AllTests:GetCount() > 0 then
 		TestFailed = function(self, suite, name, runner, reason)
 			numFailed = numFailed + 1;
 			local testIndex = #tests + 1;
-			print(("[FAIL] %d. %s\n  %s"):format(testIndex, name, reason:gsub("\n", "\n	")));
+			print(("[FAIL] %d. %s\n  %s\n"):format(testIndex, name, reason:gsub("\n", "\n")));
 			Lists.Insert(tests, runner);
 		end,
-
-		TestCrashed = function(self, suite, name, runner, errorMessage)
-			numCrashed = numCrashed + 1;
-			local testIndex = #tests + 1;
-			print(("[CRASH] %d. %s\n%s"):format(testIndex, name, errorMessage));
-			Lists.Insert(tests, runner);
-		end,
-
 	}));
 	AllTests:Run();
 end;
