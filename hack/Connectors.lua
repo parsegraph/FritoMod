@@ -31,10 +31,10 @@ function Connectors.Proxy(name, asset, ...)
     end;
 end;
 
-function Connectors.Use(name, func, ...)
+function Connectors.Use(func, ...)
     func = Curry(func, ...);
     return function(env)
-        return func(env, env, "AddDestructor");
+        return func(env, Curry(env, "AddDestructor"));
     end;
 end;
 
