@@ -13,7 +13,7 @@ local Assets = Hack.Assets;
 function Connectors.Global(name, asset, ...)
     asset = Assets.AsAsset(asset, ...);
     return function(env)
-        return env:Change(name, asset(env, "AddDestructor"));
+        return env:Change(name, asset(Curry(env, "AddDestructor")));
     end;
 end;
 
