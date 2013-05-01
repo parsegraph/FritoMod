@@ -28,6 +28,9 @@ function Toolbox:RenameScript(name, newName)
     if name == newName then
         return;
     end;
+    assert(not self.scripts[newName],
+        "Destination name '" .. tostring(newName) .. "' must not be in use"
+    );
     self.scripts[newName] = self.scripts[name];
     self.scripts[name] = nil;
     self:FireUpdate();
