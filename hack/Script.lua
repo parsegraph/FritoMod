@@ -17,8 +17,6 @@ function Script:Constructor()
     self.connectors = {};
     self.content = "";
     self.listeners = ListenerList:New();
-
-    self:AddConnector(Connectors.Global("Undoer", Assets.Undoer()));
 end;
 
 function Script:SetContent(content)
