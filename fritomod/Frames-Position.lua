@@ -58,6 +58,7 @@ function Frames.Position(frame, ...)
         end;
     end;
     name = name or frame:GetName();
+    assert(name, "Name must be provided");
 	positionedFrames[name]=frame;
 	if frame and Persistence.Loaded() then
 		local savedPosition;
