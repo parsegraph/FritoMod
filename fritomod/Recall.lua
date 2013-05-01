@@ -27,7 +27,6 @@ function Recall.Anonymous(context)
     if scratch.anonymous == nil then
         scratch.anonymous = Generator();
         Recall.OnReset(context, function()
-            print("Resetting anonymous");
             scratch.anonymous = nil;
         end);
     end;
