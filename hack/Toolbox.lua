@@ -55,6 +55,6 @@ function Toolbox:FireUpdate(...)
     self.listeners:Fire(...);
 end;
 
-function Toolbox:OnChange(func, ...)
+function Toolbox:OnUpdate(func, ...)
     return self.listeners:Add(func, ...);
 end;

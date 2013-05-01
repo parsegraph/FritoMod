@@ -46,7 +46,7 @@ function Script:Execute(env, ...)
     return env:Run(self.content, ...);
 end;
 
-function Script:OnChange(func, ...)
+function Script:OnUpdate(func, ...)
     return self.listeners:Add(func, ...);
 end;
 
