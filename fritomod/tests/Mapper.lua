@@ -50,6 +50,28 @@ function Suite:TestMapper()
     }, dest);
 end;
 
+function Suite:TestMapperCanReuseValues()
+    local mapper = Mapper:New();
+
+    mapper:SetMapper(function(data)
+        return {data};
+    end);
+
+    function mapper:CanReuseContent(content, data, key)
+        return true;
+    end;
+
+    local source = {
+        a = 42,
+        b = 42,
+    };
+    mapper:AddSourceTable(source);
+
+    local dest = {};
+    mapper:AddDestination(dest);
+    Assert.Equals(dest.a, dest.b);
+end;
+
 function Suite:TestReuse()
     local values = {
         "yellow",
@@ -69,9 +91,6 @@ function Suite:TestReuse()
     -- Don't use Assert.Equals and friends because neither
     -- value is really an "expected" value.
     assert(frames[1] ~= frames[2]);
-
-    mapper:AllowReuse();
-    assert(frames[1] == frames[2]);
 end;
 
 function Suite:TestSmartIteration()

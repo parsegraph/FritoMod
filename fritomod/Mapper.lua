@@ -34,15 +34,8 @@ end;
 
 Mapper = OOP.Class();
 
--- Special internal flag that a mapping has duplicate values.
-local HAS_DUPLICATES = {};
-
-function Mapper:Constructor(mapper, ...)
+function Mapper:Constructor()
     self.listeners = ListenerList:New();
-
-    if mapper or select("#", ...) > 0 then
-        self.mapper = Curry(mapper, ...);
-    end;
 
     self.sources = {};
     self.destinations = {};
@@ -52,36 +45,18 @@ function Mapper:Constructor(mapper, ...)
     self.aggregate = {};
 
     self.mapMeta = {};
-    self.mapDuplicatesMeta = {};
     self:EnableWeakReferences();
-
-    self:UseValueMapping();
-    self:DisallowReuse();
 end;
 
 function Mapper:SetMapper(mapper, ...)
     self.mapper = Curry(mapper, ...);
 
-    self.mappings = nil;
-    self.duplicates = nil;
+    -- Maps original data to generated content. The keys are weak, so if
+    -- original data is no longer used elsewhere, our mapping will eventually
+    -- disappear here. This keeps things tidy, while also allowing us to be
+    -- efficient if values are reused.
+    self.mappings = setmetatable({}, self.mapMeta);
 
-    self:Update();
-end;
-
-function Mapper:UseKeyMapping()
-    self.chooser = function(k, v)
-        return k;
-    end;
-    self:Update();
-end;
-
-function Mapper:UseValueMapping()
-    self.chooser = function(k, v)
-        if v == nil then
-            return k;
-        end;
-        return v;
-    end;
     self:Update();
 end;
 
@@ -132,108 +107,18 @@ function Mapper:AddDestination(dest, ...)
 end;
 Mapper.AddDest = Mapper.AddDestination;
 
-function Mapper:DisallowReuse()
-    if not self.allowReuse then
-        return;
-    end;
-    self.allowReuse = false;
-
-    if self.mappings then
-        -- We no longer allow reuse, so we need to remove
-        -- any reused values from our mappings.
-        local seen = {};
-        for k,v in pairs(self.mappings) do
-            -- We don't care about primitive values.
-            if not IsPrimitive(v) and seen[v] then
-                self.mappings[k] = nil;
-            else
-                seen[v] = true;
-            end;
-        end;
-    end;
-    self:Update();
+function Mapper:CanReuseContent(content, data, key)
+    return false;
 end;
 
-function Mapper:AllowReuse()
-    if self.allowReuse then
-        return;
-    end;
-    self.allowReuse = true;
+function Mapper:ContentFor(key, data)
+    local content = self.mappings[data];
 
-    if self.mappings then
-        -- We now allow reuse, so pull duplicates into mappings
-        -- and clear the duplicates table.
-        for k,v in pairs(self.mappings) do
-            if v == HAS_DUPLICATES then
-                self.mappings[k] = self.duplicates[k][1];
-            end;
-        end;
-        self.duplicates = nil;
-    end;
-    self:Update();
-end;
-
--- Prepare this mapper for an update.
-function Mapper:Prepare()
-    -- Maps original data to generated content. The keys are weak, so if
-    -- original data is no longer used elsewhere, our mapping will eventually
-    -- disappear here. This keeps things tidy, while also allowing us to be
-    -- efficient if values are reused.
-    if not self.mappings then
-        self.mappings = setmetatable({}, self.mapMeta);
-    end;
-    if not self.allowReuse then
-        if not self.duplicates then
-            self.duplicates = setmetatable({}, self.mapMeta);
-        end;
-        self.uses = setmetatable({}, self.mapMeta);
-    end;
-end;
-
-function Mapper:ContentFor(data)
-    assert(type(self.mappings) == "table", "Mappings not present");
-
-    if self.allowReuse then
-        local content = self.mappings[data];
-        if content == nil then
-            content = self.mapper(data);
-            self.mappings[data] = content;
-        end;
-        assert(content ~= HAS_DUPLICATES);
-        return content;
-    end;
-
-    local uses = self.uses[data];
-    uses = uses or 0;
-    if uses == 0 then
-        local content = self.mappings[data];
-        if content == nil then
-            -- We've never seen this data before.
-            content = self.mapper(data);
-            self.mappings[data] = content;
-        end;
-        if content ~= HAS_DUPLICATES then
-            self.uses[data] = 1;
-            return content;
-        end;
-    elseif uses == 1 then
-        -- We've only used this content once before.
-        local firstContent = assert(self.mappings[data]);
-        if firstContent ~= HAS_DUPLICATES then
-            -- Push this value into the duplicates table.
-            self.duplicates[data] = setmetatable({firstContent}, self.mapDuplicatesMeta);
-        end;
-    end;
-
-    local contentList = self.duplicates[data];
-    assert(#contentList >= uses);
-
-    local content = contentList[uses + 1];
-    if content == nil then
+    if content == nil or not self:CanReuseContent(content, data, key) then
         content = self.mapper(data);
-        table.insert(contentList, content);
+        self.mappings[data] = content;
     end;
-    self.uses[data] = uses + 1;
+
     return content;
 end;
 
@@ -242,8 +127,6 @@ function Mapper:Update()
         -- No mapper, so there won't be any mappings.
         return;
     end;
-
-    self:Prepare();
 
     self:DisableWeakReferences();
 
@@ -270,7 +153,7 @@ function Mapper:Update()
     -- Push all added and modified keys
     for key, data in pairs(aggregate) do
         assert(data ~= nil);
-        local content = self:ContentFor(self.chooser(key, data));
+        local content = self:ContentFor(key, data);
         Lists.CallEach(self.destinations, key, content);
 
         -- I'm using the oldAggregate as a register of deleted keys. If a key
@@ -286,7 +169,6 @@ function Mapper:Update()
     trace("Firing mapper listeners");
     self.listeners:Fire();
 
-    self.uses = nil;
     self:EnableWeakReferences();
 end;
 
@@ -296,12 +178,10 @@ end;
 
 function Mapper:DisableWeakReferences()
     self.mapMeta.__mode = "";
-    self.mapDuplicatesMeta.__mode = "";
 end;
 
 function Mapper:EnableWeakReferences()
     self.mapMeta.__mode = "k";
-    self.mapDuplicatesMeta.__mode = "v";
 end;
 
 -- vim: set et :
