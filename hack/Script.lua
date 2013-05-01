@@ -18,39 +18,7 @@ function Script:Constructor()
     self.content = "";
     self.listeners = ListenerList:New();
 
-    self.commands = {};
-    self.commandRemovers = {};
-
-    self:AddDestructor(self, "Reset");
     self:AddConnector(Connectors.Global("Undoer", Assets.Undoer()));
-end;
-
-function Script:SetCommandParser(parser, ...)
-    self.parser = Curry(parser, ...);
-end;
-
-function Script:AddCommand(command)
-    if Lists.ContainsValue(self.commands, command) then
-        return;
-    end;
-    self.commandRemovers[command] = self.parser(self, command);
-    table.insert(self.commands, command);
-    self:FireUpdate();
-    return Functions.OnlyOnce(self, "RemoveCommand", command);
-end;
-
-function Script:RemoveCommand(command)
-    local r = self.commandRemovers[command];
-    if r then
-        r();
-        self.commandRemovers[command] = nil;
-    end;
-    self:FireUpdate();
-    Lists.Remove(self.commands, command);
-end;
-
-function Script:GetCommands()
-    return self.commands;
 end;
 
 function Script:SetContent(content)
