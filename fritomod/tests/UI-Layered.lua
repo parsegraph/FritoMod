@@ -1,5 +1,4 @@
 if nil ~= require then
-    require "wow/api/UIParent";
     require "fritomod/Media-Color";
     require "fritomod/Frames";
     require "fritomod/Anchors";

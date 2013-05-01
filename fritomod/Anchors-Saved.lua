@@ -34,14 +34,16 @@ end;
 local anchors={};
 Anchors.anchors=anchors;
 
--- anchorFrame is the parent for every anchor we create here.
 local anchorFrame;
-anchorFrame=CreateFrame("Frame", nil, UIParent);
-anchorFrame:SetAllPoints();
-anchorFrame:SetFrameStrata("HIGH");
+function CreateAnchorFrame()
+    -- anchorFrame is the parent for every anchor we create here.
+    anchorFrame=CreateFrame("Frame", nil, UIParent);
+    anchorFrame:SetAllPoints();
+    anchorFrame:SetFrameStrata("HIGH");
 
-local anchorNameFrame=anchorFrame:CreateFontString();
-anchorNameFrame:SetFont("Fonts\\FRIZQT__.TTF", 11);
+    local anchorNameFrame=anchorFrame:CreateFontString();
+    anchorNameFrame:SetFont("Fonts\\FRIZQT__.TTF", 11);
+end;
 
 local removers={};
 local showing=false;
@@ -83,6 +85,7 @@ local function ShowAnchor(name, anchor)
 end;
 
 function Anchors.Named(name)
+    CreateAnchorFrame();
 	local anchor;
 	if anchors[name] then
 		trace("Retrieving existing anchor: "..name);
