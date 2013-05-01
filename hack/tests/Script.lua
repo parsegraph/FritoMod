@@ -18,15 +18,16 @@ function Suite:TestScript()
         foo = 42;
     ]]);
 
-    script:Execute();
 
-    local env = script:GetEnvironment();
+    local env = LuaEnvironment:New();
+    script:Execute(env);
+
     Assert.Equals(42, env:Get("foo"));
 
     local flag = env:Get("bar");
     flag:Assert();
 
-    script:Destroy();
+    env:Destroy();
 
     flag:AssertUnset();
 end;

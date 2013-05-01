@@ -1,7 +1,6 @@
 if nil ~= require then
     require "fritomod/currying";
     require "fritomod/OOP-Class";
-    require "fritomod/LuaEnvironment";
     require "fritomod/ListenerList";
     require "fritomod/Lists";
     require "hack/Assets";
@@ -73,23 +72,10 @@ function Script:AddConnector(connector, ...)
     return rv;
 end;
 
-function Script:Execute(...)
-    self:Reset();
-    self.environment = LuaEnvironment:New();
-    Lists.CallEach(self.connectors, self.environment);
-    return self.environment:Run(self.content, ...);
-end;
-
-function Script:Reset()
-    if not self.environment then
-        return;
-    end;
-    self.environment:Destroy();
-    self.environment = nil;
-end;
-
-function Script:GetEnvironment()
-    return self.environment;
+function Script:Execute(env, ...)
+    assert(env, "Environment must not be falsy");
+    Lists.CallEach(self.connectors, env);
+    return env:Run(self.content, ...);
 end;
 
 function Script:OnChange(func, ...)

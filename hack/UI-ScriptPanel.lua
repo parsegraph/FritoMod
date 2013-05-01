@@ -6,6 +6,7 @@ if nil ~= require then
     require "fritomod/Frames";
     require "fritomod/Media-Color";
     require "fritomod/Media-Font";
+    require "fritomod/LuaEnvironment";
 end;
 
 UI = UI or {};
@@ -17,6 +18,9 @@ local ScriptPanel = UI.Hack.ScriptPanel;
 function ScriptPanel:Constructor(parent)
     self.frame = Frames.New(parent);
     self:AddDestructor(Frames.Destroy, self.frame);
+
+    self.environment = LuaEnvironment:New();
+    self:AddDestructor(self.environment, "Destroy");
 
     self.panel = Frames.New(self);
     self.selector = Frames.New(self);
@@ -47,7 +51,8 @@ function ScriptPanel:Execute()
         return;
     end;
     self.script:SetContent(self.scriptText:GetText());
-    return self.script:Execute();
+    self.script:Reset();
+    return self.script:Execute(self.environment);
 end;
 
 function ScriptPanel:Update()
