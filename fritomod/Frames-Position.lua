@@ -13,7 +13,7 @@ local positionedFrames={};
 local defaultPositions = {};
 
 local function LoadPoint(name, frame, savedPosition, defaultPosition)
-	if not savedPosition then
+	if not savedPosition or #savedPosition == 0 then
 		trace("No saved position; using default for %q", name);
         if defaultPosition then
             defaultPosition(frame);
