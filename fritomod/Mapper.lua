@@ -274,7 +274,7 @@ function Mapper:Update()
         Lists.CallEach(self.destinations, key, content);
 
         -- I'm using the oldAggregate as a register of deleted keys. If a key
-        -- still remains in oldAggregate after this loopp, then it was deleted
+        -- still remains in oldAggregate after this loop, then it was deleted
         oldAggregate[key] = nil;
     end;
 
