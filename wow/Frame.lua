@@ -11,6 +11,10 @@ WoW=WoW or Metatables.Defensive();
 WoW.Frame=OOP.Class();
 local Frame=WoW.Frame;
 
+function Frame:GetName()
+    return nil;
+end;
+
 function WoW.AssertFrame(frame, reason)
     if reason then
         reason = ". Reason: " .. reason;
