@@ -16,6 +16,14 @@ function Pipeline:Add(pipe, ...)
     return Lists.InsertFunction(self.pipes, pipe, ...);
 end;
 
+function Pipeline:AddSideEffect(effect, ...)
+    effect = Curry(effect, ...);
+    return self:Add(function(value, pipeline)
+        effect(value, pipeline);
+        return value;
+    end);
+end;
+
 function Pipeline:AddBackward(pipe, ...)
     return Lists.InsertFunction(self.reversals, pipe, ...);
 end;
