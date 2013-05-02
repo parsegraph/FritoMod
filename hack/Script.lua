@@ -17,6 +17,7 @@ function Script:Constructor()
     self.connectors = {};
     self.content = "";
     self.listeners = ListenerList:New();
+    self.compileListeners = ListenerList:New();
 end;
 
 function Script:SetContent(content)
@@ -24,11 +25,16 @@ function Script:SetContent(content)
         return;
     end;
     self.content = content;
+    self.compiles = self.content ~= nil and loadstring(tostring(self.content));
     self:FireUpdate();
 end;
 
 function Script:GetContent()
     return self.content;
+end;
+
+function Script:Compiles()
+    return self.compiles;
 end;
 
 function Script:AddConnector(connector, ...)
@@ -48,8 +54,15 @@ function Script:OnUpdate(func, ...)
     return self.listeners:Add(func, ...);
 end;
 
+function Script:OnCompilingUpdate(func, ...)
+    return self.compileListeners:Add(func, ...);
+end;
+
 function Script:FireUpdate()
     if not self.listeners:IsFiring() then
         self.listeners:Fire();
+    end;
+    if self:Compiles() and not self.compileListeners:IsFiring() then
+        self.compileListeners:Fire();
     end;
 end;
