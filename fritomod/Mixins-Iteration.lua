@@ -664,6 +664,23 @@ function Mixins.Iteration(library)
 		end;
 	end;
 
+	if library.ReverseCallEach == nil then
+		-- Calls every function in the specified iterable in reverse.
+		--
+		-- iterable
+		--	 a value that is iterable using library.Iterator
+		-- ...
+		--	 arguments that are passed to each function in iterable
+		-- throws
+		--	 if any value in iterable is not callable
+		function library.ReverseCallEach(iterable, ...)
+			for func in library.ReverseValueIterator(iterable) do
+				assert(IsCallable(func), "func is not callable. Type: " .. type(func));
+				func(...);
+			end;
+		end;
+	end;
+
 	if library.MapCall == nil then
 		-- Runs every function in the specified iterable, returning the results of each.
 		--
