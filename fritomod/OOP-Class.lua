@@ -2,6 +2,7 @@ if nil ~= require then
 	require "fritomod/basic";
 	require "fritomod/currying";
 	require "fritomod/OOP";
+	require "fritomod/Lists";
 end;
 
 local CLASS_METATABLE = {
@@ -77,7 +78,7 @@ local CLASS_METATABLE = {
 			constructors = {};
 			rawset(self, "__constructors", constructors);
 		end;
-		table.insert(constructors, constructorFunc);
+		return Lists.Insert(constructors, constructorFunc);
 	end,
 
 	-- Adds the specified destructor function to this class or instance. Instance-specific
@@ -96,7 +97,7 @@ local CLASS_METATABLE = {
 			destructors = {};
 			rawset(self, "__destructors", destructors);
 		end;
-		table.insert(destructors, destructor);
+		return Lists.Insert(destructors, destructor);
 	end,
 
 	ToString = function(self)
