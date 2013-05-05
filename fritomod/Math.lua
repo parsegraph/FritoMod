@@ -59,7 +59,11 @@ function Math.Distance(...)
 		x1, y1 = unpack(point);
 		x2, y2 = unpack(otherPoint);
 	end;
-	return math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2))
+	return Math.Hypotenuse(x2 - x1, y2 - y1);
+end;
+
+function Math.Hypotenuse(a, b)
+	return math.sqrt(math.pow(a, 2) + math.pow(b, 2));
 end;
 
 function Math.Mean(values, ...)
