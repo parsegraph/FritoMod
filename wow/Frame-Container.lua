@@ -8,6 +8,9 @@ local Frame = WoW.Frame;
 Frame:AddConstructor(function(self, parent)
 	self.children = {};
     self:SetParent(parent);
+    self:AddDestructor(function()
+        self:SetParent(nil);
+    end);
 end);
 
 function Frame:GetNumChildren(...)
