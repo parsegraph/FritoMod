@@ -190,6 +190,17 @@ function Iterators.Consume(iterator, ...)
 	return items;
 end;
 
+function Iterators.Limit(max, iterator, ...)
+    iterator = Curry(iterator, ...);
+    local count = 0;
+    return function()
+        count = count + 1;
+        if count <= max then
+            return iterator();
+        end;
+    end;
+end;
+
 function Iterators.TableCounter(...)
 	local counter=Iterators.Counter(...);
 	local i=0;
