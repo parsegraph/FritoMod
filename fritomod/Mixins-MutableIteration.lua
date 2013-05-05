@@ -585,10 +585,11 @@ function Mixins.MutableIteration(library, iteratorFunc)
 			compareFunc=library.NewComparator(compareFunc, ...);
 			local s=library.Size(iterable);
 			if s < 2 then
-				return;
+				return iterable;
 			end;
 			assert(s);
 			Partition(iterable, compareFunc, 1, s);
+			return iterable;
 		end;
 	end;
 
