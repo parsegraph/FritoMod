@@ -25,7 +25,14 @@ function Script:SetContent(content)
         return;
     end;
     self.content = content;
-    self.compiles = self.content ~= nil and loadstring(tostring(self.content));
+    self.compiles = self.content ~= nil;
+    if self.compiles then
+        if _VERSION == "Lua 5.1" then
+            self.compiles = loadstring(tostring(self.content));
+        else
+            self.compiles = load(tostring(self.content));
+        end;
+    end;
     self:FireUpdate();
 end;
 

@@ -130,6 +130,11 @@ function Serializers.WriteSource(v, out, ...)
 end;
 
 function Serializers.ReadSource(str)
-	local producer = assert(loadstring("return " .. str));
+	local producer;
+	if _VERSION == "Lua 5.1" then
+        producer = assert(loadstring("return " .. str));
+    else
+        producer = assert(load("return " .. str));
+	end;
 	return producer();
 end;
