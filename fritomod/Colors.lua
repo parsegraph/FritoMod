@@ -1,7 +1,13 @@
 -- A namespace for functions that deal with colors.
 
 if nil ~= require then
-	require "bit"
+	if not bit then
+		if bit32 then
+			bit = bit32;
+		else
+			require "bit"
+		end;
+	end
 
 	require "fritomod/Metatables";
 	require "fritomod/Math";

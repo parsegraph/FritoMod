@@ -4,7 +4,11 @@
 -- provided, then each of those file's dependencies will be listed.
 
 -- Get and copy a clean environment.
-require "bit";
+if bit32 then
+	bit = bit32;
+else
+	require "bit";
+end;
 require "lfs";
 local pristine={};
 for k,v in pairs(_G) do
