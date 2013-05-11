@@ -6,6 +6,7 @@ if nil ~= require then
 	require "fritomod/Colors";
 	require "fritomod/Media";
 
+	require "wow/api/colors";
 	require "wow/Texture";
 end;
 
