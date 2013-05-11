@@ -43,7 +43,7 @@ local CLEAN = UnixClean;
 local files={};
 local function AddFile(file)
 	assert(lfs.attributes(file, "mode" == "file", "Argument is not a file: "..tostring(file)));
-	file = tostring(file):gsub("^\./", "");
+	file = tostring(file):gsub("^\\./", "");
 	table.insert(files, file);
 end;
 
@@ -120,7 +120,7 @@ for i=1,#arg do
 		dir = dir:gsub("[/\\]+$", "");
 		for child in lfs.dir(dir) do
 			child = dir .. "/" .. child;
-			if lfs.attributes(child, "mode") == "file" and child:find("\.lua$") then
+			if lfs.attributes(child, "mode") == "file" and child:find("\\.lua$") then
 				AddFile(child);
 			end;
 		end;
