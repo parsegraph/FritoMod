@@ -129,10 +129,19 @@ local function Timer(tickFunc, ...)
 	tickFunc=Curry(tickFunc, ...);
 	return function(period, func, ...)
 		period = Strings.GetTime(period);
-		func=Curry(func,...);
+        func = Curry(func, ...);
+        local success, err = true, "";
+        local function Receiver()
+            success, err = xpcall(func, traceback);
+        end;
 		local elapsed=0;
 		return Timing.OnUpdate(function(delta)
-			elapsed=tickFunc(period, elapsed+delta, func);
+			elapsed=tickFunc(period, elapsed+delta, Receiver);
+            if not success then
+                -- Reset success
+                success = true;
+                error(err);
+            end;
 		end);
 	end;
 end;
