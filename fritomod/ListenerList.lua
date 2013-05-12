@@ -111,9 +111,8 @@ function ListenerList:Fire(...)
 	self.firingMax = #self.listeners;
 	self.firingIndex = 1;
 	while self.firingIndex <= self.firingMax do
-		local succeeded, err = xpcall(function()
-			self:FireListener(self.listeners[self.firingIndex], ...);
-		end, traceback);
+		local target = Curry(self, "FireListener", self.listeners[self.firingIndex], ...);
+		local succeeded, err = xpcall(target, traceback);
 		if not succeeded then
 			-- Clean up our firing variable, otherwise we'll be permanently
 			-- stuck in "firing" mode.
