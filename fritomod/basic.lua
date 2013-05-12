@@ -167,8 +167,12 @@ function RemoveValueFromTable(t, v)
 end;
 
 function traceback(msg)
+    msg = msg or "";
+    if msg:find("\nstack traceback:\n") ~= nil then
+        return msg;
+    end;
     if debug and debug.traceback then
-        return debug.traceback(msg);
+        return debug.traceback(msg, 2);
     else
         return msg .. "\n" .. debugstack();
     end;
