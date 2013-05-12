@@ -111,9 +111,21 @@ function ListenerList:Fire(...)
 	self.firingMax = #self.listeners;
 	self.firingIndex = 1;
 	while self.firingIndex <= self.firingMax do
-		self:FireListener(self.listeners[self.firingIndex], ...);
+		local succeeded, err = xpcall(function()
+			self:FireListener(self.listeners[self.firingIndex], ...);
+		end, traceback);
+		if not succeeded then
+			-- Clean up our firing variable, otherwise we'll be permanently
+			-- stuck in "firing" mode.
+			self:FinalizeFire();
+			error(err);
+		end;
 		self.firingIndex = self.firingIndex + 1;
 	end;
+	self:FinalizeFire();
+end;
+
+function ListenerList:FinalizeFire()
 	self.firingIndex = nil;
 	self.firingMax = nil;
 	self.firing=false;
