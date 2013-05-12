@@ -29,7 +29,7 @@ local function LoadPoint(name, frame, savedPosition, defaultPosition)
     local rv, err=xpcall(function()
         frame:ClearAllPoints();
         Serializers.LoadAllPoints(savedPosition, frame);
-    end, debug.traceback);
+    end, traceback);
     if not rv then
         -- This works for now, but it'd be nice if we could be more obvious
         -- when this stuff fails.
@@ -124,7 +124,7 @@ Callbacks.PersistentValue(PERSISTENCE_KEY, function(persistedFrames)
             __version = VERSION
         };
 		for name,frame in pairs(positionedFrames) do
-			local rv, savedPosition=xpcall(Seal(Serializers.SaveAllPoints, frame), debug.traceback);
+			local rv, savedPosition=xpcall(Seal(Serializers.SaveAllPoints, frame), traceback);
 			if rv then
 				persistedFrames[name]=savedPosition;
 			elseif persistedFrames[name] then

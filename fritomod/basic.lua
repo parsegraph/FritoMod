@@ -166,6 +166,14 @@ function RemoveValueFromTable(t, v)
 	end;
 end;
 
+function traceback(msg)
+    if debug and debug.traceback then
+        return debug.traceback(msg);
+    else
+        return msg .. "\n" .. debugstack();
+    end;
+end;
+
 function printf(str, ...)
 	print(str:format(...));
 end
