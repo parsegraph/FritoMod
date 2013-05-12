@@ -21,7 +21,7 @@ local function BlizzardStackTrace()
 			funcInfo, lineNum=nil;
 		end;
 		if what:find('^\\[string') then
-			level.source=select(2, what:find('^\\[string "([^"]+)"\]$'));
+			level.source=select(2, what:find([[^\[string "([^"]+)"\]$]]));
 		else
 			level.source=what;
 		end;
