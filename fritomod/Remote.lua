@@ -1,14 +1,13 @@
 -- Remote lets you listen for and dispatch remote events.
 --
--- Slash.notime = Remote["NoTime.Chat"].g;
--- Remote["NoTime.Chat"](function(message, who)
+-- Slash.notime = Remote["g:NoTime.Chat"];
+-- Remote["g:NoTime.Chat"](function(message, who)
 --	 print(("%s said %q"):format(who, message));
 -- end);
 --
 -- /notime Hello, everyone!
 --
--- Remote does no serialization, so it doesn't translate non-primitive values. It does accept
--- things like functions and tables, but these must eventually return primitives.
+-- Remote does no serialization, so it doesn't translate anything other than strings.
 --
 -- I'm a little torn on whether to include a built-in serializer. Not including one limits
 -- the usefulness of this solution and generates errors in situations where you wouldn't
@@ -21,8 +20,31 @@
 -- some metatable/closure magic to retain the original syntax.
 --
 if nil ~= require then
+	require "fritomod/basic";
 	require "fritomod/Tables";
 end;
+
+assert(not Remote, "Remote must not already exist");
+Remote = {};
+
+local listenerMap = {};
+
+function Remote:Dispatch(channel, ...)
+    local listeners = listenerMap[channel];
+    if listeners then
+        listeners:Fire(...);
+    end;
+end;
+
+setmetatable(Remote, {
+    __index = function(self, channel)
+        local listeners = ListenerList:New();
+        listeners:AddInstaller(Remote, "Install", channel);
+        listenerMap[channel] = listeners;
+        rawset(Remote, channel, Curry(listeners, "Add"));
+        return self[channel];
+    end
+});
 
 local mediums={};
 
@@ -38,7 +60,17 @@ Tables.Alias(mediums, "raid", "r", "ra");
 mediums.battleground="battleground";
 Tables.Alias(mediums, "battleground", "battlegroup", "bg", "pvp");
 
-local function SendMessage(medium, prefix, msg)
+function GetMediumAndPrefix(channel)
+    return unpack(Strings.Split(":", channel, 2));
+end;
+
+function GetChannel(medium, prefix)
+    return medium .. ":" .. prefix;
+end;
+
+function Remote:Send(channel, msg)
+    assert(msg~=nil, "Message must not be nil");
+    local medium, prefix = GetMediumAndPrefix(channel);
 	if mediums[medium] then
 		if ChatThrottleLib then
 			ChatThrottleLib:SendAddonMessage("NORMAL", prefix, msg, mediums[medium]);
@@ -54,42 +86,13 @@ local function SendMessage(medium, prefix, msg)
 	end;
 end;
 
-Remote=setmetatable({}, {
-	__index=function(self, prefix)
-		self[prefix]=setmetatable({}, {
-			__index=function(self, medium)
-				assert(type(medium)=="string", "medium must be a string");
-				medium=medium:lower();
-				local function sender(message)
-					if IsCallable(message) then
-						return sender(message());
-					elseif type(message)=="table" then
-						for i=1,#message do
-							sender(message[i]);
-						end;
-						return;
-					elseif IsPrimitive(message) then
-						return SendMessage(medium, prefix, tostring(message));
-					end;
-					assert(message~=nil, "Message must not be nil");
-					error(message, "Could not send "..type(message) .. " message: "..tostring(message));
-				end;
-				if mediums[medium] then
-					self[medium]=sender;
-				end;
-				return sender;
-			end,
-			__call=function(self, func, ...)
-				func=Curry(func, ...);
-				RegisterAddonMessagePrefix(prefix);
-				return Events.CHAT_MSG_ADDON(function(msgPrefix, message, medium, source)
-					if prefix~=msgPrefix then
-						return;
-					end;
-					func(message, source, medium);
-				end);
-			end
-		});
-		return self[prefix];
-	end
-});
+function Remote:Install(channel)
+    local _, prefix = GetMediumAndPrefix(channel);
+    RegisterAddonMessagePrefix(prefix);
+    return Events.CHAT_MSG_ADDON(function(msgPrefix, message, medium, source)
+        if prefix~=msgPrefix then
+            return;
+        end;
+        Remote:Dispatch(GetChannel(medium, prefix), message, source);
+    end);
+end;
