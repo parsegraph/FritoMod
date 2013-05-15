@@ -38,7 +38,7 @@ end;
 function Pipe.Map(mapper, reverseMapper)
     return function(items, pipeline)
         return
-            Lists.Map(items, mapper, pipeline),
+            Lists.Map(items, Headless(mapper, pipeline)),
             Headless(Lists.Map, reverseMapper);
     end;
 end;
