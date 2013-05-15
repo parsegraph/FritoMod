@@ -266,7 +266,7 @@ end;
 
 function LuaEnvironment:Run(runner, ...)
 	if type(runner) == "string" then
-		return self:LoadString(runner)(...);
+		return assert(self:LoadString(runner))(...);
 	end;
 	return self:LoadFunction(runner)(...);
 end;
