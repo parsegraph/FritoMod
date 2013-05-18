@@ -89,12 +89,6 @@ else
 end;
 colors.grey=colors.gray;
 
-if MATERIAL_TEXT_COLOR_TABLE then
-	for k,v in pairs(MATERIAL_TEXT_COLOR_TABLE) do
-		colors[k] = v;
-	end;
-end;
-
 if RAID_CLASS_COLORS then
 	for className, classColor in pairs(RAID_CLASS_COLORS) do
 		colors[className]=BreakColorTable(classColor);
