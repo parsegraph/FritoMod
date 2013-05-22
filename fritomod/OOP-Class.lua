@@ -19,7 +19,6 @@ local CLASS_METATABLE = {
 		-- noop
 	end,
 
-
 	-- Calls all constructors on the specified object.
 	--
 	-- object
