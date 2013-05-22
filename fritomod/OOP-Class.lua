@@ -6,9 +6,6 @@ if nil ~= require then
 end;
 
 local CLASS_METATABLE = {
-	GetMethodIterator = function(self)
-	end,
-
 	-- A default constructor. This is called after all constructors are used,
 	-- and will only be called on the immediate class that's being created;
 	-- it is each constructor's responsibility to either call their parent's
