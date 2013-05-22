@@ -1941,4 +1941,44 @@ function Anchors.Get(frame, requested)
 	end;
 end;
 
+function Anchors.GetAnchorList(which)
+	which = tostring(which):lower();
+	if which == nil then
+		which = "all";
+	end;
+	if which == "all" then
+		local anchors = Anchors.GetAnchorList("edges");
+		table.insert(anchors, "CENTER");
+		return anchors;
+	end;
+	if which == "edge" or which == "edges" then
+		return {
+			"TOP",
+			"TOPRIGHT",
+			"RIGHT",
+			"BOTTOMRIGHT",
+			"BOTTOM",
+			"BOTTOMLEFT",
+			"LEFT",
+			"TOPLEFT"
+		};
+	end;
+	if which == "diagonals" or which == "corners" then
+		return {
+			"TOPRIGHT",
+			"BOTTOMRIGHT",
+			"BOTTOMLEFT",
+			"TOPLEFT",
+		};
+	end;
+	if which == "side" or which == "sides" then
+		return {
+			"TOP",
+			"RIGHT",
+			"BOTTOM",
+			"LEFT"
+		};
+	end;
+end;
+
 -- vim: set noet :
