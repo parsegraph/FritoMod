@@ -100,6 +100,10 @@ local CLASS_METATABLE = {
 		return "Object";
 	end,
 
+	ID = function(self)
+		return self.__id;
+	end,
+
 	ToString = function(self)
 		return self:ClassName() .. "@".. self.__id;
 	end,
