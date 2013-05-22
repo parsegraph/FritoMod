@@ -105,7 +105,7 @@ local CLASS_METATABLE = {
 	end,
 
 	ToString = function(self)
-		return self:ClassName() .. "@".. self.__id;
+		return "[" .. self:ClassName() .. " ".. self:ID() .. "]";
 	end,
 
 	-- Destroy this object. All instance-specific destructors will be run, then all class-
