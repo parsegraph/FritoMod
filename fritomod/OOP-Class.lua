@@ -97,12 +97,12 @@ local CLASS_METATABLE = {
 		return Lists.Insert(destructors, destructor);
 	end,
 
+	ClassName = function(self)
+		return "Object";
+	end,
+
 	ToString = function(self)
-		local reference = Reference(self);
-		if self.class then
-			return "Instance@" .. reference;
-		end;
-		return "Class@" .. reference;
+		return self:ClassName() .. "@".. self.__id;
 	end,
 
 	-- Destroy this object. All instance-specific destructors will be run, then all class-
@@ -134,11 +134,18 @@ local CLASS_METATABLE = {
 
 -- Creates a new instance of this class.
 local function New(class, ...)
+	local id = rawget(class, "__idcount") or 1;
+	rawset(class, "__idcount", id + 1);
 	local instance = {
 		__index = class,
 		__tostring = function(self)
-			return self:ToString()
+			local reference = Reference(self);
+			if self.class then
+				return self:ToString();
+			end;
+			return "Class["..self:ClassName().."]@" .. reference;
 		end,
+		__id = id,
 		class=class
 	};
 	setmetatable(instance, instance);
