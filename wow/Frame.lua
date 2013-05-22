@@ -122,7 +122,9 @@ function WoW.Delegate(klass, category, name)
     end;
     klass[name] = function(self, ...)
         local delegate = self:GetDelegate(category);
-        assert(delegate, "No delegate defined for category: " .. category);
+        assert(delegate,
+            "No delegate defined for category: " .. category .. " so the '" .. name .. "' method cannot be invoked"
+        );
         local delegateFunc = delegate[name];
         assert(delegateFunc, "Delegate must implement the method '" .. name .. "'");
         return delegateFunc(delegate, ...);
