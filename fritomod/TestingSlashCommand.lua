@@ -84,7 +84,7 @@ function TestingSlashCommand()
 				else
 					report.state="Failed";
 					report.reason=reason;
-					PrintWithColor(("Cumulative: %d of %d tests ran successfuly. %d failed, %d crashed"):format(
+					PrintWithColor(("Cumulative: %d of %d tests ran successfully. %d failed, %d crashed"):format(
 						#report.successes,
 						report.numRan,
 						#report.failures,

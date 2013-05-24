@@ -41,7 +41,7 @@ if #arg > 0 and AllTests:GetCount() > 0 then
 			if successful then
 				print(("Cumulative: All %d tests ran successfully."):format(numRan));
 			else
-				print(("Cumulative: %d of %d tests ran successfuly. %d failed"):format(
+				print(("Cumulative: %d of %d tests ran successfully. %d failed"):format(
 					numSuccessful,
 					numRan,
 					numFailed
