@@ -165,7 +165,11 @@ function Strings.Pretty(value)
 end;
 
 function Strings.Print(...)
-	Strings.__print(Strings.JoinArray(" ", Lists.Map({...}, Strings.Pretty)));
+    local printedValues = {};
+    for i=1, select("#", ...) do
+        table.insert(printedValues, Strings.Pretty(select(i, ...)));
+    end;
+	Strings.__print(Strings.JoinArray(" ", printedValues));
 end;
 Strings.p=Strings.Print;
 dump=Strings.Print
