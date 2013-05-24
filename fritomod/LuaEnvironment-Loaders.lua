@@ -14,7 +14,7 @@ function loaders.Filesystem()
 		end;
 		name = tostring(name);
 		local file=name;
-		if not file:find("\.lua$") then
+		if not file:find("\\.lua$") then
 			file=name..".lua";
 		end;
 		if not lfs.attributes(file) then
