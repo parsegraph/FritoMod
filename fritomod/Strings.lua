@@ -142,10 +142,26 @@ function Strings.EndsWith(str, suffix)
 	return suffix==str:sub(#str-#suffix+1);
 end;
 
-function Strings.Pretty(value)
+MAX_RECURSION_DEPTH = 3;
+function HasSeenValue(context, value)
+    if type(value) ~= "table" then
+        return false;
+    end;
+    if context[value] == nil then
+        context[value] = 0;
+    end;
+    context[value] = context[value] + 1;
+    return context[value] > MAX_RECURSION_DEPTH;
+end;
+
+function Strings.Pretty(value, _context)
+    _context = _context or {};
 	if value == nil then
 		return "<nil>";
 	end;
+    if HasSeenValue(_context, value) then
+        return "<seen: "..Reference(value)..">";
+    end;
 	local valueType = Strings.ProperNounize(type(value));
 	if valueType == "Table" then
 		if OOP.IsClass(value) then
@@ -155,9 +171,9 @@ function Strings.Pretty(value)
 			return value:ToString();
 		end;
 		if #value > 0 then
-			return Strings.PrettyList(value);
+			return Strings.PrettyList(value, _context);
 		end
-		return Strings.PrettyMap(value);
+		return Strings.PrettyMap(value, _context);
 	end;
 	local prettyPrinter = Strings["Pretty" .. valueType];
 	assert(prettyPrinter, "prettyPrinter not available for type. Type: " .. valueType);
@@ -166,8 +182,10 @@ end;
 
 function Strings.Print(...)
     local printedValues = {};
+    _context = {};
     for i=1, select("#", ...) do
-        table.insert(printedValues, Strings.Pretty(select(i, ...)));
+        local value = select(i, ...);
+        table.insert(printedValues, Strings.Pretty(value, _context));
     end;
 	Strings.__print(Strings.JoinArray(" ", printedValues));
 end;
@@ -200,8 +218,12 @@ function Strings.Pluralize(str, count, plural)
 	return Strings.PrettyNamedNumber(count, str, plural);
 end;
 
-function Strings.PrettyList(value)
+function Strings.PrettyList(value, _context)
 	assert(type(value) == "table", "value is not a table. Type: " .. type(value));
+    _context = _context or {};
+    if HasSeenValue(_context, value) then
+        return "<seen: " .. Reference(value) .. ">";
+    end;
 	local size = #value;
 	if size == 0 then
 		return "[<empty>]";
@@ -211,7 +233,11 @@ function Strings.PrettyList(value)
 	return ("[<%s> %s]"):format(size, Strings.JoinArray(", ", contents));
 end;
 
-function Strings.PrettyMap(map)
+function Strings.PrettyMap(map, _context)
+    _context = _context or {};
+    if HasSeenValue(_context, value) then
+        return "<seen: " .. Reference(value) .. ">";
+    end;
 	assert(
 		type(map) == "table" or type(map) == "userdata",
 		"map is not a table. Type: " .. type(map)
@@ -222,7 +248,7 @@ function Strings.PrettyMap(map)
 	end;
 	size = Strings.PrettyNamedNumber(Strings.PrettyNumber(size), "item");
 	local contents = Tables.MapPairs(map, function(key, value)
-		return ("[%s] = %s"):format(Strings.Pretty(key), Strings.Pretty(value));
+		return ("[%s] = %s"):format(Strings.Pretty(key, _context), Strings.Pretty(value, _context));
 	end);
 	return ("{<%s> %s}"):format(size, Strings.JoinArray(", ", Tables.Values(contents)));
 end;
