@@ -283,7 +283,13 @@ function Strings.JoinArray(delimiter, items)
 			word=word();
 		end;
 		if type(word)=="table" then
-			word=Strings.JoinArray(delimiter, word)
+            if OOP.IsInstance(word) then
+                word=word:ToString();
+            elseif OOP.IsClass(word) then
+                word=Strings.Pretty(word);
+            else
+                word=Strings.JoinArray(delimiter, word)
+            end;
 		end;
 		word = tostring(word);
 		if #word == 0 then
