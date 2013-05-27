@@ -12,6 +12,14 @@ function Math.IsReal(value)
 	return value < 0 or value > 0 or value == 0;
 end;
 
+function Math.Round(value)
+    local fractional = value % 1;
+    if fractional >= .5 then
+        return math.ceil(value)
+    end;
+    return math.floor(value);
+end;
+
 local function CheckRange(min, value, max)
 	assert(type(min) == "number", "min must be a number");
 	assert(type(value) == "number", "value must be a number");
