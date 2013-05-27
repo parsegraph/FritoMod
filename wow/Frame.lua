@@ -31,14 +31,18 @@ do
     local frameDelegates = {};
     local frameInheritance = {};
 
+    local delegateOrdering = {};
+
     local function InstallDelegates(name, frame, installedDelegates)
         local delegateCreators = frameDelegates[name];
         if delegateCreators then
             installedDelegates = installedDelegates or {};
-            for category, delegateCreator in pairs(delegateCreators) do
+            local delegateOrder = delegateOrdering[name];
+            for _, category in ipairs(delegateOrder) do
+                local delegateCreator = delegateCreators[category];
                 if not installedDelegates[category] then
                     installedDelegates[category] = true;
-                    frame:SetDelegate(category, delegateCreator(frame));
+                    frame:SetDelegate(category, delegateCreator:New(frame));
                 end;
             end;
         end;
@@ -68,10 +72,14 @@ do
         end;
     end;
 
-    function WoW.SetFrameDelegate(name, category, delegateCreator, ...)
+    function WoW.SetFrameDelegate(name, category, delegate)
         name = tostring(name):lower();
-        frameDelegates[name] = frameDelegates[name] or {};
-        frameDelegates[name][category] = Curry(delegateCreator, ...);
+        if not frameDelegates[name] then
+            frameDelegates[name] = {};
+            delegateOrdering[name] = {};
+        end;
+        frameDelegates[name][category] = delegate;
+        table.insert(delegateOrdering[name], category);
     end;
 
     function WoW.GetFrameDelegate(name, category)
