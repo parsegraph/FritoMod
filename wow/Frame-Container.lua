@@ -33,6 +33,7 @@ function Frame:SetParent(parent)
     if self.parent then
         self._parentDestructor = self.parent:AddDestructor(self, "Destroy");
     end;
+    self:FireEvent("PARENT", parent);
 end;
 
 function Frame:GetParent()
