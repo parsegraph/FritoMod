@@ -101,7 +101,7 @@ local CLASS_METATABLE = {
 	end,
 
 	ID = function(self)
-		return self.__id;
+		return self.id;
 	end,
 
 	ToString = function(self)
@@ -148,7 +148,7 @@ local function New(class, ...)
 			end;
 			return "Class["..self:ClassName().."]@" .. reference;
 		end,
-		__id = id,
+		id = id,
 		class=class
 	};
 	setmetatable(instance, instance);
