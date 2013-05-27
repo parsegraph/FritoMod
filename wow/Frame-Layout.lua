@@ -180,6 +180,7 @@ do
 		"TOPLEFT", "TOP", "TOPRIGHT",
 		"LEFT", "CENTER", "RIGHT",
 		"BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT",
+		"CENTERX", "CENTERY"
 	};
 
 	function WoW.AssertAnchor(anchor)
