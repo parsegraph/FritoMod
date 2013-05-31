@@ -104,10 +104,6 @@ local CLASS_METATABLE = {
 		return self.id;
 	end,
 
-	ToString = function(self)
-		return "[" .. self:ClassName() .. " ".. self:ID() .. "]";
-	end,
-
 	-- Destroy this object. All instance-specific destructors will be run, then all class-
 	-- specific destructors will be run.
 	--
@@ -142,16 +138,19 @@ local function New(class, ...)
 	local instance = {
 		__index = class,
 		__tostring = function(self)
-			local reference = Reference(self);
-			if self.class then
-				return self:ToString();
-			end;
-			return "Class["..self:ClassName().."]@" .. reference;
+			return self:ToString();
 		end,
 		id = id,
 		class=class
 	};
 	setmetatable(instance, instance);
+
+	function instance:ToString()
+		if rawget(self, "ClassName") or rawget(self.class, "ClassName") then
+			return "[" .. self:ClassName() .. " ".. self:ID() .. "]";
+		end;
+		return "[<subclass of " .. self:ClassName() .. "> " .. Reference(self) .. "]";
+	end;
 
 	local function Initialize(class, ...)
 		if class.super then
@@ -179,10 +178,15 @@ end
 --	 if any provided argument is not either a mixin or a class
 --	 if more than one super-class is provided (multiple inheritance in this manner is not supported)
 OOP.Class = function(...)
-	local class = {
-		__index = CLASS_METATABLE,
-		New=New
-	};
+	local class = {};
+	class.__index = CLASS_METATABLE;
+	class.New = New;
+	class.__tostring = function(self)
+		if rawget(self, "ClassName") then
+			return "[Class "..self:ClassName().."@"..Reference(self).."]";
+		end;
+		return "[Subclass of "..self:ClassName().."@"..Reference(self).."]";
+	end
 	setmetatable(class, class);
 
 	for n = 1, select('#', ...) do

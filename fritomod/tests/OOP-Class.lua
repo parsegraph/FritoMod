@@ -10,6 +10,22 @@ function Suite:TestSimpleClass()
 	flag:Assert("Function was called");
 end;
 
+function Suite:TestToString()
+	local Base = OOP.Class();
+
+    assert(tostring(Base):match([[^%[Subclass of Object]]), tostring(Base));
+
+    local obj = Base:New();
+    assert(tostring(obj):match([[^%[<subclass of Object>]]), tostring(obj));
+
+    function Base:ClassName()
+        return "Base";
+    end;
+
+    assert(tostring(Base):match([[^%[Class Base]]), tostring(Base));
+    assert(tostring(obj):match([[^%[Base]]), tostring(obj));
+end;
+
 function Suite:TestInheritance()
 	local Base = OOP.Class();
 	local baseFlag = Tests.Flag();
