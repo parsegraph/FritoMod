@@ -59,7 +59,7 @@ function Frame:SetPoint(anchor, ...)
 	if type(ref) == "string" then
 		ref = _G[ref];
 	end;
-	WoW.AssertFrame(ref, "Reference frame must be a frame");
+	assert(Frames.IsRegion(ref), "Reference frame must be a frame");
 	WoW.AssertAnchor(anchorTo, "anchorTo must be a valid anchor name");
 	anchor=anchor:upper();
 	anchorTo=anchorTo:upper();
