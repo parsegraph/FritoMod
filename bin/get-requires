@@ -76,12 +76,12 @@ end;
 local function XMLWriter()
 	local processor = LuaDependencyList:New();
 	function processor:DoOutput(out, files)
-		out('<Ui xmlns="http://www.blizzard.com/wow/ui/">');
+		out('<Ui xmlns="http://www.blizzard.com/wow/ui/">\n');
 		for _, file in ipairs(files) do
 			file = CLEAN(file);
-			out(('    <Script file="%s" />'):format(file));
+			out(('    <Script file="%s" />\n'):format(file));
 		end;
-		out('</Ui>');
+		out('</Ui>\n');
 	end;
 	return processor;
 end;
@@ -90,7 +90,7 @@ local function LuaWriter()
 	local processor = LuaDependencyGraph:New();
 	function processor:DoOutput(out, childrenOf)
 		Serializers.WriteSource(self.childrenOf, out);
-		out("");
+		out("\n");
 	end;
 	return processor;
 end;
@@ -139,4 +139,6 @@ if not ALL then
 	processor:Filter(Lists.Contains, files);
 end;
 
-processor:Output(print);
+processor:Output(function(msg)
+    return io.output():write(msg);
+end);
