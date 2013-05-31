@@ -1823,7 +1823,7 @@ function Anchors.ConditionalClear(strategy, ...)
 		local points = {};
 		for i=1, frame:GetNumPoints() do
 			local anchor, ref, anchorTo, x, y = frame:GetPoint(i);
-			if strategy(Frames.AsRegion(frame)) then
+			if strategy(Frames.AsRegion(frame), anchor, ref, anchorTo, x, y) then
 				table.insert(points, {anchor, ref, anchorTo, x, y});
 			end;
 		end;
@@ -1908,13 +1908,13 @@ function Anchors.ConditionalClear(strategy, ...)
 end;
 
 Anchors.Clear = Curry(Anchors.ConditionalClear, Operator.False);
-Anchors.ClearVertical = Curry(Anchors.ConditionalClear, function(anchor, ...)
+Anchors.ClearVertical = Curry(Anchors.ConditionalClear, function(_, anchor, ...)
 	return Frames.VComp(anchor) == "CENTER";
 end);
 Anchors.VClear = Anchors.ClearVertical;
 Anchors.ClearV = Anchors.ClearVertical;
 
-Anchors.ClearHorizontal = Curry(Anchors.ConditionalClear, function(anchor, ...)
+Anchors.ClearHorizontal = Curry(Anchors.ConditionalClear, function(_, anchor, ...)
 	return Frames.HComp(anchor) == "CENTER";
 end);
 Anchors.HClear = Anchors.ClearHorizontal;
@@ -1922,7 +1922,7 @@ Anchors.ClearH = Anchors.ClearHorizontal;
 
 function Anchors.ClearPoint(point, ...)
 	point=point:upper();
-	return Anchors.ConditionalClear(function(anchor)
+	return Anchors.ConditionalClear(function(_, anchor)
 		return anchor ~= point;
 	end, ...);
 end;
