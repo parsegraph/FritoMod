@@ -7,7 +7,7 @@ end;
 LuaDependency = OOP.Class();
 
 function LuaDependency:NewEnvironment(file)
-	return LuaEnvironment:New(pristine);
+	return LuaEnvironment:New();
 end;
 
 function LuaDependency:DependsOn(child, parent)
