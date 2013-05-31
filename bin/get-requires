@@ -135,9 +135,9 @@ end;
 
 Lists.Each(files, processor, "Process");
 
-if not ALL then
-	processor:Filter(Lists.Contains, files);
-end;
+processor:SetFilter(function(path)
+    return Lists.Contains(files, path);
+end);
 
 processor:Output(function(msg)
     return io.output():write(msg);

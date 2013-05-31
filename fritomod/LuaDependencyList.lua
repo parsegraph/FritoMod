@@ -16,10 +16,6 @@ function LuaDependency:DependsOn(child, parent)
     self.order:Order(parent, child);
 end;
 
-function LuaDependencyList:Filter(filter, ...)
-    self.order:Filter(filter, ...);
-end;
-
 function LuaDependencyList:Output(out, ...)
     return self:DoOutput(Curry(out, ...), self.order:Get());
 end;

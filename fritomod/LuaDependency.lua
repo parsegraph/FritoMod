@@ -18,8 +18,8 @@ end;
 -- filter. Implementations do not need to save this list;
 -- it's up to the client to apply this filter at
 -- appropriate times.
-function LuaDependency:Filter(filter, ...)
-    -- Noop; overriddable
+function LuaDependency:SetFilter(filter, ...)
+    self.filter = Curry(filter, ...);
 end;
 
 function LuaDependency:Process(file)

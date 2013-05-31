@@ -19,11 +19,6 @@ function LuaDependencyGraph:DependsOn(child, parent)
 	self.childrenOf[parent][child] = true;
 end;
 
-function LuaDependencyGraph:Filter(filter, ...)
-    self.childrenOf = Tables.FilterKeys(
-        self.childrenOf, filter, ...);
-end;
-
 function LuaDependencyGraph:Output(out, ...)
 	out = Curry(out, ...);
 	return self:DoOutput(out, self.childrenOf)
