@@ -16,7 +16,6 @@ Frames=Frames or {};
 function Frames.IsRegion(frame)
 	return frame and
 		type(frame)=="table" and
-		type(frame.GetObjectType)=="function" and
 		type(frame.SetPoint)=="function";
 end;
 Frames.IsFrame=Frames.IsRegion;
