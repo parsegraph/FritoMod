@@ -37,7 +37,7 @@ FritoMod.toc: $(dirs) FritoMod.toc.in
 
 files.xml: $(dirs) bin/get-requires
 	./bin/get-requires --windows --xml $(dirs) >.files.xml
-	mv .files.xml files.xml
+	mv .files.xml $@
 
 luadir=${DATADIR}/lua/5.1
 
