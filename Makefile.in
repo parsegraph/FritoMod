@@ -1,6 +1,10 @@
-dirs = fritomod labs deps hack
+
+sourcedirs = fritomod labs deps hack
+testdirs += fritomod/tests labs/tests hack/tests
+
+dirs = $(sourcedirs)
 ifndef NO_TEST
-dirs += fritomod/tests labs/tests hack/tests
+dirs += $(testdirs)
 endif
 
 export RPMDIR ?= $$HOME/rpmbuild
