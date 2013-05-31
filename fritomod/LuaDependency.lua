@@ -47,7 +47,9 @@ function LuaDependency:Process(file)
 			-- adding dependencies. Otherwise, we wouldn't
 			-- know the parent.
 			local child=dependencyStack[#dependencyStack]
-			dep:DependsOn(child, package);
+			if not dep.filter or dep.filter(child) then
+				dep:DependsOn(child, package);
+			end;
 		end;
 		table.insert(dependencyStack, package);
 	end;
