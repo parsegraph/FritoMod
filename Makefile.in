@@ -31,6 +31,29 @@ test:
 toc: FritoMod.toc files.xml
 .PHONY: toc
 
+dot: fritomod.dot
+.PHONY: dot
+
+graph: graph-png graph-svg
+.PHONY: graph
+
+graph-png: fritomod.dot
+	TYPE=png; \
+	sfdp -T$$TYPE $< -o $<.$$TYPE
+.PHONY: graph-png
+
+graph-svg: fritomod.dot
+	TYPE=svg; \
+	sfdp -T$$TYPE $< -o $<.$$TYPE
+.PHONY: graph-svg
+
+fritomod.dot: bin/get-requires
+	./bin/get-requires --dot fritomod >.$@
+	mv .$@ $@
+
+FORCE:
+.PHONY: FORCE
+
 FritoMod.toc: $(dirs) FritoMod.toc.in
 	./FritoMod.toc.in >.FritoMod.toc
 	mv .FritoMod.toc FritoMod.toc

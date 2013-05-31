@@ -73,6 +73,35 @@ local function MakefileWriter()
 	return processor;
 end;
 
+local function DotWriter()
+    local function StripPath(path)
+        path = path:gsub("[.]lua$", "");
+        path = path:gsub("^fritomod/", "");
+        return path;
+    end;
+	local processor = LuaDependencyGraph:New();
+	function processor:DoOutput(out, childrenOf)
+        out('digraph G {\n');
+        out('    splines="true";\n');
+        out('    overlap="false";\n');
+        local allNodes = {};
+		for parent, children in pairs(childrenOf) do
+            parent = StripPath(parent);
+            allNodes[parent] = true;
+            Tables.EachKey(children, function(child)
+                child = StripPath(child);
+                out(("    %q -> %q;\n"):format(child, parent));
+                allNodes[child] = true;
+            end);
+		end;
+        for node, _ in pairs(allNodes) do
+            out(("    %q [shape = box];\n"):format(node));
+        end;
+        out('}\n');
+	end;
+	return processor;
+end;
+
 local function XMLWriter()
 	local processor = LuaDependencyList:New();
 	function processor:DoOutput(out, files)
@@ -101,6 +130,8 @@ for i=1,#arg do
 	local o=arg[i];
 	if o=="-M" or o=="--make" then
 		processor = MakefileWriter();
+	elseif o=="-D" or o=="--dot" then
+		processor = DotWriter();
 	elseif o=="-t" or o=="--text" or o=="--toc" then
 		processor = PlainTextWriter();
 	elseif o=="-x" or o=="--xml" then
