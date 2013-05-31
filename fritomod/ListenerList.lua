@@ -179,4 +179,8 @@ function ListenerList:DumpListeners()
 	end;
 end;
 
+function ListenerList:ClassName()
+	return "fritomod/ListenerList";
+end;
+
 -- vim: set noet :

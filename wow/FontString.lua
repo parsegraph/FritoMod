@@ -27,6 +27,10 @@ function FontString:SetJustifyV()
 
 end;
 
+function FontString:ClassName()
+    return "wow/FontString";
+end;
+
 WoW.Delegate(FontString, "text", {
 	"GetText",
 	"SetText",

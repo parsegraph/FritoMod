@@ -116,6 +116,10 @@ function Frame:OnDelegateSet(func, ...)
     return self.delegateListeners:Add(func, ...);
 end;
 
+function Frame:ClassName()
+    return "wow/Frame";
+end;
+
 function Frame:Destroy()
     self:ClearAllPoints();
     self:Hide();

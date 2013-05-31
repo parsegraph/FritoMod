@@ -184,4 +184,8 @@ function Mapper:EnableWeakReferences()
     self.mapMeta.__mode = "k";
 end;
 
+function Mapper:ClassName()
+	return "fritomod/Mapper";
+end;
+
 -- vim: set et :

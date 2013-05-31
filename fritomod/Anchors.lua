@@ -1913,12 +1913,14 @@ Anchors.ClearVertical = Curry(Anchors.ConditionalClear, function(_, anchor, ...)
 end);
 Anchors.VClear = Anchors.ClearVertical;
 Anchors.ClearV = Anchors.ClearVertical;
+Anchors.ClearVerticals = Anchors.ClearVertical;
 
 Anchors.ClearHorizontal = Curry(Anchors.ConditionalClear, function(_, anchor, ...)
 	return Frames.HComp(anchor) == "CENTER";
 end);
 Anchors.HClear = Anchors.ClearHorizontal;
 Anchors.ClearH = Anchors.ClearHorizontal;
+Anchors.ClearHorizontals = Anchors.ClearHorizontal;
 
 function Anchors.ClearPoint(point, ...)
 	point=point:upper();
