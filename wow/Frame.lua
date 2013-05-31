@@ -20,10 +20,11 @@ function WoW.AssertFrame(frame, reason)
         reason = ". Reason: " .. reason;
     end;
 	assert(frame, "Frame must not be falsy" .. reason);
-	assert(
-		OOP.InstanceOf(WoW.Frame, frame),
-		"Provided argument is not a frame, but was "..type(frame)..reason
-	);
+    assert(type(frame) == "table", "Provided argument is not a frame, but was "..type(frame)..reason);
+    assert(
+        OOP.InstanceOf(WoW.Frame, frame),
+        "Provided argument is not a frame, but was "..tostring(frame)..reason
+    );
 end;
 
 do
