@@ -321,12 +321,13 @@ end;
 -- Conditionally load a module. The module will be loaded into this environment
 -- if it has not been previously loaded. See :IsLoaded and :LoadModule
 function LuaEnvironment:Require(name)
+	self:OnRequireLoading(name);
 	if self:IsLoaded(name) then
+		self:OnRequireLoaded(name);
 		return;
 	end;
 	local runner = self:LoadModule(name);
 	if runner ~= Noop then
-		self:OnRequireLoading(name);
 		runner();
 		self.modulesLoaded[name]=true;
 		self:OnRequireLoaded(name);
