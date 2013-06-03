@@ -205,6 +205,9 @@ do
 	});
 
 	function Frames.DumpFrameName(f)
+		if OOP.IsInstance(f) then
+			return tostring(f);
+		end;
 		if not seenFrames[f] then
 			local frameType = f:GetObjectType();
 			local count = counts[frameType] or 0;
