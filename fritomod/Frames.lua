@@ -14,7 +14,7 @@ end;
 Frames=Frames or {};
 
 function Frames.IsRegion(frame)
-	return frame and
+	return frame and not OOP.IsDestroyed(frame) and
 		type(frame)=="table" and
 		type(frame.SetPoint)=="function";
 end;

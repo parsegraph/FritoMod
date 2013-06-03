@@ -48,3 +48,9 @@ function OOP.IsClass(candidate)
 	return IsCallable(rawget(candidate,"New"));
 end;
 
+function OOP.IsDestroyed(obj)
+	if type(obj) ~= "table" then
+		return false;
+	end;
+    return obj.destroyed == true;
+end;

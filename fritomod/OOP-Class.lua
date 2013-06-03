@@ -5,6 +5,40 @@ if nil ~= require then
 	require "fritomod/Lists";
 end;
 
+local function SetDestroyedMetatable(self)
+	local name = self:ToString();
+	local DESTROYED_METATABLE = {
+		__index = function()
+			error(name .. " has been destroyed and cannot be reused");
+		end,
+		__newindex = function()
+			error(name .. " has been destroyed and cannot be reused");
+		end,
+		__tostring = function()
+			return "[(Destroyed) " .. name .. "]";
+		end,
+	};
+
+	setmetatable(self, nil);
+	for k, _ in pairs(self) do
+		-- Blow everything away
+		self[k] = nil;
+	end;
+
+	-- Allow detection from OOP.IsDestroyed
+	self.destroyed = true;
+
+	-- Allow spurious invocations of Destroy
+	self.Destroy = Noop;
+
+	-- Allow ToString to be invoked directly
+	function self:ToString()
+		return tostring(self);
+	end;
+
+	setmetatable(self, DESTROYED_METATABLE);
+end;
+
 local CLASS_METATABLE = {
 	-- A default constructor. This is called after all constructors are used,
 	-- and will only be called on the immediate class that's being created;
@@ -125,8 +159,7 @@ local CLASS_METATABLE = {
 				self.class.__destructors[i](self);
 			end;
 			-- Blow away the class reference, so class-specific destructors are not called.
-			self.__index = nil;
-			self.class = nil;
+			SetDestroyedMetatable(self);
 		end;
 	end
 }
