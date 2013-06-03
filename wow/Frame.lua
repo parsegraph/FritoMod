@@ -11,6 +11,11 @@ WoW=WoW or Metatables.Defensive();
 WoW.Frame=OOP.Class();
 local Frame=WoW.Frame;
 
+Frame:AddDestructor(function(self)
+    self:ClearAllPoints();
+    self:Hide();
+end);
+
 function Frame:GetName()
     return nil;
 end;
@@ -118,12 +123,6 @@ end;
 
 function Frame:ClassName()
     return "wow/Frame";
-end;
-
-function Frame:Destroy()
-    self:ClearAllPoints();
-    self:Hide();
-    Frame.super.Destroy(self);
 end;
 
 function WoW.Delegate(klass, category, name)
