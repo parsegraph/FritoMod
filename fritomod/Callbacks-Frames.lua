@@ -2,6 +2,7 @@ if nil ~= require then
 	require "wow/Frame-Events";
 
 	require "fritomod/currying";
+	require "fritomod/log";
 	require "fritomod/Functions";
 	require "fritomod/Frames";
 end;
@@ -13,12 +14,12 @@ function Callbacks.Script(frame, event, callback, ...)
 	frame = Frames.AsRegion(frame);
 	assert(IsCallable(frame.SetScript), "Frame does not support SetScript");
 	callback=Curry(callback, ...);
-	trace("Registering script event %q", event);
+    Log.Log(frame, "Script event registrations", "Setting callback for", event, "event");
 	frame:SetScript(event, function(frame, ...)
 		callback(...);
 	end);
 	return Functions.OnlyOnce(function()
-		trace("Releasing script event %q", event);
+        Log.Log(frame, "Script event registrations", "Removing", event, "callback");
 		frame:SetScript(event, nil);
 	end);
 end;

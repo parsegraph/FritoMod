@@ -16,6 +16,7 @@ if nil ~= require then
 	require "fritomod/Callbacks";
 	require "fritomod/Callbacks-Frames";
 	require "fritomod/Functions";
+	require "fritomod/log";
 end;
 
 Callbacks=Callbacks or {};
@@ -34,10 +35,9 @@ local function ToggledEvent(event, setUp, ...)
 		trace("Listening for frame event %q", event);
 		if frame[eventListenerName] then
 			dispatcher=frame[eventListenerName];
-			trace("Using existing dispatcher %q", dispatcher.name);
 		else
 			dispatcher=ToggleDispatcher:New(("%s (%s)"):format(event, tostring(frame)));
-			trace("Creating new dispatcher %q", dispatcher.name);
+            Log.Log(nil, "Creating new dispatcher", dispatcher);
 			dispatcher:AddInstaller(Tables.Change, frame, eventListenerName, dispatcher);
 			setUp(dispatcher, frame);
 		end;

@@ -35,7 +35,11 @@ if nil ~= require then
 	require "fritomod/Functions";
 	require "fritomod/Lists";
 	require "fritomod/ListenerList";
+
+	require "fritomod/Mixins-Log";
 end;
+
+local log = Logger:New("Events");
 
 Events = {};
 local eventListeners = {};
@@ -44,8 +48,9 @@ Events._eventListeners = eventListeners;
 function Events.Dispatch(event, ...)
 	local listeners = eventListeners[event];
 	if listeners then
-		trace("EVENT: %s %s", event, Strings.Pretty({...}));
-		listeners:Fire(...);
+        log:logEntercf("Event dispatches", "Dispatching", event, "event with arguments", ...);
+        listeners:Fire(...);
+        log:logLeave();
 	end;
 end;
 
@@ -91,11 +96,13 @@ setmetatable(Events, {
                 delegate = delegate();
                 rawset(self, "delegate", delegate);
             end;
+            log:logEntercf("Event registrations", "Registering event", key);
 			delegate:RegisterEvent(key);
-			trace("Listening for event %q", key);
+            log:logLeave();
 			return function()
-				trace("Unregistering event %q", key);
+                log:logEntercf("Event registrations", "Unregistering event", key);
 				delegate:UnregisterEvent(key);
+                log:logLeave();
 			end;
 		end);
 		self[key] = function(func, ...)

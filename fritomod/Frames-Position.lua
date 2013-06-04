@@ -4,6 +4,7 @@ if nil ~= require then
 	require "fritomod/Serializers-Point";
 	require "fritomod/Persistence";
 	require "fritomod/Frames";
+	require "fritomod/Mixins-Log";
 end;
 
 -- This is the name of the table we save in Persistence
@@ -11,6 +12,8 @@ local PERSISTENCE_KEY="FritoMod.PersistentFrames"
 
 local positionedFrames={};
 local defaultPositions = {};
+
+local log = Logger:New("Frames.Position");
 
 local function LoadPoint(name, frame, savedPosition, defaultPosition)
 	if not savedPosition or #savedPosition == 0 then
@@ -100,6 +103,7 @@ local function Upgrade(persistedFrames)
 end;
 
 Callbacks.PersistentValue(PERSISTENCE_KEY, function(persistedFrames)
+    log:logEnter("Loading persisted frames");
 	if persistedFrames then
         persistedFrames = Upgrade(persistedFrames);
         Persistence[PERSISTENCE_KEY] = persistedFrames;
@@ -116,6 +120,7 @@ Callbacks.PersistentValue(PERSISTENCE_KEY, function(persistedFrames)
 			end;
 		end;
 	end;
+    log:logLeave();
 	return function(persistedFrames)
 		if not #positionedFrames then
 			return;

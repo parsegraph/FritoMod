@@ -43,20 +43,12 @@ if nil ~= require then
 	require "fritomod/OOP-Class";
 	require "fritomod/Functions";
 	require "fritomod/Lists";
+	require "fritomod/Mixins-Log";
 end;
 
-ListenerList=OOP.Class();
+ListenerList=OOP.Class("ListenerList", Mixins.Log);
 
-DEBUG_TRACE_LISTENERS = false;
-
-local function trace(...)
-	if DEBUG_TRACE_LISTENERS then
-		_G["trace"](...);
-	end;
-end;
-
-function ListenerList:Constructor(name)
-	self.name = name or tostring(self);
+function ListenerList:Constructor()
 	self.listeners = {};
 end;
 
@@ -66,11 +58,12 @@ function ListenerList:AddInstaller(func, ...)
 end;
 
 function ListenerList:Install()
-	assert(not self:HasListeners(), "Refusing to install populated list %q", self.name);
-	trace("Installing listener list %q", self.name);
+	assert(not self:HasListeners(), "Refusing to install a populated list %q", self);
+	self:logEnter("Listener list installations", "Installing listener list");
 	if self.installers then
 		self.uninstallers=Lists.MapCall(self.installers);
 	end;
+	self:logLeave();
 end;
 
 function ListenerList:GetListenerCount()
@@ -91,21 +84,22 @@ function ListenerList:Add(listener, ...)
 		-- duplicate.
 		listener=Functions.Clone(listener);
 	end;
-	trace("Adding listener %s to list %q. Currently %d listener(s)",
-		tostring(listener),
-		self.name,
-		self:GetListenerCount());
+	self:logEntercf("Listener additions", "Adding a listener to me. I will now have", 1+self:GetListenerCount(),"listener(s)");
 	if not self:HasListeners() then
 		self:Install();
 	end;
 	table.insert(self.listeners, listener);
+	self:logLeave();
 	return Functions.OnlyOnce(self, "RemoveListener", listener);
 end;
 
 function ListenerList:Fire(...)
 	assert(not self:IsFiring(), "Refusing to fire while firing");
+	if #self.listeners == 0 then
+		return;
+	end;
 	self.firing=true;
-	trace("Firing all listeners on list %q", self.name);
+	self:logEnter("Listener dispatches", "Firing all listeners");
 	-- Get a local reference to our list, to ensure
 	-- repositioning will not affect our iteration.
 	self.firingMax = #self.listeners;
@@ -117,11 +111,13 @@ function ListenerList:Fire(...)
 			-- Clean up our firing variable, otherwise we'll be permanently
 			-- stuck in "firing" mode.
 			self:FinalizeFire();
+			self:logLeave();
 			error(err);
 		end;
 		self.firingIndex = self.firingIndex + 1;
 	end;
 	self:FinalizeFire();
+	self:logLeave();
 end;
 
 function ListenerList:FinalizeFire()
@@ -135,11 +131,12 @@ function ListenerList:FireListener(listener, ...)
 end;
 
 function ListenerList:RemoveListener(listener)
-	trace("Removing listener %s", tostring(listener));
+	self:logEnter("Listener additions", "Removing a listener from me. I will now have", self:GetListenerCount()-1, "listener(s)");
 	local removedIndex = Lists.IndexOf(self.listeners, listener);
 	if self:IsFiring() then
 		if removedIndex == nil then
 			-- Nothing found, so just return.
+			self:logLeave();
 			return;
 		end;
 		if removedIndex <= self.firingMax then
@@ -153,14 +150,16 @@ function ListenerList:RemoveListener(listener)
 	if not self:HasListeners() then
 		self:Uninstall();
 	end;
+	self:logLeave();
 end;
 
 function ListenerList:Uninstall()
-	assert(not self:HasListeners(), "Refusing to uninstall populated list %q", self.name);
+	assert(not self:HasListeners(), "Refusing to uninstall populated list %q", self);
 	if self.uninstallers then
-		trace("Uninstalling listener list %q", self.name);
+		self:logEnter("Listener list installations", "Uninstalling listener list");
 		Lists.CallEach(self.uninstallers);
 		self.uninstallers=nil;
+		self:logLeave();
 	end;
 end;
 function ListenerList:IsFiring()
@@ -177,10 +176,6 @@ function ListenerList:DumpListeners()
 		trace("%d: %s", #self.listeners - i + 1, tostring(self.listeners[i]));
 		i = i - 1;
 	end;
-end;
-
-function ListenerList:ClassName()
-	return "fritomod/ListenerList";
 end;
 
 -- vim: set noet :

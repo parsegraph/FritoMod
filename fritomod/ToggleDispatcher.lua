@@ -27,10 +27,10 @@ if nil ~= require then
 	require "fritomod/ListenerList";
 end;
 
-ToggleDispatcher=OOP.Class(ListenerList);
+ToggleDispatcher=OOP.Class("ToggleDispatcher", ListenerList);
 
-function ToggleDispatcher:Constructor(name)
-	ToggleDispatcher.super.Constructor(self, name);
+function ToggleDispatcher:Constructor()
+	ToggleDispatcher.super.Constructor(self);
 	self.resetters={};
 end;
 
@@ -38,7 +38,6 @@ function ToggleDispatcher:Fire(...)
 	if self.fired then
 		return;
 	end;
-	trace("Firing dispatcher %q", self.name);
 	ToggleDispatcher.super.Fire(self, ...);
 	self.fired=true;
 	return Seal(self, "Reset");
@@ -69,7 +68,7 @@ function ToggleDispatcher:Reset(...)
 	if not self.fired then
 		return;
 	end;
-	trace("Resetting dispatcher %q", self.name);
+	self:logEnter("Listener dispatches", "Resetting dispatcher");
 	if self.resetters and #self.resetters > 0 then
 		for _, resetter in ipairs(self.resetters) do
 			if self.resetters[resetter] then
@@ -79,6 +78,7 @@ function ToggleDispatcher:Reset(...)
 		self.resetters=nil;
 	end;
 	self.fired=false;
+	self:logLeave();
 end;
 
 function ToggleDispatcher:Toggle(...)
