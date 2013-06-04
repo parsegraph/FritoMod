@@ -1812,6 +1812,12 @@ Anchors.InnerSet = Curry(DoSet, true);
 Anchors.ISet = Anchors.InnerSet;
 Anchors.Set = Anchors.InnerSet;
 
+local ENABLE_FRAME_HACK = false;
+
+function Anchors.UseFrameHack(shouldUse)
+	ENABLE_FRAME_HACK = shouldUse;
+end;
+
 local MAGIC_FRAME;
 local USING_FRAME_HACK;
 function Anchors.ConditionalClear(strategy, ...)
@@ -1834,7 +1840,7 @@ function Anchors.ConditionalClear(strategy, ...)
 			end;
 			return;
 		end;
-		if USING_FRAME_HACK then
+		if not ENABLE_FRAME_HACK or USING_FRAME_HACK then
 			-- Failsafe to ensure we don't run the
 			-- hack endlessly.
 			return;
@@ -1899,9 +1905,9 @@ function Anchors.ConditionalClear(strategy, ...)
 	end;
 	for i=1, select("#", ...) do
 		local frame = select(i, ...);
-		frame = frame and Frames.AsRegion(frame);
-		if frame then
-			-- Falsy objects and non-frames are ignored.
+		-- Falsy objects and non-frames are ignored.
+		if Frames.IsRegion(frame) then
+			frame = Frames.AsRegion(frame);
 			ClearOne(frame);
 		end;
 	end;
