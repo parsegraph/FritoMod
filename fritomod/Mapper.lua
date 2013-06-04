@@ -30,9 +30,10 @@ if nil ~= require then
     require "fritomod/Tables";
     require "fritomod/Lists";
     require "fritomod/ListenerList";
+    require "fritomod/Mixins-Log";
 end;
 
-Mapper = OOP.Class();
+Mapper = OOP.Class("Mapper", Mixins.Log);
 
 function Mapper:Constructor()
     self.listeners = ListenerList:New();
@@ -43,20 +44,11 @@ function Mapper:Constructor()
     -- Authoritative view of the content, keyed by source keys to the
     -- underlying original data.
     self.aggregate = {};
-
-    self.mapMeta = {};
-    self:EnableWeakReferences();
 end;
 
 function Mapper:SetMapper(mapper, ...)
     self.mapper = Curry(mapper, ...);
-
-    -- Maps original data to generated content. The keys are weak, so if
-    -- original data is no longer used elsewhere, our mapping will eventually
-    -- disappear here. This keeps things tidy, while also allowing us to be
-    -- efficient if values are reused.
-    self.mappings = setmetatable({}, self.mapMeta);
-
+    self.mappings = {};
     self:Update();
 end;
 
@@ -107,19 +99,9 @@ function Mapper:AddDestination(dest, ...)
 end;
 Mapper.AddDest = Mapper.AddDestination;
 
-function Mapper:CanReuseContent(content, data, key)
-    return false;
-end;
-
 function Mapper:ContentFor(key, data)
-    local content = self.mappings[data];
-
-    if content == nil or not self:CanReuseContent(content, data, key) then
-        content = self.mapper(data);
-        self.mappings[data] = content;
-    end;
-
-    return content;
+    self.mappings[data] = self.mapper(data, self.mappings[data]);
+    return self.mappings[data];
 end;
 
 function Mapper:Update()
@@ -128,12 +110,12 @@ function Mapper:Update()
         return;
     end;
 
-    self:DisableWeakReferences();
+    self:logEnter("Mapping updates", "Updating mapper");
 
     local oldAggregate = self.aggregate;
     local aggregate = {};
 
-    trace("Aggregating sources for mapping");
+    self:logEnter(nil, "Aggregating from", #self.sources, "source(s)");
     -- Get the full view of available data
     for _, source in ipairs(self.sources) do
         for key, data in source() do
@@ -145,11 +127,12 @@ function Mapper:Update()
             end;
         end;
     end;
+    self:logLeave();
 
     -- Push the new aggregate to be live. I do this here for atomicity
     self.aggregate = aggregate;
 
-    trace("Pushing mapped values to destinations");
+    self:logEnter("Pushing mapped values to destinations");
     -- Push all added and modified keys
     for key, data in pairs(aggregate) do
         assert(data ~= nil);
@@ -165,23 +148,17 @@ function Mapper:Update()
     for key, data in pairs(oldAggregate) do
         Lists.CallEach(self.destinations, key, nil);
     end;
+    self:logLeave();
 
-    trace("Firing mapper listeners");
+    self:logEnter("Firing mapper listeners");
     self.listeners:Fire();
+    self:logLeave();
 
-    self:EnableWeakReferences();
+    self:logLeave();
 end;
 
 function Mapper:OnUpdate(func, ...)
     return self.listeners:Add(func, ...);
-end;
-
-function Mapper:DisableWeakReferences()
-    self.mapMeta.__mode = "";
-end;
-
-function Mapper:EnableWeakReferences()
-    self.mapMeta.__mode = "k";
 end;
 
 function Mapper:ClassName()
