@@ -8,7 +8,7 @@ if nil ~= require then
 end;
 
 WoW=WoW or Metatables.Defensive();
-WoW.Frame=OOP.Class();
+WoW.Frame=OOP.Class("Frame", Mixins.Log);
 local Frame=WoW.Frame;
 
 Frame:AddDestructor(function(self)
@@ -119,10 +119,6 @@ end;
 
 function Frame:OnDelegateSet(func, ...)
     return self.delegateListeners:Add(func, ...);
-end;
-
-function Frame:ClassName()
-    return "wow/Frame";
 end;
 
 function WoW.Delegate(klass, category, name)

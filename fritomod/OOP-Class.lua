@@ -239,6 +239,11 @@ OOP.Class = function(...)
 			if IsCallable(constructor) then
 				class:AddConstructor(constructor);
 			end;
+		elseif type(mixinOrClass) == "string" then
+			local className = mixinOrClass;
+			function class:ClassName()
+				return className;
+			end;
 		else
 			error(("Object is not a mixin or super-class: %s"):format(tostring(mixinOrClass)));
 		end;

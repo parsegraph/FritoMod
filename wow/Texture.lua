@@ -3,12 +3,8 @@ if nil ~= require then
 	require "fritomod/OOP-Class";
 end;
 
-local Texture = OOP.Class(WoW.Frame);
+local Texture = OOP.Class("Texture", WoW.Frame);
 WoW.Texture = Texture;
-
-function Texture:ClassName()
-    return "wow/Texture";
-end;
 
 WoW.RegisterFrameType("Texture", Texture);
 

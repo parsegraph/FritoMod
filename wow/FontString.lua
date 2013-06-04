@@ -4,7 +4,7 @@ if nil ~= require then
 	require "fritomod/OOP-Class";
 end;
 
-local FontString=OOP.Class(WoW.Frame);
+local FontString=OOP.Class("FontString", WoW.Frame);
 WoW.FontString = FontString;
 
 WoW.RegisterFrameType("FontString", FontString);
@@ -25,10 +25,6 @@ end;
 
 function FontString:SetJustifyV()
 
-end;
-
-function FontString:ClassName()
-    return "wow/FontString";
 end;
 
 WoW.Delegate(FontString, "text", {
