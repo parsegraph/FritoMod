@@ -183,9 +183,9 @@ local CLASS_METATABLE = {
 			for i=#self.class.__destructors, 1, -1 do
 				self.class.__destructors[i](self);
 			end;
-			-- Blow away the class reference, so class-specific destructors are not called.
-			SetDestroyedMetatable(self);
 		end;
+		-- Blow away the class reference, so class-specific destructors are not called.
+		SetDestroyedMetatable(self);
 	end
 }
 
