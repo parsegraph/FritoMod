@@ -41,7 +41,6 @@ do
     local delegateOrdering = {};
 
     function WoW.InstallDelegates(name, frame)
-        frame:logEnter("Delegate installations", "Installing", name, "delegates");
         local delegateCreators = frameDelegates[name];
         if delegateCreators then
             local delegateOrder = delegateOrdering[name];
@@ -57,7 +56,6 @@ do
         elseif name ~= "frame" then
             WoW.InstallDelegates("frame", frame);
         end;
-        frame:logLeave();
     end;
 
 	function WoW.RegisterFrameType(name, klass)
@@ -122,10 +120,6 @@ end;
 Frame.delegate = Frame.GetDelegate;
 
 function Frame:SetDelegate(category, delegate)
-    self:log("Setting frame delegates", delegate, "is now my", category, "delegate");
-    if delegate.log then
-        delegate:log("Setting frame delegates", "I'm now a delegate for", self);
-    end;
     self.delegates[category] = delegate;
     self.delegateListeners:Fire(category, delegate);
 end;
