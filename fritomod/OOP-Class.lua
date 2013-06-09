@@ -143,7 +143,24 @@ local CLASS_METATABLE = {
 	end,
 
 	ID = function(self)
-		return self.id;
+		if self.id then
+			if self.idParent then
+				return self.numericId .. " - " .. tostring(self.id)  .. " - " .. tostring(self.idParent);
+			end;
+			return self.numericId .. " - " .. tostring(self.id);
+		end;
+		return self.numericId;
+	end,
+	Id = function(...)
+		return self:ID(...);
+	end,
+
+	SetID = function(self, newId, parent)
+		self.id = newId;
+		self.idParent = parent;
+	end,
+	SetId = function(...)
+		return self:SetID(...);
 	end,
 
 	-- Destroy this object. All instance-specific destructors will be run, then all class-
@@ -174,21 +191,21 @@ local CLASS_METATABLE = {
 
 -- Creates a new instance of this class.
 local function New(class, ...)
-	local id = rawget(class, "__idcount") or 1;
-	rawset(class, "__idcount", id + 1);
+	local numericId = rawget(class, "__idcount") or 1;
+	rawset(class, "__idcount", numericId + 1);
 	local instance = {
 		__index = class,
 		__tostring = function(self)
 			return self:ToString();
 		end,
-		id = id,
+		numericId = numericId,
 		class=class
 	};
 	setmetatable(instance, instance);
 
 	function instance:ToString()
 		if rawget(self, "ClassName") or rawget(self.class, "ClassName") then
-			return "[" .. self:ClassName() .. " ".. self:ID() .. "]";
+			return self:ClassName() .. " ".. tostring(self:ID());
 		end;
 		return "[<subclass of " .. self:ClassName() .. "> " .. Reference(self) .. "]";
 	end;
