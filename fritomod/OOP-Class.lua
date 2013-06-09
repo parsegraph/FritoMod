@@ -6,6 +6,7 @@ if nil ~= require then
 end;
 
 local function SetDestroyedMetatable(self)
+	local id = self:ID();
 	local name = self:ToString();
 	local DESTROYED_METATABLE = {
 		__index = function()
@@ -35,6 +36,11 @@ local function SetDestroyedMetatable(self)
 	function self:ToString()
 		return tostring(self);
 	end;
+
+	function self:ID()
+		return id;
+	end;
+	self.Id = self.ID;
 
 	setmetatable(self, DESTROYED_METATABLE);
 end;
