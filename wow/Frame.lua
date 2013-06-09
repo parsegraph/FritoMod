@@ -78,12 +78,22 @@ do
 
     function WoW.SetFrameDelegate(name, category, delegate)
         name = tostring(name):lower();
+
+        local delegates;
+        local ordering;
         if not frameDelegates[name] then
+            -- Never seen this frame type before
             frameDelegates[name] = {};
             delegateOrdering[name] = {};
         end;
-        frameDelegates[name][category] = delegate;
-        table.insert(delegateOrdering[name], category);
+        delegates = frameDelegates[name];
+        ordering = delegateOrdering[name];
+
+        delegates[category] = delegate;
+
+        if not Lists.Contains(ordering, category) then
+            table.insert(ordering, category);
+        end;
     end;
 
     function WoW.GetFrameDelegate(name, category)
