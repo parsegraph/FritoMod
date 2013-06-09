@@ -1,3 +1,9 @@
+if nil ~= require then
+    require "fritomod/Math";
+    require "fritomod/basic";
+    require "fritomod/OOP";
+end;
+
 Log = Log or {};
 
 local loggers = {}
@@ -42,31 +48,33 @@ function Log.AddLogger(logger, ...)
     return Add(logger, ...);
 end;
 
-function Log.Enter(sender, category, ...)
+local function LogMessage(event, sender, category, ...)
+    local senderRef;
+    if sender and type(sender) == "table" then
+        senderRef = Reference(sender);
+    end;
     if sender then
+        -- Sender might be nil, so we can't just call tostring when
+        -- creating the message table.
         sender = tostring(sender);
     end;
     local message = {
+        senderRef = senderRef,
         sender = sender,
         category = category,
         -- FIXME This won't work outside of Rainback
         timestamp = math.floor(Rainback.GetTime()),
     };
-    message.message = ProcessMessage(...);
-    Fire("ENTER", message);
+    message.value = ProcessMessage(...);
+    Fire(event, message);
 end;
 
-function Log.Log(sender, category, ...)
-    if sender then
-        sender = tostring(sender);
-    end;
-    local message = {
-        sender = sender,
-        category = category,
-        timestamp = Math.Round(Rainback.GetTime()),
-    };
-    message.message = ProcessMessage(...);
-    Fire("LOG", message);
+function Log.Enter(...)
+    LogMessage("ENTER", ...)
+end;
+
+function Log.Log(...)
+    LogMessage("LOG", ...)
 end;
 
 function Log.Leave(sender, ...)
