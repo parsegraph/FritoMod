@@ -3,6 +3,7 @@ if nil ~= require then
 	require "fritomod/OOP-Class";
 	require "fritomod/Lists"
 	require "fritomod/ListenerList";
+	require "fritomod/Mixins-Log";
 
 	require "wow/World";
 end;
@@ -39,38 +40,35 @@ do
 
     local delegateOrdering = {};
 
-    local function InstallDelegates(name, frame, installedDelegates)
+    function WoW.InstallDelegates(name, frame)
+        frame:logEnter("Delegate installations", "Installing", name, "delegates");
         local delegateCreators = frameDelegates[name];
         if delegateCreators then
-            installedDelegates = installedDelegates or {};
             local delegateOrder = delegateOrdering[name];
             frame:logEntercf("Delegate installation", "Installing", name, "delgates");
             for _, category in ipairs(delegateOrder) do
                 local delegateCreator = delegateCreators[category];
-                if not installedDelegates[category] then
-                    installedDelegates[category] = true;
-                    frame:SetDelegate(category, delegateCreator:New(frame));
-                end;
+                frame:SetDelegate(category, delegateCreator:New(frame));
             end;
             frame:logLeave();
         end;
         if frameInheritance[name] then
-            InstallDelegates(frameInheritance[name], frame, installedDelegates);
+            WoW.InstallDelegates(frameInheritance[name], frame);
         elseif name ~= "frame" then
-            InstallDelegates("frame", frame, installedDelegates);
+            WoW.InstallDelegates("frame", frame);
         end;
+        frame:logLeave();
     end;
 
 	function WoW.RegisterFrameType(name, klass)
 		name = tostring(name):lower();
 		frameTypes[name] = klass;
-
-        klass:AddConstructor(function(frame)
-            frame.delegates = {};
-            frame.delegateListeners = ListenerList:New();
-            InstallDelegates(name, frame);
-        end);
+        klass:AddConstructor("InstallDelegates");
 	end;
+
+	function WoW.GetNameForType(klass)
+        return Tables.KeyFor(frameTypes, klass);
+    end;
 
     function WoW.RegisterFrameInheritance(name, parent)
         name = tostring(name):lower();
@@ -106,7 +104,16 @@ end;
 WoW.RegisterFrameType("Frame", WoW.Frame, "New");
 
 function Frame:GetObjectType()
-	return "Frame";
+	return WoW.GetNameForType(self.class);
+end;
+
+function Frame:InstallDelegates()
+    if self.delegates then
+        return;
+    end;
+    self.delegates = {};
+    self.delegateListeners = ListenerList:New();
+    WoW.InstallDelegates(self:GetObjectType(), self);
 end;
 
 function Frame:GetDelegate(category)
