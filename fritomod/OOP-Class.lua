@@ -207,7 +207,7 @@ local function New(class, ...)
 		if rawget(self, "ClassName") or rawget(self.class, "ClassName") then
 			return self:ClassName() .. " ".. tostring(self:ID());
 		end;
-		return "[<subclass of " .. self:ClassName() .. "> " .. Reference(self) .. "]";
+		return "subclass:".. self:ClassName() .. " " .. Reference(self);
 	end;
 
 	local function Initialize(class, ...)
@@ -241,9 +241,9 @@ OOP.Class = function(...)
 	class.New = New;
 	class.__tostring = function(self)
 		if rawget(self, "ClassName") then
-			return "[Class "..self:ClassName().."@"..Reference(self).."]";
+			return "Class "..self:ClassName().."@"..Reference(self);
 		end;
-		return "[Subclass of "..self:ClassName().."@"..Reference(self).."]";
+		return "Subclass of "..self:ClassName().."@"..Reference(self);
 	end
 	setmetatable(class, class);
 
