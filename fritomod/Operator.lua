@@ -27,6 +27,22 @@ Operator = setmetatable({
 });
 Operators=Operator;
 
+function Operator.Nil(...)
+	for i=1, select("#", ...) do
+        if select(i, ...) ~= nil then
+            return false;
+        end;
+    end;
+    return true;
+end;
+
+function Operator.NotNil(...)
+    if select("#", ...) == 0 then
+        return true;
+    end;
+    return not Operator.Nil(...);
+end;
+
 function Operator.Multiple(constant, ...)
 	for i=1, select("#", ...) do
 		if select(i, ...) % constant ~= 0 then
