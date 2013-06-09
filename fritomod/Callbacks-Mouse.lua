@@ -32,16 +32,17 @@ local function ToggledEvent(event, setUp, ...)
 		);
 		func=Curry(func, ...);
 		local dispatcher;
-		trace("Listening for frame event %q", event);
+        Log.Enter("Frame Callbacks", "Adding callbacks", "Adding callback for", event, "event");
 		if frame[eventListenerName] then
 			dispatcher=frame[eventListenerName];
 		else
 			dispatcher=ToggleDispatcher:New(("%s (%s)"):format(event, tostring(frame)));
-            Log.Log(nil, "Creating new dispatcher", dispatcher);
 			dispatcher:AddInstaller(Tables.Change, frame, eventListenerName, dispatcher);
 			setUp(dispatcher, frame);
 		end;
-		return dispatcher:Add(func);
+		local remover = dispatcher:Add(func);
+        Log.Leave();
+        return remover;
 	end;
 	return Callbacks[event];
 end;

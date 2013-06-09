@@ -84,7 +84,7 @@ function ListenerList:Add(listener, ...)
 		-- duplicate.
 		listener=Functions.Clone(listener);
 	end;
-	self:logEntercf("Listener additions", "Adding a listener to me. I will now have", 1+self:GetListenerCount(),"listener(s)");
+	self:logEntercf("Listener additions and removals", "Adding a listener to me. I will now have", 1+self:GetListenerCount(),"listener(s)");
 	if not self:HasListeners() then
 		self:Install();
 	end;
@@ -99,7 +99,7 @@ function ListenerList:Fire(...)
 		return;
 	end;
 	self.firing=true;
-	self:logEnter("Listener dispatches", "Firing all listeners");
+	self:logEntercf("Listener dispatches", "Firing all", self:GetListenerCount(), "listener(s)");
 	-- Get a local reference to our list, to ensure
 	-- repositioning will not affect our iteration.
 	self.firingMax = #self.listeners;
@@ -131,7 +131,7 @@ function ListenerList:FireListener(listener, ...)
 end;
 
 function ListenerList:RemoveListener(listener)
-	self:logEnter("Listener additions", "Removing a listener from me. I will now have", self:GetListenerCount()-1, "listener(s)");
+	self:logEnter("Listener additions and removals", "Removing a listener from me. I will now have", self:GetListenerCount()-1, "listener(s)");
 	local removedIndex = Lists.IndexOf(self.listeners, listener);
 	if self:IsFiring() then
 		if removedIndex == nil then

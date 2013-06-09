@@ -44,6 +44,7 @@ do
         if delegateCreators then
             installedDelegates = installedDelegates or {};
             local delegateOrder = delegateOrdering[name];
+            frame:logEntercf("Delegate installation", "Installing", name, "delgates");
             for _, category in ipairs(delegateOrder) do
                 local delegateCreator = delegateCreators[category];
                 if not installedDelegates[category] then
@@ -51,6 +52,7 @@ do
                     frame:SetDelegate(category, delegateCreator:New(frame));
                 end;
             end;
+            frame:logLeave();
         end;
         if frameInheritance[name] then
             InstallDelegates(frameInheritance[name], frame, installedDelegates);
@@ -113,6 +115,10 @@ end;
 Frame.delegate = Frame.GetDelegate;
 
 function Frame:SetDelegate(category, delegate)
+    self:log("Setting frame delegates", delegate, "is now my", category, "delegate");
+    if delegate.log then
+        delegate:log("Setting frame delegates", "I'm now a delegate for", self);
+    end;
     self.delegates[category] = delegate;
     self.delegateListeners:Fire(category, delegate);
 end;

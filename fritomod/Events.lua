@@ -48,7 +48,11 @@ Events._eventListeners = eventListeners;
 function Events.Dispatch(event, ...)
 	local listeners = eventListeners[event];
 	if listeners then
-        log:logEntercf("Event dispatches", "Dispatching", event, "event with arguments", ...);
+        if select("#", ...) > 0 then
+            log:logEntercf("Event dispatches", "Dispatching", event, "event with arguments", ...);
+        else
+            log:logEntercf("Event dispatches", "Dispatching", event, "event with no arguments");
+        end;
         listeners:Fire(...);
         log:logLeave();
 	end;
@@ -88,7 +92,9 @@ setmetatable(Events, {
 				return Functions.OnlyOnce(Lists.CallEach, removers);
 			end;
 		end;
-		eventListeners[key] = ListenerList:New("Event listeners for "..tostring(key));
+		eventListeners[key] = ListenerList:New();
+		eventListeners[key]:SetID("Events."..key);
+
 		eventListeners[key]:AddInstaller(function()
             local delegate = rawget(self, "delegate");
             assert(delegate, "Events has no event delegate");

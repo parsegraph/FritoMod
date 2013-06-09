@@ -1,4 +1,5 @@
 require "fritomod/OOP-Class";
+require "fritomod/log";
 
 Mixins = Mixins or {};
 
@@ -51,6 +52,13 @@ function Mixins.Log(obj)
     function obj:logLeavef(...)
         if select("#", ...) > 0 then
             self:logf(...);
+        end;
+        Log.Leave();
+    end;
+
+    function obj:logLeavecf(...)
+        if select("#", ...) > 0 then
+            self:logcf(...);
         end;
         Log.Leave();
     end;
