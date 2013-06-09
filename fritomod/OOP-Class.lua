@@ -22,8 +22,10 @@ local function SetDestroyedMetatable(self)
 
 	setmetatable(self, nil);
 	for k, _ in pairs(self) do
-		-- Blow everything away
-		self[k] = nil;
+		-- Blow everything away, except the class
+		if k ~= "class" then
+			self[k] = nil;
+		end;
 	end;
 
 	-- Allow detection from OOP.IsDestroyed
