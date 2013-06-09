@@ -204,9 +204,12 @@ function Mixins.MutableIteration(library, iteratorFunc)
 		--	 if this library does not support this operation
 		function library.InsertAt(list, index, value)
 			assert(type(library.Insert) == "function", "Insert is not implemented by this library");
+            if not index then
+                return Lists.Insert(list, value);
+            end;
 			assert(type(index) == "number", "index is not a number. Type: " .. type(index));
-			table.insert(list, index, value);
-			return Curry(library.Remove, iterable, value);
+            table.insert(list, index, value);
+			return Curry(library.Remove, list, value);
 		end;
 	end;
 
