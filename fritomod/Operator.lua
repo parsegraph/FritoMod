@@ -37,12 +37,10 @@ function Operator.Multiple(constant, ...)
 end;
 
 function Operator.NotMultiple(constant, ...)
-	for i=1, select("#", ...) do
-		if select(i, ...) % constant == 0 then
-			return false;
-		end;
-	end;
-	return true;
+    if select("#", ...) == 0 then
+        return true;
+    end;
+    return not Operator.Multiple(...);
 end;
 
 Operator.Even=Curry(Operator.Multiple, 2);
