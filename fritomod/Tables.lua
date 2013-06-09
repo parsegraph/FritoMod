@@ -120,6 +120,15 @@ function Tables.Expand(targetTable)
 	return targetTable;
 end;
 
+function Tables.FromKeys(target, keys, value)
+    if value == nil then
+        value = true;
+    end;
+    for _, key in ipairs(keys) do
+        target[key] = value;
+    end;
+end;
+
 -- Inserts the given metatable in between the given table and its original
 -- metatable, such that table --> metatable --> oldMetatable.
 --
