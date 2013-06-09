@@ -9,14 +9,14 @@ local function SetDestroyedMetatable(self)
 	local id = self:ID();
 	local name = self:ToString();
 	local DESTROYED_METATABLE = {
-		__index = function()
-			error(name .. " has been destroyed and cannot be reused");
+		__index = function(self, key)
+			error(name .. " has been destroyed and cannot be reused for getting " .. tostring(key));
 		end,
-		__newindex = function()
-			error(name .. " has been destroyed and cannot be reused");
+		__newindex = function(self, key)
+			error(name .. " has been destroyed and cannot be reused for setting " .. tostring(key));
 		end,
 		__tostring = function()
-			return "[(Destroyed) " .. name .. "]";
+			return "destroyed:" .. name;
 		end,
 	};
 
