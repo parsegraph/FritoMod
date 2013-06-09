@@ -66,7 +66,8 @@ end;
 Timing = Timing or {};
 
 do
-	local listeners = ListenerList:New("Timing");
+	local listeners = ListenerList:New();
+    listeners:SetID("Timing")
 
 	listeners:AddInstaller(function()
         if IsCallable(Timing.delegate) then
