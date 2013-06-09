@@ -127,32 +127,24 @@ Operator.E=Operator.Equals;
 
 Operator.NotEqual=Operator.NotEquals;
 Operator.Unequal=Operator.NotEquals;
-Operator.IsNot=Operator.NotEquals;
+Operator.Not=Operator.NotEquals;
 Operator.NE=Operator.NotEquals;
 
 Operator.LT=Operator.LessThan;
-Operator.IsLess=Operator.LessThan;
-Operator.IsLessThan=Operator.LessThan;
+Operator.Less=Operator.LessThan;
 
 Operator.GT=Operator.GreaterThan;
-Operator.IsGreater=Operator.GreaterThan;
-Operator.IsGreaterThan=Operator.GreaterThan;
+Operator.Greater=Operator.GreaterThan;
 
 Operator.LTE=Operator.LessThanOrEqual;
 Operator.LessThanEqual=Operator.LessThanOrEqual;
-Operator.IsLessThanEqual=Operator.LessThanOrEqual;
 Operator.LessThanEquals=Operator.LessThanOrEqual;
-Operator.IsLessThanEquals=Operator.LessThanOrEqual;
 Operator.LessThanOrEquals=Operator.LessThanOrEqual;
-Operator.IsLessThanOrEquals=Operator.LessThanOrEqual;
 
 Operator.GTE=Operator.GreaterThanOrEqual;
 Operator.GreaterThanEqual=Operator.GreaterThanOrEqual;
-Operator.IsGreaterThanEqual=Operator.GreaterThanOrEqual;
 Operator.GreaterThanEquals=Operator.GreaterThanOrEqual;
-Operator.IsGreaterThanEquals=Operator.GreaterThanOrEqual;
 Operator.GreaterThanOrEquals=Operator.GreaterThanOrEqual;
-Operator.IsGreaterThanOrEquals=Operator.GreaterThanOrEqual;
 
 Operator.Plus=Operator.Add;
 Operator.Addition=Operator.Add;
@@ -167,5 +159,6 @@ Operator.Multiplication=Operator.Multiply;
 Operator.Division=Operator.Divide;
 
 for k,v in pairs(Operator) do
+	Operator["Is"..k]=v;
 	Operator[k:lower()]=v;
 end;
