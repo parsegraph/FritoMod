@@ -30,6 +30,7 @@ function OOP.InstanceOf(class, instance)
 	end;
 	return false;
 end;
+OOP.Instanceof = OOP.InstanceOf;
 
 function OOP.IsInstance(candidate)
 	if type(candidate) ~= "table" then
