@@ -281,16 +281,18 @@ local function GetAnchorable(frame, anchor)
 		-- Return regions by default
 		return anchorable;
 	end;
-	-- Invoke Anchor proxy method
-	anchorable = frame:Anchor(anchor);
-	if anchorable and anchorable ~= frame then
-		-- If a different object was returned from Anchor, then recurse.
-		return GetAnchorable(anchorable, anchor);
-	end;
 	if frame.SetPoint then
 		return frame;
 	end;
-	error("No anchorable was determined");
+	if frame.Anchor then
+		-- Invoke Anchor proxy method
+		anchorable = frame:Anchor(anchor);
+		if anchorable and anchorable ~= frame then
+			-- If a different object was returned from Anchor, then recurse.
+			return GetAnchorable(anchorable, anchor);
+		end;
+	end;
+	error("No anchorable was determined. I was given " .. tostring(frame));
 end;
 
 -- Returns a region that represents the bounds of the specified object. Frames, regions,
@@ -303,7 +305,14 @@ end;
 -- UI objects may also return another UI object. In this case, GetBounds will recurse
 -- until a real region is found.
 local function GetBounds(frame, anchor)
-	return Frames.AsRegion(frame) or GetBounds(frame:Bounds(anchor), anchor);
+	local bound = Frames.AsRegion(frame);
+	if bound then
+		return bound;
+	end;
+	if frame.Bounds then
+		return GetBounds(frame:Bounds(anchor), anchor);
+	end;
+	return frame;
 end;
 
 -- Return the gap and a table containing the frames given in the arguments. This
@@ -1785,7 +1794,6 @@ local function DoSet(useInner, frame, anchor, ref, anchorTo, x, y)
 		ref = region:GetParent();
 	end;
 	ref=GetBounds(ref, anchorTo);
-	assert(Frames.IsRegion(ref), "ref must be a frame. Got: "..type(ref));
 	if useInner then
 		x, y = Anchors.CalculateGap(anchor, ref, anchorTo, x, y);
 	else
