@@ -40,7 +40,7 @@ function Frames.AsRegion(frame)
 		-- Frame names represent the frames they name.
 		return _G[frame];
 	end;
-	assert(type(frame)=="table", "Frame must be a table. Got: "..type(frame));
+	assert(type(frame)=="table" or type(frame)=="userdata", "Frame must be a table. Got: "..type(frame));
 	if frame.Frame then
 		-- UI objects that have a Frame method are called directly to get their
 		-- frame.
