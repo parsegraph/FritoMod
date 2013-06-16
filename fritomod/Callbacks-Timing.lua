@@ -17,9 +17,11 @@ function Timing.Flush()
         return;
     end;
     Log.Enter("Timing", "Calling deferred functions", "Calling", #callbacks, "deferred functions(s)");
-    while #callbacks > 0 do
-        local cb = Lists.ShiftOne(callbacks);
-        cb();
+
+    local runningCallbacks = callbacks;
+    callbacks = {};
+    for i=1, #runningCallbacks do
+        runningCallbacks[i]();
     end;
     Log.Leave();
 end;
