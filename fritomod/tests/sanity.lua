@@ -40,6 +40,13 @@ function Suite:TestStringSub()
 	Assert.Equals("BC", ("ABC"):sub(2));
 end;
 
+function Suite:TestRemoveIsSane()
+    local a = {"a", "b", "c"};
+    Assert.Equals("a", table.remove(a, 1));
+    Assert.Equals("b", table.remove(a, 1));
+    Assert.Equals("c", table.remove(a, 1));
+end;
+
 function Suite:TestPairsIteratesEverything()
 	local a={true,false,true};
 	local c={};
