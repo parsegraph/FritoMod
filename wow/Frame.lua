@@ -2,6 +2,7 @@ if nil ~= require then
 	require "fritomod/Metatables";
 	require "fritomod/OOP-Class";
 	require "fritomod/Lists"
+	require "fritomod/Tables";
 	require "fritomod/ListenerList";
 	require "fritomod/Mixins-Log";
 
