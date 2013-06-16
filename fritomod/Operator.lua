@@ -40,7 +40,12 @@ function Operator.NotNil(...)
     if select("#", ...) == 0 then
         return true;
     end;
-    return not Operator.Nil(...);
+	for i=1, select("#", ...) do
+        if select(i, ...) == nil then
+            return false;
+        end;
+    end;
+    return true;
 end;
 
 function Operator.Multiple(constant, ...)
@@ -53,10 +58,12 @@ function Operator.Multiple(constant, ...)
 end;
 
 function Operator.NotMultiple(constant, ...)
-    if select("#", ...) == 0 then
-        return true;
-    end;
-    return not Operator.Multiple(...);
+	for i=1, select("#", ...) do
+		if select(i, ...) % constant == 0 then
+			return false;
+		end;
+	end;
+	return true;
 end;
 
 Operator.Even=Curry(Operator.Multiple, 2);
