@@ -8,22 +8,11 @@ end;
 
 local Frame = WoW.Frame;
 
-WoW.Delegate(Frame, "mouse", {
-    "EnableMouse"
-});
-
-local Delegate = OOP.Class();
-
-if not WoW.GetFrameDelegate("Frame", "mouse") then
-	WoW.SetFrameDelegate("Frame", "mouse", Delegate, "New");
-end;
-
-function Delegate:Constructor(frame)
-    self.frame = frame;
+Frame:AddConstructor(function(self)
     self.enabled = false;
-end;
+end);
 
-function Delegate:EnableMouse(enabled)
+function Frame:EnableMouse(enabled)
     self.enabled = enabled;
 end;
 

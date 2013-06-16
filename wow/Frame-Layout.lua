@@ -9,6 +9,11 @@ end;
 
 local Frame = WoW.Frame;
 
+Frame:AddConstructor(function(self)
+	self.points = {};
+	self.pointOrder = {};
+end);
+
 function Frame:Raise()
 	trace("STUB Frame:Raise");
 end;
@@ -68,43 +73,14 @@ function Frame:SetPoint(anchor, ...)
 	self:GetDelegate("layout"):SetPoint(anchor, ref, anchorTo, x, y);
 end;
 
-WoW.Delegate(Frame, "layout", {
-	"GetPoint",
-	"ClearAllPoints",
-	"GetNumPoints",
-
-	"SetHeight",
-	"GetHeight",
-	"SetWidth",
-	"GetWidth",
-
-	"GetCenter",
-	"GetLeft",
-	"GetRight",
-	"GetTop",
-	"GetBottom",
-});
-
-local TestingLayoutDelegate = OOP.Class();
-
-if not WoW.GetFrameDelegate("Frame", "layout") then
-	WoW.SetFrameDelegate("Frame", "layout", TestingLayoutDelegate, "New");
-end;
-
-function TestingLayoutDelegate:Constructor(frame)
-	self.frame = frame;
+function Frame:ClearAllPoints(ref)
 	self.points = {};
 	self.pointOrder = {};
 end;
 
-function TestingLayoutDelegate:ClearAllPoints(ref)
-	self.points = {};
-	self.pointOrder = {};
-end;
-
-function TestingLayoutDelegate:SetPoint(anchor, ref, anchorTo, x, y)
+function Frame:SetPoint(anchor, ref, anchorTo, x, y)
 	self.points[anchor] = {
-		frame = self.frame,
+		frame = self,
 		anchor = anchor,
 		ref = ref,
 		anchorTo = anchorTo,
@@ -115,7 +91,7 @@ function TestingLayoutDelegate:SetPoint(anchor, ref, anchorTo, x, y)
 	table.insert(self.pointOrder, anchor);
 end;
 
-function TestingLayoutDelegate:GetPoint(index)
+function Frame:GetPoint(index)
 	Assert.Number(index, "index must be a number");
 	local anchorName = self.pointOrder[index];
 	assert(anchorName, "index must not be out of range. Given: "..tostring(index));
@@ -131,43 +107,43 @@ function TestingLayoutDelegate:GetPoint(index)
 		anchor.y
 end;
 
-function TestingLayoutDelegate:GetNumPoints()
+function Frame:GetNumPoints()
 	return #self.pointOrder;
 end;
 
-function TestingLayoutDelegate:SetWidth(width)
+function Frame:SetWidth(width)
 	self.width = width;
 end;
 
-function TestingLayoutDelegate:GetWidth()
+function Frame:GetWidth()
 	return self.width;
 end;
 
-function TestingLayoutDelegate:GetHeight()
+function Frame:GetHeight()
 	return self.height;
 end;
 
-function TestingLayoutDelegate:SetHeight(height)
+function Frame:SetHeight(height)
 	self.height = height;
 end;
 
-function TestingLayoutDelegate:GetCenter()
+function Frame:GetCenter()
 	return 0, 0;
 end;
 
-function TestingLayoutDelegate:GetLeft()
+function Frame:GetLeft()
 	return 0;
 end;
 
-function TestingLayoutDelegate:GetRight()
+function Frame:GetRight()
 	return 0;
 end;
 
-function TestingLayoutDelegate:GetTop()
+function Frame:GetTop()
 	return 0;
 end;
 
-function TestingLayoutDelegate:GetBottom()
+function Frame:GetBottom()
 	return 0;
 end;
 

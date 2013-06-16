@@ -6,27 +6,19 @@ end;
 local Texture = OOP.Class("Texture", WoW.Frame);
 WoW.Texture = Texture;
 
-WoW.RegisterFrameType("Texture", Texture);
+if not WoW.GetFrameType("Texture") then
+    WoW.RegisterFrameType("Texture", WoW.Texture);
+end;
 
 function WoW.Frame:CreateTexture()
 	return Texture:New(self);
 end;
 
-WoW.Delegate(Texture, "texture", {
-    "GetTexture",
-    "SetTexture",
-    "GetColor"
-});
-
-local Delegate = OOP.Class();
-
 function Texture:SetTexCoord(...)
 
 end;
 
-local Delegate = OOP.Class();
-
-function Delegate:SetTexture(...)
+function Texture:SetTexture(...)
     if select("#", ...) > 1 then
         self.color = {...};
         return;
@@ -34,18 +26,14 @@ function Delegate:SetTexture(...)
     trace("STUB SetTexture");
 end;
 
-function Delegate:GetTexture()
+function Texture:GetTexture()
     if self.color then
         return self:GetColor();
     end;
 end;
 
-function Delegate:GetColor()
+function Texture:GetColor()
     if self.color then
         return unpack(self.color);
     end;
-end;
-
-if not WoW.GetFrameDelegate("Texture", "texture") then
-    WoW.SetFrameDelegate("Texture", "texture", Delegate, "New");
 end;

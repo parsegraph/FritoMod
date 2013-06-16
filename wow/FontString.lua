@@ -7,12 +7,19 @@ end;
 local FontString=OOP.Class("FontString", WoW.Frame);
 WoW.FontString = FontString;
 
-WoW.RegisterFrameType("FontString", FontString);
+if not WoW.GetFrameType("FontString") then
+    WoW.RegisterFrameType("FontString", WoW.FontString);
+end;
 
-local Frame = WoW.Frame;
-
-function Frame:CreateFontString()
+function WoW.Frame:CreateFontString()
 	return FontString:New(self);
+end;
+
+function FontString:Constructor()
+    FontString.super.Constructor(self);
+    self.text = "";
+    self.color = {1, 1, 1, 1};
+    self.font = {};
 end;
 
 function FontString:SetFontObject()
@@ -27,66 +34,38 @@ function FontString:SetJustifyV()
 
 end;
 
-WoW.Delegate(FontString, "text", {
-	"GetText",
-	"SetText",
-
-    "GetFont",
-    "SetFont",
-
-    "GetTextColor",
-    "SetTextColor",
-
-    "GetStringHeight",
-    "GetStringWidth",
-    "GetWrappedWidth"
-});
-
-local TestingTextDelegate = OOP.Class();
-
-if not WoW.GetFrameDelegate("FontString", "text") then
-    WoW.SetFrameDelegate("FontString", "text", TestingTextDelegate, "New");
-end;
-
-function TestingTextDelegate:Constructor(frame)
-    self.frame = frame;
-    self.text = "";
-    self.color = {1, 1, 1, 1};
-    self.font = {};
-end;
-
-function TestingTextDelegate:GetText()
+function FontString:GetText()
     return self.text;
 end;
 
-function TestingTextDelegate:SetText(text)
+function FontString:SetText(text)
     self.text = tostring(text);
 end;
 
-function TestingTextDelegate:GetFont()
+function FontString:GetFont()
     return unpack(self.font);
 end;
 
-function TestingTextDelegate:SetFont(font, size, ...)
+function FontString:SetFont(font, size, ...)
     self.font = {font, size};
 end;
 
-function TestingTextDelegate:GetTextColor()
+function FontString:GetTextColor()
     return unpack(self.color);
 end;
 
-function TestingTextDelegate:SetTextColor(r, g, b, a)
+function FontString:SetTextColor(r, g, b, a)
     self.color = {r, g, b, a};
 end;
 
-function TestingTextDelegate:GetStringWidth()
+function FontString:GetStringWidth()
     return 0;
 end;
 
-function TestingTextDelegate:GetStringHeight()
+function FontString:GetStringHeight()
     return 0;
 end;
 
-function TestingTextDelegate:GetWrappedWidth()
+function FontString:GetWrappedWidth()
     return 0;
 end;

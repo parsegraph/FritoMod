@@ -8,31 +8,11 @@ end;
 
 local Frame = WoW.Frame;
 
-WoW.Delegate(Frame, "event", {
-    "HasScript",
-    "SetScript",
-    "GetScript",
-    "HookScript",
-    "FireEvent",
-
-    "RegisterEvent",
-    "RegisterAllEvents",
-    "UnregisterEvent",
-    "IsEventRegistered"
-});
-
-local Delegate = OOP.Class();
-
-if not WoW.GetFrameDelegate("Frame", "event") then
-	WoW.SetFrameDelegate("Frame", "event", Delegate, "New");
-end;
-
-function Delegate:Constructor(frame)
-    self.frame = frame;
+Frame:AddConstructor(function(self)
     self.eventHandlers = {};
-end;
+end);
 
-function Delegate:GetHandlers(event)
+function Frame:GetHandlers(event)
 	if not self:HasScript(event) then
 		return;
 	end;
@@ -46,7 +26,7 @@ function Delegate:GetHandlers(event)
 	return handlers;
 end;
 
-function Delegate:FireEvent(event, ...)
+function Frame:FireEvent(event, ...)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		if handlers.handler then
@@ -56,18 +36,18 @@ function Delegate:FireEvent(event, ...)
 	end;
 end;
 
-function Delegate:HasScript(event)
+function Frame:HasScript(event)
 	return true;
 end;
 
-function Delegate:GetScript(event)
+function Frame:GetScript(event)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		return handlers.handler;
 	end;
 end;
 
-function Delegate:SetScript(event, handler)
+function Frame:SetScript(event, handler)
 	assert(event, "Event must not be falsy");
 	assert(type(event)=="string", "Event must be a string");
 	local handlers=self:GetHandlers(event);
@@ -77,26 +57,26 @@ function Delegate:SetScript(event, handler)
 	end;
 end;
 
-function Delegate:HookScript(event, handler)
+function Frame:HookScript(event, handler)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		table.insert(handlers.hooks, handler);
 	end;
 end;
 
-function Delegate:IsEventRegistered(event)
+function Frame:IsEventRegistered(event)
 	local handlers=self:GetHandlers(event);
 	return handlers and handlers.registered;
 end;
 
-function Delegate:RegisterEvent(event)
+function Frame:RegisterEvent(event)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		handlers.registered=true;
 	end;
 end;
 
-function Delegate:UnregisterEvent(event)
+function Frame:UnregisterEvent(event)
 	local handlers=self:GetHandlers(event);
 	if handlers then
 		handlers.registered=false;
