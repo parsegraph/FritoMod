@@ -49,6 +49,8 @@ function Log.AddLogger(logger, ...)
     return Add(logger, ...);
 end;
 
+local firstMessage;
+
 local function LogMessage(event, sender, category, ...)
     if #loggers == 0 then
         -- No loggers, so no sense creating a message
@@ -63,12 +65,14 @@ local function LogMessage(event, sender, category, ...)
         -- creating the message table.
         sender = tostring(sender);
     end;
+    if not firstMessage then
+        firstMessage = math.floor(Rainback.GetTime());
+    end;
     local message = {
         senderRef = senderRef,
         sender = sender,
         category = category,
-        -- FIXME This won't work outside of Rainback
-        timestamp = math.floor(GetTime()),
+        timestamp = math.floor(Rainback.GetTime()) - firstMessage,
     };
     message.value = ProcessMessage(...);
     Fire(event, message);
