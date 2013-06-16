@@ -103,10 +103,12 @@ function Suite:TestConsumeEatsAValueIterator()
 end;
 
 function Suite:TestConsumeEatsAPairIterator()
-	a={11,22,33};
+	local a={11,22,33};
+    local c = 0;
 	local function PairFeeder()
 		if #a > 0 then
-			return #a, table.remove(a, 1);
+            c = c + 1;
+            return c, table.remove(a, 1);
 		end;
 	end;
 	Assert.Equals({11,22,33}, Iterators.Consume(PairFeeder));
