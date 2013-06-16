@@ -1277,6 +1277,13 @@ function Mixins.Iteration(library)
 
 	if library.ToTable == nil then
 		function library.ToTable(iterable)
+			if library.Bias() == "table" then
+				local copy={};
+				for k, v in library.PairIterator(iterable) do
+					copy[k] = v;
+				end;
+				return copy;
+			end;
 			local arr={};
 			for v in library.ValueIterator(iterable) do
 				table.insert(arr, v);
