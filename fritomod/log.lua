@@ -1,5 +1,6 @@
 if nil ~= require then
     require "fritomod/Math";
+    require "wow/api/Timing";
     require "fritomod/basic";
     require "fritomod/OOP";
 end;
@@ -67,7 +68,7 @@ local function LogMessage(event, sender, category, ...)
         sender = sender,
         category = category,
         -- FIXME This won't work outside of Rainback
-        timestamp = math.floor(Rainback.GetTime()),
+        timestamp = math.floor(GetTime()),
     };
     message.value = ProcessMessage(...);
     Fire(event, message);
