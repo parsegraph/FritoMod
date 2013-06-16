@@ -49,6 +49,10 @@ function Log.AddLogger(logger, ...)
 end;
 
 local function LogMessage(event, sender, category, ...)
+    if #loggers == 0 then
+        -- No loggers, so no sense creating a message
+        return;
+    end;
     local senderRef;
     if sender and type(sender) == "table" then
         senderRef = Reference(sender);
