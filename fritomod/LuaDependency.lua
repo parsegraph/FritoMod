@@ -30,7 +30,7 @@ function LuaDependency:Process(file)
 	local dependencyStack = {};
 
 	local function CleanName(package)
-		if not package:find("\.lua$") then
+		if not package:find("[.]lua$") then
 			package=package..".lua";
 		end;
 		package = package:gsub("\\", "/");

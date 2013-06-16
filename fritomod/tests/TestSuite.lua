@@ -62,7 +62,7 @@ function Suite:TestCrashStackTraceOutputsProperly()
 	suite:AddListener(Metatables.Noop({
 		TestFailed = function(self, suite, testName, testRunner, reason)
             flag.Raise();
-			assert(reason:match(".*tests[/\\]TestSuite\.lua:[0-9]+: attempt to"),
+			assert(reason:match([[.*tests[/\]TestSuite[.]lua:[0-9]+: attempt to]]),
 				"Reason contains stack trace");
 		end
 	}));

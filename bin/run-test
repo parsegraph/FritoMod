@@ -16,8 +16,8 @@ require "fritomod/AllTests";
 
 if arg then
 	for i=1,#arg do
-		arg[i]=arg[i]:gsub("^\./", "");
-		arg[i]=arg[i]:gsub("\.lua", "");
+		arg[i]=arg[i]:gsub("^[.]/", "");
+		arg[i]=arg[i]:gsub("[.]lua", "");
 		local env=LuaEnvironment:New(pristine);
 		env:AddLoader(LuaEnvironment.Loaders.Ignore("bit", "lfs"));
 		env:AddLoader(LuaEnvironment.Loaders.Filesystem());
