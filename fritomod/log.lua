@@ -66,13 +66,13 @@ local function LogMessage(event, sender, category, ...)
         sender = tostring(sender);
     end;
     if not firstMessage then
-        firstMessage = math.floor(Rainback.GetTime());
+        firstMessage = math.floor(GetTime());
     end;
     local message = {
         senderRef = senderRef,
         sender = sender,
         category = category,
-        timestamp = math.floor(Rainback.GetTime()) - firstMessage,
+        timestamp = math.floor(GetTime()) - firstMessage,
     };
     message.value = ProcessMessage(...);
     Fire(event, message);
