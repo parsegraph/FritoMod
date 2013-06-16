@@ -26,6 +26,7 @@ Operator = setmetatable({
 	end
 });
 Operators=Operator;
+Op=Operator;
 
 function Operator.Nil(...)
 	for i=1, select("#", ...) do
