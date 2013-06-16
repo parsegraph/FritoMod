@@ -145,8 +145,6 @@ function Frames.Child(parent, frameType, ...)
 	if type(frameType) ~= "string" then
 		parent, frameType = frameType, parent;
 	end;
-	parent=Frames.AsRegion(parent);
-	assert(parent.GetChildren, "Specified parent cannot handle children");
 	local child=CreateFrame(frameType, nil, parent, ...);
 	if Frames.IsInjected(parent) then
 		Frames.Inject(child);
