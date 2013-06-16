@@ -24,9 +24,9 @@ all: toc
 Makefile: Makefile.in configure
 	$(SRCDIR)/configure ${PREFIX}
 
-test:
+check test:
 	./bin/run-test.sh
-.PHONY: test
+.PHONY: test check
 
 toc: FritoMod.toc files.xml
 .PHONY: toc
