@@ -120,8 +120,16 @@ function Mixins.TableTests(Suite, library)
 
 	function Suite:TestValueIterator()
 		local i = library.ValueIterator(Suite:Table({[1]="a",[2]="b"}));
-		Assert.Equals("a", i(), "Iterator finds first key");
-		Assert.Equals("b", i(), "Iterator finds last key");
+
+        local values = {};
+        while true do
+            local v = i();
+            if not v then
+                break;
+            end;
+            values[v] = true;
+        end;
+		Assert.Equals({a=true,b=true}, values, "Iterator returns all keys");
 		Assert.Equals(nil, i(), "Iterator returns nil beyond last key");
 		Assert.Equals(nil, i(), "Iterator is idempotent");
 	end;
@@ -222,7 +230,7 @@ function Mixins.TableTests(Suite, library)
 			c=true,
 			d=true
 		});
-		library.AssertEquals(Suite:Table({c=true,d=true}), library.FilterKeys(t, function(v)
+        Assert.Equals({c=true,d=true}, library.FilterKeys(t, function(v)
 			return v > "b";
 		end));
 	end;
