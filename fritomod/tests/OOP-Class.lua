@@ -13,17 +13,17 @@ end;
 function Suite:TestToString()
 	local Base = OOP.Class();
 
-    assert(tostring(Base):match([[^%[Subclass of Object]]), tostring(Base));
+    assert(tostring(Base):match([[^Subclass of Object]]), tostring(Base));
 
     local obj = Base:New();
-    assert(tostring(obj):match([[^%[<subclass of Object>]]), tostring(obj));
+    assert(tostring(obj):match([[^subclass:Object]]), tostring(obj));
 
     function Base:ClassName()
         return "Base";
     end;
 
-    assert(tostring(Base):match([[^%[Class Base]]), tostring(Base));
-    assert(tostring(obj):match([[^%[Base]]), tostring(obj));
+    assert(tostring(Base):match([[^%Class Base]]), tostring(Base));
+    assert(tostring(obj):match([[^%Base]]), tostring(obj));
 end;
 
 function Suite:TestInheritance()
