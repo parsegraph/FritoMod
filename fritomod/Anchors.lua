@@ -330,7 +330,7 @@ local function GetGapAndFrames(gap, ...)
 			frames = {gap}
 		end;
 		gap=0;
-	elseif select("#", ...) == 1 and #(...) > 0 then
+	elseif select("#", ...) == 1 and type(...) == "table" and #(...) > 0 then
 		frames = ...;
 	else
 		frames={...};
