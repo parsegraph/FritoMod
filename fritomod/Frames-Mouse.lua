@@ -241,7 +241,11 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
 		end;
 
         local function SetPoint(x, y)
-			f:SetPoint("center", UIParent, "bottomleft", startX+x, startY+y);
+            if platform == "wow" then
+                f:SetPoint("center", UIParent, "bottomleft", startX+x, startY+y);
+            else
+                f:SetPoint("center", UIParent, "topleft", startX+x, startY+y);
+            end;
         end;
 		f.dragBehavior=Callbacks.CursorOffset(f, SetPoint);
 
