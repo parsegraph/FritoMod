@@ -83,6 +83,9 @@ Callbacks.FrameHide=Callbacks.HideFrame;
 -- necessary. This coordination is necessary since different callbacks all
 -- require an enabled mouse.
 local function enableMouse(f)
+    if not f.EnableMouse then
+        return Noop;
+    end;
 	f.mouseListenerTypes=f.mouseListenerTypes or 0;
 	f.mouseListenerTypes=f.mouseListenerTypes+1;
 	f:EnableMouse(true);
