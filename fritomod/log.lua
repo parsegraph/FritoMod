@@ -66,13 +66,13 @@ local function LogMessage(event, sender, category, ...)
         sender = tostring(sender);
     end;
     if not firstMessage then
-        firstMessage = math.floor(GetTime());
+        firstMessage = GetTime();
     end;
     local message = {
         senderRef = senderRef,
         sender = sender,
         category = category,
-        timestamp = math.floor(GetTime()) - firstMessage,
+        timestamp = math.floor((GetTime() - firstMessage) * 1000),
     };
     message.value = ProcessMessage(...);
     Fire(event, message);
