@@ -64,11 +64,15 @@ Tables.Expand(outlines);
 
 function Frames.Text(parent, font, size, ...)
 	font=font or "default";
+
+    local fontstring;
 	if not parent.CreateFontString then
-		parent=Frames.AsRegion(parent);
+        if Frames.AsRegion(parent) and Frames.AsRegion(parent).CreateFontString then
+            fontstring=parent:CreateFontString();
+        else
+            fontstring = Frames.New("FontString", parent);
+        end;
 	end;
-	assert(parent.CreateFontString, "Provided object does not support font strings");
-	local fontstring=parent:CreateFontString();
 	if Frames.IsInjected(parent) then
 		Frames.Inject(fontstring);
 	end;
