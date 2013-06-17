@@ -206,13 +206,14 @@ function Callbacks.CursorOffset(frame, func, ...)
 	local lastX, lastY=origX, origY;
 	return Timing.OnUpdate(function()
 		local x, y=GetCursorPosition();
-		if lastX~=x or lastY~=y then
-			lastX, lastY=x,y;
-			func(
-				(x-origX)/frame:GetEffectiveScale(),
-				(y-origY)/frame:GetEffectiveScale()
-			);
-		end;
-	end);
+		if lastX == x and lastY == y then
+            return;
+        end;
+        lastX, lastY=x,y;
+        func(
+            (x-origX)/frame:GetEffectiveScale(),
+            (y-origY)/frame:GetEffectiveScale()
+        );
+    end);
 end;
 Callbacks.MouseOffset=Callbacks.CursorOffset;
