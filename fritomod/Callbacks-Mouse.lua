@@ -122,17 +122,19 @@ ToggledEvent("MouseDown", function(dispatcher, frame)
 		trace("MouseDown detected");
 		observed=button;
 		dispatcher:Fire(button);
-		remover=Timing.OnUpdate(function()
-			if observed ~= nil and not IsMouseButtonDown(observed) then
-				-- Ideally, this would never be needed, since OnMouseUp should always
-				-- fire. However, reparenting a frame causes the OnMouseUp event to be
-				-- lost. As a result, we need to simulate that event using OnUpdate.
-				--
-				-- This workaround is even used by Blizzard in FloatingChatFrame.xml.
-				-- If their workaround disappears, then ours can afford to go as well.
-				OnMouseUp("OnUpdate listener detected button was no longer pressed");
-			end;
-		end);
+        if platform() == "wow" then
+            remover=Timing.OnUpdate(function()
+                if observed ~= nil and not IsMouseButtonDown(observed) then
+                    -- Ideally, this would never be needed, since OnMouseUp should always
+                    -- fire. However, reparenting a frame causes the OnMouseUp event to be
+                    -- lost. As a result, we need to simulate that event using OnUpdate.
+                    --
+                    -- This workaround is even used by Blizzard in FloatingChatFrame.xml.
+                    -- If their workaround disappears, then ours can afford to go as well.
+                    OnMouseUp("OnUpdate listener detected button was no longer pressed");
+                end;
+            end);
+        end;
 	end);
 	dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseUp", OnMouseUp, "OnMouseUp event was fired");
 	dispatcher:AddInstaller(Callbacks.HideFrame, frame, OnMouseUp, "Frame was hidden");
