@@ -256,7 +256,9 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
 		f.dragging=f.dragging-1;
 		if f.dragging <= 0 then
 			f.dragBehavior();
-			AdjustPoint(f);
+            if platform() == "wow" then
+                AdjustPoint(f);
+            end;
 			f.dragBehavior=nil;
 			f.dragging=nil;
 
