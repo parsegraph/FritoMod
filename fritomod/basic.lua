@@ -197,3 +197,7 @@ end;
 function tracef(format, ...)
     return trace(format:format(...));
 end;
+
+function platform()
+    return "wow";
+end;
