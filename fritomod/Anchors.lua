@@ -1526,16 +1526,6 @@ function Anchors.CalculateGap(anchor, ref, anchorTo, x, y)
 		error("Invalid anchor: "..tostring(anchor));
 	end;
 
-	--[[if insets.top > 0 and Strings.StartsWith(anchor, "TOP") then
-		y=y+insets.top;
-	elseif insets.bottom > 0 and Strings.StartsWith(anchor, "BOTTOM") then
-		y=y-insets.bottom;
-	end;
-	if insets.left > 0 and Strings.EndsWith(anchor, "LEFT") then
-		x=x+insets.left;
-	elseif insets.right > 0 and Strings.EndsWith(anchor, "RIGHT") then
-		x=x-insets.right;
-	end;]]
 	return x, y;
 end;
 
