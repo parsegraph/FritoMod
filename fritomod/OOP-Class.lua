@@ -207,10 +207,13 @@ local function New(class, ...)
 	setmetatable(instance, instance);
 
 	function instance:ToString()
+		local str;
 		if rawget(self, "ClassName") or rawget(self.class, "ClassName") then
-			return self:ClassName() .. " ".. tostring(self:ID());
+			str = self:ClassName() .. " ".. tostring(self:ID());
+		else
+			str ="subclass:".. self:ClassName() .. " " .. Reference(self);
 		end;
-		return "subclass:".. self:ClassName() .. " " .. Reference(self);
+		return str;
 	end;
 
 	local function Initialize(class, ...)
