@@ -118,10 +118,10 @@ ToggledEvent("MouseDown", function(dispatcher, frame)
 		dispatcher:Reset(observed);
 		observed=nil;
 	end;
-	dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseDown", function(button)
+	dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseDown", function(button, ...)
 		trace("MouseDown detected");
 		observed=button;
-		dispatcher:Fire(button);
+		dispatcher:Fire(button, ...);
         if platform() == "wow" then
             remover=Timing.OnUpdate(function()
                 if observed ~= nil and not IsMouseButtonDown(observed) then
