@@ -21,7 +21,24 @@ end;
 
 Callbacks=Callbacks or {};
 
--- Calls the specified callback whenever a click begins on a frame.
+-- A helper function that ensures we only enable the mouse on a frame when
+-- necessary. This coordination is necessary since different callbacks all
+-- require an enabled mouse.
+local function enableMouse(f)
+    if not f.EnableMouse then
+        return Noop;
+    end;
+	f.mouseListenerTypes=f.mouseListenerTypes or 0;
+	f.mouseListenerTypes=f.mouseListenerTypes+1;
+	f:EnableMouse(true);
+	return Functions.OnlyOnce(function()
+		f.mouseListenerTypes=f.mouseListenerTypes-1;
+		if f.mouseListenerTypes <= 0 then
+			f:EnableMouse(false);
+		end;
+	end)
+end;
+
 local function ToggledEvent(event, setUp, ...)
 	setUp=Curry(setUp, ...);
 	local eventListenerName=event.."Listeners";
@@ -60,7 +77,10 @@ local function BasicEvent(onEvent, offEvent, dispatcher, frame)
 end;
 
 -- Calls the specified callback whenever the mouse enters and leaves the specified frame.
-Callbacks.EnterFrame = ToggledEvent("EnterFrame", BasicEvent, "OnEnter", "OnLeave");
+Callbacks.EnterFrame = ToggledEvent("EnterFrame", function(dispatcher, frame)
+	BasicEvent("OnEnter", "OnLeave", dispatcher, frame);
+	dispatcher:AddInstaller(enableMouse, frame);
+end);
 Callbacks.MouseEnter=Callbacks.EnterFrame;
 Callbacks.FrameEnter=Callbacks.EnterFrame;
 Callbacks.MouseOver=Callbacks.EnterFrame;
@@ -79,24 +99,6 @@ function Callbacks.HideFrame(frame, func, ...)
 end;
 Callbacks.FrameHidden=Callbacks.HideFrame;
 Callbacks.FrameHide=Callbacks.HideFrame;
-
--- A helper function that ensures we only enable the mouse on a frame when
--- necessary. This coordination is necessary since different callbacks all
--- require an enabled mouse.
-local function enableMouse(f)
-    if not f.EnableMouse then
-        return Noop;
-    end;
-	f.mouseListenerTypes=f.mouseListenerTypes or 0;
-	f.mouseListenerTypes=f.mouseListenerTypes+1;
-	f:EnableMouse(true);
-	return Functions.OnlyOnce(function()
-		f.mouseListenerTypes=f.mouseListenerTypes-1;
-		if f.mouseListenerTypes <= 0 then
-			f:EnableMouse(false);
-		end;
-	end)
-end;
 
 -- Calls the specified callback whenever dragging starts. You'll
 -- need to manually call Frame:RegisterForDrag along with this method in order to
