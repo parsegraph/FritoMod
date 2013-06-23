@@ -223,7 +223,7 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
 
 		f.dragging=1;
 		local startX, startY = f:GetCenter();
-		if f:GetParent() ~= UIParent then
+		if f:GetParent() ~= UIParent and platform() == "wow" then
 			-- Remove the local scale and re-add it once we've reparented. If we
 			-- don't do this, startX and startY will use an out-of-date scale and
 			-- will cause the frame to "jump" once it's first moved.
