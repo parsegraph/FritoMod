@@ -27,8 +27,83 @@ local function KeyListener(event)
 end;
 
 Callbacks.Char=KeyListener("OnChar");
-Callbacks.KeyUp=KeyListener("OnKeyUp");
+
 Callbacks.KeyDown=KeyListener("OnKeyDown");
+Callbacks.KeyPress=Callbacks.KeyDown;
+
+Callbacks.KeyUp=KeyListener("OnKeyUp");
+Callbacks.KeyRelease=Callbacks.KeyUp;
+
+local modifierFor = {
+	SHIFT = "SHIFT",
+	LSHIFT = "SHIFT",
+	RSHIFT = "SHIFT",
+
+	CONTROL = "CONTROL",
+	LCONTROL = "CONTROL",
+	RCONTROL = "CONTROL",
+};
+
+function Callbacks.Keys(frame, func, ...)
+	func = Curry(func, ...);
+	local callbacks = {};
+
+	return Functions.OnlyOnce(Lists.CallEach, {
+		Callbacks.KeyDown(frame, function(pressedKey, ...)
+			if modifierFor[pressedKey] then
+				-- Refuse to handle modifiers
+				return;
+			end;
+			if callbacks[pressedKey] then
+				-- Redundant keypress, so just ignore it
+				return;
+			end;
+			callbacks[pressedKey] = func(pressedKey, ...) or Noop;
+		end),
+		Callbacks.KeyUp(frame, function(pressedKey, ...)
+			if callbacks[pressedKey] then
+				callbacks[pressedKey](pressedKey, ...);
+				callbacks[pressedKey] = nil;
+			end;
+		end)
+	});
+end;
+
+function Callbacks.Modifiers(frame, func, ...)
+	func = Curry(func, ...);
+	local callbacks = {};
+	local modCounts = {};
+
+	return Functions.OnlyOnce(Lists.CallEach, {
+		Callbacks.KeyPress(frame, function(key, ...)
+			local mod = modifierFor[tostring(key):upper()];
+			if not mod then
+				return;
+			end;
+			if not modCounts[mod] then
+				callbacks[mod] = func(mod, ...) or Noop;
+				modCounts[mod] = 0;
+			end;
+			modCounts[mod] = modCounts[mod] + 1;
+		end),
+		Callbacks.KeyUp(frame, function(key, ...)
+			local mod = modifierFor[tostring(key):upper()];
+			if not mod then
+				return;
+			end;
+			if not modCounts[mod] then
+				return;
+			end;
+			modCounts[mod] = modCounts[mod] - 1;
+			if modCounts[mod] > 0 then
+				return;
+			end;
+			modCounts[mod] = nil;
+			callbacks[mod](mod, ...);
+			callbacks[mod] = nil;
+		end)
+	});
+end;
 
 function Callbacks.Key(key, func, ...)
 	key=key:lower();
