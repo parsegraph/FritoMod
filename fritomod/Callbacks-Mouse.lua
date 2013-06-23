@@ -63,12 +63,14 @@ end;
 Callbacks.EnterFrame = ToggledEvent("EnterFrame", BasicEvent, "OnEnter", "OnLeave");
 Callbacks.MouseEnter=Callbacks.EnterFrame;
 Callbacks.FrameEnter=Callbacks.EnterFrame;
+Callbacks.MouseOver=Callbacks.EnterFrame;
 
 function Callbacks.LeaveFrame(frame, func, ...)
 	return Callbacks.EnterFrame(frame, Functions.ReverseUndoable(func, ...));
 end;
 Callbacks.MouseLeave=Callbacks.LeaveFrame;
 Callbacks.FrameLeave=Callbacks.LeaveFrame;
+Callbacks.MouseOut=Callbacks.LeaveFrame;
 
 -- Calls the specified callback whenever the specified frame is shown.
 Callbacks.ShowFrame = ToggledEvent("ShowFrame", BasicEvent, "OnShow", "OnHide");
