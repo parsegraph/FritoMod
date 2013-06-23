@@ -25,7 +25,7 @@ Callbacks=Callbacks or {};
 local function ToggledEvent(event, setUp, ...)
 	setUp=Curry(setUp, ...);
 	local eventListenerName=event.."Listeners";
-	Callbacks[event]=function(frame, func, ...)
+	return function(frame, func, ...)
 		frame = Frames.AsRegion(frame);
 		assert(frame.SetScript,
 			"Listener for "..event.." was not passed a frame, type was: "..type(frame)
@@ -44,7 +44,6 @@ local function ToggledEvent(event, setUp, ...)
         Log.Leave();
         return remover;
 	end;
-	return Callbacks[event];
 end;
 
 local function CheckForOverwrites(onEvent, offEvent, dispatcher, frame)
@@ -61,7 +60,7 @@ local function BasicEvent(onEvent, offEvent, dispatcher, frame)
 end;
 
 -- Calls the specified callback whenever the mouse enters and leaves the specified frame.
-ToggledEvent("EnterFrame", BasicEvent, "OnEnter", "OnLeave");
+Callbacks.EnterFrame = ToggledEvent("EnterFrame", BasicEvent, "OnEnter", "OnLeave");
 Callbacks.MouseEnter=Callbacks.EnterFrame;
 Callbacks.FrameEnter=Callbacks.EnterFrame;
 
@@ -72,7 +71,7 @@ Callbacks.MouseLeave=Callbacks.LeaveFrame;
 Callbacks.FrameLeave=Callbacks.LeaveFrame;
 
 -- Calls the specified callback whenever the specified frame is shown.
-ToggledEvent("ShowFrame", BasicEvent, "OnShow", "OnHide");
+Callbacks.ShowFrame = ToggledEvent("ShowFrame", BasicEvent, "OnShow", "OnHide");
 function Callbacks.HideFrame(frame, func, ...)
 	return Callbacks.ShowFrame(frame, Functions.ReverseUndoable(func, ...));
 end;
@@ -100,12 +99,12 @@ end;
 -- Calls the specified callback whenever dragging starts. You'll
 -- need to manually call Frame:RegisterForDrag along with this method in order to
 -- receive drag events. Frames.Draggable helps with this.
-ToggledEvent("DragFrame", function(dispatcher, frame)
+Callbacks.DragFrame = ToggledEvent("DragFrame", function(dispatcher, frame)
 	BasicEvent("OnDragStart", "OnDragStop", dispatcher, frame);
 	dispatcher:AddInstaller(enableMouse, frame);
 end);
 
-ToggledEvent("MouseDown", function(dispatcher, frame)
+Callbacks.MouseDown = ToggledEvent("MouseDown", function(dispatcher, frame)
 	CheckForOverwrites("OnMouseDown", "OnMouseUp", dispatcher, frame);
 	dispatcher:AddInstaller(enableMouse, frame);
 	local remover;
