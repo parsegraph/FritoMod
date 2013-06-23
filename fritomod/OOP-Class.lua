@@ -10,6 +10,9 @@ local function SetDestroyedMetatable(self)
 	local name = self:ToString();
 	local DESTROYED_METATABLE = {
 		__index = function(self, key)
+			if tostring(key):match("^log") then
+				return self.class[key];
+			end;
 			error(name .. " has been destroyed and cannot be reused for getting " .. tostring(key));
 		end,
 		__newindex = function(self, key)
@@ -21,10 +24,10 @@ local function SetDestroyedMetatable(self)
 	};
 
 	setmetatable(self, nil);
-	for k, _ in pairs(self) do
+	for key, _ in pairs(self) do
 		-- Blow everything away, except the class
-		if k ~= "class" then
-			self[k] = nil;
+		if key ~= "class" and tostring(key):match("^log") then
+			self[key] = nil;
 		end;
 	end;
 
