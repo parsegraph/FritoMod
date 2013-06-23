@@ -8,9 +8,10 @@ Callbacks = Callbacks or {};
 local function ActivateKeyboard(frame)
 	local KEYBOARD_ENABLER = "__KeyboardEnabler";
 	if not frame[KEYBOARD_ENABLER] then
-		frame[KEYBOARD_ENABLER] = Functions.Install(
-			Seal(frame, "EnableKeyboard", true),
-			Noop);
+		frame[KEYBOARD_ENABLER] = Functions.Install(function()
+			frame:EnableKeyboard(true);
+			return Functions.OnlyOnce(frame, "EnableKeyboard", false);
+		end);
 	end;
 	return frame[KEYBOARD_ENABLER]();
 end;
