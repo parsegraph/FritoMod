@@ -33,6 +33,14 @@ function Recall.Anonymous(context)
     return scratch.anonymous();
 end;
 
+function Recall.GetEnvironment(context)
+    return Recall.Scratch(context)._G;
+end;
+
+function Recall.SetEnvironment(context, env)
+    Recall.Scratch(context)._G = env;
+end;
+
 function Recall.Reset(context)
     local scratch = Recall.Scratch(context);
     if scratch.resetters then
@@ -70,4 +78,29 @@ function Recall.Position(context, frame, name)
     return saved ~= nil, function()
         context.position[name] = Serializers.SaveAllPoints(frame);
     end;
+end;
+
+function Recall.Value(context, target, name)
+    local category = "value";
+    if not context[category] then
+        context[category] = {};
+    end;
+    local scratch = Recall.Scratch(context[category]);
+    if not scratch.reset then
+        Recall.OnReset(context, function()
+            Recall.Reset(context[category]);
+            scratch.reset = nil;
+        end);
+        scratch.reset = true;
+    end;
+    name = name or Recall.Anonymous(context[category]);
+    local saved = context[category][name];
+    target[name] = saved;
+    return saved ~= nil, function()
+        context[category][name] = target[name];
+    end;
+end;
+
+function Recall.Global(context, name)
+    return Recall.Value(context, Recall.GetEnvironment(context), name);
 end;
