@@ -198,6 +198,8 @@ Callbacks.LeftClick = SpecificButtonClick("LeftButton");
 Callbacks.RightClick = SpecificButtonClick("RightButton");
 Callbacks.MiddleClick = SpecificButtonClick("MiddleButton");
 
+Callbacks.MouseMove = Headless(Callbacks.Script, "OnMouseMove");
+
 -- Returns the cursor's distance from the time this function was invoked.
 --
 -- The specified frame's scale will be used to adjust the distance. If no frame
