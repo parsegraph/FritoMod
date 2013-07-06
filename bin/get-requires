@@ -104,11 +104,13 @@ end;
 
 local function XMLWriter()
 	local processor = LuaDependencyList:New();
-	function processor:DoOutput(out, files)
+	function processor:DoOutput(out, sorted)
 		out('<Ui xmlns="http://www.blizzard.com/wow/ui/">\n');
-		for _, file in ipairs(files) do
-			file = CLEAN(file);
-			out(('    <Script file="%s" />\n'):format(file));
+		for _, file in ipairs(sorted) do
+            if ALL or Lists.Contains(files, file) then
+                file = CLEAN(file);
+                out(('    <Script file="%s" />\n'):format(file));
+            end;
 		end;
 		out('</Ui>\n');
 	end;
