@@ -112,14 +112,13 @@ Callbacks.MouseDown = ToggledEvent("MouseDown", function(dispatcher, frame)
 	CheckForOverwrites("OnMouseDown", "OnMouseUp", dispatcher, frame);
 	dispatcher:AddInstaller(enableMouse, frame);
 	local remover;
-	local function OnMouseUp(reason)
+	local function OnMouseUp(reason, ...)
 		trace("MouseUp detected (%s)", reason);
 		if remover then
 			remover();
 			remover=nil;
 		end;
-		dispatcher:Reset(observed);
-		observed=nil;
+		dispatcher:Reset(...);
 	end;
 	dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseDown", function(button, ...)
 		trace("MouseDown detected");
@@ -175,10 +174,10 @@ function Callbacks.Click(f, func, ...)
 	end;
 	return Callbacks.MouseDown(f, function(btn)
 		local downTime=GetTime();
-		return function()
+		return function(_, ...)
 			local upTime=GetTime();
 			if upTime-downTime < CLICK_TOLERANCE then
-				func(btn);
+				func(btn, ...);
 			end;
 		end;
 	end);
