@@ -1876,6 +1876,14 @@ Anchors.InnerSet = Curry(DoSet, true);
 Anchors.ISet = Anchors.InnerSet;
 Anchors.Set = Anchors.InnerSet;
 
+function Anchors.Absolute(frame, ...)
+	if select("#", ...) == 2 then
+		return Anchors.Absolute(frame, frame:GetParent(), ...);
+	end;
+	local ref, x, y = ...;
+	Anchors.Share(frame, ref, Anchors.Origin(), x, y);
+end;
+
 local ENABLE_FRAME_HACK = false;
 
 function Anchors.UseFrameHack(shouldUse)
