@@ -1013,21 +1013,22 @@ function Anchors.CalculateGap(anchor, ref, anchorTo, x, y)
 	local toBottom;
 	local toTop;
 
-	-- Remember that, in WoW, gap values are NOT relative to the anchors.
-	-- Positive X gaps are towards the right side of the screen
-	-- Positive Y gaps are towards the top side of the screen
-	if platform() == "wow" then
+	if Anchors.Origin() == "topleft" then
+		-- In Rainback, gap values are also NOT relative to the anchors.
+		-- Positive X gaps are towards the right side of the screen
+		-- Positive Y gaps are towards the bottom side of the screen
+		toBottom = 1;
+	elseif Anchors.Origin() == "bottomleft" then
+		-- Remember that, in WoW, gap values are NOT relative to the anchors.
+		-- Positive X gaps are towards the right side of the screen
+		-- Positive Y gaps are towards the top side of the screen
 		toBottom = -1;
-		toTop = 1;
+	else
+		-- TODO Supporting right-aligned origins would require toLeft, toRight
+		error("Anchor origin is not supported: " .. Anchors.Origin());
 	end;
 
-	-- In Rainback, gap values are also NOT relative to the anchors.
-	-- Positive X gaps are towards the right side of the screen
-	-- Positive Y gaps are towards the bottom side of the screen
-	if platform() == "rainback" then
-		toBottom = 1;
-		toTop = -1;
-	end;
+	toTop = toBottom * -1;
 
 	if anchor == "CENTER" or anchorTo == "CENTER" then
 		y = y or 0;
