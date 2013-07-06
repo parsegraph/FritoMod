@@ -240,6 +240,13 @@ local function trace(...)
 	end;
 end;
 
+function Anchors.Origin()
+	if platform() == "wow" then
+		return "bottomleft";
+	end;
+	return "topleft";
+end;
+
 -- Converts passed anchor arguments into a canonical form. Anchors allows
 -- clients to omit some arguments when it is convenient to do so. I wanted
 -- these conversions to be shared across Anchors functions, so this function
