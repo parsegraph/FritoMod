@@ -27,10 +27,12 @@ function Script:SetContent(content)
     self.content = content;
     self.compiles = self.content ~= nil;
     if self.compiles then
-        if _VERSION == "Lua 5.1" then
-            self.compiles = loadstring(tostring(self.content));
+        if self.workingEnvironment then
+            self.compiles = Bool(
+                self.workingEnvironment:LoadString(self.content)
+            );
         else
-            self.compiles = load(tostring(self.content));
+            self.compiles = false;
         end;
     end;
     self:FireUpdate();
@@ -54,6 +56,7 @@ end;
 function Script:Execute(env, ...)
     assert(env, "Environment must not be falsy");
     Lists.CallEach(self.connectors, env);
+    self.workingEnvironment = env;
     return env:Run(self.content, ...);
 end;
 

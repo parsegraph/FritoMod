@@ -93,6 +93,26 @@ function LuaEnvironment:Metadata()
 	return self.metadata;
 end;
 
+function LuaEnvironment:SetParser(parser, ...)
+	if parser or select("#", ...) > 0 then
+		self.parser = Curry(parser, ...);
+	else
+		self.parser = nil;
+	end;
+end;
+
+function LuaEnvironment:GetParser()
+	if self.parser then
+		return self.parser;
+	end;
+	return function(text, name)
+		if _VERSION == "Lua 5.1" then
+			return self:LoadFunction(assert(loadstring(text)));
+		end;
+		return load(text, name, "t", self:Globals());
+	end;
+end;
+
 -- Get the value in this environment with the specified name. Proxies, lazy values,
 -- injected tables, and parents will all be invoked if necessary to retrieve this
 -- value.
@@ -272,10 +292,7 @@ function LuaEnvironment:Run(runner, ...)
 end;
 
 function LuaEnvironment:LoadString(str, source)
-	if _VERSION == "Lua 5.1" then
-		return self:LoadFunction(assert(loadstring(str)));
-	end;
-	return load(str, source, "t", self:Globals());
+	return self:GetParser()(str, source);
 end;
 
 -- Returns a function that will Load a named module into this environment.
