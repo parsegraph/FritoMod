@@ -1,5 +1,7 @@
-require "fritomod/OOP-Class";
-require "fritomod/log";
+if nil ~= require then
+    require "fritomod/OOP-Class";
+    require "fritomod/log";
+end;
 
 Mixins = Mixins or {};
 
