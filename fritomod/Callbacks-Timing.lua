@@ -16,6 +16,9 @@ function Timing.Flush()
     if not callbacks:HasListeners() then
         return;
     end;
+    if callbacks:IsFiring() then
+        return;
+    end;
     Log.Enter("Timing", "Calling deferred functions", "Calling", #callbacks, "deferred functions(s)");
 
     callbacks:Fire();
