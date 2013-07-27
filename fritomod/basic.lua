@@ -6,8 +6,10 @@
 
 -- A function that intentionally does nothing. This is useful in those situations where
 -- you always want a function, but don't care if it doesn't actually do anything.
-function Noop()
-	-- Do nothing.
+if not Noop then
+    function Noop()
+        -- Do nothing.
+    end;
 end;
 
 -- Converts the specified value to a boolean.
@@ -27,7 +29,7 @@ end
 --
 -- see
 --	 Timing.Throttle, Timing.After
-POISON={};
+POISON=POISON or {};
 
 -- Returns whether the specified value is of the specified type.
 --
@@ -166,38 +168,50 @@ function RemoveValueFromTable(t, v)
 	end;
 end;
 
-function traceback(msg)
-    msg = msg or "";
-    if msg:find("\nstack traceback:\n") ~= nil then
-        return msg;
-    end;
-    if debug and debug.traceback then
-        return debug.traceback(msg, 2);
-    else
-        return msg .. "\n" .. debugstack();
+if not traceback then
+    function traceback(msg)
+        msg = msg or "";
+        if msg:find("\nstack traceback:\n") ~= nil then
+            return msg;
+        end;
+        if debug and debug.traceback then
+            return debug.traceback(msg, 2);
+        else
+            return msg .. "\n" .. debugstack();
+        end;
     end;
 end;
 
-function printf(str, ...)
-	print(str:format(...));
-end
+if not printf then
+    function printf(str, ...)
+        print(str:format(...));
+    end
+end;
 
 -- A boolean value that determines whether trace debug messages should be shown.
-DEBUG_TRACE=false;
-
-function trace(str, ...)
-	if DEBUG_TRACE then
-		if select("#", ...) == 0 then
-			return print(tostring(str));
-		end;
-		return printf(str, ...);
-	end;
+if DEBUG_TRACE == nil then
+    DEBUG_TRACE=false;
 end;
 
-function tracef(format, ...)
-    return trace(format:format(...));
+if not trace then
+    function trace(str, ...)
+        if DEBUG_TRACE then
+            if select("#", ...) == 0 then
+                return print(tostring(str));
+            end;
+            return printf(str, ...);
+        end;
+    end;
 end;
 
-function platform()
-    return "wow";
+if not tracef then
+    function tracef(format, ...)
+        return trace(format:format(...));
+    end;
+end;
+
+if not platform then
+    function platform()
+        return "wow";
+    end;
 end;
