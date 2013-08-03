@@ -160,6 +160,11 @@ local function GetColor(...)
 		end;
 	else
 		r,g,b,a=...;
+		if r > 1 or g > 1 or b > 1 then
+			r = r / 255;
+			g = g / 255;
+			b = b / 255;
+		end;
 		a=a or 1.0;
 	end;
 	if tonumber(r) == nil then
