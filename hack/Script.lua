@@ -57,6 +57,11 @@ function Script:Execute(env, ...)
     assert(env, "Environment must not be falsy");
     Lists.CallEach(self.connectors, env);
     self.workingEnvironment = env;
+    self:AddDestructor(self.workingEnvironment:AddDestructor(function()
+        if self.workingEnvironment == env then
+            self.workingEnvironment = nil;
+        end;
+    end));
     return env:Run(self.content, ...);
 end;
 
