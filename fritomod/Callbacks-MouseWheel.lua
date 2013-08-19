@@ -1,7 +1,6 @@
 if nil ~= require then
 	require "fritomod/OOP-Class";
 	require "fritomod/ListenerList";
-	require "fritomod/ListenerList";
 end;
 
 local MouseWheelListener = OOP.Class("MouseWheelListener", ListenerList);
