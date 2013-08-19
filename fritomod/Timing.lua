@@ -76,7 +76,7 @@ do
         return Timing.delegate:Start();
 	end);
 
-    local Delegate = OOP.Class();
+    local Delegate = OOP.Class("Timing.Delegate(WoW)");
 
     function Delegate:Constructor()
         self.frame = CreateFrame("Frame");

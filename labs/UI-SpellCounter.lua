@@ -11,7 +11,7 @@ end;
 
 UI = UI or {};
 
-local SpellCounter = OOP.Class();
+local SpellCounter = OOP.Class("UI.SpellCounter");
 UI.SpellCounter = SpellCounter;
 
 function SpellCounter:Constructor(parent, style)

@@ -9,7 +9,7 @@ if nil ~= require then
     require "fritomod/OOP-Class";
 end;
 
-FauxLuaEnvironment = OOP.Class();
+FauxLuaEnvironment = OOP.Class("FauxLuaEnvironment");
 
 function FauxLuaEnvironment:Constructor(globals)
     self.globals = globals;

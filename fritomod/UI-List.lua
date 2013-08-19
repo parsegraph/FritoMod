@@ -33,7 +33,7 @@ end;
 
 UI = UI or {};
 
-local List = OOP.Class();
+local List = OOP.Class("UI.List");
 UI.List = List;
 
 -- Construct a new list.

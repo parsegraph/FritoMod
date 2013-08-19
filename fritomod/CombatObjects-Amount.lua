@@ -12,7 +12,7 @@ end;
 
 CombatObjects=CombatObjects or {};
 
-local AmountEvent = OOP.Class();
+local AmountEvent = OOP.Class("CombatObjects.AmountEvent");
 CombatObjects.Amount = AmountEvent;
 
 function AmountEvent:Constructor(...)

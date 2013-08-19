@@ -20,7 +20,7 @@ end;
 
 CombatObjects=CombatObjects or {};
 
-local HealEvent = OOP.Class(CombatObjects.Amount);
+local HealEvent = OOP.Class("CombatObjects.HealEvent", CombatObjects.Amount);
 CombatObjects.Heal = HealEvent;
 
 function HealEvent:Constructor(...)

@@ -11,7 +11,7 @@ if nil ~= require then
 	require "fritomod/Tests";
 end;
 
-TestSuite = OOP.Class();
+TestSuite = OOP.Class("TestSuite");
 local TestSuite = TestSuite;
 
 function TestSuite:Constructor(name)

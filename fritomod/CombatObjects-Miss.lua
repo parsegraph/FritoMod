@@ -20,7 +20,7 @@ end;
 
 CombatObjects=CombatObjects or {};
 
-local MissEvent = OOP.Class(CombatObjects.Amount);
+local MissEvent = OOP.Class("CombatObjects.MissEvent", CombatObjects.Amount);
 CombatObjects.Miss = MissEvent;
 
 function MissEvent:Constructor(...)

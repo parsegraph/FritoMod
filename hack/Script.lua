@@ -8,7 +8,7 @@ if nil ~= require then
 end;
 
 Hack = Hack or {};
-Hack.Script = OOP.Class();
+Hack.Script = OOP.Class("Hack.Script");
 local Script = Hack.Script;
 local Assets = Hack.Assets;
 local Connectors = Hack.Connectors;

@@ -9,7 +9,7 @@ end;
 
 UI = UI or {};
 
-local Bar = OOP.Class();
+local Bar = OOP.Class("UI.Bar");
 UI.Bar = Bar;
 
 local DEFAULT_STYLE = {

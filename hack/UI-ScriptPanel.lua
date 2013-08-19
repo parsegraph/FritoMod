@@ -12,7 +12,7 @@ end;
 UI = UI or {};
 UI.Hack = UI.Hack or{};
 
-UI.Hack.ScriptPanel = OOP.Class();
+UI.Hack.ScriptPanel = OOP.Class("UI.Hack.ScriptPanel");
 local ScriptPanel = UI.Hack.ScriptPanel;
 
 function ScriptPanel:Constructor(parent)

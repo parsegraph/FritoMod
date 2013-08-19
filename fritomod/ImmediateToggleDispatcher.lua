@@ -7,7 +7,7 @@ if nil ~= require then
 	require "fritomod/ToggleDispatcher";
 end;
 
-ImmediateToggleDispatcher=OOP.Class(ToggleDispatcher);
+ImmediateToggleDispatcher=OOP.Class("ImmediateToggleDispatcher", ToggleDispatcher);
 
 function ImmediateToggleDispatcher:Fire(...)
 	self.firedArguments={...};

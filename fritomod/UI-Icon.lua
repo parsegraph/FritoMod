@@ -11,7 +11,7 @@ end;
 
 UI = UI or {};
 
-local Icon = OOP.Class();
+local Icon = OOP.Class("UI.Icon");
 UI.Icon = Icon;
 
 local DEFAULT_STYLE = {

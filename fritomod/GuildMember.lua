@@ -37,7 +37,7 @@ local function RegisterInstance(instance)
 end;
 
 
-GuildMember = OOP.Class();
+GuildMember = OOP.Class("GuildMember");
 
 function GuildMember:Constructor(...)
 	RegisterInstance(self);

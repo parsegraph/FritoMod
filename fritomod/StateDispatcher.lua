@@ -4,7 +4,7 @@ if nil ~= require then
 	require "fritomod/ImmediateToggleDispatcher";
 end;
 
-StateDispatcher = OOP.Class();
+StateDispatcher = OOP.Class("StateDispatcher");
 
 function StateDispatcher:Constructor(initial, name)
 	assert(initial, "Initial state must be provided");

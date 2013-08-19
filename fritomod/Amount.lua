@@ -7,7 +7,7 @@ end;
 
 Mechanics = Mechanics or {};
 
-local Amount = OOP.Class();
+local Amount = OOP.Class("Mechanics.Amount");
 Mechanics.Amount = Amount;
 
 function Amount:Constructor(name)

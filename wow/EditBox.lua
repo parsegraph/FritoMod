@@ -6,7 +6,7 @@ end;
 
 WoW = WoW or {};
 
-WoW.EditBox=OOP.Class(WoW.Frame);
+WoW.EditBox=OOP.Class("WoW.EditBox", WoW.Frame);
 local EditBox = WoW.EditBox;
 
 WoW.RegisterFrameType("EditBox", WoW.EditBox, "New");

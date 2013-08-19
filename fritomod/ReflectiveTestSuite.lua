@@ -4,7 +4,7 @@ if nil ~= require then
 	require "fritomod/TestSuite";
 end;
 
-ReflectiveTestSuite = OOP.Class(TestSuite);
+ReflectiveTestSuite = OOP.Class("ReflectiveTestSuite", TestSuite);
 local ReflectiveTestSuite = ReflectiveTestSuite;
 
 function ReflectiveTestSuite:Constructor(name)

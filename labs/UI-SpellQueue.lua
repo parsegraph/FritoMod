@@ -31,7 +31,7 @@ local DEFAULT_STYLE = {
 	hideDuration = 1
 };
 
-local SpellQueue = OOP.Class();
+local SpellQueue = OOP.Class("UI.SpellQueue");
 UI.SpellQueue = SpellQueue;
 
 function SpellQueue:Constructor(parent, style)

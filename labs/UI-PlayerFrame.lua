@@ -13,7 +13,7 @@ end;
 
 UI = UI or {};
 
-local PlayerFrame = OOP.Class();
+local PlayerFrame = OOP.Class("UI.PlayerFrame");
 UI.PlayerFrame = PlayerFrame;
 
 function PlayerFrame:Constructor(parent, height)

@@ -18,7 +18,7 @@ end;
 
 UI = UI or {};
 
-local Layered = OOP.Class();
+local Layered = OOP.Class("UI.Layered");
 UI.Layered = Layered;
 
 local DRAW_LAYERS = {

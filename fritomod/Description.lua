@@ -4,7 +4,7 @@ if nil ~= require then
     require "fritomod/ListenerList";
 end;
 
-Description = OOP.Class();
+Description = OOP.Class("Description");
 
 function Description:Constructor(defaults)
     self.listeners = ListenerList:New();

@@ -66,7 +66,7 @@ function Mixins.Log(obj)
     end;
 end;
 
-Logger = OOP.Class("fritomod.Logger", Mixins.Log);
+Logger = OOP.Class("Logger", Mixins.Log);
 
 function Logger:Constructor(name)
     if name then

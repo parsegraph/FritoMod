@@ -11,7 +11,7 @@ end;
 
 UI = UI or {};
 
-WrappingPlates = OOP.Class();
+WrappingPlates = OOP.Class("UI.WrappingPlates");
 UI.WrappingPlates = WrappingPlates;
 
 function WrappingPlates:Constructor(parent)

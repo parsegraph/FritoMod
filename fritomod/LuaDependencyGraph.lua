@@ -4,7 +4,7 @@ if nil ~= require then
     require "fritomod/currying";
 end;
 
-LuaDependencyGraph = OOP.Class(LuaDependency);
+LuaDependencyGraph = OOP.Class("LuaDependencyGraph", LuaDependency);
 
 function LuaDependencyGraph:Constructor()
 	self.childrenOf = setmetatable({}, {

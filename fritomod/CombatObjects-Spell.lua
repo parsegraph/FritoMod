@@ -6,7 +6,7 @@ end;
 
 CombatObjects=CombatObjects or {};
 
-local SpellEvent = OOP.Class();
+local SpellEvent = OOP.Class("CombatObjects.SpellEvent");
 CombatObjects.Spell = SpellEvent;
 
 function SpellEvent:Constructor(...)

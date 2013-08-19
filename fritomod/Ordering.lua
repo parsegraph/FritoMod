@@ -5,7 +5,7 @@ if nil ~= require then
 end;
 
 
-Ordering = OOP.Class();
+Ordering = OOP.Class("Ordering");
 
 function Ordering:Constructor()
     self.order = {};

@@ -10,7 +10,7 @@ if nil ~= require then
 end;
 
 Hack = Hack or {};
-Hack.Toolbox = OOP.Class();
+Hack.Toolbox = OOP.Class("Hack.Toolbox");
 local Toolbox = Hack.Toolbox;
 
 function Toolbox:Constructor()

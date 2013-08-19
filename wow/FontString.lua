@@ -4,7 +4,7 @@ if nil ~= require then
 	require "fritomod/OOP-Class";
 end;
 
-local FontString=OOP.Class("FontString", WoW.Frame);
+local FontString=OOP.Class("WoW.FontString", WoW.Frame);
 WoW.FontString = FontString;
 
 if not WoW.GetFrameType("FontString") then

@@ -4,7 +4,7 @@ if nil ~= require then
 	require "fritomod/ListenerList";
 end;
 
-local MouseWheelListener = OOP.Class(ListenerList);
+local MouseWheelListener = OOP.Class("MouseWheelListener", ListenerList);
 
 function MouseWheelListener:Constructor(frame)
 	MouseWheelListener.super.Constructor(self, "MouseWheel listener");

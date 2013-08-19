@@ -34,7 +34,7 @@ if nil ~= require then
 	require "fritomod/ImmediateToggleDispatcher";
 end;
 
-Predicate = OOP.Class();
+Predicate = OOP.Class("Predicate");
 
 local evaluators = {};
 function evaluators.any(conditions)

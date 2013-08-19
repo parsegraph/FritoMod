@@ -10,7 +10,7 @@ if nil ~= require then
 end;
 
 WoW=WoW or Metatables.Defensive();
-WoW.Frame=OOP.Class("Frame", Mixins.Log);
+WoW.Frame=OOP.Class("WoW.Frame", Mixins.Log);
 local Frame=WoW.Frame;
 
 Frame:AddDestructor(function(self)

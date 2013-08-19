@@ -9,7 +9,7 @@ end;
 
 UI = UI or {};
 
-local Button = OOP.Class(UI.Icon);
+local Button = OOP.Class("UI.Button", UI.Icon);
 UI.Button = Button;
 UI.Button = UI.Button;
 

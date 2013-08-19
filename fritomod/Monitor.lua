@@ -6,7 +6,7 @@ if nil ~= require then
 	require "fritomod/StateDispatcher";
 end;
 
-Monitor = OOP.Class(StateDispatcher);
+Monitor = OOP.Class("Monitor", StateDispatcher);
 
 function Monitor:Constructor(name)
 	Monitor.super.Constructor(self, "Inactive", name or "Monitor");

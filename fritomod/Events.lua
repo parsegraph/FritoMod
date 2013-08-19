@@ -58,7 +58,7 @@ function Events.Dispatch(event, ...)
 	end;
 end;
 
-local Delegate = OOP.Class();
+local Delegate = OOP.Class("Events.Delegate(WoW)");
 
 function Delegate:Constructor()
     self.eventsFrame = CreateFrame("Frame");

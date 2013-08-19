@@ -3,7 +3,7 @@ if nil ~= require then
     require "fritomod/ListenerList";
 end;
 
-Pipeline = OOP.Class();
+Pipeline = OOP.Class("Pipeline");
 
 function Pipeline:Constructor()
     self.pipes = {};

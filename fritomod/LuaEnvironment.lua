@@ -34,7 +34,7 @@ if nil ~= require then
 	require "fritomod/FauxLuaEnvironment";
 end;
 
-LuaEnvironment = OOP.Class();
+LuaEnvironment = OOP.Class("LuaEnvironment");
 
 function LuaEnvironment:Constructor(parent)
 	if OOP.InstanceOf(LuaEnvironment, parent) then

@@ -5,7 +5,7 @@ end;
 
 WoW=WoW or {};
 
-WoW.Cursor=OOP.Class();
+WoW.Cursor=OOP.Class("WoW.Cursor");
 local Cursor=WoW.Cursor;
 
 function Cursor:Constructor()

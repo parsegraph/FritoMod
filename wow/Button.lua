@@ -4,7 +4,7 @@ if nil ~= require then
 	require "wow/Frame";
 end;
 
-WoW.Button=OOP.Class(WoW.Frame);
+WoW.Button=OOP.Class("WoW.Button", WoW.Frame);
 
 function WoW.Button:ClassName()
     return "wow/Button";

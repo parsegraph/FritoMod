@@ -10,7 +10,7 @@ if nil ~= require then
 end;
 
 UI = UI or {};
-UI.Window = OOP.Class();
+UI.Window = OOP.Class("UI.Window");
 local Window = UI.Window;
 
 local DEFAULT_STYLE = {

@@ -9,7 +9,7 @@ if nil ~= require then
 	require "fritomod/OOP-Class";
 end;
 
-StringChunkReader = OOP.Class();
+StringChunkReader = OOP.Class("StringChunkReader");
 
 local DELIMITER_BYTE=(":"):byte(1);
 

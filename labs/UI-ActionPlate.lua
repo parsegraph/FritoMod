@@ -11,7 +11,7 @@ end;
 
 UI = UI or {};
 
-local ActionPlate = OOP.Class();
+local ActionPlate = OOP.Class("UI.ActionPlate");
 UI.ActionPlate = ActionPlate;
 
 function ActionPlate:Constructor(parent)

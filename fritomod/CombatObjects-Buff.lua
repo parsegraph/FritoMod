@@ -36,7 +36,7 @@ end;
 
 CombatObjects=CombatObjects or {};
 
-local BuffEvent = OOP.Class(CombatObjects.Spell);
+local BuffEvent = OOP.Class("CombatObject.BuffEvent", CombatObjects.Spell);
 CombatObjects.Buff = BuffEvent;
 
 function BuffEvent:Constructor(...)

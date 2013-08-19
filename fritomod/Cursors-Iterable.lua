@@ -89,7 +89,7 @@ if nil ~= require then
 end;
 Cursors=Cursors or {};
 
-Cursors.Iterable=OOP.Class();
+Cursors.Iterable=OOP.Class("Cursors.Iterable");
 local cursor=Cursors.Iterable;
 
 function cursor:Constructor(iterable, library)

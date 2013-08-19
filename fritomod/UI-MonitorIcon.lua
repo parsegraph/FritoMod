@@ -9,7 +9,7 @@ end;
 
 UI = UI or {};
 
-local MonitorIcon = OOP.Class(UI.Icon);
+local MonitorIcon = OOP.Class("UI.MonitorIcon", UI.Icon);
 UI.MonitorIcon = MonitorIcon;
 
 -- These style settings are in addition to those in UI.Icon.

@@ -4,7 +4,7 @@ if nil ~= require then
     require "fritomod/LuaEnvironment-Loaders";
 end;
 
-LuaDependency = OOP.Class();
+LuaDependency = OOP.Class("LuaDependency");
 
 function LuaDependency:NewEnvironment(file)
 	return LuaEnvironment:New();

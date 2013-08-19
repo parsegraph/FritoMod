@@ -4,7 +4,7 @@ if nil ~= require then
 	require "fritomod/Serializers-Point";
 end;
 
-PersistentAnchor=OOP.Class();
+PersistentAnchor=OOP.Class("PersistentAnchor");
 
 function PersistentAnchor:Constructor(parentFrame)
 	local f=CreateFrame("Frame", nil, parentFrame)

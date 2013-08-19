@@ -10,7 +10,7 @@ if nil ~= require then
 	require "fritomod/UI-Icon";
 end;
 
-local SpellQueueItem = OOP.Class(StateDispatcher);
+local SpellQueueItem = OOP.Class("UI.SpellQueueItem", StateDispatcher);
 UI.SpellQueueItem = SpellQueueItem;
 
 local DEFAULT_STYLE = {

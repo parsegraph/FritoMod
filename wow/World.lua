@@ -7,7 +7,7 @@ end;
 
 WoW=WoW or Metatables.Defensive();
 
-WoW.World=OOP.Class();
+WoW.World=OOP.Class("WoW.World");
 local World=WoW.World;
 
 function World:Constructor()

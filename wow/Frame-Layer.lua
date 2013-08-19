@@ -1,5 +1,4 @@
 if nil ~= require then
-	require "fritomod/OOP-Class";
 	require "wow/Frame";
 end;
 

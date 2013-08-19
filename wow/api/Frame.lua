@@ -1,6 +1,5 @@
 if nil ~= require then
 	require "fritomod/Metatables";
-	require "fritomod/OOP-Class";
 
 	require "wow/Frame";
 	require "wow/Button";

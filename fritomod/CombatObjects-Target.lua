@@ -6,7 +6,7 @@ end;
 
 CombatObjects=CombatObjects or {};
 
-local TargetEvent = OOP.Class();
+local TargetEvent = OOP.Class("CombatObjects.TargetEvent");
 CombatObjects.Target = TargetEvent;
 
 function TargetEvent:Constructor(...)

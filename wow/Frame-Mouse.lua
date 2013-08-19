@@ -3,7 +3,6 @@ if nil ~= require then
 
 	require "fritomod/basic";
 	require "fritomod/Lists";
-	require "fritomod/OOP-Class";
 end;
 
 local Frame = WoW.Frame;

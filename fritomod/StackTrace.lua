@@ -3,7 +3,7 @@ if nil ~= require then
 	require "fritomod/Lists";
 end;
 
-StackTrace=OOP.Class();
+StackTrace=OOP.Class("StackTrace");
 
 local function BlizzardStackTrace()
 	assert(debugstack, "BlizzardStackTrace requires debugstack() to be available");

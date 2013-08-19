@@ -6,7 +6,7 @@ if nil ~= require then
     require "fritomod/currying";
 end;
 
-LuaDependencyList = OOP.Class(LuaDependency);
+LuaDependencyList = OOP.Class("LuaDependencyList", LuaDependency);
 
 function LuaDependencyList:Constructor()
     self.order = Ordering:New();

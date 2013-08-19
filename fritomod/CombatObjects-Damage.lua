@@ -22,7 +22,7 @@ end;
 
 CombatObjects=CombatObjects or {};
 
-local DamageEvent = OOP.Class(CombatObjects.Amount);
+local DamageEvent = OOP.Class("CombatObjects.DamageEvent", CombatObjects.Amount);
 CombatObjects.Damage = DamageEvent;
 
 function DamageEvent:Constructor(...)

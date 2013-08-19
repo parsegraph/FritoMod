@@ -14,7 +14,7 @@ end;
 
 Labs=Labs or {};
 
-local TitleFrame=OOP.Class();
+local TitleFrame=OOP.Class("TitleFrame");
 
 function TitleFrame:Constructor(parent)
 	self.frameTypeText=Frames.Text(parent, "friz", 14);
@@ -54,7 +54,7 @@ function TitleFrame:Bottom()
 	end;
 end;
 
-local PointFrame=OOP.Class();
+local PointFrame=OOP.Class("PointFrame");
 
 function PointFrame:Constructor(parent)
 	self.container=CreateFrame("Frame", nil, parent);
@@ -107,7 +107,7 @@ function PointFrame:GetContainer()
 	end;
 end;
 
-FrameFinder=OOP.Class();
+FrameFinder=OOP.Class("FrameFinder");
 
 function FrameFinder:Constructor()
 	self.container=CreateFrame("Frame");
