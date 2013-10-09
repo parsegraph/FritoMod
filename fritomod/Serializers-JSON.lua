@@ -78,19 +78,15 @@ printer=setmetatable({
         if #numericKeys == 0 and #stringKeys == 0 and #arrayKeys > 0 then
             -- It's just an array
             out("[");
-            out(newline);
             local first = true;
             for key, _ in pairs(arrayKeys) do
                 if not first then
-                    out(",");
-                    out(newline);
+                    out(", ");
                 end;
                 first = false;
 
-                out(indent);
                 printer(out, t[key], indented);
             end;
-            out(newline);
             out("]");
             return;
         end;
