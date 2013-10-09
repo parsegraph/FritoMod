@@ -36,10 +36,13 @@ function Persistence.Load(sourceData)
 	savers=Lists.MapCall(loaders, persisted);
 end;
 
-function Persistence.Save()
+function Persistence.Save(suppressEvent)
     if savers then
         trace("Firing persistence savers");
         Lists.CallEach(savers);
+        if not suppressEvent then
+            Events.Dispatch("SAVE");
+        end;
     end;
 end;
 
