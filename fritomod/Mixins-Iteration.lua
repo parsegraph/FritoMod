@@ -614,8 +614,29 @@ function Mixins.Iteration(library)
 		end;
 	end);
 
+	if library.EachKV == nil then
+		library.EachKV = CurryNamedFunction(library, "EachPair");
+	end;
+
+	if library.EachVK == nil then
+		library.EachVK = function(iterable, func, ...)
+			func = Curry(func, ...);
+			return library.EachKV(function(k, v)
+				return func(v, k);
+			end);
+		end;
+	end;
+
 	if library.Each == nil then
 		library.Each = CurryNamedFunction(library, "EachValue");
+	end;
+
+	if library.EachV == nil then
+		library.EachV = CurryNamedFunction(library, "EachValue");
+	end;
+
+	if library.EachK == nil then
+		library.EachK = CurryNamedFunction(library, "EachKey");
 	end;
 
 	-- Iterates over all items in the specified iterable, collecting results
@@ -644,8 +665,29 @@ function Mixins.Iteration(library)
 		return results;
 	end);
 
+	if library.MapKV == nil then
+		library.MapKV = CurryNamedFunction(library, "MapPairs");
+	end;
+
+	if library.MapVK == nil then
+		library.MapVK = function(iterable, func, ...)
+			func = Curry(func, ...);
+			return library.MapKV(function(k, v)
+				return func(v, k);
+			end);
+		end;
+	end;
+
 	if library.Map == nil then
 		library.Map = CurryNamedFunction(library, "MapValues");
+	end;
+
+	if library.MapV == nil then
+		library.MapV = CurryNamedFunction(library, "MapValues");
+	end;
+
+	if library.MapK == nil then
+		library.MapK = CurryNamedFunction(library, "MapKeys");
 	end;
 
 	if library.CallEach == nil then
