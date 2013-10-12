@@ -64,9 +64,7 @@ printer=setmetatable({
 			arrayKeys[i]=true;
 			out(indent);
 			printer(out, t[i], indented);
-			out(", -- [");
-			out(tostring(i));
-			out("]");
+			out(",");
 			out(newline);
 			i=i+1;
 		end;
