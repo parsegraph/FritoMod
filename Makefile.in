@@ -62,7 +62,7 @@ files.xml: $(dirs) bin/get-requires
 	./bin/get-requires --windows --xml $(dirs) >.files.xml
 	mv .files.xml $@
 
-luadir=${DATADIR}/lua/5.1
+luadir=${DATADIR}/lua/5.2
 
 install: $(addprefix $(DESTDIR)/$(luadir)/, fritomod wow wow/api)
 
