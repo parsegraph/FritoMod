@@ -621,7 +621,7 @@ function Mixins.Iteration(library)
 	if library.EachVK == nil then
 		library.EachVK = function(iterable, func, ...)
 			func = Curry(func, ...);
-			return library.EachKV(function(k, v)
+			return library.EachKV(iterable, function(k, v)
 				return func(v, k);
 			end);
 		end;
@@ -672,7 +672,7 @@ function Mixins.Iteration(library)
 	if library.MapVK == nil then
 		library.MapVK = function(iterable, func, ...)
 			func = Curry(func, ...);
-			return library.MapKV(function(k, v)
+			return library.MapKV(iterable, function(k, v)
 				return func(v, k);
 			end);
 		end;
