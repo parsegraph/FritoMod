@@ -291,8 +291,15 @@ function LuaEnvironment:Run(runner, ...)
 	return self:LoadFunction(runner)(...);
 end;
 
-function LuaEnvironment:LoadString(str, source)
-	return self:GetParser()(str, source);
+function LuaEnvironment:RunNamed(name, runner, ...)
+	if type(runner) == "string" then
+		return assert(self:LoadString(runner, name))(...);
+	end;
+	return self:LoadFunction(runner)(...);
+end;
+
+function LuaEnvironment:LoadString(str, name)
+	return self:GetParser()(str, name);
 end;
 
 -- Returns a function that will Load a named module into this environment.
