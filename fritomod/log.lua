@@ -1,6 +1,6 @@
 if nil ~= require then
     require "fritomod/Math";
-    require "wow/api/Timing";
+    require "wow/api/Timing"; -- GetTime()
     require "fritomod/basic";
     require "fritomod/OOP";
 end;
