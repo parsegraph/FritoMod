@@ -1,4 +1,4 @@
-#!/usr/bin/lua
+#!/usr/bin/env lua
 
 -- get-requires returns the dependencies of a given lua file. If multiple files are
 -- provided, then each of those file's dependencies will be listed.
