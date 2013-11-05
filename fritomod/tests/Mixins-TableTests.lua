@@ -67,6 +67,7 @@ function Mixins.TableTests(Suite, library)
 		assert(library.ContainsKey(tc(), "c"), "ContainsKey finds a key with a falsy value");
 		assert(library.ContainsKey(tc(), false), "ContainsKey finds a falsy key");
 		assert(not library.ContainsKey(tc(), nil), "ContainsKey doesn't find nil, but doesn't throw");
+		assert(library.ContainsKey(tc(), "a", library.NewEqualsTest()));
 	end;
 
 	function Suite:TestKeyIterator()
