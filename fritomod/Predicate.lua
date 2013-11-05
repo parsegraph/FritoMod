@@ -135,7 +135,7 @@ function Predicate:Condition(cond, ...)
 		return self:PredicateCondition(cond);
 	end;
 	trace("Adding condition to predicate %q", self.name);
-	cond=Curry(cond, ...);
+	cond=Functions.Clone(Curry(cond, ...));
 	self:AttachCondition(cond);
 	self:Run();
 	return Functions.OnlyOnce(function(self)
