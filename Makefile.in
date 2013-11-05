@@ -24,9 +24,9 @@ all: toc
 Makefile: Makefile.in configure
 	$(SRCDIR)/configure ${PREFIX}
 
-check test:
-	./bin/run-test.sh
-.PHONY: test check
+check cehck test:
+	LUA_PATH="?.lua" ./bin/run-test.sh
+.PHONY: test check cehck
 
 toc: FritoMod.toc files.xml
 .PHONY: toc
