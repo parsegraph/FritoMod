@@ -1,7 +1,16 @@
 #!/usr/bin/env lua
 
 -- Get and copy a clean environment.
-require "bit";
+if bit32 then
+	bit = bit32;
+else
+    require "bit";
+end;
+
+if not unpack then
+    unpack = table.unpack;
+end;
+
 local pristine={};
 for k,v in pairs(_G) do
 	pristine[k]=v;
