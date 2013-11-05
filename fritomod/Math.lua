@@ -59,6 +59,7 @@ function Math.Interpolate(min, value, max)
 	local range = max - min;
 	return min + (range * value);
 end;
+Math.Mix = Math.Interpolate;
 
 function Math.Distance(...)
 	local x1, y1, x2, y2 = ...;
@@ -92,3 +93,9 @@ function Math.Signum(number)
 	end;
 	return 0;
 end;
+
+Math.max = math.max;
+Math.Max = math.max;
+
+Math.min = math.min;
+Math.Min = math.min;

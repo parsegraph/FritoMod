@@ -302,10 +302,12 @@ Frames.HW=Frames.HeightWidth;
 function Frames.Width(f, amount)
 	Frames.AsRegion(f):SetWidth(amount);
 end;
+Frames.W = Frames.Width;
 
 function Frames.Height(f, amount)
 	Frames.AsRegion(f):SetHeight(amount);
 end;
+Frames.H = Frames.Height;
 
 local INSETS_ZERO={
 	left=0,
