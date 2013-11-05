@@ -5,6 +5,9 @@ if not GetTime then
         -- be forced to shift. Since this breaks the monotonic nature of this clock,
         -- I prefer to just crash and burn.
 
+        if platform() == "wow" then
+            return 1;
+        end;
         error("GetTime is not implemented");
     end;
 end;
