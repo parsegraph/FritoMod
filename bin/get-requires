@@ -9,11 +9,17 @@ if bit32 then
 else
 	require "bit";
 end;
-require "lfs";
+
+if not unpack then
+    unpack = table.unpack;
+end;
+
 local pristine={};
 for k,v in pairs(_G) do
 	pristine[k]=v;
 end;
+
+require "lfs";
 
 require "fritomod/currying";
 require "fritomod/LuaEnvironment";
