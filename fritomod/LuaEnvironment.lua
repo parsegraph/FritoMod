@@ -106,10 +106,10 @@ function LuaEnvironment:GetParser()
 		return self.parser;
 	end;
 	return function(text, name)
-		if _VERSION == "Lua 5.1" then
-			return self:LoadFunction(assert(loadstring(text)));
+		if luaversion() >= luaversion("Lua 5.2") then
+			return load(text, name, "t", self:Globals());
 		end;
-		return load(text, name, "t", self:Globals());
+		return self:LoadFunction(assert(loadstring(text)));
 	end;
 end;
 
@@ -319,10 +319,10 @@ function LuaEnvironment:LoadModule(name, env)
 	for _, loader in ipairs(self.moduleLoaders) do
 		local runner, err = loader(name, self.globals);
 		if runner then
-			if _VERSION == "Lua 5.1" then
-				return self:LoadFunction(runner);
-			else
+			if luaversion() >= luaversion("Lua 5.2") then
 				return runner;
+			else
+				return self:LoadFunction(runner);
 			end;
 		elseif err then
 			errors[loader] = err;
@@ -339,11 +339,10 @@ function LuaEnvironment:LoadModule(name, env)
 		error(str);
 	end;
 	local runner = self.parent:LoadModule(name, env);
-	if _VERSION == "Lua 5.1" then
-		return self:LoadFunction(runner);
-	else
+	if luaversion() >= luaversion("Lua 5.2") then
 		return runner;
 	end;
+	return self:LoadFunction(runner);
 end;
 
 -- Returns whether the named module has been loaded. A module is considered

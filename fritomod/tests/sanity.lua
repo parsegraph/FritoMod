@@ -70,7 +70,7 @@ function Suite:TestOneToOneForLoopIteratesOnce()
 end;
 
 function Suite:TestMaxn()
-    if _VERSION == "Lua 5.2" then
+    if luaversion() >= luaversion("Lua 5.2") then
         -- table.maxn was removed in Lua 5.2
         return;
     end;
@@ -87,7 +87,7 @@ function Suite:TestMaxn()
 end;
 
 function Suite:TestNewProxy()
-    if _VERSION == "Lua 5.2" then
+    if luaversion() >= luaversion("Lua 5.2") then
         -- newproxy() was removed in Lua 5.2
         return;
     end;

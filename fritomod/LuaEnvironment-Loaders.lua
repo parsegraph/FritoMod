@@ -22,10 +22,10 @@ function loaders.Filesystem()
 			return;
 		end;
 		local runner, err;
-		if _VERSION == "Lua 5.1" then
-			runner, err=loadfile(file);
-		else
+		if luaversion() >= luaversion("Lua 5.2") then
 			runner, err=loadfile(file, "bt", env);
+		else
+			runner, err=loadfile(file);
 		end;
 		if runner then
 			return runner;

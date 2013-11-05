@@ -215,3 +215,14 @@ if not platform then
         return "wow";
     end;
 end;
+
+local versions = {
+    ["Lua 5.1"] = 50100,
+    ["Lua 5.2"] = 50200
+};
+
+function luaversion(version)
+    version = version or _VERSION;
+    assert(versions[version], "Lua version is not supported");
+    return versions[version];
+end;
