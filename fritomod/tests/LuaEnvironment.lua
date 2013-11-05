@@ -35,15 +35,6 @@ end;
 
 function Suite:TestLuaEnvironmentShieldsGlobals()
     local env = LuaEnvironment:New();
-    env:Run(function()
-        __g1 = 43;
-    end);
-    Assert.Nil(__g1);
-    Assert.Equals(43, env:Get("__g1"));
-end;
-
-function Suite:TestLuaEnvironmentAcceptsStrings()
-    local env = LuaEnvironment:New();
     env:Run([[
         __g1 = 44;
     ]]);
@@ -74,9 +65,9 @@ function Suite:TestLuaEnvironmentAcceptsLazyValues()
     end);
 
     local Assert = Assert;
-    env:Run(function()
+    env:Run([[
         Assert.Equals(45, lazy);
-    end);
+    ]]);
     Assert.Nil(lazy);
 
     Assert.Equals(45, env:Get("lazy"));
@@ -102,16 +93,18 @@ function Suite:TestLuaEnvironmentAcceptsProxies()
     counter.Assert(2);
 
     local Assert = Assert;
-    env:Run(function()
+    env:Run([[
         Assert.Equals(8, proxy);
-    end);
+    ]]);
 end;
 
 function Suite:TestLuaEnvironmentSupportsTableInjection()
     local env = LuaEnvironment:New();
 
+    local f = Tests.Flag();
     local injected = {
-        foo = 37
+        foo = 37,
+        f = f
     };
 
     env:Inject(injected);
@@ -121,13 +114,12 @@ function Suite:TestLuaEnvironmentSupportsTableInjection()
         end;
     end);
 
-    local f = Tests.Flag();
     local Assert = Assert;
-    env:Run(function()
+    env:Run([[
         Assert.Equals(37, foo);
         Assert.Equals(38, bar);
         f.Raise();
-    end);
+    ]]);
     f.Assert();
 end;
 
@@ -165,9 +157,9 @@ function Suite:TestGlobalSetsWillUseLuaEnvironment()
     local env = LuaEnvironment:New(parent);
 
     env:Export("__g1");
-    env:Run(function()
+    env:Run([[
         __g1 = 91;
-    end);
+    ]]);
 
     Assert.Nil(__g1);
     Assert.Equals(91, env:Get("__g1"));
@@ -178,16 +170,16 @@ function Suite:TestEnvironmentSupportsRequireLoaders()
     local env = LuaEnvironment:New();
 
     local c = Tests.Counter(0);
-    env:AddLoader(function(name)
+    env:AddLoader(function(name, env)
         return function()
-            __g1 = name;
+            env["__g1"] = name;
             c.Hit();
         end;
     end);
 
-    env:Run(function()
+    env:Run([[
         require("notime");
-    end);
+    ]]);
     Assert.Nil(__g1);
     Assert.Equals("notime", env:Get("__g1"));
     c.Assert(1);

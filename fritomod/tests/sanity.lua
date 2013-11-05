@@ -224,6 +224,11 @@ do
 end;
 
 function Suite:TestSetfenvHidesTrueGlobals()
+    if luaversion() >= luaversion("Lua 5.2") then
+        -- setfenv was removed in Lua 5.2
+        return;
+    end;
+
     local g = {};
 
     local trueGlobal = _G;
@@ -241,6 +246,11 @@ function Suite:TestSetfenvHidesTrueGlobals()
 end;
 
 function Suite:TestNestedFunctionsIgnoreSetfenv()
+    if luaversion() >= luaversion("Lua 5.2") then
+        -- setfenv was removed in Lua 5.2
+        return;
+    end;
+
     local grandchild = {};
     local function Grandchild()
         __g2 = "grandchild";
@@ -266,6 +276,11 @@ function Suite:TestNestedFunctionsIgnoreSetfenv()
 end;
 
 function Suite:TestNewFunctionsInheritSetfenvTable()
+    if luaversion() >= luaversion("Lua 5.2") then
+        -- setfenv was removed in Lua 5.2
+        return;
+    end;
+
     local child = {};
 
     local function Child()

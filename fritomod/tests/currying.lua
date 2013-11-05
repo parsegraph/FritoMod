@@ -83,6 +83,10 @@ function Suite:TestGlobalEnvironmentIsClean()
 end;
 
 function Suite:TestCurryPreservesSetfenvWithCurryFunction()
+    if luaversion() >= luaversion("Lua 5.2") then
+        -- setfenv was removed in Lua 5.2
+        return;
+    end;
     local globals = {};
     local function Foo(a, b)
         __g1 = a + b;
@@ -93,10 +97,6 @@ function Suite:TestCurryPreservesSetfenvWithCurryFunction()
     curried(4);
     Assert.Nil(__g1);
     Assert.Equals(7, globals.__g1);
-end;
-
-function Suite:TestCurryRejectsNilsWhenPassedAnExtraordinaryAmountOfArgs()
-
 end;
 
 function Suite:TestForcedSeal()
