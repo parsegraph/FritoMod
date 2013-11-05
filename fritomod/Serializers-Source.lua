@@ -133,7 +133,6 @@ function Serializers.ReadSource(str)
         producer = assert(load("return " .. str));
     else
         producer = assert(loadstring("return " .. str));
-    else
 	end;
 	return producer();
 end;
