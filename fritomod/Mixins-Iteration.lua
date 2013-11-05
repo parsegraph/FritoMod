@@ -1114,6 +1114,10 @@ function Mixins.Iteration(library)
 		end;
 	end;
 
+	if library.Empty == nil then
+		library.Empty = CurryNamedFunction(library, "IsEmpty");
+	end;
+
 	-- Returns whether the specified iterable contains the specified item.
 	--
 	-- This operation is applicable for either keys or values.
