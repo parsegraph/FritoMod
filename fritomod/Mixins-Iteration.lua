@@ -1457,7 +1457,11 @@ function Mixins.Iteration(library)
 	end;
 
 	Mixins.KeyValueOperation(library, "Sum%ss", function(iterator, iterable, convertFunc, ...)
-		convertFunc = convertFunc or Functions.Return;
+		if convertFunc or select("#", ...) > 0 then
+			convertFunc = Curry(convertFunc, ...);
+		else
+			convertFunc = Functions.Return;
+		end;
 		local sum=0;
 		for v in iterator(iterable) do
 			v=convertFunc(v);
