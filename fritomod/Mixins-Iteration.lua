@@ -126,6 +126,9 @@ function Mixins.Iteration(library)
 			if not testFunc then
 				return Operator.Equals;
 			end;
+			if select("#", ...) == 0 and testFunc == Operator.Equals then
+				return Operator.Equals;
+			end;
 			testFunc = Curry(testFunc, ...);
 			return function(...)
 				local result=testFunc(...);
