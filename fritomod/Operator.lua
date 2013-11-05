@@ -180,7 +180,12 @@ Operator.Multiplication=Operator.Multiply;
 
 Operator.Division=Operator.Divide;
 
-for k,v in pairs(Operator) do
-	Operator["Is"..k]=v;
-	Operator[k:lower()]=v;
+-- This should be done in two passes, to ensure iteration is stable.
+local names = {};
+for name,_ in pairs(Operator) do
+    table.insert(names, name);
+end;
+for _, name in ipairs(names) do
+	Operator["Is"..name] = Operator[name];
+	Operator[name:lower()] = Operator[name];
 end;
