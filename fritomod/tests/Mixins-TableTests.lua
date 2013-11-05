@@ -252,5 +252,51 @@ function Mixins.TableTests(Suite, library)
 		Assert.Equals({"a", "b", "c"}, results);
     end;
 
+    function Suite:TestSubtraction()
+        local cumul = Suite:Table({
+            a = true,
+            b = true,
+            c = true
+        });
+        local sub = Suite:Table({
+            a = true,
+        });
+
+        local result = library.Subtract(cumul, sub);
+        Assert.Equals({b = true, c = true}, result);
+    end;
+
+    function Suite:TestIntersection()
+        local first = Suite:Table({
+            a = true,
+            b = true,
+            c = true
+        });
+        local second = Suite:Table({
+            b = true,
+            c = true,
+            d = true
+        });
+
+        local result = library.Intersect(first, second);
+        Assert.Equals({b = true, c = true}, result);
+    end;
+
+    function Suite:TestUnion()
+        local first = Suite:Table({
+            a = true,
+            b = true,
+            c = true
+        });
+        local second = Suite:Table({
+            b = true,
+            c = true,
+            d = true
+        });
+
+        local result = library.Union(first, second);
+        Assert.Equals({a = true, b = true, c = true, d = true}, result);
+    end;
+
 	return Suite;
 end;

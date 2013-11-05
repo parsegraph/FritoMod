@@ -103,6 +103,12 @@ function Mixins.Iteration(library)
 		end;
 	end;
 
+	if library.SupportsRandomAccess == nil then
+		function library.SupportsRandomAccess()
+			return true;
+		end;
+	end;
+
 	--  Returns a function that tests for equality. The created function
 	--  should expect -anything- and return true if and only if they are
 	--  equal.
@@ -1378,23 +1384,119 @@ function Mixins.Iteration(library)
 	--	 a match.
 	-- returns
 	--	 a new iterable containing all items contained in both iterables
-	Mixins.KeyValuePairOperationByName(library, "UnionBy%s", function(name, iterable, otherIterable, testFunc, ...)
+	Mixins.KeyValuePairOperationByName(library, "IntersectionBy%s", function(name, iterable, otherIterable, testFunc, ...)
+		if not library.SupportsRandomAccess() then
+			return Tables["IntersectionBy" .. name](
+				CloneIterable(iterable),
+				CloneIterable(otherIterable),
+				testFunc,
+				...
+			);
+		end;
 		testFunc = library.NewEqualsTest(testFunc, ...);
-		local union = NewIterable();
+		local result = NewIterable();
 		local contains = library["Contains" .. name];
 		for key, value in library.Iterator(iterable) do
-			if contains(otherIterable, testFunc) then
-				InsertInto(union, key, value);
+			local target = key;
+			if name == "Value" then
+				target = value;
+			end;
+			if contains(otherIterable, target, testFunc) then
+				InsertInto(result, key, value);
 			end;
 		end;
-		return union;
+		return result;
 	end);
 
-	if library.Union == nil then
-		library.Union = CurryNamedFunction(library, "UnionByValue");
+	if library.Intersection == nil then
+		library.Intersection = function(iterable, otherIterable, ...)
+			if not library.SupportsRandomAccess() then
+				return Tables.Intersection(
+					CloneIterable(iterable),
+					CloneIterable(otherIterable),
+					...
+				);
+			end;
+			if library.Bias() == "table" then
+				return library.IntersectionByKey(iterable, otherIterable, ...);
+			else
+				return library.IntersectionByValue(iterable, otherIterable, ...);
+			end;
+		end;
 	end;
 
-	-- Returns a new iterable that contains only items that are contained in one of the iterables,
+	if library.IntersectByValue == nil then
+		library.IntersectByValue = CurryNamedFunction(library, "IntersectionByValue");
+	end;
+
+	if library.IntersectByKey == nil then
+		library.IntersectByKey = CurryNamedFunction(library, "IntersectionByKey");
+	end;
+
+	if library.Intersect == nil then
+		library.Intersect = CurryNamedFunction(library, "Intersection");
+	end;
+
+	if library.Union == nil then
+		function library.Union(...)
+			local result = NewIterable();
+			for i=1, select("#", ...) do
+				local iterable = select(i, ...);
+				for key, value in library.Iterator(iterable) do
+					InsertInto(result, key, value);
+				end;
+			end;
+			return result;
+		end;
+	end;
+
+	Mixins.KeyValuePairOperationByName(library, "SubtractBy%s", function(name, iterable, otherIterable, testFunc, ...)
+		if not library.SupportsRandomAccess() then
+			iterable = CloneIterable(iterable);
+			otherIterable = CloneIterable(otherIterable);
+			return Tables["SubtractBy" .. name](
+				iterable,
+				otherIterable,
+				testFunc,
+				...
+			);
+		end;
+		testFunc = library.NewEqualsTest(testFunc, ...);
+		local result = NewIterable();
+		for key, value in library.Iterator(iterable) do
+			local target = key;
+			if name == "Value" then
+				target = value;
+			end;
+			if not library["Contains" .. name](otherIterable, target, testFunc) then
+				InsertInto(result, key, value);
+			end;
+		end;
+		return result;
+	end);
+
+	if library.Subtract == nil then
+		library.Subtract = function(iterable, otherIterable, ...)
+			if not library.SupportsRandomAccess() then
+				return Tables.Subtract(
+					CloneIterable(iterable),
+					CloneIterable(otherIterable),
+					...
+				);
+			end;
+			if library.Bias() == "table" then
+				return library.SubtractByKey(iterable, otherIterable, ...);
+			else
+				return library.SubtractByValue(iterable, otherIterable, ...);
+			end;
+		end;
+	end;
+
+	if library.Complement == nil then
+		library.Complement = CurryNamedFunction(library, "Subtract");
+	end;
+
+	-- Returns a new iterable that contains items that are contained in only one of the iterables,
 	-- according to the specified testFunc.
 	--
 	-- This operation is applicable for keys, values, or pairs.
@@ -1408,26 +1510,22 @@ function Mixins.Iteration(library)
 	--	 a match.
 	-- returns
 	--	 a new iterable containing all items contained in only one of the iterables
-	Mixins.KeyValuePairOperationByName(library, "IntersectionBy%s", function(name, iterable, otherIterable, testFunc, ...)
+	Mixins.KeyValuePairOperationByName(library, "SymmetricDifferenceBy%s", function(name, iterable, otherIterable, testFunc, ...)
 		testFunc = library.NewEqualsTest(testFunc, ...);
-		local intersection = NewIterable();
+		local result = NewIterable();
 		local contains = library["Contains" .. name];
 		for key, value in library.Iterator(iterable) do
 			if not contains(otherIterable, testFunc) then
-				InsertInto(intersection, key, value);
+				InsertInto(result, key, value);
 			end;
 		end;
 		for key, value in library.Iterator(otherIterable) do
 			if not contains(iterable, testFunc) then
-				InsertInto(intersection, key, value);
+				InsertInto(result, key, value);
 			end;
 		end;
-		return union;
+		return result;
 	end);
-
-	if library.Intersection == nil then
-		library.Intersection = CurryNamedFunction(library, "IntersectionByValue");
-	end;
 
 	-- Returns the number of times the specified item occurs in the specified iterable.
 	--

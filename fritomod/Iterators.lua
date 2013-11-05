@@ -19,6 +19,10 @@ function Iterators.Bias()
 	return "array";
 end;
 
+function Iterators.SupportsRandomAccess()
+	return false;
+end;
+
 -- Iterate over a function, repeatedly calling it until it returns nil. The iterator does not need to return
 -- keys; they will be provided automatically.
 function Iterators.Iterator(iterator)
