@@ -12,7 +12,7 @@ function Mixins.TableTests(Suite, library)
 		Assert.Type("function", Suite.Table, "Suite has an 'Table' function");
 		assert(Suite:Table({a=1,b=2,c=3}), "Table returns a truthy value");
 		assert(Suite:Table(), "Table handles empty arguments");
-		assert(Suite:Table() ~= Suite:Table(), "Table returns unique iterables");
+		assert(Suite:Table() ~= Suite:Table(), "Table test suite must return unique iterables");
 	end;
 
 	function Suite:TableCreator(t)
