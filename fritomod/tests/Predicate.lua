@@ -87,16 +87,16 @@ function Suite:TestPredicateWithDifferentEvaluators()
 	pred:ConstantCondition(true);
 	pred:ConstantCondition(false);
 
-	flag.AssertUnset("Predicate is inactive if any condition is falsy");
+	flag.AssertUnset("Predicate must be inactive if any condition is falsy");
 
 	pred:SetEvaluator("any");
-	flag.AssertSet("Predicate with 'any' evaluator is active if any condition is truthy");
+	flag.AssertSet("Predicate with 'any' evaluator must be active if any condition is truthy");
 
 	pred:SetEvaluator("majority");
-	flag.AssertUnset("Predicate with 'majority' evaluator is inactive if 1/2 of conditions are false");
+	flag.AssertUnset("Predicate with 'majority' evaluator must be inactive if 1/2 of conditions are false");
 
 	pred:ConstantCondition(true);
-	flag.AssertSet("Predicate with 'majority' evaluator is active if majority of conditions are truthy");
+	flag.AssertSet("Predicate with 'majority' evaluator must be active if majority of conditions are truthy");
 end;
 
 function Suite:TestConditionsCanBeRemoved()
