@@ -42,21 +42,6 @@ function Mixins.Iteration(library)
 	end;
 	local NewIterable = CurryNamedFunction(library, "_NewIterable");
 
-	if library._CloneIterable == nil then
-		function library._CloneIterable(iterable)
-			if rawget(library, "Clone") then
-				return library.Clone(iterable);
-			else
-				local t=NewIterable();
-				for v in library.ValueIterator(iterable) do
-					InsertInto(t, v);
-				end;
-				return t;
-			end;
-		end;
-	end;
-	local CloneIterable = CurryNamedFunction(library, "_CloneIterable");
-
 	if library._InsertInto == nil then
 		function library._InsertInto(iterable, key, value)
 			if library.Bias() == "table" then
@@ -84,6 +69,21 @@ function Mixins.Iteration(library)
 		end;
 	end;
 	local InsertInto = CurryNamedFunction(library, "_InsertInto");
+
+	if library._CloneIterable == nil then
+		function library._CloneIterable(iterable)
+			if rawget(library, "Clone") then
+				return library.Clone(iterable);
+			else
+				local t=NewIterable();
+				for k, v in library.PairIterator(iterable) do
+					InsertInto(t, k, v);
+				end;
+				return t;
+			end;
+		end;
+	end;
+	local CloneIterable = CurryNamedFunction(library, "_CloneIterable");
 
 	if library.Bias == nil then
 		-- Returns the bias of the library - whether the iterable is expected to behave like
