@@ -8,7 +8,7 @@ LuaEnvironment.Loaders={};
 local loaders=LuaEnvironment.Loaders;
 
 function loaders.Filesystem()
-	return function(name)
+	return function(name, env)
 		if not lfs or not loadfile then
 			return;
 		end;
@@ -21,7 +21,12 @@ function loaders.Filesystem()
 			-- The file was not accessible, so just return.
 			return;
 		end;
-		local runner, err=loadfile(file);
+		local runner, err;
+		if _VERSION == "Lua 5.1" then
+			runner, err=loadfile(file);
+		else
+			runner, err=loadfile(file, "bt", env);
+		end;
 		if runner then
 			return runner;
 		end;
@@ -52,7 +57,7 @@ function loaders.Ignore(...)
 		end;
 	end;
 	assert(ignored, "Ignored was not provided");
-	return function(package)
+	return function(package, env)
 		if ignored[package] then
 			return Noop;
 		end;

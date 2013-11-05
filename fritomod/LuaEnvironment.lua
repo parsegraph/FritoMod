@@ -311,13 +311,19 @@ end;
 -- name, then the parent's module loaders will be used.
 --
 -- A name that was not supported by any loader will cause an error.
-function LuaEnvironment:LoadModule(name)
+function LuaEnvironment:LoadModule(name, env)
 	assert(name, "Module name must not be falsy");
+	env = env or self.globals;
+
 	local errors = {};
 	for _, loader in ipairs(self.moduleLoaders) do
-		local runner, err = loader(name);
+		local runner, err = loader(name, self.globals);
 		if runner then
-			return self:LoadFunction(runner);
+			if _VERSION == "Lua 5.1" then
+				return self:LoadFunction(runner);
+			else
+				return runner;
+			end;
 		elseif err then
 			errors[loader] = err;
 			errors.__hadErrors = true;
@@ -332,7 +338,12 @@ function LuaEnvironment:LoadModule(name)
 		end;
 		error(str);
 	end;
-	return self:LoadFunction(self.parent:LoadModule(name));
+	local runner = self.parent:LoadModule(name, env);
+	if _VERSION == "Lua 5.1" then
+		return self:LoadFunction(runner);
+	else
+		return runner;
+	end;
 end;
 
 -- Returns whether the named module has been loaded. A module is considered
