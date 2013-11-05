@@ -122,7 +122,7 @@ function Mixins.Iteration(library)
 			end;
 			testFunc = Curry(testFunc, ...);
 			return function(...)
-				local r=testFunc(...);
+				local result=testFunc(...);
 				if type(result) == "number" then
 					return result == 0;
 				end;
