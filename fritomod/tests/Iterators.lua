@@ -15,9 +15,7 @@ local tableSuite = ReflectiveTestSuite:New("Iterators (tables)");
 Mixins.TableTests(tableSuite, Iterators);
 function tableSuite:Table(t)
 	if t == nil then
-		return function()
-			-- We don't use Noop since that wouldn't be a unique value
-		end;
+		return Functions.Clone(Noop);
 	end;
 	return Iterators.IterateMap(t);
 end;
