@@ -145,7 +145,7 @@ function Predicate:Condition(cond, ...)
 	end, self);
 end;
 
--- Registers a conditions that determines the overall state of this predicate.
+-- Registers a condition that determines the overall state of this predicate.
 
 -- A value condition is a callback function that will send a value that determines
 -- its state. A truthy value is considered as active for the predicate.
