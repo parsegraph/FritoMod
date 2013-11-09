@@ -59,7 +59,10 @@ function Math.Interpolate(min, value, max)
 	local range = max - min;
 	return min + (range * value);
 end;
-Math.Mix = Math.Interpolate;
+
+function Math.Mix(min, max, lerp)
+    return Math.Interpolate(min, lerp, max);
+end;
 
 function Math.Distance(...)
 	local x1, y1, x2, y2 = ...;
