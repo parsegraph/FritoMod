@@ -232,6 +232,16 @@ end;
 Timing.CountDown=Timing.Countdown;
 Timing.Count=Timing.Countdown;
 
+function Timing.Interpolate(duration, func, ...)
+	func = Curry(func, ...);
+	duration = Strings.GetTime(duration);
+	local start = GetTime();
+	return function()
+		local elapsed = GetTime() - start;
+		func(Math.Clamp(0, elapsed / duration, 1));
+	end;
+end;
+
 -- Cycle between a series of values, based on when this function is called.
 --
 -- This function has no remover since it does not use a timer.
