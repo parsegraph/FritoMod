@@ -192,6 +192,8 @@ function Frames.Color(f,...)
 		f:SetTextColor(r,g,b,a);
 	elseif f.SetTexture then
 		f:SetTexture(r,g,b,a);
+	elseif f.SetColor then
+		f:SetColor(r,g,b,a);
 	elseif f.CreateTexture then
 		local t = nil;
 		local regions = {f:GetRegions()};
