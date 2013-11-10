@@ -12,7 +12,9 @@ function OOP.IntegrateLibrary(library, class)
 end
 
 function OOP.InstanceOf(class, instance)
-	assert(OOP.IsClass(class), "class is not a class: " .. tostring(class));
+    if OOP.IsInstance(class) and OOP.IsClass(instance) then
+        return OOP.InstanceOf(instance, class);
+    end;
 	if not OOP.IsInstance(instance) then
 		return false;
 	end;
@@ -32,7 +34,10 @@ function OOP.InstanceOf(class, instance)
 end;
 OOP.Instanceof = OOP.InstanceOf;
 
-function OOP.IsInstance(candidate)
+function OOP.IsInstance(candidate, class)
+    if class ~= nil then
+        return OOP.InstanceOf(class, candidate);
+    end;
 	if type(candidate) ~= "table" then
 		return false;
 	end;
