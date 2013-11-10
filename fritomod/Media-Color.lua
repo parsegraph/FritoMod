@@ -222,9 +222,13 @@ Frames.SolidColor=Frames.Color;
 function Frames.BorderColor(f, ...)
 	f=Frames.AsRegion(f);
 	local r,g,b,a = GetColor(...);
-	assert(f.SetBackdropBorderColor,
-		"Provided object does not support backdrop border colors");
-	f:SetBackdropBorderColor(r,g,b,a);
+	if f.SetBorderColor then
+		f:SetBorderColor(r,g,b,a);
+	elseif f.SetBackdropBorderColor then
+		f:SetBackdropBorderColor(r,g,b,a);
+	else
+		error("Frame must support border colors");
+	end;
 	return f;
 end;
 Frames.BackdropBorderColor=Frames.BorderColor;
