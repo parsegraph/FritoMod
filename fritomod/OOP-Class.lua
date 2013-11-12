@@ -129,6 +129,9 @@ local CLASS_METATABLE = {
 	-- If you need (or do not need) the instance reference, then you should explicitly
 	-- Seal or Curry it accordingly.
 	AddDestructor = function(self, destructor, ...)
+		if not IsCallable(destructor) and select("#", ...) == 0 and type(destructor) == "table" and destructor.Destroy then
+			return self:AddDestructor(destructor, "Destroy");
+		end;
 		destructor = Curry(destructor, ...);
 		-- Note that self could be referring to either the instance or the class. This
 		-- is intentional. For now, I don't see a reason to make it more explicit; I'm
