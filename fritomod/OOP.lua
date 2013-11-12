@@ -60,3 +60,45 @@ function OOP.IsDestroyed(obj)
 	end;
     return obj.destroyed == true;
 end;
+
+function OOP.Property(class, name, setter, ...)
+    if setter ~= nil or select("#", ...) > 0 then
+        setter = Curry(setter, ...);
+    else
+        setter = Noop;
+    end;
+    class:AddConstructor(function(self)
+        local value;
+        self[name] = function(self, ...)
+            if select("#", ...) == 0 then
+                return value;
+            end;
+            local newValue = ...;
+            if value == newValue then
+                return;
+            end;
+            local oldValue = value;
+            local invoked = false;
+            local function Commit(...)
+                invoked = true;
+                if select("#", ...) == 0 then
+                    value = newValue;
+                else
+                    value = ...;
+                end;
+            end;
+            setter(self, newValue, oldValue, Commit);
+            if not invoked then
+                Commit();
+            end;
+        end;
+
+        self["Get" .. name] = function(self)
+            return self[name](self);
+        end;
+
+        self["Set" .. name] = function(self, newValue)
+            return self[name](self, newValue);
+        end;
+    end);
+end;
