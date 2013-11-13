@@ -70,13 +70,11 @@ local CLASS_METATABLE = {
 	--	 the object that is constructed
 	-- throws
 	--	 if object is falsy
-	ConstructObject = function(self, object, ...)
-		if not object then
-			error("Object is falsy");
-		end;
-		if self.__constructors then
-			for i=1, #self.__constructors do
-				local constructor = self.__constructors[i];
+	ConstructObject = function(klass, object, ...)
+		assert(object, "Object must not be falsy");
+		if klass.__constructors then
+			for i=1, #klass.__constructors do
+				local constructor = klass.__constructors[i];
 				local destructor = constructor(object, ...);
 				if IsCallable(destructor) then
 					object:AddDestructor(destructor);
@@ -133,9 +131,12 @@ local CLASS_METATABLE = {
 			return self:AddDestructor(destructor, "Destroy");
 		end;
 		destructor = Curry(destructor, ...);
-		-- Note that self could be referring to either the instance or the class. This
-		-- is intentional. For now, I don't see a reason to make it more explicit; I'm
-		-- assuming which one is used will be obvious from the calling context.
+
+		if OOP.IsClass(self) then
+			return self:AddConstructor(function(instance)
+				return Seal(destructor, instance);
+			end);
+		end;
 		local destructors = rawget(self, "__destructors");
 		if not destructors then
 			destructors = {};
@@ -175,21 +176,23 @@ local CLASS_METATABLE = {
 	-- Subclasses that override this method should always invoke it once their destruction
 	-- has completed.
 	Destroy = function(self)
+		local function RunDestructors(destructors)
+			if not destructors then
+				return;
+			end;
+			while #destructors > 0 do
+				local dtor = table.remove(destructors, #destructors);
+				dtor();
+			end;
+		end;
+
 		-- Use rawget so we don't get the class-specific destructors
-		local instanceDestructors = rawget(self, "__destructors");
-		if instanceDestructors then
-			for i=#instanceDestructors, 1, -1  do
-				instanceDestructors[i]();
-			end;
-			-- Clean up our destructors so they're only invoked once, even if Destroy
-			-- is called multiple times.
-			rawset(self, "__destructors", nil);
-		end;
-		if self.class and self.class.__destructors then
-			for i=#self.class.__destructors, 1, -1 do
-				self.class.__destructors[i](self);
-			end;
-		end;
+		RunDestructors(rawget(self, "__destructors"));
+
+		-- Clean up our destructors so they're only invoked once, even if Destroy
+		-- is called multiple times.
+		rawset(self, "__destructors", nil);
+
 		-- Blow away the class reference, so class-specific destructors are not called.
 		SetDestroyedMetatable(self);
 	end
