@@ -9,7 +9,7 @@ function Mixins.Observable(klass)
         local listeners = ListenerList:New();
         listeners:SetID(self);
 
-        function self:_GetListeners()
+        function self:GetUpdateListeners()
             return listeners;
         end;
 
