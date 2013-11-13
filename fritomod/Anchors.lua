@@ -2007,6 +2007,20 @@ function Anchors.ClearPoint(point, ...)
 	end, ...);
 end;
 
+
+local copied = {
+	"HComp",
+	"HComponent",
+	"HorizontalComponent",
+
+	"VComp",
+	"VComponent",
+	"VerticalComponent",
+};
+for _, name in ipairs(copied) do
+	Anchors[name] = Frames[name];
+end;
+
 function Anchors.Get(frame, requested)
 	frame = Frames.AsRegion(frame);
 	requested = requested:upper();
