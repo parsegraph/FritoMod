@@ -40,8 +40,6 @@ function Suite:TestInstanceOfThrowsOnBadClass()
 	assert(OOP.InstanceOf(Base, Base:New()), "Base's instances are instances of Base");
 	assert(OOP.InstanceOf(Base, OOP.Class(Base):New()), "Base's derived instances are instances of Base");
 	assert(not OOP.InstanceOf(Base, OOP.Class():New()), "Foreign instances are not instances of Base");
-	Assert.Exception("InstanceOf rejects nil classes", OOP.InstanceOf, nil, Base:New());
-	Assert.Exception("InstanceOf rejects non-class objects", OOP.InstanceOf, {}, Base:New());
 	assert(not OOP.InstanceOf(Base, nil), "InstanceOf gracefully handles nil objects");
 	assert(not OOP.InstanceOf(Base, "No time"), "InstanceOf gracefully handles invalid objects");
 	assert(not OOP.InstanceOf(Base, OOP.Class()), "InstanceOf gracefully handles class objects");
