@@ -21,10 +21,10 @@ function Math.Round(value)
 end;
 
 local function CheckRange(min, value, max)
-	assert(type(min) == "number", "min must be a number");
-	assert(type(value) == "number", "value must be a number");
-	assert(type(max) == "number", "value must be a number");
-	assert(min <= max, "min must be less than max");
+	assert(type(min) == "number", "Range min must be a number");
+	assert(type(value) == "number", "Range value must be a number");
+	assert(type(max) == "number", "Range max must be a number");
+	assert(min <= max, "Range min must be less than Range max");
 end;
 
 function Math.Clamp(min, value, max)
