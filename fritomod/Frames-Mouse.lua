@@ -129,6 +129,13 @@ do
 	end;
 
 	function Frames.ButtonTester(...)
+		if select("#", ...) == 0 then
+			return Frames.ButtonTester("left", "right");
+		end;
+		local first = ...;
+		if type(first) ~= "string" then
+			return Curry(...);
+		end;
 		local buttons={...};
 		assert(#buttons > 0, "At least one button must be provided.");
 		for i=1, #buttons do
@@ -213,25 +220,28 @@ local function AdjustPoint(f)
 	);
 end;
 
-function Frames.StartMovingFrame(f, offsetX, offsetY)
-	if f.dragging then
-		f.dragging=f.dragging+1;
+function Frames.StartMovingFrame(frame, offsetX, offsetY)
+	if frame.dragging then
+		frame.dragging=frame.dragging+1;
 	else
-        if f.FireEvent then
-            f:FireEvent("DragStart");
-        end;
+		if frame.FireEvent then
+			frame:FireEvent("DragStart");
+		end;
 
-		f.dragging=1;
-		local startX, startY = f:GetCenter();
-		if f:GetParent() ~= UIParent and platform() == "wow" then
+		frame.dragging=1;
+		local startX, startY = frame:GetLeft(), frame:GetTop();
+		assert(startX, "Frame must have a valid left position");
+		assert(startY, "Frame must have a valid top position");
+
+		if frame:GetParent() ~= UIParent and platform() == "wow" then
 			-- Remove the local scale and re-add it once we've reparented. If we
 			-- don't do this, startX and startY will use an out-of-date scale and
 			-- will cause the frame to "jump" once it's first moved.
-			startX=startX*f:GetEffectiveScale();
-			startY=startY*f:GetEffectiveScale();
-			f:SetParent(UIParent);
-			startX=startX/f:GetEffectiveScale();
-			startY=startY/f:GetEffectiveScale();
+			startX=startX*frame:GetEffectiveScale();
+			startY=startY*frame:GetEffectiveScale();
+			frame:SetParent(UIParent);
+			startX=startX/frame:GetEffectiveScale();
+			startY=startY/frame:GetEffectiveScale();
 		end;
 		if offsetX then
 			startX = startX + offsetX;
@@ -240,77 +250,102 @@ function Frames.StartMovingFrame(f, offsetX, offsetY)
 			startY = startY + offsetY;
 		end;
 
-        local function SetPoint(x, y)
-            if platform == "wow" then
-                f:SetPoint("center", UIParent, "bottomleft", startX+x, startY+y);
-            else
-                f:SetPoint("center", UIParent, "topleft", startX+x, startY+y);
-            end;
-        end;
-		f.dragBehavior=Callbacks.CursorOffset(f, SetPoint);
+		local function SetPoint(x, y)
+			if platform == "wow" then
+				Anchors.Share(frame, "bottomleft", startX+x, startY+y);
+			else
+				Anchors.Share(frame, "topleft", startX+x, startY+y);
+			end;
+		end;
+		frame.dragBehavior = Callbacks.CursorOffset(frame, SetPoint);
 
-		f:ClearAllPoints();
-        SetPoint(0, 0);
+		frame:ClearAllPoints();
+		SetPoint(0, 0);
 	end;
 	return Functions.OnlyOnce(function()
-		f.dragging=f.dragging-1;
-		if f.dragging <= 0 then
-			f.dragBehavior();
-            if platform() == "wow" then
-                AdjustPoint(f);
-            end;
-			f.dragBehavior=nil;
-			f.dragging=nil;
+		frame.dragging=frame.dragging-1;
+		if frame.dragging <= 0 then
+			frame.dragBehavior();
+			if platform() == "wow" then
+				AdjustPoint(frame);
+			end;
+			frame.dragBehavior=nil;
+			frame.dragging=nil;
 
-            if f.FireEvent then
-                f:FireEvent("DragEnd");
-            end;
+			if frame.FireEvent then
+				frame:FireEvent("DragEnd");
+			end;
 		end;
 	end);
 end;
 
-function Frames.ThresholdDraggable(f, threshold, first, ...)
-	f=Frames.AsRegion(f);
-	assert(f.SetScript, "Frame does not support event listeners");
-	local conditional;
-	if type(first)=="function" or type(first)=="table" then
-		conditional=Curry(first, ...);
-	elseif first ~= nil or select("#", ...) > 0 then
-		conditional=Frames.ButtonTester(first, ...);
+function Frames.ProxyDraggable(movedFrame, triggerFrame, ...)
+	triggerFrame = Frames.AsRegion(triggerFrame);
+	assert(triggerFrame.SetScript, "Frame does not support event listeners");
+
+	movedFrame = Frames.AsRegion(movedFrame);
+
+	local threshold, conditional;
+	local first = ...;
+	if type(first) == "number" then
+		threshold = first;
+		conditional = Frames.ButtonTester(select(2, ...));
 	else
-		conditional=Frames.ButtonTester("left", "right");
+		threshold = 0;
+		conditional = Frames.ButtonTester(...);
 	end;
-	return Callbacks.MouseDown(f, function(button)
-		trace("Button down: " ..button);
+
+	return Callbacks.MouseDown(triggerFrame, function(button)
 		if not conditional(button) then
 			return;
 		end;
-		local r;
-		r=Callbacks.CursorOffset(f, function(x, y)
+		local remover;
+		remover = Callbacks.CursorOffset(triggerFrame, function(x, y)
 			if math.abs(x) > threshold or math.abs(y) > threshold then
-				r();
-				r=Frames.StartMovingFrame(f, x, y);
+				remover();
+				remover = Frames.StartMovingFrame(movedFrame, x, y);
 			end;
 		end);
 		return function()
 			-- Seal(r) is not used here because r will be redefined once
 			-- the threshold has been exceeded.
-			r();
+			remover();
 		end;
 	end);
 end;
 
-function Frames.InstantDraggable(f, ...)
-	return Frames.ThresholdDraggable(f, 0, ...);
+function Frames.ThresholdDraggable(frame, ...)
+	return Frames.ProxyDraggable(frame, frame, ...);
 end;
 
-function Frames.Draggable(f, ...)
-	f=Frames.AsRegion(f);
-	assert(f.SetScript, "Frame does not support event listeners");
-	-- Type is dumb, so we have to include "or nil"
-	if type(select(1, ...) or nil)=="number" then
-		return Frames.ThresholdDraggable(f, ...);
-	else
-		return Frames.InstantDraggable(f, ...);
-	end;
+function Frames.InstantDraggable(frame, ...)
+	return Frames.ThresholdDraggable(frame, 0, ...);
 end;
+
+function Frames.Draggable(frame, ...)
+	frame = Frames.AsRegion(frame);
+	assert(frame.SetScript, "Frame does not support event listeners");
+
+	if select("#", ...) == 0 then
+		return Frames.InstantDraggable(frame);
+	elseif select("#", ...) == 1 then
+		local first = ...;
+		if type(first) == "number" then
+			return Frames.ThresholdDraggable(frame, ...);
+		end;
+		if type(first) == "table" and IsCallable(first.SetPoint) then
+			return Frames.ProxyDraggable(frame, ...);
+		end;
+		return Frames.InstantDraggable(frame, ...);
+	end;
+	local first, second = ...;
+	if type(first) == "number" then
+		return Frames.ThresholdDraggable(frame, ...);
+	end;
+	if type(first) == "table" and IsCallable(first.SetPoint) then
+		return Frames.ProxyDraggable(frame, ...);
+	end;
+	return Frames.InstantDraggable(frame, ...);
+end;
+
+-- vim: set noet :
