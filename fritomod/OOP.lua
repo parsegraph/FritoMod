@@ -77,7 +77,6 @@ function OOP.Property(class, name, setter, ...)
             if value == newValue then
                 return;
             end;
-            local oldValue = value;
             local invoked = false;
             local function Commit(...)
                 invoked = true;
@@ -87,7 +86,7 @@ function OOP.Property(class, name, setter, ...)
                     value = ...;
                 end;
             end;
-            setter(self, newValue, oldValue, Commit);
+            setter(self, newValue, Commit);
             if not invoked then
                 Commit();
             end;
