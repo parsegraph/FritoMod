@@ -380,9 +380,11 @@ function Functions.Install(setUp, ...)
 	local count = 0;
 	return function()
 		if count == 0 then
+			count = 1;
 			tearDown = setUp() or Noop;
+		else
+			count = count + 1;
 		end;
-		count = count + 1;
 		return Functions.OnlyOnce(function()
 			count = count - 1;
 			if count == 0 then
