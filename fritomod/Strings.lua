@@ -368,8 +368,8 @@ end;
 -- returns:string
 --	 the specified string without leading or trailing whitespace
 function Strings.Trim(str)
-	str = str:sub(str:find("[^ ]") or #str);
-	return str:sub(1, (str:find("[ ]*$" or 1)-1) or #str);
+	str = str:sub(str:find("[^ \n]") or #str);
+	return str:sub(1, (str:find("[ \n]*$" or 1)-1) or #str);
 end;
 
 function Strings.ProperNounize(word)
