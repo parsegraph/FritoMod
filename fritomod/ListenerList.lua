@@ -58,7 +58,7 @@ function ListenerList:AddInstaller(func, ...)
 end;
 
 function ListenerList:Install()
-	assert(not self:HasListeners(), "Refusing to install a populated list %q", self);
+	assert(not self:HasListeners(), tostring(self).." is refusing to install a populated list %q", self);
 	self:logEnter("Listener list installations", "Installing listener list");
 	if self.installers then
 		self.uninstallers=Lists.MapCall(self.installers);
@@ -94,7 +94,7 @@ function ListenerList:Add(listener, ...)
 end;
 
 function ListenerList:Fire(...)
-	assert(not self:IsFiring(), "Refusing to fire while firing");
+	assert(not self:IsFiring(), tostring(self).. " is refusing to fire while firing");
 	if #self.listeners == 0 then
 		return;
 	end;
@@ -154,8 +154,8 @@ function ListenerList:RemoveListener(listener)
 	self:logLeave();
 end;
 
-function ListenerList:Uninstall()
-	assert(not self:HasListeners(), "Refusing to uninstall populated list %q", self);
+function ListenerList:Uninstall(force)
+	assert(force or not self:HasListeners(), "Refusing to uninstall populated list");
 	if self.uninstallers then
 		self:logEnter("Listener list installations", "Uninstalling listener list");
 		Lists.CallEach(self.uninstallers);
