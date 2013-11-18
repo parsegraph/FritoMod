@@ -45,6 +45,10 @@ function ToggleDispatcher:Fire(...)
 	return Seal(self, "Reset");
 end;
 
+function ToggleDispatcher:HasFired()
+	return Bool(self.fired);
+end;
+
 function ToggleDispatcher:FireListener(listener, ...)
 	local resetter=listener(...);
 	if IsCallable(resetter) then
