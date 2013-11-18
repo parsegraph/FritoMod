@@ -39,6 +39,17 @@ local function enableMouse(f)
 	end)
 end;
 
+local function ActivateKeyboard(frame)
+	local KEYBOARD_ENABLER = "__KeyboardEnabler";
+	if not frame[KEYBOARD_ENABLER] then
+		frame[KEYBOARD_ENABLER] = Functions.Install(function()
+			frame:EnableKeyboard(true);
+			return Functions.OnlyOnce(frame, "EnableKeyboard", false);
+		end);
+	end;
+	return frame[KEYBOARD_ENABLER]();
+end;
+
 local function ToggledEvent(event, setUp, ...)
 	setUp=Curry(setUp, ...);
 	local eventListenerName=event.."Listeners";
@@ -99,6 +110,12 @@ function Callbacks.HideFrame(frame, func, ...)
 end;
 Callbacks.FrameHidden=Callbacks.HideFrame;
 Callbacks.FrameHide=Callbacks.HideFrame;
+
+-- Calls the specified callback whenever the specified frame is focused
+Callbacks.FocusGained = ToggledEvent("FocusGained", function(dispatcher, frame)
+    BasicEvent("OnFocusGained", "OnFocusLost", dispatcher, frame);
+    dispatcher:AddInstaller(ActivateKeyboard, frame);
+end);
 
 -- Calls the specified callback whenever dragging starts. You'll
 -- need to manually call Frame:RegisterForDrag along with this method in order to
