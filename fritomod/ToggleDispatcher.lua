@@ -32,6 +32,8 @@ ToggleDispatcher=OOP.Class("ToggleDispatcher", ListenerList);
 function ToggleDispatcher:Constructor()
 	ToggleDispatcher.super.Constructor(self);
 	self.resetters={};
+
+	self:AddDestructor(self, "Reset");
 end;
 
 function ToggleDispatcher:Fire(...)

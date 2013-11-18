@@ -50,6 +50,7 @@ ListenerList=OOP.Class("ListenerList", Mixins.Log);
 
 function ListenerList:Constructor()
 	self.listeners = {};
+	self:AddDestructor(self, "Uninstall", true);
 end;
 
 function ListenerList:AddInstaller(func, ...)
