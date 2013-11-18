@@ -171,6 +171,7 @@ end;
 if not traceback then
     function traceback(msg)
         msg = msg or "";
+        msg = tostring(msg);
         if msg:find("\nstack traceback:\n") ~= nil then
             return msg;
         end;
