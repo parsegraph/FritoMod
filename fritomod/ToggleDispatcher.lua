@@ -40,8 +40,8 @@ function ToggleDispatcher:Fire(...)
 	if self.fired then
 		return;
 	end;
-	ToggleDispatcher.super.Fire(self, ...);
 	self.fired=true;
+	ToggleDispatcher.super.Fire(self, ...);
 	return Seal(self, "Reset");
 end;
 
@@ -70,6 +70,7 @@ function ToggleDispatcher:Reset(...)
 	if not self.fired then
 		return;
 	end;
+	self.fired=false;
 	self:logEnter("Listener dispatches", "Resetting dispatcher");
 	if self.resetters and #self.resetters > 0 then
 		for _, resetter in ipairs(self.resetters) do
@@ -79,7 +80,6 @@ function ToggleDispatcher:Reset(...)
 		end;
 		self.resetters=nil;
 	end;
-	self.fired=false;
 	self:logLeave();
 end;
 
