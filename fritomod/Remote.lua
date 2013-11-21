@@ -61,16 +61,24 @@ mediums.battleground="battleground";
 Tables.Alias(mediums, "battleground", "battlegroup", "bg", "pvp");
 
 function GetMediumAndPrefix(channel)
-    return unpack(Strings.Split(":", channel, 2));
+    if channel:find(":") then
+        return unpack(Strings.Split(":", channel, 2));
+    end;
+    return nil, channel;
 end;
 
 function GetChannel(medium, prefix)
     return medium .. ":" .. prefix;
 end;
 
-function Remote:Send(channel, msg)
+function Remote:Send(...)
+    local medium, prefix, msg = ...;
+    if select("#", ...) == 2 then
+        local channel = ...;
+        medium, prefix = GetMediumAndPrefix(channel);
+        msg = select(2, ...);
+    end;
     assert(msg~=nil, "Message must not be nil");
-    local medium, prefix = GetMediumAndPrefix(channel);
 	if mediums[medium] then
 		if ChatThrottleLib then
 			ChatThrottleLib:SendAddonMessage("NORMAL", prefix, msg, mediums[medium]);
@@ -94,5 +102,6 @@ function Remote:Install(channel)
             return;
         end;
         Remote:Dispatch(GetChannel(medium, prefix), message, source);
+        Remote:Dispatch(prefix, message, source);
     end);
 end;

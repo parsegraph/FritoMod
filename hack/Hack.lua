@@ -155,10 +155,10 @@ StaticPopupDialogs.HackAccept = {
     timeout = 0, whileDead = 1, hideOnEscape = 1,
     OnAccept = function(self)
         Hack.New(self.page, true) -- all received pages start at end of list
-        Remote["Hack"][self.sender]("Ack" .. PLAYERNAME);
+        Remote:Send("Hack", self.sender, "Ack" .. PLAYERNAME);
     end,
     OnCancel = function(self)
-        Remote["Hack"][self.sender]("Nack" .. PLAYERNAME);
+        Remote:Send("Hack", self.sender, "Nack" .. PLAYERNAME);
     end,
 }
 
@@ -185,7 +185,7 @@ StaticPopupDialogs.HackAcceptShare = {
     text = "Share '%s' with %s?", button1 = 'Yes', button2 = 'No',
     timeout = 0, whileDead = 1, hideOnEscape = 1,
     OnAccept = function(self)
-        Remote["Hack"][self.sender]("AcceptShare" .. PLAYERNAME);
+        Remote:Send("Hack", self.sender, "AcceptShare" .. PLAYERNAME);
         Hack.AutoApproveUpdates(self.page, self.sender);
     end
 }
@@ -752,9 +752,10 @@ end
 local i=0;
 function Hack.SendPage(page, channel, name)
     trace("Sending '%s' to %s", page.name, name or channel);
-    Remote["HackPages"][name or channel](
+    Remote:Send("HackPages", name or channel,
         Serializers.WriteStringChunks(
-            Serializers.WriteData(page), "HackPages"));
+            Serializers.WriteData(page), "HackPages")
+    );
 end
 
 function Hack.CHAT_MSG_ADDON(msg, sender, medium)
@@ -819,7 +820,7 @@ function Hack.Share(channel, target)
         Hack.Share("WHISPER", UnitName("target"));
         return;
     end;
-    Remote["Hack"][target or channel]("HackShare"..Hack.EditedPage().name);
+    Remote:Send("Hack", target or channel, "HackShare"..Hack.EditedPage().name);
 end;
 
 function Hack.AutoApproveUpdates(page, sender)
