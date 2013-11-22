@@ -5,6 +5,10 @@ if nil ~= require then
     require "fritomod/OOP";
 end;
 
+if Log and type(Log) == "table" and Log.AddLogger then
+    return;
+end;
+
 Log = Log or {};
 
 local loggers = {}
