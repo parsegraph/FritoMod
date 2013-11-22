@@ -1,4 +1,5 @@
 if nil ~= require then
+    require "fritomod/CreateTestSuite";
     require "hack/Assets";
 end;
 
@@ -15,9 +16,9 @@ function Suite:TestGlobalConnector()
 
     connector(env);
 
-    env:Run(function()
+    env:Run([[
         foo.Raise();
-    end);
+    ]]);
     local f = env:Get("foo");
     f:Assert();
     env:Destroy();
@@ -27,26 +28,27 @@ end;
 function Suite:TestMemberConnector()
     local env = LuaEnvironment:New();
 
-    env:Run(function()
+    env:Run([[
         foo = {};
         foo.bar = {};
         foo.bar.baz = OOP.Class();
-    end);
+    ]]);
 
     local connector = Connectors.Member("foo.bar.baz", "xen",
         Assets.Flag());
     connector(env);
 
-    local a, b;
-    env:Run(function()
+    env:Run([[
         a = foo.bar.baz:New();
         b = foo.bar.baz:New();
-    end);
+    ]]);
+    local a = env:Get("a");
     assert(a);
     assert(a.xen);
     a.xen.Raise();
     local aflag = a.xen;
 
+    local b = env:Get("b");
     assert(b);
     assert(b.xen);
     b.xen.AssertUnset();
@@ -73,14 +75,14 @@ function Suite:TestLazyConnector()
 
     connector(env);
 
-    env:Run(function()
+    env:Run([[
         foo.Raise();
-    end);
+    ]]);
     local f = env:Get("foo");
     f:Assert();
-    env:Run(function()
+    env:Run([[
         foo.Assert();
-    end);
+    ]]);
     env:Destroy();
     f:AssertUnset();
     counter.Assert(1);
@@ -91,10 +93,10 @@ function Suite:TestFactoryAsset()
     local connector = Connectors.Global("foo",
         Assets.Factory(Assets.Flag()));
     connector(env);
-    local f;
-    env:Run(function()
+    env:Run([[
         f = foo()
-    end);
+    ]]);
+    local f = env:Get("f");
     f.Raise();
     env:Destroy();
     f.AssertUnset();
@@ -113,19 +115,21 @@ function Suite:TestProxyConnector()
 
     connector(env);
 
-    local a;
-    env:Run(function()
+    env:Set("runCounter", runCounter);
+
+    env:Run([[
         a = foo;
         runCounter.Hit();
-    end);
+    ]]);
+    local a = env:Get("a");
     proxyCounter.Assert(1);
     runCounter.Assert(1);
 
-    local b;
-    env:Run(function()
+    env:Run([[
         b = foo;
         runCounter.Hit();
-    end);
+    ]]);
+    local b = env:Get("b");
     proxyCounter.Assert(2);
     runCounter.Assert(2);
 
