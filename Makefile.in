@@ -18,9 +18,6 @@ SRCRPM=$(PACKAGE_NAME)-$(PACKAGE_VERSION)-1.src.rpm
 
 tarfile=$(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
 
-all: toc
-.PHONY: all
-
 Makefile: Makefile.in configure
 	$(SRCDIR)/configure ${PREFIX}
 
