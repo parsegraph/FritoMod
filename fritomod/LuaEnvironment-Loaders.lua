@@ -10,6 +10,9 @@ local loaders=LuaEnvironment.Loaders;
 function loaders.Filesystem(prefix)
 	prefix = prefix or ".";
 	return function(name, env)
+		if nil ~= require then
+			require "lfs";
+		end;
 		if not lfs or not loadfile then
 			return;
 		end;
