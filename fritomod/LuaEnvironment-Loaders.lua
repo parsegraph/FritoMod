@@ -7,7 +7,8 @@ end;
 LuaEnvironment.Loaders={};
 local loaders=LuaEnvironment.Loaders;
 
-function loaders.Filesystem()
+function loaders.Filesystem(prefix)
+	prefix = prefix or ".";
 	return function(name, env)
 		if not lfs or not loadfile then
 			return;
@@ -17,6 +18,7 @@ function loaders.Filesystem()
 		if not file:find("[.]lua$") then
 			file=name..".lua";
 		end;
+		file = prefix .. "/" ..file;
 		if not lfs.attributes(file) then
 			-- The file was not accessible, so just return.
 			return;
