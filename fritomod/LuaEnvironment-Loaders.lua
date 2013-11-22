@@ -39,6 +39,46 @@ function loaders.Filesystem(prefix)
 	end;
 end;
 
+function loaders.LocalRequire(path)
+	path = path or package.path;
+	return function(name, env)
+		if package.loaded[name] ~= nil then
+			return function()
+				return package.loaded[name];
+			end;
+		end;
+		local file = package.searchpath(name, path);
+		if not file then
+			return nil, "No module found with name: " .. name;
+		end;
+		local runner, err;
+		if luaversion() >= luaversion("Lua 5.2") then
+			runner, err=loadfile(file, "bt", env);
+		else
+			runner, err=loadfile(file);
+		end;
+		if runner then
+			return runner;
+		end;
+		return nil, err;
+	end;
+end;
+
+function loaders.NativeRequire(mask)
+	path = path or package.path;
+	if type(mask) == "string" then
+		mask = Headless(Strings.StartsWith, mask);
+	elseif not mask then
+		mask = Curry(Functions.Return, true);
+	end;
+	return function(name, env)
+		if not mask(name) then
+			return nil, "Path is not accepted by this loader";
+		end;
+		return Curry(require, name);
+	end;
+end;
+
 function loaders.Ignore(...)
 	local ignored;
 	if select("#", ...) == 0 then
