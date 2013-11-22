@@ -225,4 +225,17 @@ function Suite:TestLoadModuleWithParent()
     flag.Assert();
 end;
 
+function Suite:TestEnvironmentWithRequire()
+    local env = LuaEnvironment:New();
+    env:AddLoader(function(name)
+        return function()
+            env:Set(name, true);
+        end;
+    end);
+    env:Run([[
+        require "foobar";
+    ]]);
+    Assert.Equals(true, env:Get("foobar"));
+end;
+
 -- vim: set et :
