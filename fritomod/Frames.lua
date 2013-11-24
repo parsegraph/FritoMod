@@ -299,15 +299,36 @@ function Frames.HeightWidth(f, h, w)
 end;
 Frames.HW=Frames.HeightWidth;
 
-function Frames.Width(f, amount)
-	Frames.AsRegion(f):SetWidth(amount);
+function Frames.Width(f, ...)
+	if select("#", ...) == 0 then
+		return Frames.AsRegion(f):GetWidth();
+	end;
+	Frames.AsRegion(f):SetWidth(...);
 end;
 Frames.W = Frames.Width;
 
-function Frames.Height(f, amount)
-	Frames.AsRegion(f):SetHeight(amount);
+function Frames.AddWidth(f, amount)
+	assert(type(amount) == "number", "Amount must be a number");
+
+	local currentWidth = Frames.Width(f);
+	assert(type(currentWidth) == "number", "Frame has no width");
+	Frames.Width(f, currentWidth + amount);
+end;
+Frames.AddW = Frames.AddWidth;
+
+function Frames.Height(f, ...)
+	if select("#", ...) == 0 then
+		return Frames.AsRegion(f):GetHeight();
+	end;
+	Frames.AsRegion(f):SetHeight(...);
 end;
 Frames.H = Frames.Height;
+
+function Frames.AddHeight(f, amount)
+	assert(type(amount) == "number", "Amount must be a number");
+	Frames.Height(f, Frames.Height(f) + amount);
+end;
+Frames.AddH = Frames.AddHeight;
 
 local INSETS_ZERO={
 	left=0,
