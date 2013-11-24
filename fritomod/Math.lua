@@ -63,6 +63,7 @@ end;
 function Math.Mix(min, max, lerp)
     return Math.Interpolate(min, lerp, max);
 end;
+Math.mix = Math.Mix;
 
 function Math.Distance(...)
 	local x1, y1, x2, y2 = ...;
