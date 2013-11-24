@@ -302,6 +302,35 @@ function LuaEnvironment:LoadString(str, name)
 	return self:GetParser()(str, name);
 end;
 
+function LuaEnvironment:LoadFile(file)
+	return loadfile(file, "bt", self:Globals());
+end;
+
+function LuaEnvironment:LoadDirectory(path, recurse)
+	if not lfs then
+		require "lfs";
+	end;
+
+	local runners = {};
+
+	for entry in lfs.dir(path) do
+		local mode = lfs.attributes(path .. "/" .. entry, "mode");
+		if mode == "file" then
+			table.insert(runners, self:LoadFile(path .. "/" .. entry));
+		elseif recurse and mode == "directory" then
+			if entry ~= "." and entry ~= ".." then
+				table.insert(runners, self:LoadDirectory(path .. "/" .. entry, recurse));
+			end;
+		end;
+	end;
+
+	return Curry(Lists.MapCall, runners);
+end;
+
+function LuaEnvironment:RunDirectory(path, recurse, ...)
+	return self:LoadDirectory(path, recurse)(...);
+end;
+
 -- Returns a function that will Load a named module into this environment.
 -- Named modules, typically things like files in a filesystem, are provided as
 -- a convenient way to load a logical group of code into this environment.
