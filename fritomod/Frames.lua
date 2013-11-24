@@ -353,7 +353,6 @@ end;
 function Frames.SetWidth(f, width)
 	CallOriginal(Frames.AsRegion(f), "SetWidth", width);
 end;
-Frames.Width = Frames.SetWidth;
 
 function Frames.InnerHeight(f)
 	f=Frames.AsRegion(f);
@@ -368,7 +367,6 @@ end;
 function Frames.SetHeight(f, height)
 	CallOriginal(Frames.AsRegion(f), "SetHeight", height);
 end;
-Frames.Height = Frames.SetHeight;
 
 do
 	-- Maximum value we'll tolerate before we give up.
