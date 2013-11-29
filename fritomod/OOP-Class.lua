@@ -5,51 +5,6 @@ if nil ~= require then
 	require "fritomod/Lists";
 end;
 
-local function SetDestroyedMetatable(self)
-	local id = self:ID();
-	local name = self:ToString();
-	local DESTROYED_METATABLE = {
-		__index = function(self, key)
-			if tostring(key):match("^log") then
-				return self.class[key];
-			end;
-			error(name .. " has been destroyed and cannot be reused for getting " .. tostring(key));
-		end,
-		__newindex = function(self, key)
-			error(name .. " has been destroyed and cannot be reused for setting " .. tostring(key));
-		end,
-		__tostring = function()
-			return "destroyed:" .. name;
-		end,
-	};
-
-	setmetatable(self, nil);
-	for key, _ in pairs(self) do
-		-- Blow everything away, except the class
-		if key ~= "class" and tostring(key):match("^log") then
-			self[key] = nil;
-		end;
-	end;
-
-	-- Allow detection from OOP.IsDestroyed
-	self.destroyed = true;
-
-	-- Allow spurious invocations of Destroy
-	self.Destroy = Noop;
-
-	-- Allow ToString to be invoked directly
-	function self:ToString()
-		return tostring(self);
-	end;
-
-	function self:ID()
-		return id;
-	end;
-	self.Id = self.ID;
-
-	setmetatable(self, DESTROYED_METATABLE);
-end;
-
 local CLASS_METATABLE = {
 	-- A default constructor. This is called after all constructors are used,
 	-- and will only be called on the immediate class that's being created;
@@ -187,15 +142,18 @@ local CLASS_METATABLE = {
 			end;
 		end;
 
+		-- Allow spurious invocations of Destroy
+		rawset(self, "Destroy", Noop);
+
 		-- Use rawget so we don't get the class-specific destructors
 		RunDestructors(rawget(self, "__destructors"));
 
-		-- Clean up our destructors so they're only invoked once, even if Destroy
-		-- is called multiple times.
-		rawset(self, "__destructors", nil);
+		rawset(self, "AddDestructor",
+			Seal(error, "Destructors cannot be added to a destroyed object")
+		);
 
-		-- Blow away the class reference, so class-specific destructors are not called.
-		SetDestroyedMetatable(self);
+		-- Allow detection from OOP.IsDestroyed
+		rawset(self, "destroyed", true);
 	end
 }
 

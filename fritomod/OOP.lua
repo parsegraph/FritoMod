@@ -61,6 +61,45 @@ function OOP.IsDestroyed(obj)
     return obj.destroyed == true;
 end;
 
+function OOP.Annihilate(obj)
+	local id = obj:ID();
+	local name = obj:ToString();
+	local DESTROYED_METATABLE = {
+		__index = function(self, key)
+			if tostring(key):match("^log") then
+				return self.class[key];
+			end;
+			error(name .. " has been destroyed and cannot be reused for getting " .. tostring(key));
+		end,
+		__newindex = function(self, key)
+			error(name .. " has been destroyed and cannot be reused for setting " .. tostring(key));
+		end,
+		__tostring = function()
+			return "destroyed:" .. name;
+		end,
+	};
+
+	setmetatable(obj, nil);
+	for key, _ in pairs(obj) do
+		-- Blow everything away, except the class
+		if key ~= "class" and tostring(key):match("^log") then
+			obj[key] = nil;
+		end;
+	end;
+
+	-- Allow ToString to be invoked directly
+	function obj:ToString()
+		return tostring(obj);
+	end;
+
+	function obj:ID()
+		return id;
+	end;
+	obj.Id = obj.ID;
+
+	setmetatable(obj, DESTROYED_METATABLE);
+end;
+
 function OOP.Property(class, name, setter, ...)
     if setter ~= nil or select("#", ...) > 0 then
         setter = Curry(setter, ...);
