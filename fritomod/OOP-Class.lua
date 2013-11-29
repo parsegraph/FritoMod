@@ -72,13 +72,14 @@ local CLASS_METATABLE = {
 	--	 if object is falsy
 	ConstructObject = function(klass, object, ...)
 		assert(object, "Object must not be falsy");
-		if klass.__constructors then
-			for i=1, #klass.__constructors do
-				local constructor = klass.__constructors[i];
-				local destructor = constructor(object, ...);
-				if IsCallable(destructor) then
-					object:AddDestructor(destructor);
-				end;
+		local constructors = rawget(klass, "__constructors");
+		if not constructors then
+			return;
+		end;
+		for _, constructor in ipairs(constructors) do
+			local destructor = constructor(object, ...);
+			if IsCallable(destructor) then
+				object:AddDestructor(destructor);
 			end;
 		end;
 	end,
