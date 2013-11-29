@@ -116,6 +116,10 @@ function ListenerList:Fire(...)
 			self:logLeave();
 			error(err);
 		end;
+		if OOP.IsDestroyed(self) then
+			self:logLeave();
+			return;
+		end;
 		self.firingIndex = self.firingIndex + 1;
 	end;
 	self:FinalizeFire();
