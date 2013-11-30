@@ -295,23 +295,13 @@ function Frames.ProxyDraggable(movedFrame, triggerFrame, ...)
 		conditional = Frames.ButtonTester(...);
 	end;
 
-	return Callbacks.MouseDown(triggerFrame, function(button)
-		if not conditional(button) then
-			return;
-		end;
-		local remover;
-		remover = Callbacks.CursorOffset(triggerFrame, function(x, y)
-			if math.abs(x) > threshold or math.abs(y) > threshold then
-				remover();
-				remover = Frames.StartMovingFrame(movedFrame, x, y);
-			end;
-		end);
-		return function()
-			-- Seal(r) is not used here because r will be redefined once
-			-- the threshold has been exceeded.
-			remover();
-		end;
-	end);
+	return Callbacks.DragThreshold(
+		triggerFrame,
+		threshold,
+		conditional,
+		Frames.StartMovingFrame,
+		movedFrame
+	);
 end;
 
 function Frames.ThresholdDraggable(frame, ...)
