@@ -16,7 +16,7 @@ function Callbacks.Script(frame, event, callback, ...)
 	callback=Curry(callback, ...);
     Log.Log(frame, "Script event registrations", "Setting callback for", event, "event");
 	frame:SetScript(event, function(frame, ...)
-		callback(...);
+		return callback(...);
 	end);
 	return Functions.OnlyOnce(function()
         Log.Log(frame, "Script event registrations", "Removing", event, "callback");
