@@ -38,6 +38,7 @@ end;
 
 function ToggleDispatcher:Fire(...)
 	if self.fired then
+		self:log("Listener dispatches", "Fire requested, but I have not fired.");
 		return;
 	end;
 	self.fired=true;
@@ -72,6 +73,7 @@ end;
 
 function ToggleDispatcher:Reset(...)
 	if not self.fired then
+		self:log("Listener dispatches", "Reset requested, but I have not fired.");
 		return;
 	end;
 	self.fired=false;
