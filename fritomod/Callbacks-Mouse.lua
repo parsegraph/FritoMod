@@ -125,6 +125,19 @@ Callbacks.DragFrame = ToggledEvent("DragFrame", function(dispatcher, frame)
 	dispatcher:AddInstaller(enableMouse, frame);
 end);
 
+-- Calls the specified callback whenever dragging starts. You'll
+-- need to manually call Frame:RegisterForDrag along with this method in order to
+-- receive drag events. Frames.Draggable helps with this.
+Callbacks.DragEnter = ToggledEvent("DragEnter", function(dispatcher, frame)
+	BasicEvent("OnDragEnter", "OnDragLeave", dispatcher, frame);
+	dispatcher:AddInstaller(function()
+        if frame.AcceptDrops then
+            frame:AcceptDrops();
+        end;
+    end);
+end);
+Callbacks.Drop = Headless(Callbacks.SimpleEvent, "OnDrop");
+
 Callbacks.MouseDown = ToggledEvent("MouseDown", function(dispatcher, frame)
 	CheckForOverwrites("OnMouseDown", "OnMouseUp", dispatcher, frame);
 	dispatcher:AddInstaller(enableMouse, frame);
