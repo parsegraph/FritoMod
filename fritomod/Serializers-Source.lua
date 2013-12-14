@@ -100,9 +100,9 @@ printer=setmetatable({
 		end;
 		out("}");
 	end,
-    ["unknown"] = function(out, v)
-        out("nil --[["..type(v).."]]");
-    end
+	["unknown"] = function(out, v)
+		out("nil --[["..type(v).."]]");
+	end
 }, {
 	__index=function(self, k)
 		return self["unknown"];
@@ -129,10 +129,10 @@ end;
 
 function Serializers.ReadSource(str)
 	local producer;
-    if luaversion() >= luaversion("Lua 5.2") then
-        producer = assert(load("return " .. str));
-    else
-        producer = assert(loadstring("return " .. str));
+	if luaversion() >= luaversion("Lua 5.2") then
+		producer = assert(load("return " .. str));
+	else
+		producer = assert(loadstring("return " .. str));
 	end;
 	return producer();
 end;
