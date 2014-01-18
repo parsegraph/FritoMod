@@ -31,7 +31,7 @@ if nil ~= require then
 	require "fritomod/OOP";
 	require "fritomod/Functions";
 	require "fritomod/Lists";
-	require "fritomod/FauxLuaEnvironment";
+	require "fritomod/NativeLuaEnvironment";
 end;
 
 LuaEnvironment = OOP.Class("LuaEnvironment");
@@ -43,7 +43,7 @@ function LuaEnvironment:Constructor(parent)
 		if not parent then
 			parent = _G;
 		end;
-        self.parent = FauxLuaEnvironment:New(parent);
+        self.parent = NativeLuaEnvironment:New(parent);
 	end;
 	assert(self.parent, "Parent must be provided");
 

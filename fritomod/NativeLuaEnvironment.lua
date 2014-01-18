@@ -9,26 +9,26 @@ if nil ~= require then
     require "fritomod/OOP-Class";
 end;
 
-FauxLuaEnvironment = OOP.Class("FauxLuaEnvironment");
+NativeLuaEnvironment = OOP.Class("NativeLuaEnvironment");
 
-function FauxLuaEnvironment:Constructor(globals)
+function NativeLuaEnvironment:Constructor(globals)
     self.globals = globals;
 end;
 
-function FauxLuaEnvironment:Get(name)
+function NativeLuaEnvironment:Get(name)
     return self.globals[name];
 end;
 
-function FauxLuaEnvironment:Set(name, value)
+function NativeLuaEnvironment:Set(name, value)
     self.globals[name] = value;
 end;
 
-function FauxLuaEnvironment:LoadModule(name)
+function NativeLuaEnvironment:LoadModule(name)
     error("No loader found for module: " .. name);
 end;
 
-function FauxLuaEnvironment:IsLoaded(name)
-    return false;
+function NativeLuaEnvironment:IsLoaded(name)
+    return package.loaded[name] ~= nil;
 end;
 
 -- vim: set et :
