@@ -27,7 +27,7 @@ if arg then
 	for i=1,#arg do
 		arg[i]=arg[i]:gsub("^[.]/", "");
 		arg[i]=arg[i]:gsub("[.]lua", "");
-		local env=LuaEnvironment:New(pristine);
+		local env=LuaEnvironment:New(pristine, false);
 		env:AddLoader(LuaEnvironment.Loaders.Ignore("bit", "lfs"));
 		env:AddLoader(LuaEnvironment.Loaders.Filesystem());
 		env:Set("AllTests", AllTests);

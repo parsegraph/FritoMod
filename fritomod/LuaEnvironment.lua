@@ -36,14 +36,14 @@ end;
 
 LuaEnvironment = OOP.Class("LuaEnvironment");
 
-function LuaEnvironment:Constructor(parent)
+function LuaEnvironment:Constructor(parent, ...)
 	if OOP.InstanceOf(LuaEnvironment, parent) then
 		self.parent = parent;
 	else
 		if not parent then
 			parent = _G;
 		end;
-        self.parent = NativeLuaEnvironment:New(parent);
+        self.parent = NativeLuaEnvironment:New(parent, ...);
 	end;
 	assert(self.parent, "Parent must be provided");
 

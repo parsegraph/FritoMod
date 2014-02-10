@@ -11,8 +11,12 @@ end;
 
 NativeLuaEnvironment = OOP.Class("NativeLuaEnvironment");
 
-function NativeLuaEnvironment:Constructor(globals)
+function NativeLuaEnvironment:Constructor(globals, usePackageLoaded)
     self.globals = globals;
+    if usePackageLoaded == nil then
+        usePackageLoaded = true;
+    end;
+    self.usePackageLoaded = usePackageLoaded;
 end;
 
 function NativeLuaEnvironment:Get(name)
@@ -28,7 +32,7 @@ function NativeLuaEnvironment:LoadModule(name)
 end;
 
 function NativeLuaEnvironment:IsLoaded(name)
-    return package.loaded[name] ~= nil;
+    return self.usePackageLoaded and package.loaded[name] ~= nil;
 end;
 
 -- vim: set et :
