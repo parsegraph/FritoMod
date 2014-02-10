@@ -236,8 +236,9 @@ Callbacks.MouseMove = Headless(Callbacks.Script, "OnMouseMove");
 -- is provided, UIParent is used. If you're using this function for frame
 -- movement, you should provide the frame that is being moved.
 function Callbacks.CursorOffset(frame, func, ...)
-	frame=frame or UIParent;
-	func=Curry(func, ...);
+	frame = frame or UIParent;
+	frame = Frames.AsRegion(frame);
+	func = Curry(func, ...);
 	local origX, origY=GetCursorPosition();
 	local lastX, lastY=origX, origY;
 	return Timing.OnUpdate(function()
