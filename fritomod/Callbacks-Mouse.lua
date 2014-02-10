@@ -257,16 +257,18 @@ Callbacks.MouseOffset=Callbacks.CursorOffset;
 
 function Callbacks.DragThreshold(frame, threshold, buttons, callback, ...)
     callback = Curry(callback, ...);
-    conditional = Frames.ButtonTester(buttons);
-    return Callbacks.MouseDown(frame, function(button)
-        if not conditional(button) then
+    local conditional = Frames.ButtonTester(buttons);
+    return Callbacks.MouseDown(frame, function(button, _, _, ...)
+        if not conditional(button, ...) then
             return;
         end;
+        local args = {...};
         local remover;
         remover = Callbacks.CursorOffset(frame, function(x, y)
             if Math.Hypotenuse(x, y) > threshold then
                 remover();
-                remover = callback(x, y);
+                remover = callback(x, y, unpack(args));
+                args = nil;
             end;
         end);
         return function()
