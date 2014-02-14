@@ -140,3 +140,17 @@ function OOP.Property(class, name, setter, ...)
         end;
     end);
 end;
+
+function OOP.Own(owners, dtor, ...)
+    if OOP.IsInstance(owners) then
+        return OOP.Own({owners}, dtor, ...);
+    end;
+
+    dtor = Curry(dtor, ...);
+    local destructors = {dtor};
+    local destroyer = Functions.OnlyOnce(Lists.CallEach, destructors);
+
+    for _, owner in ipairs(owners) do
+        table.insert(destructors, owner:AddDestructor(destroyer));
+    end;
+end;
