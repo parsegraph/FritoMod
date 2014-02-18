@@ -67,6 +67,7 @@ Timing = Timing or {};
 
 do
 	local listeners = ListenerList:New();
+    listeners:SetRemoveOnFail(true);
     listeners:SetID("Timing")
 
 	listeners:AddInstaller(function()

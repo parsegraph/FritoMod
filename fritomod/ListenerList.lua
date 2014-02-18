@@ -113,6 +113,9 @@ function ListenerList:Fire(...)
 			-- Clean up our firing variable, otherwise we'll be permanently
 			-- stuck in "firing" mode.
 			self:FinalizeFire();
+			if self:GetRemoveOnFail() then
+				self:RemoveListener(listener);
+			end;
 			self:logLeave();
 			error(err);
 		end;
@@ -183,5 +186,7 @@ function ListenerList:DumpListeners()
 		i = i - 1;
 	end;
 end;
+
+OOP.Property(ListenerList, "RemoveOnFail");
 
 -- vim: set noet :
