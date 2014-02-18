@@ -141,9 +141,13 @@ function OOP.Property(class, name, setter, ...)
     end);
 end;
 
-function OOP.Own(owners, dtor, ...)
+-- Invoke the specified destructor if any of the specified objects are destroyed.
+--
+-- This does extra work to ensure all destructors are cleaned up once the first one is
+-- invoked.
+function OOP.ShareFate(owners, dtor, ...)
     if OOP.IsInstance(owners) then
-        return OOP.Own({owners}, dtor, ...);
+        return OOP.ShareFate({owners}, dtor, ...);
     end;
 
     dtor = Curry(dtor, ...);
