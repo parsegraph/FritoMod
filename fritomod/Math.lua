@@ -53,6 +53,17 @@ function Math.Percent(min, value, max)
 end;
 
 function Math.Interpolate(min, pct, max)
+    if type(min) == "table" and type(max) == "table" then
+        local interpolated = {};
+        for i=1, math.max(#max, #min) do
+            interpolated[i] = Math.Interpolate(
+                min[i] or max[i],
+                pct,
+                max[i] or min[i]
+            );
+        end;
+        return interpolated;
+    end;
 	assert(type(min) == "number", "min must be a number");
 	assert(type(pct) == "number", "pct must be a number");
 	assert(type(max) == "number", "value must be a number");
