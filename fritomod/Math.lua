@@ -52,12 +52,12 @@ function Math.Percent(min, value, max)
 	return value / range;
 end;
 
-function Math.Interpolate(min, value, max)
+function Math.Interpolate(min, pct, max)
 	assert(type(min) == "number", "min must be a number");
-	assert(type(value) == "number", "value must be a number");
+	assert(type(pct) == "number", "pct must be a number");
 	assert(type(max) == "number", "value must be a number");
 	local range = max - min;
-	return min + (range * value);
+	return min + (range * pct);
 end;
 
 function Math.Mix(min, max, lerp)
