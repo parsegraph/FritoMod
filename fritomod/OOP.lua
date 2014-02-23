@@ -150,6 +150,10 @@ function OOP.ShareFate(owners, dtor, ...)
         return OOP.ShareFate({owners}, dtor, ...);
     end;
 
+    if OOP.IsInstance(dtor) and select("#", ...) == 0 then
+        return OOP.ShareFate(owners, dtor, "Destroy");
+    end;
+
     dtor = Curry(dtor, ...);
     local destructors = {dtor};
     local destroyer = Functions.OnlyOnce(Lists.CallEach, destructors);
