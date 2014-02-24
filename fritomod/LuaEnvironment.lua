@@ -140,6 +140,7 @@ function LuaEnvironment:Get(name)
 	end;
 	return self.parent:Get(name);
 end;
+LuaEnvironment.GetGlobal = LuaEnvironment.Get;
 
 -- Set the environment variable with the specified name to the specified
 -- value. If the name has been exported, this operation will be forwarded
@@ -150,6 +151,7 @@ function LuaEnvironment:Set(name, value)
 	end;
 	rawset(self.globals, name, value);
 end;
+LuaEnvironment.SetGlobal = LuaEnvironment.Set;
 
 -- Change the environment variable with the specified name to the
 -- specified value. This method behaves identically to :Set, but
