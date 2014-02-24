@@ -159,6 +159,10 @@ function OOP.ShareFate(owners, dtor, ...)
     local destroyer = Functions.OnlyOnce(Lists.CallEach, destructors);
 
     for _, owner in ipairs(owners) do
-        table.insert(destructors, owner:AddDestructor(destroyer));
+        if IsCallable(owner) then
+            table.insert(destructors, owner(destroyer));
+        else
+            table.insert(destructors, owner:AddDestructor(destroyer));
+        end;
     end;
 end;
