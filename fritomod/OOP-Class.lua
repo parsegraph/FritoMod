@@ -252,4 +252,9 @@ OOP.Class = function(...)
 	return class;
 end;
 
+local AtomClass = OOP.Class("Atom");
+function OOP.Atom()
+	return AtomClass:New();
+end;
+
 -- vim: set noet :
