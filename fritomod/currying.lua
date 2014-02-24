@@ -574,6 +574,11 @@ function CurryHeadlessMethod(func, ...)
 		if IsCallable(func) then
 			return func(invokedSelf, ...);
 		else
+			if type(invokedSelf) ~= "table" then
+				error("Headless method named " .. tostring(func)
+					.. " must have an associated object table, but a " .. type(invokedSelf) .. " was given instead."
+				);
+			end;
 			return invokedSelf[func](invokedSelf, ...);
 		end;
 	end, ...);
