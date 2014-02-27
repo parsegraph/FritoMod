@@ -106,7 +106,7 @@ function OOP.Property(class, name, setter, ...)
     else
         setter = Noop;
     end;
-    class:AddConstructor(function(self)
+    return class:AddConstructor(function(self)
         local value;
         self[name] = function(self, ...)
             if select("#", ...) == 0 then
@@ -155,8 +155,12 @@ function OOP.ShareFate(owners, dtor, ...)
     end;
 
     dtor = Curry(dtor, ...);
-    local destructors = {dtor};
-    local destroyer = Functions.OnlyOnce(Lists.CallEach, destructors);
+    local destructors = {};
+    local destroyer = Functions.OnlyOnce(function()
+        Lists.CallEach(destructors);
+        dtor();
+        dtor = nil;
+    end);
 
     for _, owner in ipairs(owners) do
         if IsCallable(owner) then
@@ -165,4 +169,6 @@ function OOP.ShareFate(owners, dtor, ...)
             table.insert(destructors, owner:AddDestructor(destroyer));
         end;
     end;
+
+    return Functions.OnlyOnce(Lists.CallEach, destructors);
 end;
