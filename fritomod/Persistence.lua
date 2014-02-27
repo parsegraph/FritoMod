@@ -4,6 +4,7 @@ if nil~=require then
 	require "fritomod/Lists";
 	require "fritomod/Events";
 	require "fritomod/Callbacks-Timing";
+	require "fritomod/log";
 end;
 
 Persistence = {};
@@ -32,17 +33,19 @@ function Persistence.Load(sourceData)
     assert(sourceData, "Source data must not be falsy");
 	loaded=true;
     persisted=sourceData;
-    trace("Firing persistence loaders");
+    Log.Enterf("Persistence", "Firing persistence loaders");
 	savers=Lists.MapCall(loaders, persisted);
+    Log.Leave();
 end;
 
 function Persistence.Save(suppressEvent)
     if savers then
-        trace("Firing persistence savers");
+        Log.Enterf("Persistence", "Firing persistence loaders");
         Lists.CallEach(savers);
         if not suppressEvent then
             Events.Dispatch("SAVE");
         end;
+        Log.Leave();
     end;
 end;
 

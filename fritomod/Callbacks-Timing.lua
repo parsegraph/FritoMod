@@ -19,7 +19,7 @@ function Timing.Flush()
     if callbacks:IsFiring() then
         return;
     end;
-    Log.Enter("Timing", "Calling deferred functions", "Calling", #callbacks, "deferred functions(s)");
+    Log.Enter("Timing", "Calling deferred functions", "Calling", callbacks:Count(), "deferred functions(s)");
 
     callbacks:Fire();
     Log.Leave("Timing", nil, "Flush complete");

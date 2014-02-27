@@ -3,6 +3,7 @@ if nil ~= require then
 	require "fritomod/currying";
 	require "fritomod/OOP";
 	require "fritomod/Lists";
+	require "fritomod/log";
 end;
 
 local CLASS_METATABLE = {
@@ -31,11 +32,13 @@ local CLASS_METATABLE = {
 		if not constructors then
 			return;
 		end;
-		for _, constructor in ipairs(constructors) do
+		for i, constructor in ipairs(constructors) do
+			Log.Entercf(klass, tostring(klass) .. " constructor invocations", "Invoking constructor " .. i);
 			local destructor = constructor(object, ...);
 			if IsCallable(destructor) then
 				object:AddDestructor(destructor);
 			end;
+			Log.Leave();
 		end;
 	end,
 
@@ -142,6 +145,8 @@ local CLASS_METATABLE = {
 			end;
 		end;
 
+		Log.Entercf(self, self:ClassName() .. " Destructions", "Destroying", self);
+
 		-- Allow spurious invocations of Destroy
 		rawset(self, "Destroy", Noop);
 
@@ -154,11 +159,15 @@ local CLASS_METATABLE = {
 
 		-- Allow detection from OOP.IsDestroyed
 		rawset(self, "destroyed", true);
+
+		Log.Leave();
 	end
 }
 
 -- Creates a new instance of this class.
 local function New(class, ...)
+	Log.Enter(class, class:ClassName() .. " Creations", "Creating new " .. class:ClassName());
+
 	local numericId = rawget(class, "__idcount") or 1;
 	rawset(class, "__idcount", numericId + 1);
 	local instance = {
@@ -190,6 +199,9 @@ local function New(class, ...)
 	Initialize(class, ...);
 
 	instance:Constructor(...);
+
+	Log.Logf(instance, instance, "created.");
+	Log.Leave();
 	return instance;
 end
 

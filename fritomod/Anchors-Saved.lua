@@ -51,7 +51,7 @@ local function ShowAnchor(name, anchor)
 	if not showing then
 		return;
 	end;
-	trace("Showing anchor: "..name);
+	Log.Entercf("Saved Anchors", "Anchor Shows", "Showing anchor", name);
 	local dragging = false;
 	Lists.InsertAll(removers,
 		anchor:Show(),
@@ -82,21 +82,23 @@ local function ShowAnchor(name, anchor)
 			anchors[name]=nil;
 		end)
 	);
+	Log.Leave();
 end;
 
 function Anchors.Named(name)
     CreateAnchorFrame();
 	local anchor;
 	if anchors[name] then
-		trace("Retrieving existing anchor: "..name);
+        Log.Entercf("Saved Anchors", "Named anchor retrievals", "Retrieving existing anchor for", name);
 		anchor=anchors[name];
 	else
-		trace("Creating new anchor for name: "..name);
+        Log.Entercf("Saved Anchors", "Named anchor retrievals", "Creating new anchor for", name);
 		anchor=PersistentAnchor:New(anchorFrame);
 		Frames.Position(anchor.frame, name);
 		anchors[name]=anchor;
 		ShowAnchor(name, anchor)
 	end;
+    Log.Leave();
 	return anchor.frame;
 end;
 Anchors.Saved=Anchors.Named;
@@ -112,9 +114,10 @@ function Anchors.Show()
 	if showing then
 		return;
 	end;
+	Log.Entercf("Saved Anchors", "Changing named anchor visibility", "Showing all named anchors.");
 	showing=true;
-	trace("Showing all anchors");
 	Tables.EachPair(anchors, ShowAnchor);
+	Log.Leave();
 	return Anchors.Hide;
 end;
 Anchors.Unlock=Anchors.Show;
@@ -124,13 +127,13 @@ function Anchors.Hide()
 		return;
 	end;
 	showing=false;
-	trace("Hiding all anchors");
+	Log.Entercf("Saved Anchors", "Changing named anchor visibility", "Hiding all named anchors.");
 	Lists.CallEach(removers);
+	Log.Leave();
 end;
 Anchors.Lock=Anchors.Hide;
 
 function Anchors.Toggle()
-	trace("Toggling anchor visibility");
 	if showing then
 		Anchors.Hide();
 	else

@@ -3,11 +3,12 @@ if nil ~= require then
 	require "fritomod/StateDispatcher";
 	require "fritomod/ListenerList";
 	require "fritomod/Math";
+	require "fritomod/Mixins-Log";
 end;
 
 Mechanics = Mechanics or {};
 
-local Amount = OOP.Class("Mechanics.Amount");
+local Amount = OOP.Class("Mechanics.Amount", Mixins.Log);
 Mechanics.Amount = Amount;
 
 function Amount:Constructor(name)
@@ -153,10 +154,11 @@ end;
 
 function Amount:Fire()
 	if self:HasAll() then
-		trace("Firing listeners for amount");
+        self:logEntercf("Amount updates", "Firing update listeners");
 		self.listeners:Fire(self:Min(), self:Value(), self:Max());
+        self:logLeave();
 	else
-		trace("Tried to fire amount listeners, but missing values");
+		self:logcf("Amount updates", "An update was requested, but I'm missing values.");
 	end;
 end;
 

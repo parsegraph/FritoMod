@@ -231,15 +231,6 @@ end;
 
 Anchors={};
 
-DEBUG_TRACE_ANCHORS = false;
-
-local gtrace = trace;
-local function trace(...)
-	if DEBUG_TRACE_ANCHORS then
-		return gtrace(...);
-	end;
-end;
-
 function Anchors.Origin()
 	if platform() == "wow" then
 		return "bottomleft";
