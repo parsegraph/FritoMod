@@ -37,11 +37,12 @@ function ToggleDispatcher:Constructor()
 end;
 
 function ToggleDispatcher:Fire(...)
-	if self.fired then
-		self:log("Listener dispatches", "Fire requested, but I have not fired.");
+	if self:HasFired() then
+		self:log("Listener dispatches", "Fire requested, but I have already fired.");
 		return;
 	end;
 	self.fired=true;
+
 	ToggleDispatcher.super.Fire(self, ...);
 	return Seal(self, "Reset");
 end;
@@ -72,11 +73,12 @@ function ToggleDispatcher:RemoveListener(listener)
 end;
 
 function ToggleDispatcher:Reset(...)
-	if not self.fired then
+	if not self:HasFired() then
 		self:log("Listener dispatches", "Reset requested, but I have not fired.");
 		return;
 	end;
 	self.fired=false;
+
 	self:logEnter("Listener dispatches", "Resetting dispatcher");
 	if self.resetters and #self.resetters > 0 then
 		for _, resetter in ipairs(self.resetters) do
