@@ -1,8 +1,7 @@
+-- Be sure to keep these dependencies to an absolute minimum.
 if nil ~= require then
-    require "fritomod/Math";
     require "wow/api/Timing"; -- GetTime()
-    require "fritomod/basic";
-    require "fritomod/OOP";
+    require "fritomod/basic"; -- Reference
 end;
 
 if Log and type(Log) == "table" and Log.AddLogger then
@@ -60,15 +59,29 @@ local function LogMessage(event, sender, category, ...)
         -- No loggers, so no sense creating a message
         return;
     end;
+
+    if sender == nil then
+        category = category or "";
+        local joined = "";
+        for i=1, select("#", ...) do
+            local part = tostring(select(i, ...));
+            if joined == "" then
+                joined = part;
+            else
+                joined = joined .. " " .. part;
+            end;
+        end;
+        error("Sender must not be nil.\n\tMessage: " ..
+            event .. " " .. category .. " " .. joined
+        );
+    end;
+
     local senderRef;
-    if sender and type(sender) == "table" then
+    if type(sender) == "table" then
         senderRef = Reference(sender);
     end;
-    if sender then
-        -- Sender might be nil, so we can't just call tostring when
-        -- creating the message table.
-        sender = tostring(sender);
-    end;
+    sender = tostring(sender);
+
     if not firstMessage then
         firstMessage = GetTime();
     end;
@@ -82,18 +95,38 @@ local function LogMessage(event, sender, category, ...)
     Fire(event, message);
 end;
 
-function Log.Enter(...)
-    LogMessage("ENTER", ...)
+function Log.Enter(sender, ...)
+    LogMessage("ENTER", sender, ...)
+end;
+Log.Entercf = Log.Enter;
+
+function Log.Enterf(sender, ...)
+    Log.Enter(sender, nil, ...);
 end;
 
-function Log.Log(...)
-    LogMessage("LOG", ...)
+function Log.Log(sender, ...)
+    LogMessage("LOG", sender, ...)
 end;
+Log.Logcf = Log.Log;
+Log.Message = Log.Log;
+Log.Messagecf = Log.Log;
+
+function Log.Logf(sender, ...)
+    Log.Log(sender, nil, ...);
+end;
+Log.Messagef = Log.Logf;
 
 function Log.Leave(sender, ...)
     if select("#", ...) > 0 then
-        Log.Log(...);
+        Log.Log(sender, ...);
     end;
     Fire("LEAVE");
 end;
+Log.Leavecf = Log.Leave;
 
+function Log.Leavef(sender, ...)
+    if select("#", ...) > 0 then
+        Log.Logf(sender, ...);
+    end;
+    Log.Leave();
+end;
