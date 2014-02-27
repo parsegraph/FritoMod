@@ -176,17 +176,18 @@ function Frames.New(...)
 	end;
 end;
 
-function Frames.Reparent(f, parent)
-	parent = Frames.AsRegion(parent);
-	if type(f) == "table" and #f > 0 then
-		for i=1, #f do
-			Frames.Reparent(f[i], parent);
+function Frames.Reparent(frame, parent)
+	if type(frame) == "table" and #frame > 0 and not OOP.IsInstance(frame) then
+		for i=1, #frame do
+			Frames.Reparent(frame[i], parent);
 		end;
 		return;
 	end;
-	f = Frames.AsRegion(f);
-	if f ~= parent then
-		f:SetParent(parent);
+	if frame.SetParent == nil then
+		frame = Frames.AsRegion(frame);
+	end;
+	if frame ~= parent then
+		frame:SetParent(parent);
 	end;
 end;
 
