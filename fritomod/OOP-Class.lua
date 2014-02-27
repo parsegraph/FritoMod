@@ -104,6 +104,73 @@ local CLASS_METATABLE = {
 		return Lists.Insert(destructors, destructor);
 	end,
 
+	-- Gets an object whose lifecycle is tied to this object.
+	--
+	-- It is common to use an object as the owner for some constructed values.
+	-- Ownership is made explicit by using AddDestructor() and OOP.ShareFate()
+	-- to tie one object's lifespan to another. These two methods will solve
+	-- most ownership problems.
+	--
+	-- However, in some cases, a delegate is needed to explicitly manage a part
+	-- of this object's ownership. This delegate is useful if you wish to
+	-- atomically release only a portion of an object's managed state.
+	--
+	-- By default, the handle can outlive the specified context. If you want
+	-- the handle to be destroyed when the context is destroyed, use the
+	-- following:
+	--
+	--     local handle = object:NewHandle(context);
+	--     OOP.ShareFate({context, handle}, handle);
+	NewHandle = function(self, context)
+		if not self.handles then
+			self.handles = setmetatable({}, {
+				__mode = "k"
+			});
+		end;
+
+		if self.handles[context] then
+			self.handles[context]:Destroy();
+		end;
+
+		local handle = OOP.Atom(context, self);
+		OOP.ShareFate({self, handle}, handle);
+		OOP.ShareFate({self, context, handle},
+			Tables.Change(self.handles, context, handle)
+		);
+
+		return handle;
+	end,
+
+	-- Returns whether this object has a handle for the specified context.
+	--
+	-- See NewHandle() for more information on handles.
+	HasHandle = function(self, context)
+		if not self.handles then
+			return false;
+		end;
+		return Bool(self.handles[context]);
+	end,
+
+	-- Gets the current handle for the specified context.
+	--
+	-- A new handle will be created if one doesn't already exist.
+	--
+	-- See NewHandle() for more information on handles.
+	Handle = function(self, context)
+		if not self.handles then
+			self.handles = setmetatable({}, {
+				__mode = "k"
+			});
+		end;
+
+		local handle = self.handles[context];
+		if not handle then
+			return self:NewHandle(context);
+		end;
+
+		return handle;
+	end,
+
 	ClassName = function(self)
 		return "Object";
 	end,
