@@ -537,7 +537,8 @@ function CurryMethod(object, func, ...)
 			return func(object, ...);
 		end, ...);
 	end;
-	error("func is not callable and is not a string. Received type: " .. type(func));
+
+	error("Method for " .. tostring(object) .. " must either be callable or a name, but I was given " .. tostring(func));
 end
 
 -- Curries the specified headless method using the specified arguments, returning a callable
