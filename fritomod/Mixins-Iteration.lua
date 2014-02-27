@@ -762,7 +762,7 @@ function Mixins.Iteration(library)
 		function library.MapCall(iterable, ...)
 			local args = { ... };
 			return library.MapValues(iterable, function(func)
-				assert(IsCallable(func), "func is not callable. Type: " .. type(func));
+				assert(IsCallable(func), "func must be callable, but I was given " .. tostring(func));
 				return func(unpack(args));
 			end);
 		end;
