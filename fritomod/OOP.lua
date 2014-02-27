@@ -119,10 +119,10 @@ function OOP.Property(class, name, setter, ...)
 
         self[name] = function(self, ...)
             if select("#", ...) == 0 then
-                return value;
+                return unpack(value);
             end;
-            local newValue = ...;
-            if value == newValue then
+            local newValue = {...};
+            if value and Tables.Equal(value, newValue) then
                 return;
             end;
 
@@ -134,10 +134,10 @@ function OOP.Property(class, name, setter, ...)
                 if select("#", ...) == 0 then
                     value = newValue;
                 else
-                    value = ...;
+                    value = {...};
                 end;
             end;
-            reset = setter(self, newValue, Commit);
+            reset = setter(self, Commit, ...);
             if not invoked then
                 Commit();
             end;
@@ -147,8 +147,8 @@ function OOP.Property(class, name, setter, ...)
             return self[name](self);
         end;
 
-        self["Set" .. name] = function(self, newValue)
-            return self[name](self, newValue);
+        self["Set" .. name] = function(self, ...)
+            return self[name](self, ...);
         end;
 
         return Reset;
