@@ -369,29 +369,31 @@ end;
 -- returns
 --	 a timer that responds to the values listed above
 function Timing.After(wait, func, ...)
-	wait=Strings.GetTime(wait);
-	func=Curry(func,...);
-	local elapsed=0;
-	local r;
-	r=Timing.OnUpdate(function(delta)
-		elapsed=elapsed+delta;
+	wait = Strings.GetTime(wait);
+	func = Curry(func,...);
+	local elapsed = 0;
+	local timer;
+	timer = Timing.OnUpdate(function(delta)
+		elapsed = elapsed + delta;
 		if elapsed >= wait then
-			r();
-			r=nil;
+			timer();
+            timer = nil;
 			func();
 		end;
 	end);
-	return function(delay)
-		if not r then
-			return;
-		end
-		if delay==POISON then
-			r();
-			r=nil;
-		elseif delay==nil then
-			elapsed=math.min(0, elapsed);
-		else
-			elapsed=elapsed-delay;
-		end;
+	return function(...)
+        if not timer then
+            return;
+        end;
+        if select("#", ...) == 0 or (...) == POISON then
+            timer();
+            timer = nil;
+            return;
+        end;
+        local delay = ...;
+        elapsed = elapsed - delay;
 	end;
 end;
+
+Callbacks = Callbacks or {};
+Callbacks.After = Timing.After;

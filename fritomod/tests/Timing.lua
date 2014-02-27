@@ -106,8 +106,7 @@ function Suite:TestDelayTimerDelaysAFunctionCall()
 	local f=Timing.After(2, v.Set, true);
 	self:Tick(1);
 	v.Assert(nil);
-	-- Reset it to wait 2 more seconds.
-	f();
+	f(1);
 	self:Tick(1);
 	v.Assert(nil);
 	self:Tick(1);
