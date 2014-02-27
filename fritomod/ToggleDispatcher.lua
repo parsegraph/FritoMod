@@ -91,6 +91,11 @@ function ToggleDispatcher:Reset(...)
 	self:logLeave();
 end;
 
+function ToggleDispatcher:AddResetter(func, ...)
+	func = Curry(func, ...);
+	return self:Add(Functions.Return, func);
+end;
+
 function ToggleDispatcher:Toggle(...)
 	if self.fired then
 		self:Reset(...);
