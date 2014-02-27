@@ -93,7 +93,7 @@ Lists.Size=Lists.Length;
 
 function Lists.Insert(iterable, value)
 	table.insert(iterable, value);
-	return Functions.OnlyOnce(Lists.Remove, iterable, value);
+	return Seal(Functions.OnlyOnce(Lists.Remove, iterable, value));
 end;
 
 function Lists.Delete(iterable, key)

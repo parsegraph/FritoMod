@@ -35,6 +35,25 @@ function Mixins.MutableArrayTests(Suite, library)
 		assert(library.Equals(Suite:Array(2,3,true), a), "Remover does nothing when redundantly called");
 	end;
 
+	function Suite:TestInsertRemoval()
+		local a=Suite:Array(2,2,2);
+		local r=library.Insert(a, 2);
+		assert(library.Equals(Suite:Array(2,2,2,2), a), "Element is inserted into the iterable");
+		r();
+		assert(library.Equals(Suite:Array(2,2,2), a), "Element is successfully removed");
+        r();
+		assert(library.Equals(Suite:Array(2,2,2), a), "Remover only removes once.");
+	end;
+
+	function Suite:TestInsertRemovalIsSealed()
+		local a=Suite:Array(2,2,2);
+		local r=library.Insert(a, 2);
+        local flag = Tests.Flag();
+		r(flag.Raise);
+        flag.AssertUnraised("List insertion remover must not accept additional arguments.");
+		assert(library.Equals(Suite:Array(2,2,2), a), "Element is successfully removed");
+	end;
+
 	function Suite:TestInsertFunction()
 		local function Do(a, b)
 			Assert.Type("number", a, "a must a number");
