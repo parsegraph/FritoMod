@@ -22,7 +22,7 @@ function Suite:TestToString()
         return "Base";
     end;
 
-    assert(tostring(Base):match([[^%Class Base]]), tostring(Base));
+    assert(tostring(Base):match([[^%Base]]), tostring(Base));
     assert(tostring(obj):match([[^%Base]]), tostring(obj));
 end;
 

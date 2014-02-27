@@ -224,7 +224,7 @@ OOP.Class = function(...)
 	class.New = New;
 	class.__tostring = function(self)
 		if rawget(self, "ClassName") then
-			return "Class "..self:ClassName().."@"..Reference(self);
+			return self:ClassName();
 		end;
 		return "Subclass of "..self:ClassName().."@"..Reference(self);
 	end
