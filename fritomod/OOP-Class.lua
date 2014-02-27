@@ -218,16 +218,16 @@ end
 -- throws
 --	 if any provided argument is not either a mixin or a class
 --	 if more than one super-class is provided (multiple inheritance in this manner is not supported)
-OOP.Class = function(...)
+function OOP.Class(...)
 	local class = {};
 	class.__index = CLASS_METATABLE;
 	class.New = New;
-	class.__tostring = function(self)
+	function class:__tostring()
 		if rawget(self, "ClassName") then
 			return self:ClassName();
 		end;
 		return "Subclass of "..self:ClassName().."@"..Reference(self);
-	end
+	end;
 	setmetatable(class, class);
 
 	for n = 1, select('#', ...) do
