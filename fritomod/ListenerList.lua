@@ -70,6 +70,12 @@ end;
 function ListenerList:GetListenerCount()
 	return #self.listeners;
 end;
+ListenerList.Size = ListenerList.GetListenerCount;
+ListenerList.Length = ListenerList.GetListenerCount;
+ListenerList.Count = ListenerList.GetListenerCount;
+ListenerList.ListenerCount = ListenerList.GetListenerCount;
+ListenerList.GetNumListeners = ListenerList.GetListenerCount;
+ListenerList.NumListeners = ListenerList.GetListenerCount;
 
 function ListenerList:HasListeners()
 	return self:GetListenerCount() > 0;
