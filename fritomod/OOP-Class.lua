@@ -263,8 +263,12 @@ function OOP.Class(...)
 end;
 
 local AtomClass = OOP.Class("Atom");
-function OOP.Atom()
-	return AtomClass:New();
+function OOP.Atom(...)
+	local atom = AtomClass:New();
+	if select("#", ...) > 0 then
+		atom:SetID(...);
+	end;
+	return atom;
 end;
 
 -- vim: set noet :
