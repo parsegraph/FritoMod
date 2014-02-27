@@ -92,8 +92,17 @@ function ToggleDispatcher:Reset(...)
 end;
 
 function ToggleDispatcher:AddResetter(func, ...)
-	func = Curry(func, ...);
-	return self:Add(Functions.Return, func);
+	local returner = Curry(Functions.Return, Curry(func, ...));
+	local remover = self:Add(returner);
+
+	-- If we've fired, then fire our fake function to ensure this resetter
+	-- is fired when the others are first fired. Otherwise, we'll need to
+	-- wait until the next reset to actually call this function.
+	if self:HasFired() then
+		self:FireListener(returner);
+	end;
+
+	return remover;
 end;
 
 function ToggleDispatcher:Toggle(...)
