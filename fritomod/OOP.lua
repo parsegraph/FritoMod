@@ -108,6 +108,15 @@ function OOP.Property(class, name, setter, ...)
     end;
     return class:AddConstructor(function(self)
         local value;
+
+        local reset;
+        local function Reset()
+            if IsCallable(reset) then
+                reset();
+            end;
+            reset = nil;
+        end;
+
         self[name] = function(self, ...)
             if select("#", ...) == 0 then
                 return value;
@@ -116,6 +125,9 @@ function OOP.Property(class, name, setter, ...)
             if value == newValue then
                 return;
             end;
+
+            Reset();
+
             local invoked = false;
             local function Commit(...)
                 invoked = true;
@@ -125,7 +137,7 @@ function OOP.Property(class, name, setter, ...)
                     value = ...;
                 end;
             end;
-            setter(self, newValue, Commit);
+            reset = setter(self, newValue, Commit);
             if not invoked then
                 Commit();
             end;
@@ -138,6 +150,8 @@ function OOP.Property(class, name, setter, ...)
         self["Set" .. name] = function(self, newValue)
             return self[name](self, newValue);
         end;
+
+        return Reset;
     end);
 end;
 
