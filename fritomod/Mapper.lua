@@ -161,8 +161,4 @@ function Mapper:OnUpdate(func, ...)
     return self.listeners:Add(func, ...);
 end;
 
-function Mapper:ClassName()
-	return "fritomod/Mapper";
-end;
-
 -- vim: set et :
