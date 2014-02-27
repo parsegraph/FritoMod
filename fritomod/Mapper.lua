@@ -100,7 +100,7 @@ end;
 Mapper.AddDest = Mapper.AddDestination;
 
 function Mapper:ContentFor(key, data)
-    self.mappings[data] = self.mapper(data, self.mappings[data]);
+    self.mappings[data] = self.mapper(data, self.mappings[data], key);
     return self.mappings[data];
 end;
 
@@ -146,6 +146,7 @@ function Mapper:Update()
 
     -- Push all deleted keys to destinations
     for key, data in pairs(oldAggregate) do
+        self.mapper(nil, self.mappings[data], key, data);
         Lists.CallEach(self.destinations, key, nil);
     end;
     self:logLeave();
