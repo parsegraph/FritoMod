@@ -237,9 +237,7 @@ OOP.Class = function(...)
 		end;
 		if OOP.IsClass(mixinOrClass) then
 			--  It's a class, so make it our super class.
-			if class.super then
-				error("Class cannot have more than one super class");
-			end;
+			assert(not class.super, "Class cannot have more than one super class");
 			class.super = mixinOrClass;
 			class.__index = class.super;
 		elseif IsCallable(mixinOrClass) then
