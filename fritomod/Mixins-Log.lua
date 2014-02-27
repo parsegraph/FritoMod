@@ -5,65 +5,67 @@ end;
 
 Mixins = Mixins or {};
 
-function Mixins.Log(obj)
-    obj.debugging = false;
-
-    function obj:setdebug(debugging)
-        self.debugging = debugging;
+function Mixins.Log(self)
+    if OOP.IsClass(self) then
+        Log.Entercf(self, "Log mixin constructions", "Adding logging mixin to class.");
+    else
+        Log.Entercf(self, "Log mixin constructions", "Adding logging mixin to instance.");
     end;
 
-    function obj:log(...)
+    function self:log(...)
         if select("#", ...) == 1 then
             return self:logf(...);
         end;
         return self:logcf(...);
     end;
-    obj.logc = obj.log;
+    self.logc = self.log;
 
-    function obj:logf(...)
+    function self:logf(...)
         self:logcf(nil, ...);
     end;
 
-    function obj:logcf(...)
+    function self:logcf(...)
         Log.Log(self, ...);
     end;
 
-    function obj:logEnter(...)
+    function self:logEnter(...)
         if select("#", ...) == 1 then
             return self:logEnterf(...);
         end;
         return self:logEntercf(...);
     end;
-    obj.logEnterc = obj.logEnter;
+    self.logEnterc = self.logEnter;
 
-    function obj:logEnterf(...)
+    function self:logEnterf(...)
         Log.Enter(self, nil, ...);
     end;
 
-    function obj:logEntercf(...)
+    function self:logEntercf(...)
         Log.Enter(self, ...);
     end;
 
-    function obj:logLeave(...)
+    function self:logLeave(...)
         if select("#", ...) > 0 then
             self:log(...);
         end;
         Log.Leave();
     end;
 
-    function obj:logLeavef(...)
+    function self:logLeavef(...)
         if select("#", ...) > 0 then
             self:logf(...);
         end;
         Log.Leave();
     end;
 
-    function obj:logLeavecf(...)
+    function self:logLeavecf(...)
         if select("#", ...) > 0 then
             self:logcf(...);
         end;
         Log.Leave();
     end;
+
+    Log.Leave();
 end;
 
 Logger = OOP.Class("Logger", Mixins.Log);
