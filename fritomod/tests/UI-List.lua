@@ -8,32 +8,36 @@ local Suite = CreateTestSuite("fritomod.UI-List");
 
 -- Just a simple proof-of-concept, really.
 function Suite:TestList()
-    local values = {
-        "red",
-        "yellow",
-        "blue"
-    };
     local mapper = Mapper:New();
-    mapper:SetMapper(function(color)
-        local frame = Frames.New();
-        Frames.WH(frame, 40);
+    mapper:SetMapper(function(color, frame)
+        if not color then
+            frame:Destroy();
+            return;
+        end;
+        if not frame then
+            frame = Frames.New();
+            Frames.WH(frame, 40);
+        end;
         Frames.Color(frame, color);
         return frame;
     end);
-    mapper:AddSource(values);
+    mapper:SetSource({
+        "red",
+        "yellow",
+        "blue"
+    });
 
-    local frames = {};
-    mapper:AddDest(frames);
+    local frames = mapper:Get();
 
     local view = UI.List:New();
-    mapper:OnUpdate(view, "Update");
+    view:SetContent(mapper:Get());
+
     local myRef;
     view:OnUpdate(function(ref)
         myRef = ref;
     end);
     local flag = Tests.Flag();
     view:OnUpdate(flag.Raise);
-    view:SetContent(frames);
     view:SetLayout(Anchors.HJustify, "topleft");
 
     flag.Assert();

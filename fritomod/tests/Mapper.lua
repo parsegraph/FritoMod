@@ -9,104 +9,57 @@ function Suite:TestMapper()
         c = "Baz"
     };
 
-    m:AddSource(source);
+    m:SetSource(source);
 
-    local dest = {};
-    m:AddDestination(dest);
-
-    m:SetMapper("upper");
+    m:SetMapper(function(data)
+        if data then
+            return data:upper();
+        end;
+    end);
 
     Assert.Equals({
         a = "FOO",
         b = "BAR",
         c = "BAZ"
-    }, dest);
+    }, m:Get());
 
     source.a = "Bat";
-
-    m:Update();
-
-    Assert.Equals({
-        a = "BAT",
-        b = "BAR",
-        c = "BAZ"
-    }, dest);
-
-    local other = {};
-    m:AddDestination(other);
+    m:Invalidate();
 
     Assert.Equals({
         a = "BAT",
         b = "BAR",
         c = "BAZ"
-    }, other);
+    }, m:Get());
 
-    m:SetMapper("lower");
+    m:SetMapper(function(data)
+        if data then
+            return data:lower();
+        end;
+    end);
 
     Assert.Equals({
         a = "bat",
         b = "bar",
         c = "baz"
-    }, dest);
-end;
-
-function Suite:TestMapperCanReuseValues()
-    local mapper = Mapper:New();
-
-    mapper:SetMapper(function(data)
-        return {data};
-    end);
-
-    function mapper:CanReuseContent(content, data, key)
-        return true;
-    end;
-
-    local source = {
-        a = 42,
-        b = 42,
-    };
-    mapper:AddSourceTable(source);
-
-    local dest = {};
-    mapper:AddDestination(dest);
-    Assert.Equals(dest.a, dest.b);
+    }, m:Get());
 end;
 
 function Suite:TestReuse()
-    local values = {
-        "yellow",
-        "yellow",
-    };
     local mapper = Mapper:New();
     mapper:SetMapper(function(color)
         return {
             name = color
         };
     end);
-    mapper:AddSource(values);
+    mapper:SetSource({
+        "yellow",
+        "yellow",
+    });
 
-    local frames = {};
-    mapper:AddDest(frames);
+    local frames = mapper:Get();
 
     -- Don't use Assert.Equals and friends because neither
     -- value is really an "expected" value.
     assert(frames[1] ~= frames[2]);
-end;
-
-function Suite:TestSmartIteration()
-    local mapper = Mapper:New();
-
-    mapper:AddSource({"yellow", "yellow"});
-    mapper:AddSource({"blue"});
-
-    mapper:SetMapper("upper");
-
-    local frames = {};
-    mapper:AddDest(frames);
-
-    Assert.Equals({
-        "YELLOW",
-        "YELLOW",
-        "BLUE"
-    }, frames);
 end;

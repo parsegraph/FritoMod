@@ -31,135 +31,100 @@ if nil ~= require then
     require "fritomod/Lists";
     require "fritomod/ListenerList";
     require "fritomod/Mixins-Log";
+    require "fritomod/Mixins-Invalidating";
 end;
 
-Mapper = OOP.Class("Mapper", Mixins.Log);
+Mapper = OOP.Class("Mapper",
+    Mixins.Log,
+    Mixins.Invalidating
+);
 
 function Mapper:Constructor()
-    self.listeners = ListenerList:New();
+    self.contentFor = {};
+    self:AddDestructor(Seal(self, "SetMapper", nil));
 
-    self.sources = {};
-    self.destinations = {};
+    self:OnValidate(self, "Build");
 
-    -- Authoritative view of the content, keyed by source keys to the
-    -- underlying original data.
-    self.aggregate = {};
+    -- Call validate to properly sync up our state.
+    self:Validate();
 end;
 
-function Mapper:SetMapper(mapper, ...)
-    self.mapper = Curry(mapper, ...);
-    self.mappings = {};
-    self:Update();
+function Mapper:ContentFor(data)
+    self:logEnterf("Building content for", data);
+    assert(data ~= nil, "Data must not be nil");
+    self.contentFor[data] = self:Mapper()(data, self.contentFor[data]);
+    self:logLeave();
+    return self.contentFor[data];
 end;
 
--- Add the specified source to this mapper. If the source is a table, then
--- its keys and values will be used as source data.
---
--- Otherwise, the source should return an iterator function.
-function Mapper:AddSource(src, ...)
-    if select("#", ...) > 0 or type(src) ~= "table" then
-        -- It has to be an iterator function.
-        return self:AddSourceIterator(src, ...);
+function Mapper:RemoveContentFor(data)
+    if data == nil then
+        return;
     end;
-    return self:AddSourceIterator(Tables.SmartIterator, src);
-end;
-Mapper.AddSrc = Mapper.AddSource;
-
-function Mapper:AddSourceList(src)
-    return self:AddSourceIterator(Lists.ValueIterator, src);
-end;
-
-function Mapper:AddSourceTable(src)
-    return self:AddSourceIterator(Tables.PairIterator, src);
-end;
-
-function Mapper:AddSourceIterator(src, ...)
-    src = Curry(src, ...);
-    local remover = Lists.Insert(self.sources, src);
-    self:Update();
-    return Functions.OnlyOnce(function(self)
-        remover();
-        self:Update();
-    end, self);
-end;
-
-function Mapper:AddDestination(dest, ...)
-    if select("#", ...) == 0 and type(dest) == "table" then
-        -- Assume we intend to populate the specified table.
-        return self:AddDestination(Tables.Set, dest);
+    local content = self.contentFor[data];
+    if content then
+        self:logEnterf("Removing content for", data);
+        self:Mapper()(nil, content);
+        self.contentFor[data] = nil;
+        self:logLeave();
     end;
-
-    dest = Curry(dest, ...);
-    local remover = Lists.Insert(self.destinations, dest);
-
-    -- Push our data to the underlying destination
-    self:Update();
-
-    return remover;
-end;
-Mapper.AddDest = Mapper.AddDestination;
-
-function Mapper:ContentFor(key, data)
-    self.mappings[data] = self.mapper(data, self.mappings[data], key);
-    return self.mappings[data];
 end;
 
-function Mapper:Update()
-    if not self.mapper then
-        -- No mapper, so there won't be any mappings.
+function Mapper:Build()
+    if not self:Mapper() then
+        self:logcf("Mapping builds", "I received a request to build mapped values, but I don't have a mapper.");
+        self.mapped = {};
         return;
     end;
 
-    self:logEnter("Mapping updates", "Updating mapper");
+    self:logEnter("Mapping builds", "I'm rebuilding my mapped values.")
 
-    local oldAggregate = self.aggregate;
-    local aggregate = {};
+    self.mapped = {};
+    local oldMapped = self.mapped or {};
+    local seenData = {};
 
-    self:logEnter(nil, "Aggregating from", #self.sources, "source(s)");
-    -- Get the full view of available data
-    for _, source in ipairs(self.sources) do
-        for key, data in source() do
-            if data == nil then
-                data = key;
-                table.insert(aggregate, data);
-            else
-                aggregate[key] = data;
-            end;
+    if self:Source() then
+        for key, data in pairs(self:Source()) do
+            self.mapped[key] = self:ContentFor(data);
+            seenData[data] = true;
         end;
     end;
-    self:logLeave();
 
-    -- Push the new aggregate to be live. I do this here for atomicity
-    self.aggregate = aggregate;
-
-    self:logEnter("Pushing mapped values to destinations");
-    -- Push all added and modified keys
-    for key, data in pairs(aggregate) do
-        assert(data ~= nil);
-        local content = self:ContentFor(key, data);
-        Lists.CallEach(self.destinations, key, content);
-
-        -- I'm using the oldAggregate as a register of deleted keys. If a key
-        -- still remains in oldAggregate after this loop, then it was deleted
-        oldAggregate[key] = nil;
+    for data, _ in pairs(self.contentFor) do
+        if not seenData[data] then
+            self:RemoveContentFor(data);
+        end;
     end;
-
-    -- Push all deleted keys to destinations
-    for key, data in pairs(oldAggregate) do
-        self.mapper(nil, self.mappings[data], key, data);
-        Lists.CallEach(self.destinations, key, nil);
-    end;
-    self:logLeave();
-
-    self:logEnter("Firing mapper listeners");
-    self.listeners:Fire();
-    self:logLeave();
 
     self:logLeave();
 end;
 
-function Mapper:OnUpdate(func, ...)
-    return self.listeners:Add(func, ...);
+function Mapper:Get()
+    if self:IsInvalidated() then
+        self:Validate();
+    end;
+    return self.mapped;
 end;
+Mapper.GetMapped = Mapper.Get;
+
+OOP.Property(Mapper, "Source", function(self, commit, value)
+    commit(value);
+    self:Invalidate();
+end);
+
+function Mapper:SetMapper(mapper, ...)
+    if self:Mapper() then
+        Tables.EachK(self.contentFor, self, "RemoveContentFor");
+    end;
+    if mapper ~= nil or select("#", ...) > 0 then
+        self.mapper = Curry(mapper, ...);
+    end;
+    self:Invalidate();
+end;
+
+function Mapper:GetMapper()
+    return self.mapper;
+end;
+Mapper.Mapper = Mapper.GetMapper;
 
 -- vim: set et :
