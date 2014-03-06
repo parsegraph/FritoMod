@@ -138,3 +138,8 @@ function Log.Leavef(sender, ...)
     end;
     Log.Leave();
 end;
+
+function Log.Return(...)
+    Log.Leave();
+    return ...;
+end;
