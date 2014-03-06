@@ -92,60 +92,71 @@ function OOP.Annihilate(obj)
 	setmetatable(obj, DESTROYED_METATABLE);
 end;
 
-function OOP.Property(class, name, setter, ...)
+function OOP.Property(self, name, setter, ...)
+    if OOP.IsClass(self) then
+        self:AddConstructor(Headless(OOP.Property, name, setter, ...));
+        return;
+    end;
+
     if setter ~= nil or select("#", ...) > 0 then
         setter = Curry(setter, ...);
     else
         setter = Noop;
     end;
-    return class:AddConstructor(function(self)
-        local value;
 
-        local reset;
-        local function Reset()
-            if IsCallable(reset) then
-                reset();
-            end;
-            reset = nil;
+    local value = {};
+
+    local reset;
+    local function Reset()
+        if IsCallable(reset) then
+            reset();
+        end;
+        value = {};
+        reset = nil;
+    end;
+    self:AddDestructor(Reset);
+
+    self[name] = function(self, ...)
+        if select("#", ...) == 0 then
+            return self["Get" .. name](self, ...);
+        end;
+        return self["Set" .. name](self, ...);
+    end;
+
+    self["GetRaw" .. name] = function(self)
+        return unpack(value);
+    end;
+
+    if self["Get" .. name] == nil then
+        self["Get" .. name] = self["GetRaw" .. name];
+    end;
+
+    self["Set" .. name] = function(self, ...)
+        local newValue = {...};
+        if value and Tables.Equal(value, newValue) then
+            return;
         end;
 
-        self[name] = function(self, ...)
+        Reset();
+
+        local invoked = false;
+        local function Commit(...)
+            invoked = true;
             if select("#", ...) == 0 then
-                return unpack(value);
-            end;
-            local newValue = {...};
-            if value and Tables.Equal(value, newValue) then
-                return;
-            end;
-
-            Reset();
-
-            local invoked = false;
-            local function Commit(...)
-                invoked = true;
-                if select("#", ...) == 0 then
-                    value = newValue;
-                else
-                    value = {...};
-                end;
-            end;
-            reset = setter(self, Commit, ...);
-            if not invoked then
-                Commit();
+                value = newValue;
+            else
+                value = {...};
             end;
         end;
-
-        self["Get" .. name] = function(self)
-            return self[name](self);
+        reset = setter(self, Commit, ...);
+        if not invoked then
+            Commit();
         end;
-
-        self["Set" .. name] = function(self, ...)
-            return self[name](self, ...);
-        end;
-
-        return Reset;
-    end);
+    end;
 end;
+
+Mixins = Mixins or {};
+Mixins.Property = OOP.Property;
 
 -- Invoke the specified destructor if any of the specified objects are destroyed.
 --
