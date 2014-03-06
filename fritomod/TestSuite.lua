@@ -69,7 +69,7 @@ local function CoerceTest(test)
 		return test;
 	end;
 	if type(test) == "table" then
-		return CurryMethod(test, test.Run);
+		return CurryMethod(test, "Run");
 	end;
 	if type(test) == "string" then
 		local testfunc, err = loadstring(test);

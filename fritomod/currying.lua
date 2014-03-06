@@ -679,7 +679,7 @@ end;
 function ForcedMethod(self, func, ...)
 	assert(self, "self is falsy");
 	assert(type(self) == "table", "self is not a table. Type: " .. type(self));
-	func = CurryMethod(self, func, ...);
+	func = Curry(self, func, ...);
 	return function(maybeSelf, ...)
 		if maybeSelf == self then
 			return func(...);
