@@ -57,6 +57,7 @@ function Math.Percent(min, value, max)
 	local range = max - min;
 	return value / range;
 end;
+Math.Percentage = Math.Percent;
 
 function Math.Interpolate(min, pct, max)
     if type(min) == "table" and type(max) == "table" then

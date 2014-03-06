@@ -315,6 +315,10 @@ function Mixins.Iteration(library)
 		library.Equals = CurryNamedFunction(library, "PairsEqual");
 	end;
 
+	if nil == rawget(library, "Equal") then
+		library.Equal = CurryNamedFunction(library, "Equals");
+	end;
+
 	if library.AssertEqual == nil then
 		function library.AssertEqual(iterable, otherIterable)
 			if library.Bias() == "table" then
