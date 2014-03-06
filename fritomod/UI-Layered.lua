@@ -115,7 +115,7 @@ end;
 
 function Layered:Update()
     local count = self.baseLayer * SUBLEVELS;
-    for _, name in self.order:Iterator() do
+    Lists.EachV(self.order:Get(), function(name)
         local layer = self.layers[name];
         if layer then
             local l, sl = ConvertToDrawLayer(count);
@@ -123,7 +123,7 @@ function Layered:Update()
             layer:SetDrawLayer(l, sl);
             count = count + 1;
         end;
-    end;
+    end);
 end;
 
 function Layered:Remove(name)

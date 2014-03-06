@@ -2,35 +2,13 @@ if nil ~= require then
     require "fritomod/OOP-Class";
     require "fritomod/Lists";
     require "fritomod/Strings";
+    require "fritomod/Mixins-Observable";
 end;
 
-
-Ordering = OOP.Class("Ordering");
+Ordering = OOP.Class("Ordering", Mixins.Observable);
 
 function Ordering:Constructor()
     self.order = {};
-end;
-
-function Ordering:Get()
-    return self.order;
-end;
-
-function Ordering:Iterator()
-    return Lists.Iterator(self:Get());
-end;
-
-function Ordering:Each(func, ...)
-    Lists.Each(self:Get(), func, ...);
-end;
-
-function Ordering:Raise(name)
-    Lists.Remove(self.order, name);
-    Lists.Insert(self.order, name);
-end;
-
-function Ordering:Lower(name)
-    Lists.Remove(self.order, name);
-    Lists.Unshift(self.order, name);
 end;
 
 function Ordering:Order(order, ...)
@@ -117,12 +95,37 @@ function Ordering:Order(order, ...)
 
     -- Just to make sure iteration ended as expected
     assert(theirIndex > #order);
+
+    self:Update();
+end;
+
+function Ordering:Get()
+    return self.order;
+end;
+
+function Ordering:Raise(name)
+    Lists.Remove(self.order, name);
+    Lists.Insert(self.order, name);
+    self:Update();
+end;
+
+function Ordering:Lower(name)
+    Lists.Remove(self.order, name);
+    Lists.Unshift(self.order, name);
+    self:Update();
+end;
+
+function Ordering:Push(name)
+    table.insert(self.order, name);
+    self:Update();
+end;
+
+function Ordering:Unshift(name)
+    table.insert(self.order, 1, name);
+    self:Update();
 end;
 
 function Ordering:Remove(name)
     Lists.Remove(self.order, name);
-end;
-
-function Ordering:Filter(filter, ...)
-    self.order = Lists.Filter(self.order, filter, ...);
+    self:Update();
 end;
