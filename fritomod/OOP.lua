@@ -43,7 +43,7 @@ function OOP.IsClass(candidate)
 	if rawget(candidate, "class") then
 		return false;
 	end;
-	return IsCallable(rawget(candidate,"New"));
+	return IsCallable(rawget(candidate, "New"));
 end;
 
 function OOP.IsDestroyed(obj)
