@@ -272,6 +272,9 @@ local function New(class, ...)
 	return instance;
 end
 
+-- The univeral class that all classes will inherit from.
+OOP.UniversalClass = CLASS_METATABLE;
+
 -- Creates a callable table that creates instances of itself when invoked. This is analogous
 -- to classes: a super-class may be provided in the arguments, and that class will act as the
 -- default source of methods for the returned class.
