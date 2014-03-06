@@ -56,7 +56,15 @@ function Curry(...)
 	end;
 	local objOrFunc, funcOrName = ...;
 	if not objOrFunc then
-		error("objOrFunc is falsy");
+		local extra = "";
+		if select("#", ...) > 1 then
+			extra = " and " .. select("#", ...) .. " other arguments";
+		elseif select("#", ...) > 0 then
+			extra = " and 1 other argument";
+		end;
+		error("My first argument must be an object or a function, but I got "
+			.. tostring(objOrFunc) .. extra .. " instead."
+		);
 	end;
 	if type(objOrFunc) == "function" then
 		return CurryFunction(...);
@@ -478,15 +486,24 @@ end
 --	 if, when invoked, there is no value for the specified name on the specified object
 --	 if, when invoked, the value at the specified name is not callable
 --	 if any curried or passed arguments are nil
-function CurryNamedFunction(obj, name, ...)
-	assert(obj, "obj is falsy");
-	assert(name, "name is falsy");
+function CurryNamedFunction(object, name, ...)
+	assert(object, "The provided function owner must not be falsy.");
+	if type(object) ~= "table" and type(object) ~= "userdata" then
+		error("The provided function owner must be a table or userdata, but I received a " .. tostring(object));
+	end;
+	assert(name ~= nil, "The provided function name must not be nil.")
 	return CurryFunction(function(...)
-		local func = obj[name];
-		if func==nil then
-			error("Named function was not found. Name: " .. name);
+		local func = object[name];
+		if func == nil then
+			error("The function named " .. tostring(name)
+				.. " was not found, so I can't invoke it.");
 		end;
-		assert(IsCallable(func), "Named function is not callable.");
+		if not IsCallable(func) then
+			error("The function named " .. tostring(name)
+				.. " was found, but it's not callable so I can't invoke it. I found a "
+				.. tostring(func) .. " instead."
+			);
+		end;
 		return func(...);
 	end, ...);
 end;
@@ -518,27 +535,29 @@ end;
 --	 the value returned by the specified method
 -- throws
 --	 if any curried or passed arguments are nil
-function CurryMethod(object, func, ...)
-	assert(object, "object must not be falsy during currying");
-	assert(func, "func must not be falsy during currying");
+function CurryMethod(object, name, ...)
+	assert(object, "The provided method owner must not be falsy.");
 	if type(object) ~= "table" and type(object) ~= "userdata" then
-		error(("object is not a table. Received type: %s"):format(type(object)));
+		error("The provided method owner must be a table or userdata, but I received a " .. tostring(object));
 	end;
-	if IsCallable(func) then
-		return CurryFunction(func, object, ...);
-	elseif type(func) == "string" then
-		local name=func;
-		return CurryFunction(function(...)
-			local func=object[name];
-			if func==nil then
-				error("Named function was not found. Name: " .. name);
-			end;
-			assert(IsCallable(func), "Named function is not callable.");
-			return func(object, ...);
-		end, ...);
-	end;
-
-	error("Method for " .. tostring(object) .. " must either be callable or a name, but I was given " .. tostring(func));
+	assert(name ~= nil, "The provided method name must not be nil.")
+	return CurryFunction(function(...)
+		local method = object[name];
+		if method == nil then
+			error("The method named " .. tostring(name)
+				.. " was not found on " .. tostring(object)
+				.. ", so I can't invoke it."
+			);
+		end;
+		if not IsCallable(method) then
+			error("The method named " .. tostring(name)
+				.. " was found on " .. tostring(object)
+				.. ", but it's not callable so I can't invoke it. I found a "
+				.. tostring(func) .. " instead."
+			);
+		end;
+		return method(object, ...);
+	end, ...);
 end
 
 -- Curries the specified headless method using the specified arguments, returning a callable
@@ -574,13 +593,20 @@ function CurryHeadlessMethod(func, ...)
 	local invokeHeadless = CurryFunction(function(...)
 		if IsCallable(func) then
 			return func(invokedSelf, ...);
-		else
-			assert(invokedSelf and (not IsPrimitive(invokedSelf) or type(invokedSelf) == "string"),
+		end;
+
+		if not invokedSelf or (IsPrimitive(invokedSelf) and type(invokedSelf) ~= "string") then
+			error(
 				"Headless method named " .. tostring(func) .. " must have an associated object table, "
 				.. "but a " .. type(invokedSelf) .. " was given instead."
 			);
-			return invokedSelf[func](invokedSelf, ...);
 		end;
+		local method = invokedSelf[func];
+		if not method then
+			error("I couldn't find a method to invoked named " .. tostring(func) .. " on my " .. tostring(invokedSelf));
+		end;
+
+		return method(invokedSelf, ...);
 	end, ...);
 	return function(self, ...)
 		invokedSelf=self;
