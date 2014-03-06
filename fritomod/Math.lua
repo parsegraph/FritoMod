@@ -24,7 +24,10 @@ local function CheckRange(min, value, max)
 	assert(type(min) == "number", "Range min must be a number");
 	assert(type(value) == "number", "Range value must be a number");
 	assert(type(max) == "number", "Range max must be a number");
-	assert(min <= max, "Range min must be less than Range max");
+    if min > max then
+        error("Range minimum (" .. tostring(min) .. ") must be less than its"
+        .. "maximum (" .. tostring(max) .. ")");
+    end;
 end;
 
 function Math.Clamp(min, value, max)
@@ -47,6 +50,9 @@ end;
 
 function Math.Percent(min, value, max)
 	CheckRange(min, value, max);
+    if min == max then
+        error("Minimum value (" .. tostring(min) .. ") must not be equal to its maximum value (" .. tostring(max) .. ")");
+    end;
 	value = value - min;
 	local range = max - min;
 	return value / range;
