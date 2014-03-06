@@ -5,13 +5,16 @@ end;
 
 local Frame = WoW.Frame;
 
-Frame:AddConstructor(function(self, parent)
+Frame:AddConstructor(function(self)
 	self.children = {};
-    self:SetParent(parent);
     self:AddDestructor(function()
         self:SetParent(nil);
     end);
 end);
+
+function Frame:Constructor(parent)
+    self:SetParent(parent);
+end;
 
 function Frame:GetNumChildren(...)
 end;

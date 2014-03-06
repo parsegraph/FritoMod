@@ -15,12 +15,11 @@ function WoW.Frame:CreateFontString()
 	return FontString:New(self);
 end;
 
-function FontString:Constructor()
-    FontString.super.Constructor(self);
+FontString:AddConstructor(function(self)
     self.text = "";
     self.color = {1, 1, 1, 1};
     self.font = {};
-end;
+end);
 
 function FontString:SetFontObject()
     trace("STUB FontString:SetFontObject");
