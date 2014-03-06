@@ -41,6 +41,7 @@ function Layered:Constructor(parent, baseLayer)
     assert(type(baseLayer) == "string" or baseLayer == nil,
         "baseLayer must a string");
     self.frame = Frames.New(parent);
+    self:AddDestructor(self.frame);
 
     baseLayer = baseLayer or "BACKGROUND";
     baseLayer = baseLayer:upper();
@@ -53,6 +54,7 @@ function Layered:Constructor(parent, baseLayer)
     self.layers = {};
 
     self.order = Ordering:New();
+    self:AddDestructor(self.order);
 end;
 
 function Layered:AddTexture(name, ...)
@@ -137,10 +139,4 @@ end;
 function Layered:RemoveOrder(name)
     self:Remove(name);
     self.order:Remove(name);
-end;
-
-function Layered:Destroy()
-    self.order:Each(self, "RemoveOrder");
-    Frames.Destroy(self.frame);
-    Layered.super.Destroy(self);
 end;
