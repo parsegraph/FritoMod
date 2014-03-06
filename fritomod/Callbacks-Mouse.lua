@@ -24,30 +24,36 @@ Callbacks=Callbacks or {};
 -- A helper function that ensures we only enable the mouse on a frame when
 -- necessary. This coordination is necessary since different callbacks all
 -- require an enabled mouse.
-local function enableMouse(f)
-    if not f.EnableMouse then
+local function InstallMouse(frame, ...)
+    if not frame.EnableMouse then
         return Noop;
     end;
-	f.mouseListenerTypes=f.mouseListenerTypes or 0;
-	f.mouseListenerTypes=f.mouseListenerTypes+1;
-	f:EnableMouse(true);
-	return Functions.OnlyOnce(function()
-		f.mouseListenerTypes=f.mouseListenerTypes-1;
-		if f.mouseListenerTypes <= 0 then
-			f:EnableMouse(false);
-		end;
-	end)
+    if not frame.InstallMouse then
+        frame.InstallMouse = Functions.Install(function()
+            frame:EnableMouse(true);
+            return function()
+                frame:EnableMouse(false);
+                frame.InstallMouse = nil;
+            end;
+        end);
+    end;
+    return frame:InstallMouse(...);
 end;
 
-local function ActivateKeyboard(frame)
-	local KEYBOARD_ENABLER = "__KeyboardEnabler";
-	if not frame[KEYBOARD_ENABLER] then
-		frame[KEYBOARD_ENABLER] = Functions.Install(function()
-			frame:EnableKeyboard(true);
-			return Functions.OnlyOnce(frame, "EnableKeyboard", false);
-		end);
-	end;
-	return frame[KEYBOARD_ENABLER]();
+local function InstallKeyboard(frame, ...)
+    if not frame.EnableKeyboard then
+        return Noop;
+    end;
+    if not frame.InstallKeyboard then
+        frame.InstallKeyboard = Functions.Install(function()
+            frame:EnableKeyboard(true);
+            return function()
+                frame:EnableKeyboard(false);
+                frame.InstallKeyboard = nil;
+            end;
+        end);
+    end;
+    return frame:InstallKeyboard(...);
 end;
 
 local function ToggledEvent(event, setUp, ...)
@@ -60,11 +66,15 @@ local function ToggledEvent(event, setUp, ...)
 		);
 		func=Curry(func, ...);
 		local dispatcher;
-        Log.Enter("Frame Callbacks", "Adding callbacks", "Adding callback for", event, "event");
+        Log.Enter("Frame event callbacks", "Adding callbacks", "Adding callback for", event, "event");
 		if frame[eventListenerName] then
 			dispatcher=frame[eventListenerName];
 		else
-			dispatcher=ToggleDispatcher:New(("%s (%s)"):format(event, tostring(frame)));
+			dispatcher=ToggleDispatcher:New();
+            dispatcher:SetID(event, frame);
+            if OOP.IsInstance(frame) then
+                OOP.ShareFate({frame, dispatcher}, dispatcher);
+            end;
 			dispatcher:AddInstaller(Tables.Change, frame, eventListenerName, dispatcher);
 			setUp(dispatcher, frame);
 		end;
@@ -90,7 +100,7 @@ end;
 -- Calls the specified callback whenever the mouse enters and leaves the specified frame.
 Callbacks.EnterFrame = ToggledEvent("EnterFrame", function(dispatcher, frame)
 	BasicEvent("OnEnter", "OnLeave", dispatcher, frame);
-	dispatcher:AddInstaller(enableMouse, frame);
+	dispatcher:AddInstaller(InstallMouse, frame);
 end);
 Callbacks.MouseEnter=Callbacks.EnterFrame;
 Callbacks.FrameEnter=Callbacks.EnterFrame;
@@ -114,7 +124,7 @@ Callbacks.FrameHide=Callbacks.HideFrame;
 -- Calls the specified callback whenever the specified frame is focused
 Callbacks.FocusGained = ToggledEvent("FocusGained", function(dispatcher, frame)
     BasicEvent("OnFocusGained", "OnFocusLost", dispatcher, frame);
-    dispatcher:AddInstaller(ActivateKeyboard, frame);
+    dispatcher:AddInstaller(InstallKeyboard, frame);
 end);
 
 -- Calls the specified callback whenever dragging starts. You'll
@@ -122,7 +132,7 @@ end);
 -- receive drag events. Frames.Draggable helps with this.
 Callbacks.DragFrame = ToggledEvent("DragFrame", function(dispatcher, frame)
 	BasicEvent("OnDragStart", "OnDragStop", dispatcher, frame);
-	dispatcher:AddInstaller(enableMouse, frame);
+	dispatcher:AddInstaller(InstallMouse, frame);
 end);
 
 -- Calls the specified callback whenever dragging starts. You'll
@@ -140,18 +150,18 @@ Callbacks.Drop = Headless(Callbacks.SimpleEvent, "OnDrop");
 
 Callbacks.MouseDown = ToggledEvent("MouseDown", function(dispatcher, frame)
 	CheckForOverwrites("OnMouseDown", "OnMouseUp", dispatcher, frame);
-	dispatcher:AddInstaller(enableMouse, frame);
+	dispatcher:AddInstaller(InstallMouse, frame);
 	local remover;
 	local function OnMouseUp(reason, ...)
-		trace("MouseUp detected (%s)", reason);
+        Log.Enterf(frame, "MouseUp event received because", reason);
 		if remover then
 			remover();
 			remover=nil;
 		end;
 		dispatcher:Reset(...);
+        Log.Leave();
 	end;
 	dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseDown", function(button, ...)
-		trace("MouseDown detected");
 		observed=button;
 		dispatcher:Fire(button, ...);
         if platform() == "wow" then
@@ -163,13 +173,13 @@ Callbacks.MouseDown = ToggledEvent("MouseDown", function(dispatcher, frame)
                     --
                     -- This workaround is even used by Blizzard in FloatingChatFrame.xml.
                     -- If their workaround disappears, then ours can afford to go as well.
-                    OnMouseUp("OnUpdate listener detected button was no longer pressed");
+                    OnMouseUp("the OnUpdate listener detected button was no longer pressed.");
                 end;
             end);
         end;
 	end);
-	dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseUp", OnMouseUp, "OnMouseUp event was fired");
-	dispatcher:AddInstaller(Callbacks.HideFrame, frame, OnMouseUp, "Frame was hidden");
+	dispatcher:AddInstaller(Callbacks.Script, frame, "OnMouseUp", OnMouseUp, "OnMouseUp event was explicitly fired.");
+	dispatcher:AddInstaller(Callbacks.HideFrame, frame, OnMouseUp, "the frame was hidden.");
 end);
 function Callbacks.MouseUp(frame, func, ...)
 	return Callbacks.MouseDown(frame, Functions.ReverseUndoable(func, ...));
@@ -194,7 +204,7 @@ function Callbacks.Click(f, func, ...)
 				Curry(Lists.Insert, listeners),
 				Functions.Install(function()
 					return Curry(Lists.CallEach, {
-						enableMouse(f),
+						InstallMouse(f),
 						Callbacks.HookScript(f, "OnClick", Lists.CallEach, listeners)
 					});
 				end)
