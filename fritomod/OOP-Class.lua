@@ -26,7 +26,7 @@ local CLASS_METATABLE = {
 	--	 the object that is constructed
 	-- throws
 	--	 if object is falsy
-	ConstructObject = function(klass, object, ...)
+	ConstructObject = function(klass, object)
 		assert(object, "Object must not be falsy");
 		local constructors = rawget(klass, "__constructors");
 		if not constructors then
@@ -34,7 +34,7 @@ local CLASS_METATABLE = {
 		end;
 		for i, constructor in ipairs(constructors) do
 			Log.Entercf(klass, tostring(klass) .. " constructor invocations", "Invoking constructor " .. i);
-			local destructor = constructor(object, ...);
+			local destructor = constructor(object);
 			if IsCallable(destructor) then
 				object:AddDestructor(destructor);
 			end;
@@ -257,13 +257,13 @@ local function New(class, ...)
 		return str;
 	end;
 
-	local function Initialize(class, ...)
+	local function Initialize(class);
 		if class.super then
-			Initialize(class.super, ...);
+			Initialize(class.super);
 		end;
-		class:ConstructObject(instance, ...);
+		class:ConstructObject(instance);
 	end;
-	Initialize(class, ...);
+	Initialize(class);
 
 	instance:Constructor(...);
 
