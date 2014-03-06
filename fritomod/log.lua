@@ -124,6 +124,14 @@ function Log.Leave(sender, ...)
 end;
 Log.Leavecf = Log.Leave;
 
+function Log.Reset(sender, ...)
+    if select("#", ...) > 0 then
+        Log.Log(sender, ...);
+    end;
+    Fire("RESET");
+end;
+Log.Resetcf = Log.Reset;
+
 function Log.Leavef(sender, ...)
     if select("#", ...) > 0 then
         Log.Logf(sender, ...);
