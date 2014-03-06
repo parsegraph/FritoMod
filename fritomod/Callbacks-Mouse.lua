@@ -16,7 +16,7 @@ if nil ~= require then
 	require "fritomod/Callbacks";
 	require "fritomod/Callbacks-Frames";
 	require "fritomod/Functions";
-	require "fritomod/log";
+	require "fritomod/Log";
 end;
 
 Callbacks=Callbacks or {};

@@ -4,7 +4,7 @@ if nil ~= require then
 	require "fritomod/Lists";
 	require "fritomod/currying";
 	require "fritomod/Timing";
-	require "fritomod/log";
+	require "fritomod/Log";
 end;
 
 Callbacks=Callbacks or {};

@@ -2,7 +2,7 @@ if nil ~= require then
 	require "wow/Frame-Events";
 
 	require "fritomod/currying";
-	require "fritomod/log";
+	require "fritomod/Log";
 	require "fritomod/Functions";
 	require "fritomod/Frames";
 end;

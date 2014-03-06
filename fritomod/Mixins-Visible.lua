@@ -1,6 +1,6 @@
 if nil ~= require then
     require "fritomod/OOP";
-    require "fritomod/log";
+    require "fritomod/Log";
     require "fritomod/ToggleDispatcher";
 end;
 

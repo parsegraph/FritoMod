@@ -4,7 +4,7 @@ if nil~=require then
 	require "fritomod/Lists";
 	require "fritomod/Events";
 	require "fritomod/Callbacks-Timing";
-	require "fritomod/log";
+	require "fritomod/Log";
 end;
 
 Persistence = {};

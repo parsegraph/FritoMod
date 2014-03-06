@@ -3,7 +3,7 @@ if nil ~= require then
 	require "fritomod/currying";
 	require "fritomod/OOP";
 	require "fritomod/Lists";
-	require "fritomod/log";
+	require "fritomod/Log";
 end;
 
 local CLASS_METATABLE = {
