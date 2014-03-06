@@ -76,6 +76,9 @@ function Curry(...)
 			-- a callable table, use the CurryMethod or CurryFunction methods explicitly.
 			error("objOrFunc is a callable table and therefore ambiguous.");
 		end;
+		if IsCallable(funcOrName) then
+			return CurryFunction(funcOrName, objOrFunc, select(3, ...));
+		end;
 		return CurryMethod(...);
 	end;
 	if type(objOrFunc) == "string" then
