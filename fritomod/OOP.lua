@@ -11,33 +11,25 @@ function OOP.IntegrateLibrary(library, class)
 	end
 end
 
-function OOP.InstanceOf(class, instance)
-    if OOP.IsInstance(class) and OOP.IsClass(instance) then
-        return OOP.InstanceOf(instance, class);
+function OOP.InstanceOf(klass, instance)
+    if OOP.IsInstance(klass) and OOP.IsClass(instance) then
+        -- Allow confusion between InstanceOf and IsInstance
+        return OOP.InstanceOf(instance, klass);
     end;
-	if not OOP.IsInstance(instance) then
-		return false;
-	end;
-	local candidateClass = instance.class;
-	while true do
-		if candidateClass == class then
-			return true;
-		end;
-		local super = candidateClass.super;
-		if super ~= nil and super ~= candidateClass then
-			candidateClass = super;
-		else
-			break;
-		end;
-	end;
-	return false;
+    assert(OOP.IsClass(klass), "A class must be provided, but I was given " .. tostring(klass) .. ".");
+    if not OOP.IsInstance(instance) then
+        return false;
+    end;
+    return instance.class:InheritsClass(klass);
 end;
 OOP.Instanceof = OOP.InstanceOf;
 
-function OOP.IsInstance(candidate, class)
-    if class ~= nil then
-        return OOP.InstanceOf(class, candidate);
+function OOP.IsInstance(...)
+    if select("#", ...) > 1 then
+        -- Allow confusion between InstanceOf and IsInstance
+        return OOP.InstanceOf(...);
     end;
+    local candidate = ...;
 	if type(candidate) ~= "table" then
 		return false;
 	end;

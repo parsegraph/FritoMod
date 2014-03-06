@@ -175,6 +175,19 @@ local CLASS_METATABLE = {
 		return "Object";
 	end,
 
+	InheritsClass = function(self, klass)
+		assert(klass, "A class must be provided for testing inheritance.");
+		if OOP.IsInstance(self) then
+			return self.class:InheritsClass(klass);
+		end;
+		if klass == self then
+			return true;
+		end;
+		if self.super then
+			return self.super:InheritsClass(klass);
+		end;
+	end,
+
 	ID = function(self)
 		if self.id then
 			if self.idParent then
