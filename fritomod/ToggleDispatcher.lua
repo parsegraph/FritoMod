@@ -123,6 +123,16 @@ function ToggleDispatcher:HasFired()
 end;
 ToggleDispatcher.Fired = ToggleDispatcher.HasFired;
 
+function ToggleDispatcher:IsFiring()
+	return self.listeners:IsFiring();
+end;
+ToggleDispatcher.Firing = ToggleDispatcher.IsFiring;
+
+function ToggleDispatcher:IsResetting()
+	return self.resetters:IsFiring();
+end;
+ToggleDispatcher.Resetting = ToggleDispatcher.IsResetting;
+
 OOP.Property(ToggleDispatcher, "Immediate");
 ToggleDispatcher.IsImmediate = Headless("GetImmediate");
 
