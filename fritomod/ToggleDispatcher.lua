@@ -66,11 +66,11 @@ function ToggleDispatcher:Fire(...)
 	self.listeners:InvokeListeners(FireListener, self, ...);
 	self:logLeave();
 
-	return Seal(self, "Reset");
+	return Curry(self, "Reset");
 end;
 ToggleDispatcher.Each = ToggleDispatcher.Fire;
 
-function ToggleDispatcher:Reset()
+function ToggleDispatcher:Reset(...)
 	if not self:HasFired() then
 		self:log("Listener dispatches", "Reset requested, but I have not fired.");
 		return;
@@ -78,7 +78,7 @@ function ToggleDispatcher:Reset()
 
 	self:logEnter("Listener dispatches", "Resetting dispatcher");
 	self.fired = nil;
-	self.resetters:Fire();
+	self.resetters:Fire(...);
 	self:logLeave();
 end;
 
@@ -100,6 +100,16 @@ end;
 ToggleDispatcher.AddListener = ToggleDispatcher.Add;
 ToggleDispatcher.OnFire = ToggleDispatcher.Add;
 
+-- Add a resetter to this dispatcher. It will be invoked whenever this
+-- dispatcher is transitioning from a fired state to an unfired state.
+--
+-- Arguments to Reset() will be passed to each resetter, and its return
+-- value is ignored.
+--
+-- Reset() must always be able to be called without any arguments, so
+-- your resetters should anticipate this possibility.
+--
+-- Immediate-mode does not affect resetters.
 function ToggleDispatcher:AddResetter(resetter, ...)
 	return self.resetters:Add(resetter, ...);
 end;
@@ -112,7 +122,7 @@ ToggleDispatcher.OnInstall = ToggleDispatcher.AddInstaller;
 
 function ToggleDispatcher:Toggle(...)
 	if self:HasFired() then
-		self:Reset();
+		self:Reset(...);
 	else
 		self:Fire(...);
 	end;
