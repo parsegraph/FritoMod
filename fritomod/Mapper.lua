@@ -85,6 +85,9 @@ function Mapper:Build()
 
     if self:Source() then
         for key, data in pairs(self:Source()) do
+            if seenData[data] then
+                error("Data " .. tostring(data) .. " has already been seen.");
+            end;
             self.mapped[key] = self:ContentFor(data);
             seenData[data] = true;
         end;
