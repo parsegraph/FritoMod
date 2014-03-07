@@ -1,7 +1,7 @@
 if nil ~= require then
 	require "fritomod/OOP-Class";
 	require "fritomod/ListenerList";
-	require "fritomod/ImmediateToggleDispatcher";
+	require "fritomod/ToggleDispatcher";
 end;
 
 StateDispatcher = OOP.Class("StateDispatcher");
@@ -10,7 +10,8 @@ function StateDispatcher:Constructor(initial, name)
 	assert(initial, "Initial state must be provided");
 	self.name = tostring(name or "StateDispatcher");
 
-	self.installers = ImmediateToggleDispatcher:New("Installers for StateDispatcher "..self.name);
+	self.installers = ToggleDispatcher:New("Installers for StateDispatcher "..self.name);
+	self.installers:SetImmediate(true);
 
 	local Install = Functions.Install(self.installers, "Fire");
 
@@ -18,7 +19,8 @@ function StateDispatcher:Constructor(initial, name)
 	self.stateListeners:AddInstaller(Install);
 	self.states = setmetatable({}, {
 		__index = function(self, key)
-			local dispatcher = ImmediateToggleDispatcher:New(key);
+			local dispatcher = ToggleDispatcher:New(key);
+            dispatcher:SetImmediate(true);
 			dispatcher:AddInstaller(Install);
 			rawset(self, key, dispatcher);
 			return self[key];

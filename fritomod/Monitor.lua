@@ -2,7 +2,6 @@ if nil ~= require then
 	require "fritomod/Timing";
 	require "fritomod/OOP-Class";
 	require "fritomod/ListenerList";
-	require "fritomod/ImmediateToggleDispatcher";
 	require "fritomod/StateDispatcher";
 end;
 

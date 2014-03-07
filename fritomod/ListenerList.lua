@@ -32,10 +32,10 @@ end;
 -- If you need to provide an observer-like interface, you should use ListenerList.
 -- It is too easy to violate the above guarantees when you roll your own.
 --
--- ListenerList is designed to be extended by overriding Install and Uninstall. If you
--- need special behavior when a listener is fired, override FireListener. If you need
--- special behavior when a listener is removed, override RemoveListener. In all cases,
--- call ListenerList's method first before adding your own behavior.
+-- ListenerList is designed to be extended by overriding Install and Uninstall.
+-- If you need special behavior when a listener is removed, override
+-- RemoveListener. In all cases, call ListenerList's method first before adding
+-- your own behavior.
 
 if nil ~= require then
 	require "fritomod/basic";
@@ -46,51 +46,82 @@ if nil ~= require then
 	require "fritomod/Mixins-Log";
 end;
 
-ListenerList=OOP.Class("ListenerList", Mixins.Log);
+ListenerList = OOP.Class("ListenerList", Mixins.Log);
 
-function ListenerList:Constructor()
+ListenerList:AddConstructor(function(self)
 	self.listeners = {};
 	self:AddDestructor(self, "Uninstall", true);
+end);
+
+function ListenerList:Add(listener, ...)
+	return self:AddDirectly(self:MakeUnique(listener, ...));
+end;
+ListenerList.AddListener = ListenerList.Add;
+ListenerList.OnFire = ListenerList.Add;
+
+function ListenerList:Each(...)
+	return self:InvokeListeners(function(listener, ...)
+		listener(...);
+	end, ...);
+end;
+ListenerList.Fire = ListenerList.Each;
+
+function ListenerList:Map(...)
+	local results = {};
+	self:InvokeListeners(function(listener, ...)
+		local result = listener(...);
+		if result ~= nil then
+			table.insert(results);
+		end;
+	end, ...);
+	return results;
 end;
 
-function ListenerList:AddInstaller(func, ...)
-	self.installers=self.installers or {};
-	return Lists.Insert(self.installers, Curry(func, ...));
-end;
-
-function ListenerList:Install()
-	assert(not self:HasListeners(), tostring(self).." is refusing to install a populated list %q", self);
-	self:logEnter("Listener list installations", "Installing listener list");
-	if self.installers then
-		self.uninstallers=Lists.MapCall(self.installers);
+-- This method is rarely used, unless you need special behavior when
+-- a listener is invoked.
+function ListenerList:InvokeListeners(invoker, ...)
+	assert(not self:IsFiring(), tostring(self).. " is refusing to fire while firing");
+	if #self.listeners == 0 then
+		return;
 	end;
+
+	local function FinalizeFire()
+		self.firingIndex = nil;
+		self.firingMax = nil;
+		self.firing = false;
+	end;
+
+	self:logEntercf("Listener dispatches", "Firing all", self:GetListenerCount(), "listener(s)");
+
+	self.firing = true;
+	self.firingMax = #self.listeners;
+	self.firingIndex = 1;
+
+	while self.firingIndex <= self.firingMax do
+		local listener = self.listeners[self.firingIndex];
+		local target = Curry(invoker, listener, ...);
+		local succeeded, err = xpcall(target, traceback);
+		if not succeeded then
+			-- Clean up our firing variable, otherwise we'll be permanently
+			-- stuck in "firing" mode.
+			FinalizeFire();
+			if self:GetRemoveOnFail() then
+				self:RemoveListener(listener);
+			end;
+			self:logLeave();
+			error(err);
+		end;
+		if OOP.IsDestroyed(self) then
+			break;
+		end;
+		self.firingIndex = self.firingIndex + 1;
+	end;
+	FinalizeFire();
 	self:logLeave();
 end;
 
-function ListenerList:GetListenerCount()
-	return #self.listeners;
-end;
-ListenerList.Size = ListenerList.GetListenerCount;
-ListenerList.Length = ListenerList.GetListenerCount;
-ListenerList.Count = ListenerList.GetListenerCount;
-ListenerList.ListenerCount = ListenerList.GetListenerCount;
-ListenerList.GetNumListeners = ListenerList.GetListenerCount;
-ListenerList.NumListeners = ListenerList.GetListenerCount;
-
-function ListenerList:HasListeners()
-	return self:GetListenerCount() > 0;
-end;
-
-function ListenerList:Add(listener, ...)
-	local given=listener;
-	listener=Curry(listener, ...);
-	if given==listener then
-		-- Ensure that the functions in our list are always
-		-- unique. This ensures the returned remover will remove exactly
-		-- the expected function, instead of removing some potential
-		-- duplicate.
-		listener=Functions.Clone(listener);
-	end;
+-- This method is not often used, unless you're writing a dispatcher.
+function ListenerList:AddDirectly(listener)
 	self:logEntercf("Listener additions and removals", "Adding a listener to me. I will now have", 1+self:GetListenerCount(),"listener(s)");
 	if not self:HasListeners() then
 		self:Install();
@@ -100,51 +131,20 @@ function ListenerList:Add(listener, ...)
 	return Functions.OnlyOnce(self, "RemoveListener", listener);
 end;
 
-function ListenerList:Fire(...)
-	assert(not self:IsFiring(), tostring(self).. " is refusing to fire while firing");
-	if #self.listeners == 0 then
-		return;
+function ListenerList:MakeUnique(listener, ...)
+	local original = listener;
+	listener = Curry(listener, ...);
+	if original == listener then
+		-- Ensure that the functions in our list are always
+		-- unique. This ensures the returned remover will remove exactly
+		-- the expected function, instead of removing some potential
+		-- duplicate.
+		listener = Functions.Clone(listener);
 	end;
-	self.firing=true;
-	self:logEntercf("Listener dispatches", "Firing all", self:GetListenerCount(), "listener(s)");
-	-- Get a local reference to our list, to ensure
-	-- repositioning will not affect our iteration.
-	self.firingMax = #self.listeners;
-	self.firingIndex = 1;
-	while self.firingIndex <= self.firingMax do
-		local listener = self.listeners[self.firingIndex];
-		local target = Curry(self, "FireListener", listener, ...);
-		local succeeded, err = xpcall(target, traceback);
-		if not succeeded then
-			-- Clean up our firing variable, otherwise we'll be permanently
-			-- stuck in "firing" mode.
-			self:FinalizeFire();
-			if self:GetRemoveOnFail() then
-				self:RemoveListener(listener);
-			end;
-			self:logLeave();
-			error(err);
-		end;
-		if OOP.IsDestroyed(self) then
-			self:logLeave();
-			return;
-		end;
-		self.firingIndex = self.firingIndex + 1;
-	end;
-	self:FinalizeFire();
-	self:logLeave();
+	return listener;
 end;
 
-function ListenerList:FinalizeFire()
-	self.firingIndex = nil;
-	self.firingMax = nil;
-	self.firing=false;
-end;
-
-function ListenerList:FireListener(listener, ...)
-	return listener(...);
-end;
-
+-- This method should be considered private.
 function ListenerList:RemoveListener(listener)
 	self:logEnter("Listener additions and removals", "Removing a listener from me. I will now have", self:GetListenerCount()-1, "listener(s)");
 	local removedIndex = Lists.IndexOf(self.listeners, listener);
@@ -168,6 +168,23 @@ function ListenerList:RemoveListener(listener)
 	self:logLeave();
 end;
 
+function ListenerList:AddInstaller(func, ...)
+	self.installers=self.installers or {};
+	return Lists.Insert(self.installers, Curry(func, ...));
+end;
+ListenerList.OnInstall = ListenerList.AddInstaller;
+
+-- This method should be considered private.
+function ListenerList:Install()
+	assert(not self:HasListeners(), tostring(self).." is refusing to install a populated list %q", self);
+	self:logEnter("Listener list installations", "Installing listener list");
+	if self.installers then
+		self.uninstallers=Lists.MapCall(self.installers);
+	end;
+	self:logLeave();
+end;
+
+-- This method should be considered private.
 function ListenerList:Uninstall(force)
 	assert(force or not self:HasListeners(), "Refusing to uninstall populated list");
 	if self.uninstallers then
@@ -177,6 +194,7 @@ function ListenerList:Uninstall(force)
 		self:logLeave();
 	end;
 end;
+
 function ListenerList:IsFiring()
 	return self.firing;
 end;
@@ -194,5 +212,19 @@ function ListenerList:DumpListeners()
 end;
 
 OOP.Property(ListenerList, "RemoveOnFail");
+
+function ListenerList:GetListenerCount()
+	return #self.listeners;
+end;
+ListenerList.Size = ListenerList.GetListenerCount;
+ListenerList.Length = ListenerList.GetListenerCount;
+ListenerList.Count = ListenerList.GetListenerCount;
+ListenerList.ListenerCount = ListenerList.GetListenerCount;
+ListenerList.GetNumListeners = ListenerList.GetListenerCount;
+ListenerList.NumListeners = ListenerList.GetListenerCount;
+
+function ListenerList:HasListeners()
+	return self:GetListenerCount() > 0;
+end;
 
 -- vim: set noet :

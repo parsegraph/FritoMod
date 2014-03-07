@@ -20,7 +20,6 @@ if nil ~= require then
 	require "fritomod/currying";
 	require "fritomod/Callbacks";
 	require "fritomod/Lists";
-	require "fritomod/ImmediateToggleDispatcher";
 	require "fritomod/ToggleDispatcher";
 	require "fritomod/Events";
 end;
@@ -53,7 +52,8 @@ do
 end;
 
 local function InstanceWatcher(watchedType, specialName)
-	local dispatcher=ImmediateToggleDispatcher:New();
+	local dispatcher=ToggleDispatcher:New();
+	dispatcher:SetImmediate(true);
 	dispatcher:AddInstaller(function()
 		return Callbacks.ChangedInstance(function(instanceType)
 			if instanceType:lower()==watchedType then

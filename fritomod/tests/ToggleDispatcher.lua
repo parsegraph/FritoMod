@@ -37,6 +37,21 @@ function Suite:TestInstallingDispatcher()
 	v.Assert(false);
 end;
 
+function Suite:TestDispatcherPassesArgumentsDirectly()
+	local dispatcher=ToggleDispatcher:New();
+
+    local flag = Tests.Flag();
+	dispatcher:Add(function(first, second, ...)
+        flag.Raise();
+        assert(first == 42);
+        assert(second == 24);
+        assert(select("#", ...) == 0);
+    end);
+
+    dispatcher:Fire(42, 24);
+	flag.Assert();
+end;
+
 function Suite:TestDispatcherDoesntAddAnyArgumentsToInstallers()
 	local dispatcher=ToggleDispatcher:New();
 	local installerFlag = Tests.Flag();

@@ -31,7 +31,7 @@
 if nil ~= require then
 	require "fritomod/currying";
 	require "fritomod/OOP-Class";
-	require "fritomod/ImmediateToggleDispatcher";
+	require "fritomod/ToggleDispatcher";
 end;
 
 Predicate = OOP.Class("Predicate");
@@ -87,7 +87,8 @@ function Predicate:Constructor(name)
 	self.conditions = {};
 	self.conditionRemovers = {};
 
-	self.actions = ImmediateToggleDispatcher:New("Actions for predicate "..self.name);
+	self.actions = ToggleDispatcher:New("Actions for predicate "..self.name);
+	self.actions:SetImmediate(true);
 
 	self.attached = true;
 
