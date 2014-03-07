@@ -1006,6 +1006,9 @@ function Mixins.Iteration(library)
 	-- func(2,3, ...)
 	-- func(3,4, ...)
 	Mixins.Overridable(library, "March", function(iterable, func, ...)
+		-- Intentionally omit the varargs
+		func = Curry(func);
+
 		local iterator=library.ValueIterator(iterable);
 		local a, b=iterator(), iterator();
 		while b~=nil do
@@ -1020,6 +1023,9 @@ function Mixins.Iteration(library)
 	-- func(3, 2, ...)
 	-- func(2, 1, ...)
 	Mixins.Overridable(library, "ReverseMarch", function(iterable, func, ...)
+		-- Intentionally omit the varargs
+		func = Curry(func);
+
 		local iterator=library.ReverseValueIterator(iterable);
 		local a, b=iterator(), iterator();
 		while b~=nil do
