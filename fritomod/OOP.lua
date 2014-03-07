@@ -53,6 +53,18 @@ function OOP.IsDestroyed(obj)
     return obj.destroyed == true;
 end;
 
+function OOP.Ancestors(klass)
+    if OOP.IsInstance(klass) then
+        return OOP.Ancestors(klass.class);
+    end;
+    local ancestors = {klass};
+    while klass.super and klass.super ~= klass do
+        table.insert(ancestors, klass.super);
+        klass = klass.super;
+    end;
+    return ancestors;
+end;
+
 function OOP.Annihilate(obj)
 	local id = obj:ID();
 	local name = obj:ToString();
