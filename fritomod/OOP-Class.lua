@@ -104,6 +104,22 @@ local CLASS_METATABLE = {
 		return Lists.Insert(destructors, destructor);
 	end,
 
+	Handles = function(self, context)
+		if not self.handles then
+			self.handles = setmetatable({}, {
+				__mode = "k"
+			});
+		end;
+
+		context = context or self;
+		if not self.handles[context] then
+			self.handles[context] = setmetatable({}, {
+				__mode = "k"
+			});
+		end;
+		return self.handles[context];
+	end,
+
 	-- Gets an object whose lifecycle is tied to this object.
 	--
 	-- It is common to use an object as the owner for some constructed values.
@@ -115,59 +131,48 @@ local CLASS_METATABLE = {
 	-- of this object's ownership. This delegate is useful if you wish to
 	-- atomically release only a portion of an object's managed state.
 	--
-	-- By default, the handle can outlive the specified context. If you want
-	-- the handle to be destroyed when the context is destroyed, use the
+	-- By default, the handle can outlive the specified target. If you want
+	-- the handle to be destroyed when the target is destroyed, use the
 	-- following:
 	--
-	--     local handle = object:NewHandle(context);
-	--     OOP.ShareFate({context, handle}, handle);
-	NewHandle = function(self, context)
-		if not self.handles then
-			self.handles = setmetatable({}, {
-				__mode = "k"
-			});
+	--     local handle = self:NewHandle(target);
+	--     OOP.ShareFate({target, handle}, handle);
+	NewHandle = function(self, target, context)
+		local handles = self:Handles(context);
+		if handles[target] then
+			handles[target]:Destroy();
 		end;
 
-		if self.handles[context] then
-			self.handles[context]:Destroy();
-		end;
-
-		local handle = OOP.Atom(context, self);
+		local handle = OOP.Atom(target, self);
 		OOP.ShareFate({self, handle}, handle);
-		OOP.ShareFate({self, context, handle},
-			Tables.Change(self.handles, context, handle)
-		);
+
+		local owners = {self, handle};
+		if OOP.IsInstance(target) then
+			table.insert(owners, target);
+		end;
+		OOP.ShareFate(owners, Tables.Change(handles, target, handle));
 
 		return handle;
 	end,
 
-	-- Returns whether this object has a handle for the specified context.
+	-- Returns whether this object has a handle for the specified target.
 	--
 	-- See NewHandle() for more information on handles.
-	HasHandle = function(self, context)
-		if not self.handles then
-			return false;
-		end;
-		return Bool(self.handles[context]);
+	HasHandle = function(self, target, context)
+		local handles = self:Handles(context);
+		return Bool(handles[target]);
 	end,
 
-	-- Gets the current handle for the specified context.
+	-- Gets the current handle for the specified target.
 	--
 	-- A new handle will be created if one doesn't already exist.
 	--
 	-- See NewHandle() for more information on handles.
-	Handle = function(self, context)
-		if not self.handles then
-			self.handles = setmetatable({}, {
-				__mode = "k"
-			});
-		end;
-
-		local handle = self.handles[context];
+	Handle = function(self, target, context)
+		local handle = self:Handles(context)[target];
 		if not handle then
-			return self:NewHandle(context);
+			handle = self:NewHandle(target, context);
 		end;
-
 		return handle;
 	end,
 

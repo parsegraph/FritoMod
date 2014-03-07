@@ -145,3 +145,45 @@ function Suite:TestDestructorOrdering()
     i:Destroy();
     Assert.Equals({"Method", "Instance", "Class"}, order);
 end;
+
+function Suite:TestObjectsDestroyTheirHandles()
+    local target = OOP.Atom();
+    local atom = OOP.Atom();
+
+    local handle = atom:Handle(target);
+    atom:Destroy();
+    assert(OOP.IsDestroyed(handle));
+end;
+
+function Suite:TestHandleTargetsDoNotImplyOwnership()
+    local target = OOP.Atom();
+    local atom = OOP.Atom();
+
+    local handle = atom:Handle(target);
+    target:Destroy();
+    assert(not OOP.IsDestroyed(handle));
+end;
+
+function Suite:TestANewHandleWillDestroyTheOldOne()
+    local target = OOP.Atom();
+    local atom = OOP.Atom();
+
+    local oldHandle = atom:Handle(target);
+    local newHandle = atom:NewHandle(target);
+    assert(oldHandle ~= newHandle);
+    assert(OOP.IsDestroyed(oldHandle));
+    assert(not OOP.IsDestroyed(newHandle));
+end;
+
+function Suite:TestHandlesCanBeGroupedByContext()
+    local atom = OOP.Atom();
+    local myContext = OOP.Atom();
+    local otherContext = OOP.Atom();
+    local target = OOP.Atom();
+
+    local myHandle = atom:NewHandle(target, myContext);
+    local otherHandle = atom:NewHandle(target, otherContext);
+    assert(myHandle ~= otherHandle);
+    assert(not OOP.IsDestroyed(myHandle));
+    assert(not OOP.IsDestroyed(otherHandle));
+end;
