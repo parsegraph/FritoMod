@@ -143,7 +143,7 @@ function OOP.Property(self, name, setter, ...)
         self["Get" .. name] = self["GetRaw" .. name];
     end;
 
-    self["Set" .. name] = function(self, ...)
+    self["SetRaw" .. name] = function(self, ...)
         local newValue = {...};
         if value and Tables.Equal(value, newValue) then
             return;
@@ -164,6 +164,10 @@ function OOP.Property(self, name, setter, ...)
         if not invoked then
             Commit();
         end;
+    end;
+
+    if self["Set" .. name] == nil then
+        self["Set" .. name] = self["SetRaw" .. name];
     end;
 end;
 
