@@ -291,7 +291,12 @@ local function New(class, ...)
 end
 
 -- The univeral class that all classes will inherit from.
-OOP.UniversalClass = CLASS_METATABLE;
+OOP.Universal = CLASS_METATABLE;
+setmetatable(CLASS_METATABLE, {
+	__tostring = function()
+		return "Universal";
+	end
+});
 
 -- Creates a callable table that creates instances of itself when invoked. This is analogous
 -- to classes: a super-class may be provided in the arguments, and that class will act as the
