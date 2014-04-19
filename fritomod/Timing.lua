@@ -243,6 +243,33 @@ function Timing.Interpolate(duration, func, ...)
 	end;
 end;
 
+function Timing.Modulo(duration, func, ...)
+	func = Curry(func, ...);
+	duration = Strings.GetTime(duration);
+	local start = GetTime();
+	return function()
+		local elapsed = GetTime() - start;
+		func(Math.Clamp(0, (elapsed / duration) % 1, 1));
+	end;
+end;
+
+function Timing.Looping(duration, func, ...)
+	func = Curry(func, ...);
+	duration = Strings.GetTime(duration);
+	local start = GetTime();
+	return function()
+		local elapsed = GetTime() - start;
+        local integral, fraction = math.modf(elapsed / duration);
+        if integral % 2 == 1 then
+            -- Decreasing
+            func(1 - fraction);
+        else
+            -- Increasing
+            func(fraction);
+        end;
+	end;
+end;
+
 -- Cycle between a series of values, based on when this function is called.
 --
 -- This function has no remover since it does not use a timer.
