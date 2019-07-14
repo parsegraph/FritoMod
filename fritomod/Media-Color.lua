@@ -190,6 +190,8 @@ function Frames.Color(f,...)
 	local r,g,b,a = GetColor(...);
 	if f.SetTextColor then
 		f:SetTextColor(r,g,b,a);
+	elseif f.SetColorTexture then
+		f:SetColorTexture(r,g,b,a);
 	elseif f.SetTexture then
 		f:SetTexture(r,g,b,a);
 	elseif f.SetColor then
@@ -207,7 +209,7 @@ function Frames.Color(f,...)
 			t=f:CreateTexture();
 		end;
 		Anchors.ShareAll(t);
-		t:SetTexture(r,g,b,a);
+		t:SetColorTexture(r,g,b,a);
 		t.__colored = true;
 		f=t;
 	else
