@@ -158,7 +158,11 @@ function Suite:TestColonTime()
 	Assert.Equals("1", f(1));
 	Assert.Equals("24", f(24));
 	Assert.Equals("1:04", f(64));
-	Assert.Equals("1:00:00", f(60 * 60));
+	Assert.Equals("1:00:05", f(60 * 60 + 5));
+	Assert.Equals("1:00:00:05", f(60*60*24 + 5));
+	Assert.Equals("1:03:04:05", f(60*60*24 + 5 + 60*4 + 60*60*3));
+	Assert.Equals("6:00:00:00", f(60*60*24*6));
+	Assert.Equals("6:03:04:05", f(5 + 60*4 + 60*60*3 + 60*60*24*6));
 end;
 
 -- vim: set noet :

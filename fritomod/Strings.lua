@@ -463,22 +463,22 @@ function Strings.FormatColonTime(num)
 	if num >= 60 * 60 * 24 then
 		-- At least one day.
 		return ("%d:%02d:%02d:%02d"):format(
-			num / (60 * 60 * 24), --  Days
-			(num / (60 * 60)) % 60, -- Hours
-			(num / 60) % 60, -- Minutes
-			num / 60, num % 60 -- Seconds
+			math.floor(num / (60 * 60 * 24)), --  Days
+			math.floor(((num / (60 * 60))%24)), -- Hours
+			math.floor((num / 60) % 60), -- Minutes
+			math.floor(num % 60) -- Seconds
 		);
 	elseif num >= 60 * 60 then
 		-- At least one hour.
 		return ("%d:%02d:%02d"):format(
-			num / (60 * 60), -- Hours
-			(num / 60) % 60, -- Minutes
+			math.floor(num / (60 * 60)), -- Hours
+			math.floor((num / 60) % 60), -- Minutes
 			num % 60 -- Seconds
 		);
 	elseif num >= 60 then
 		-- At least one minute.
 		return ("%d:%02d"):format(
-			num / 60, -- Minutes
+			math.floor(num / 60), -- Minutes
 			num % 60 -- Seconds
 		);
 	else
