@@ -872,21 +872,37 @@ function Hack.StopSync()
 	local menuFrame = CreateFrame('Frame', nil, HackListFrame, 'UIDropDownMenuTemplate')
 	local menu = {};
 	local pageName = Hack.EditedPage().name;
-	local users = sharing[pageName];
-	if not users then
+	if autoapproved[pageName] then
+		for name, s in pairs(autoapproved[pageName]) do
+			if s == true then
+				table.insert(menu, {
+					text = "Source: " .. name,
+					func = Seal(function(name)
+						autoapproved[pageName][name] = nil;
+						printf("No longer receiving syncs of page '%s' from %s.", pageName, name);
+					end, name)
+				});
+			end;
+		end;
+	end;
+	if sharing[pageName] then
+		for name, s in pairs(sharing[pageName]) do
+			if s == SYNC_ACCEPTED then
+				table.insert(menu, {
+					text = "Target: " .. name,
+					func = Seal(function(name)
+						sharing[pageName][name] = nil;
+						printf("No longer sending syncs of page '%s' to %s.", pageName, name);
+					end, name)
+				});
+			end;
+		end;
+	end;
+	if #menu == 0 then
 		table.insert(menu, {
 			text = "Not shared with anyone",
 			disabled = true
 		});
-	else 
-		for name, user in pairs(users) do
-			table.insert(menu, {
-				text = name,
-				func = Seal(function(name)
-					sharing[pageName][name] = nil;
-				end, name)
-			});
-		end;
 	end;
 	EasyMenu(menu, menuFrame, 'cursor', nil, nil, 'MENU')
 end
