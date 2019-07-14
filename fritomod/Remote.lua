@@ -72,31 +72,32 @@ function GetChannel(medium, prefix)
 end;
 
 function Remote:Send(...)
-    local medium, prefix, msg = ...;
+    local prefix, medium, msg = ...;
     if select("#", ...) == 2 then
         local channel = ...;
         medium, prefix = GetMediumAndPrefix(channel);
         msg = select(2, ...);
     end;
     assert(msg~=nil, "Message must not be nil");
+	--printf("medium=%s, prefix=%s", medium, prefix);
 	if mediums[medium] then
 		if ChatThrottleLib then
 			ChatThrottleLib:SendAddonMessage("NORMAL", prefix, msg, mediums[medium]);
 		else
-			SendAddonMessage(prefix, msg, mediums[medium]);
+			C_ChatInfo.SendAddonMessage(prefix, msg, mediums[medium]);
 		end;
 	else
 		if ChatThrottleLib then
 			ChatThrottleLib:SendAddonMessage("NORMAL", prefix, msg, "WHISPER", medium);
 		else
-			SendAddonMessage(prefix, msg, "WHISPER", medium);
+			C_ChatInfo.SendAddonMessage(prefix, msg, "WHISPER", medium);
 		end;
 	end;
 end;
 
 function Remote:Install(channel)
     local _, prefix = GetMediumAndPrefix(channel);
-    RegisterAddonMessagePrefix(prefix);
+    C_ChatInfo.RegisterAddonMessagePrefix(prefix);
     return Events.CHAT_MSG_ADDON(function(msgPrefix, message, medium, source)
         if prefix~=msgPrefix then
             return;

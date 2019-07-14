@@ -215,8 +215,8 @@
          <OnLoad>
             Hack.OnLoad(self)
          </OnLoad>
-         <OnShow> PlaySound('igSpellBookOpen') </OnShow>
-         <OnHide> PlaySound('igSpellBookClose') </OnHide>
+         <OnShow> PlaySound(SOUNDKIT.IG_SPELLBOOK_OPEN) </OnShow>
+         <OnHide> PlaySound(SOUNDKIT.IG_SPELLBOOK_CLOSE) </OnHide>
       </Scripts>
    </Frame>
 

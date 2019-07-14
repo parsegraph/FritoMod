@@ -6,6 +6,7 @@
 if nil ~= require then
     require "hack/Indent";
     require "wow/api/Units";
+    require "wow/api/Sound";
     require "wow/Dialogs";
     require "fritomod/Remote";
     require "fritomod/Timing";
@@ -321,6 +322,9 @@ function Hack.OnLoad(self)
 end
 
 function Hack.VARIABLES_LOADED(self, db)
+	if db == nil then
+		db = HackDB;
+	end;
     Hack.Upgrade(db)
     pages = db.pages
     order = db.order
@@ -337,6 +341,9 @@ function Hack.VARIABLES_LOADED(self, db)
     HackListFrame:SetScript('OnSizeChanged', Hack.UpdateNumListItemsVisible)
     Hack.UpdateNumListItemsVisible()
     Hack.DoAutorun()
+	return function()
+		return HackDB;
+	end;
 end
 
 function Hack.SelectListItem(index)
@@ -346,7 +353,7 @@ function Hack.SelectListItem(index)
 end
 
 local function ListItemClickCommon(id, op)
-    PlaySound('igMainMenuOptionCheckBoxOn')
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
     op(id + FauxScrollFrame_GetOffset(HackListScrollFrame))
     Hack.UpdateListItems()
 end
@@ -690,21 +697,25 @@ end
 
 function Hack.OnEditorShow()
     Hack.MakeESCable('HackListFrame',false)
-    PlaySound('igQuestListOpen')
+    PlaySound(SOUNDKIT.IG_QUEST_LIST_OPEN);
 end
 
 function Hack.OnEditorHide()
     Hack.MakeESCable('HackListFrame',true)
-    PlaySound('igQuestListClose')
+    PlaySound(SOUNDKIT.IG_QUEST_LIST_CLOSE);
 end
 
 function Hack.OnEditorLoad(self)
     table.insert(UISpecialFrames,'HackEditFrame')
     self:SetMinResize(Hack.MinWidth,Hack.MinHeight)
+	ScrollingEdit_OnLoad(HackEditBox);
     HackEditBox:SetScript("OnTextChanged", function(self, isUserInput)
         ScrollingEdit_OnTextChanged(self, self:GetParent())
         Hack.OnEditorTextChanged(self, isUserInput)
     end);
+    HackEditBox:SetScript("OnCursorChanged", function(self, x, y, w, h)
+        ScrollingEdit_OnCursorChanged(self, x, y, w, h);
+	end);
 end
 
 function Hack.Snap()
@@ -768,7 +779,7 @@ function Hack.CHAT_MSG_ADDON(msg, sender, medium)
     function responders.Nack()
         printf('%s rejected your page.', sender)
     end;
-    function responders.Share()
+    function responders.Share(body)
         printf('Received %s from %s', body, sender);
         local dialog=StaticPopup_Show('HackAcceptShare', body, sender);
         dialog.page=body;
