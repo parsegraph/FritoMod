@@ -101,7 +101,7 @@
             <NormalTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='0' right='.125' top='0' bottom='.125'/> </NormalTexture>
             <PushedTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.125' right='.25' top='0' bottom='.125'/> </PushedTexture>
             <CheckedTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.25' right='.375' top='0' bottom='.125'/> </CheckedTexture>
-            <Scripts> <OnClick> Hack.OnListItemAutorunClicked( self:GetParent():GetID(), self:GetChecked()==1 ) </OnClick> </Scripts>
+            <Scripts> <OnClick> Hack.OnListItemAutorunClicked( self:GetParent():GetID(), self:GetChecked() ); </OnClick> </Scripts>
          </CheckButton>		
          <EditBox name='$parentEdit' letters='100' autoFocus='false' hidden='true'>
             <Anchors> 
