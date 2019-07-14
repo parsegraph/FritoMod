@@ -169,7 +169,7 @@ for i=1,#arg do
 end;
 
 function processor:NewEnvironment()
-	return LuaEnvironment:New(pristine);
+	return LuaEnvironment:New(pristine, false);
 end;
 
 Lists.Each(files, processor, "Process");
