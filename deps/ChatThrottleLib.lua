@@ -21,7 +21,16 @@
 -- Can run as a standalone addon also, but, really, just embed it! :-)
 --
 -- LICENSE: ChatThrottleLib is released into the Public Domain
---
+
+if nil ~= require then
+    require "wow/Frame-Alpha";
+    require "wow/Frame-Events";
+
+    require "wow/api/hooking";
+    require "wow/api/Chat";
+    require "wow/api/Frame";
+    require "wow/api/Timing";
+end;
 
 local CTL_VERSION = 24
 
