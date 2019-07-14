@@ -32,7 +32,10 @@ function NativeLuaEnvironment:LoadModule(name)
 end;
 
 function NativeLuaEnvironment:IsLoaded(name)
-    return self.usePackageLoaded and package.loaded[name] ~= nil;
+    if self.usePackageLoaded and package ~= nil then
+        return package.loaded[name] ~= nil;
+    end;
+    return false;
 end;
 
 -- vim: set et :

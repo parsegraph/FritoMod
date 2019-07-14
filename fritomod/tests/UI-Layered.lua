@@ -41,4 +41,6 @@ function Suite:TestEverthing()
        Anchors.Center(t);
        lay:Add(i, t);
     end;
+
+	lay:Destroy();
 end;

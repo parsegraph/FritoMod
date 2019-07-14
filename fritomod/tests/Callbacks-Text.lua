@@ -10,4 +10,5 @@ function Suite:TestEscapePressed()
     a();
     local b = Callbacks.OnEscape(f, flag.Raise);
     b();
+	Frames.Destroy(f);
 end;
