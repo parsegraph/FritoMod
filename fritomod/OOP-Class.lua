@@ -275,7 +275,7 @@ local function New(class, ...)
 		return str;
 	end;
 
-	local function Initialize(class);
+	local function Initialize(class)
 		if class.super then
 			Initialize(class.super);
 		end;
