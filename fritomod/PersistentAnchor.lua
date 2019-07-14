@@ -10,14 +10,15 @@ function PersistentAnchor:Constructor(parentFrame)
 	local f=CreateFrame("Frame", nil, parentFrame)
 	f:Hide();
 	self.frame=f;
-	Frames.Square(f, 10);
+	local size = 9;
+	Frames.Square(f, size);
 	local bg=Frames.Color(f, "black");
 	bg:SetDrawLayer("BACKGROUND");
 
 	local white=f:CreateTexture(nil, "BORDER");
 	Frames.Color(white, "white");
+	Frames.Square(white, 7);
 	white:SetPoint("center");
-	Frames.Square(white, 8);
 end;
 
 function PersistentAnchor:Show()
