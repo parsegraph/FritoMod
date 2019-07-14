@@ -322,11 +322,17 @@
             <PushedTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.75' right='.875' top='0' bottom='.125'/> </PushedTexture>
             <DisabledTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.875' right='1' top='0' bottom='.125'/> </DisabledTexture>
          </Button>		
-         <Button name='HackShare' inherits='T_HackButton'> 
+         <Button name='HackSync' inherits='T_HackButton'> 
             <Anchors> <Anchor point='LEFT' relativeTo='HackRun' relativePoint='RIGHT'/> </Anchors>
             <NormalTexture file="Interface\Addons\FritoMod\media\HackButtons"> <TexCoords left=".375" right=".5" top=".5" bottom=".625"/> </NormalTexture>
             <PushedTexture file="Interface\Addons\FritoMod\media\HackButtons"> <TexCoords left=".5" right=".625" top=".5" bottom=".625"/> </PushedTexture>
             <DisabledTexture file="Interface\Addons\FritoMod\media\HackButtons"> <TexCoords left=".625" right=".75" top=".5" bottom=".625"/> </DisabledTexture>
+         </Button>
+         <Button name='HackStopSync' inherits='T_HackButton'>
+            <Anchors> <Anchor point='LEFT' relativeTo='HackSync' relativePoint='RIGHT'/> </Anchors>
+            <NormalTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.375' right='.5' top='.375' bottom='.5'/> </NormalTexture>
+            <PushedTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.5' right='.625' top='.375' bottom='.5'/> </PushedTexture>
+            <DisabledTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.625' right='.75' top='.375' bottom='.5'/> </DisabledTexture>
          </Button>
       </Frames>
       <Scripts>

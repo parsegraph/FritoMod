@@ -36,7 +36,8 @@ Tables.Update(Hack, {
         HackAutorun     = 'Run this page automatically when Hack loads',
         HackRun         = 'Run this page',
         HackSend        = 'Send this page to another Hack user',
-        HackShare       = 'Automatically sync this page with another Hack user\nThis feature is experimental and may not work',
+        HackSync        = 'Sync this page with another Hack user\n',
+        HackStopSync    = 'Stop syncing this page with the chosen Hack user\n',
         HackSnap        = 'Attach editor to list window',
         HackEditClose   = 'Close editor for this page',
         HackFontCycle   = 'Cycle through available fonts',
@@ -70,10 +71,13 @@ Tables.Update(Hack, {
 
 BINDING_HEADER_HACK = 'Hack'  -- used by binding system
 
+local SYNC_ACCEPTING = 1;
+local SYNC_ACCEPTED = 2;
+
 local PLAYERNAME = UnitName('player')
 
 function Hack.Upgrade(HackDB)
-local maxVersion = "1.2.4"
+local maxVersion = "1.2.5"
 if HackDB.version and maxVersion == HackDB.version then return end -- don't need to load tables and shit if not needed
     -- all upgrades need to use functions and variables found only within that upgrade
     -- saved variables will have to be used; that is kind of the point of this
@@ -132,6 +136,16 @@ if HackDB.version and maxVersion == HackDB.version then return end -- don't need
             end;
             HackDB.version = "1.2.4"
         end,
+        ["1.2.4"] = function(self)
+			local oldApproved = HackDB.autoapproved;
+            HackDB.autoapproved = {};
+			for name, app in pairs(oldApproved) do
+				if(type(app) == "table") then
+					HackDB.autoapproved[name] = app;
+				end;
+			end;
+            HackDB.version = "1.2.5"
+        end,
     }
 
     if not HackDB.version then
@@ -182,12 +196,22 @@ StaticPopupDialogs.HackDelete = {
     end
 }
 
-StaticPopupDialogs.HackAcceptShare = {
-    text = "Share '%s' with %s?", button1 = 'Yes', button2 = 'No',
+StaticPopupDialogs.HackConfirmSync = {
+    text = "Accept syncs of page '%s' from %s?", button1 = 'Yes', button2 = 'No',
     timeout = 0, whileDead = 1, hideOnEscape = 1,
     OnAccept = function(self)
-        Remote:Send("Hack", self.sender, "AcceptShare" .. PLAYERNAME);
+        Remote:Send("Hack", self.sender, "AcceptSync" .. self.page);
         Hack.AutoApproveUpdates(self.page, self.sender);
+    end,
+    OnCancel = function(self)
+        Remote:Send("Hack", self.sender, "RefuseSync" .. self.page);
+    end,
+}
+
+StaticPopupDialogs.HackNoTargetForSharing = {
+    text = 'You must have a target to share this Hack script.', button1 = 'OK',
+    timeout = 0, whileDead = 1, hideOnEscape = 1,
+    OnAccept = function(self)
     end
 }
 
@@ -676,8 +700,11 @@ function Hack.SendPageToWatchers(page)
     if not page then
         return;
     end;
-    for watcher,_ in pairs(sharing[page.name]) do
-        Hack.SendPage(page, "WHISPER", watcher);
+    for watcher,v in pairs(sharing[page.name]) do
+		if v == SYNC_ACCEPTED then
+			--printf("Syncing %s with %s", page.name, watcher);
+			Hack.SendPage(page, "WHISPER", watcher);
+		end;
     end;
 end;
 
@@ -762,7 +789,9 @@ end
 
 local i=0;
 function Hack.SendPage(page, channel, name)
-    trace("Sending '%s' to %s", page.name, name or channel);
+	if not sharing[page.name] or sharing[page.name][name or channel] ~= SYNC_ACCEPTED then
+		printf("Sending '%s' to %s", page.name, name or channel);
+	end;
     Remote:Send("HackPages", name or channel,
         Serializers.WriteStringChunks(
             Serializers.WriteData(page), "HackPages")
@@ -785,14 +814,28 @@ function Hack.CHAT_MSG_ADDON(msg, sender, medium)
         dialog.page=body;
         dialog.sender=sender;
     end;
-    function responders.AcceptShare()
-        -- TODO People could "steal" pages since we don't record what _we_ want to send.
-        -- TODO We don't have a way to stop sharing.
-        assert(pages[body], "Page could not be found with name: "..body);
-        if not sharing[body] then
-            sharing[body]={};
-        end;
-        sharing[body][sender]=true;
+    function responders.Sync(pageName)
+        local dialog=StaticPopup_Show('HackConfirmSync', pageName, sender);
+        dialog.page=pageName;
+        dialog.sender=sender;
+    end;
+    function responders.AcceptSync(pageName)
+		if not sharing[pageName] or sharing[pageName][sender] ~= SYNC_ACCEPTING then
+			-- People could "steal" pages if we didn't record what _we_ want to send, so
+			-- ignore unexpected accepts.
+			return;
+		end;
+        sharing[pageName][sender]=SYNC_ACCEPTED;
+		Hack.SendPage(pages[pageName], "WHISPER", sender);
+   		printf("%s is now syncing the page '%s' with you.", sender, pageName);
+    end;
+    function responders.RefuseSync(pageName)
+		if not sharing[pageName] or sharing[pageName][sender] ~= SYNC_ACCEPTING then
+			-- People could "steal" pages if we didn't record what _we_ want to send, so
+			-- ignore unexpected accepts.
+			return;
+		end;
+   		printf("%s declined to sync this page.", sender);
     end;
 
     for cmd, handler in pairs(responders) do
@@ -809,7 +852,7 @@ function Hack.INCOMING_PAGE(msg, sender, medium)
     local page = Serializers.ReadData(msg);
     assert(page, "Received page must not be falsy (type was "..type(page)..")");
     assert(type(page) == "table", "Received page must be a table, but received ".. type(page));
-    if autoapproved[page.name] then
+    if autoapproved[page.name] and autoapproved[page.name][sender] == true then
         assert(pages[page.name], "Page could not be found with name: "..page.name);
         pages[page.name].data=page.data;
         if Hack.EditedPage() and Hack.EditedPage().name==page.name then
@@ -825,18 +868,50 @@ function Hack.INCOMING_PAGE(msg, sender, medium)
     end;
 end;
 
-function Hack.Share(channel, target)
-    if not channel then
-        assert(UnitName("target"), "You must have a target to share scripts");
-        Hack.Share("WHISPER", UnitName("target"));
-        return;
-    end;
-    Remote:Send("Hack", target or channel, "HackShare"..Hack.EditedPage().name);
+function Hack.StopSync()
+	local menuFrame = CreateFrame('Frame', nil, HackListFrame, 'UIDropDownMenuTemplate')
+	local menu = {};
+	local pageName = Hack.EditedPage().name;
+	local users = sharing[pageName];
+	if not users then
+		table.insert(menu, {
+			text = "Not shared with anyone",
+			disabled = true
+		});
+	else 
+		for name, user in pairs(users) do
+			table.insert(menu, {
+				text = name,
+				func = Seal(function(name)
+					sharing[pageName][name] = nil;
+				end, name)
+			});
+		end;
+	end;
+	EasyMenu(menu, menuFrame, 'cursor', nil, nil, 'MENU')
+end
+
+function Hack.Sync()
+	local target,realm = UnitName("target");
+	if not target then
+		StaticPopup_Show('HackNoTargetForSharing');
+		return;
+	end;
+	if not realm then
+		realm = select(2, UnitFullName("player"));
+	end;
+	target = target .. "-" .. realm;
+	local pageName = Hack.EditedPage().name;
+	if not sharing[pageName] then
+		sharing[pageName] = {};
+	end;
+	sharing[pageName][target] = SYNC_ACCEPTING;
+    Remote:Send("Hack", target, "Sync"..Hack.EditedPage().name);
 end;
 
 function Hack.AutoApproveUpdates(page, sender)
-    -- XXX We ignore the sender here completely.
-    autoapproved[page]=true;
+    autoapproved[page]=autoapproved[page] or {};
+    autoapproved[page][sender]=true;
 end;
 
 -- add/remove frame from UISpecialFrames (borrowed from TinyPad)
