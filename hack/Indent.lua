@@ -869,29 +869,11 @@ if not HackIndent.revision or revision > HackIndent.revision then
     end
 
     local function setCaretPos_main(editbox, pos)
-        local text = editboxGetText(editbox)
-
-        if stringlen(text) > 0 then
-     editboxSetText(editbox, stringinsert(text, pos, "a"))
-     editbox:HighlightText(pos, pos + 1)
-     editbox:Insert("\0")
-        end
+		editbox:SetCursorPosition(pos);
     end
 
     local function getCaretPos(editbox)
-        local script = critical_enter(editbox)
-
-        local text = editboxGetText(editbox)
-        editbox:Insert("\1")
-        local pos = stringfind(editboxGetText(editbox), "\1", 1, 1)
-        editboxSetText(editbox, text)
-
-        if pos then
-     setCaretPos_main(editbox, pos - 1)
-        end
-        critical_leave(editbox, script)
-
-        return (pos or 0) - 1
+		return editbox:GetCursorPosition();
     end
 
     local function setCaretPos(editbox, pos)
