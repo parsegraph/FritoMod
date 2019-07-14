@@ -185,16 +185,21 @@ function Suite:TestAbsurdArrayLengthWithPrimedLengthTable()
 	assert(#inconsistencies > 0, "Array length is still not consistent");
 end;
 
-function Suite:TestMetatableIsNotCalledOnTableInsertion()
+function Suite:TestMetatableIsCalledOnTableInsertion()
 	local t = {};
 	local f = Tests.Flag();
 	setmetatable(t, {
 		__newindex = function(self, k, v)
+			rawset(self, k, v);
 			f:Raise();
 		end
 	});
 	table.insert(t, "notime");
-	f.AssertFalse("Metatable is not used for insertion");
+	if luaversion() >= luaversion("Lua 5.2") then
+		f.AssertTrue("Metatable is used for insertion");
+	else
+		f.AssertFalse("Metatable is not used for insertion");
+	end;
 	Assert.Equals(1, #t, "Value is inserted into table");
 end;
 
