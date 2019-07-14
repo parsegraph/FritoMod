@@ -28,6 +28,7 @@ function loaders.Filesystem(prefix)
 		end;
 		local runner, err;
 		if luaversion() >= luaversion("Lua 5.2") then
+			--print("Loading file for Luaenvironment " .. file);
 			runner, err=loadfile(file, "bt", env);
 		else
 			runner, err=loadfile(file);

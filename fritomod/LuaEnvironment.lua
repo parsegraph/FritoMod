@@ -117,6 +117,7 @@ end;
 -- injected tables, and parents will all be invoked if necessary to retrieve this
 -- value.
 function LuaEnvironment:Get(name)
+	--print("Getting global " .. name);
 	local value = rawget(self.globals, name);
 	if value ~= nil then
 		return value;
@@ -146,6 +147,7 @@ LuaEnvironment.GetGlobal = LuaEnvironment.Get;
 -- value. If the name has been exported, this operation will be forwarded
 -- to the parent.
 function LuaEnvironment:Set(name, value)
+	--print("Setting global " .. name);
 	if self.exported[name] then
 		return self.parent:Set(name, value);
 	end;
@@ -388,9 +390,11 @@ end;
 function LuaEnvironment:Require(name)
 	self:OnRequireLoading(name);
 	if self:IsLoaded(name) then
+		--print("Already loaded " .. name);
 		self:OnRequireLoaded(name);
 		return;
 	end;
+	--print("Requiring " .. name);
 	local runner = self:LoadModule(name);
 	if runner ~= Noop then
 		runner();
