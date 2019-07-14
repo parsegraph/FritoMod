@@ -229,7 +229,12 @@ function Frames.StartMovingFrame(frame, offsetX, offsetY)
 		end;
 
 		frame.dragging=1;
-		local startX, startY = frame:GetLeft(), frame:GetTop();
+		local startX, startY;
+		if platform() == "wow" then
+			startX, startY = frame:GetCenter();
+		else
+			startX, startY = frame:GetLeft(), frame:GetTop();
+		end;
 		assert(startX, "Frame must have a valid left position");
 		assert(startY, "Frame must have a valid top position");
 
@@ -251,8 +256,9 @@ function Frames.StartMovingFrame(frame, offsetX, offsetY)
 		end;
 
 		local function SetPoint(x, y)
-			if platform == "wow" then
-				Anchors.Share(frame, "bottomleft", startX+x, startY+y);
+			frame:ClearAllPoints();
+			if platform() == "wow" then
+				frame:SetPoint("center", frame:GetParent(), "bottomleft", startX+x, startY+y);
 			else
 				Anchors.Share(frame, "topleft", startX+x, startY+y);
 			end;
