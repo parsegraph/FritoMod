@@ -1,7 +1,9 @@
+C_ChatInfo = C_ChatInfo or {};
+
 function SendChatMessage(...)
 end;
 
-function SendAddonMessage(...)
+function C_ChatInfo.SendAddonMessage(...)
 end;
 
 function GetDefaultLanguage()
