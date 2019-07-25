@@ -316,12 +316,6 @@
             <NormalTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.375' right='.5' top='0' bottom='.125'/> </NormalTexture>
             <PushedTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.5' right='.625' top='0' bottom='.125'/> </PushedTexture>
          </Button>		
-         <Button name='HackRevert' inherits='T_HackButton'>
-            <Anchors> <Anchor point='RIGHT' relativeTo='HackColorize' relativePoint='LEFT'/> </Anchors>
-            <NormalTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.625' right='.75' top='0' bottom='.125'/> </NormalTexture>
-            <PushedTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.75' right='.875' top='0' bottom='.125'/> </PushedTexture>
-            <DisabledTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.875' right='1' top='0' bottom='.125'/> </DisabledTexture>
-         </Button>		
          <Button name='HackSync' inherits='T_HackButton'> 
             <Anchors> <Anchor point='LEFT' relativeTo='HackRun' relativePoint='RIGHT'/> </Anchors>
             <NormalTexture file="Interface\Addons\FritoMod\media\HackButtons"> <TexCoords left=".375" right=".5" top=".5" bottom=".625"/> </NormalTexture>
@@ -334,12 +328,54 @@
             <PushedTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.5' right='.625' top='.375' bottom='.5'/> </PushedTexture>
             <DisabledTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.625' right='.75' top='.375' bottom='.5'/> </DisabledTexture>
          </Button>
+         <Button name='HackStartStop' inherits='T_HackButton'>
+            <Anchors> <Anchor point='LEFT' relativeTo='HackStopSync' relativePoint='RIGHT'/> </Anchors>
+            <NormalTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.5' right='.625' top='.875' bottom='1'/> </NormalTexture>
+            <PushedTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.5' right='.625' top='.875' bottom='1'/> </PushedTexture>
+            <DisabledTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.625' right='.75' top='.875' bottom='1'/> </DisabledTexture>
+         </Button>
+         <Button name='HackRevert' inherits='T_HackButton'>
+            <Anchors> <Anchor point='LEFT' relativeTo='HackStartStop' relativePoint='RIGHT'/> </Anchors>
+            <NormalTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.625' right='.75' top='0' bottom='.125'/> </NormalTexture>
+            <PushedTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.75' right='.875' top='0' bottom='.125'/> </PushedTexture>
+            <DisabledTexture file='Interface\Addons\FritoMod\media\HackButtons'> <TexCoords left='.875' right='1' top='0' bottom='.125'/> </DisabledTexture>
+         </Button>		
+		<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1" text="Code">
+               <Anchors>
+                   <Anchor point="CENTER" relativePoint="BOTTOMLEFT">
+                       <Offset>
+                           <AbsDimension x="60" y="-14"/>
+                       </Offset>
+                   </Anchor>
+               </Anchors>
+               <Scripts>
+                   <OnClick>
+						Hack.ShowCodePage();
+						PanelTemplates_SetTab(HackEditFrame, 1);
+                   </OnClick>
+               </Scripts>
+           </Button>
+           <Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" id="2" text="Data">
+               <Anchors>
+                   <Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
+                       <Offset>
+                           <AbsDimension x="-16" y="0"/>
+                       </Offset>
+                   </Anchor>
+               </Anchors>
+               <Scripts>
+                   <OnClick>
+						Hack.ShowDataPage();
+						PanelTemplates_SetTab(HackEditFrame, 2);
+                   </OnClick>
+               </Scripts>
+           </Button>
       </Frames>
       <Scripts>
-         <OnLoad> Hack.OnEditorLoad(self) </OnLoad>
-         <OnShow> Hack.OnEditorShow() </OnShow>
+         <OnLoad> Hack.OnEditorLoad(self); PanelTemplates_SetNumTabs(HackEditFrame, 2); PanelTemplates_SetTab(HackEditFrame, 1);</OnLoad>
+         <OnShow> Hack.OnEditorShow(); PanelTemplates_SetTab(HackEditFrame, 1); </OnShow>
          <OnHide> Hack.OnEditorHide() </OnHide>
-         <OnSizeChanged> HackEditBox:SetWidth(HackEditFrame:GetWidth()) </OnSizeChanged> 
+         <OnSizeChanged> Hack.OnEditorResized();</OnSizeChanged> 
       </Scripts>
    </Frame>
 </Ui>

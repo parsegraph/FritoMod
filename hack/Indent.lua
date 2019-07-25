@@ -985,7 +985,7 @@ end
         local orgCode = editboxGetText(editbox)
         local prevCode = editboxStringCache[editbox]
         if prevCode == orgCode then
-     return
+			return
         end
 
         local pos = getCaretPos(editbox)
@@ -999,22 +999,22 @@ end
 
         editboxStringCache[editbox] = newCode
         if orgCode ~= newCode then
-     local script, script2 = critical_enter(editbox)
-     decodeCache[editbox] = nil
-     local stringlenNewCode = stringlen(newCode)
+			local script, script2 = critical_enter(editbox)
+			decodeCache[editbox] = nil
+			local stringlenNewCode = stringlen(newCode)
 
-     editboxSetText(editbox, newCode)
-     if newPos then
-         if newPos < 0 then newPos = 0 end
-         if newPos > stringlenNewCode then newPos = stringlenNewCode end
+			editboxSetText(editbox, newCode)
+			if newPos then
+				if newPos < 0 then newPos = 0 end
+				if newPos > stringlenNewCode then newPos = stringlenNewCode end
 
-         setCaretPos(editbox, newPos)
-     end
-     critical_leave(editbox, script, script2)
-        end
+				setCaretPos(editbox, newPos)
+			end
+			critical_leave(editbox, script, script2)
+		end
 
         if editboxNumLinesCache[editbox] ~= numLines then
-     lib.indentEditbox(editbox)
+			lib.indentEditbox(editbox)
         end
         editboxNumLinesCache[editbox] = numLines
     end

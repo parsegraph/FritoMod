@@ -242,7 +242,8 @@ function Hack.ScriptError(type, err)
 end
 
 function Hack.Compile(page)
-    local func, err = loadstring(page.data:gsub('||','|'), page.name)
+	local text = page.data:gsub('||','|');
+    local func, err = loadstring(text, page.name)
     if not func then Hack.ScriptError('syntax', err) return end
     return func
 end
@@ -251,7 +252,16 @@ end
 function Hack.Get(name)
     local page = type(name)=='number' and Hack.Find(name) or pages[name]
     if not page then printf('attempt to get an invalid page') return end
-    return Hack.Compile(page)
+    local runner = Hack.Compile(page)
+	return function()
+		Hack.StopPage(page);
+		local rv = runner();
+		if type(rv) == "function" then
+			page.undoer = rv;
+		else
+			return rv;
+		end;
+	end;
 end
 
 -- avoids need to create a table to capture return values in Hack.Execute
@@ -261,12 +271,40 @@ local function CheckResult(...)
 end
 
 function Hack.Execute(func, ...)
-    func(...);
+    local undoer = func(...);
     -- if func then return CheckResult( pcall(func, ...) ) end
 end
 
+function Hack.EnableStartStop()
+	HackStartStop:GetNormalTexture():SetTexCoord(.5, .625, .875, 1);
+end;
+
+function Hack.DisableStartStop()
+	HackStartStop:GetNormalTexture():SetTexCoord(.625, .75, .875, 1);
+end;
+
 function Hack.Run(index, ...)
-    return Hack.Execute( Hack.Get(index or selected), ... )
+    local func = Hack.Get(index or selected);
+	if func then
+		if UnitAffectingCombat("player") then
+			printf("Page cannot be run while player is in combat.");
+			return;
+		end;
+		local rv = Hack.Execute(func, ...);
+		local name = index;
+		if not name then
+			name = Hack.EditedPage().name;
+		end;
+		printf("Ran page " .. name);
+		if Hack.EditedPage() then
+			if Hack.EditedPage().undoer then
+				Hack.EnableStartStop();
+			else
+				Hack.DisableStartStop();
+			end;
+		end;
+		return rv;
+	end;
 end
 
 do
@@ -687,6 +725,11 @@ function Hack.EditPage()
     HackRevert:Disable()
     HackEditFrame:Show()
     HackEditBox:SetCursorPosition(0)
+	if Hack.editedPage.undoer then
+		Hack.EnableStartStop();
+	else
+		Hack.DisableStartStop();
+	end;
     if HackIndent then
         HackColorize:SetChecked(page.colorize)
         Hack.ApplyColor(page.colorize)
@@ -722,20 +765,35 @@ function Hack.OnEditorTextChanged(self, isUserInput)
     end;
 end
 
+function Hack.RefreshText()
+	local orig = Hack.EditedPage().data;
+	local cur = HackEditBox:GetText();
+	if(orig ~= cur) then
+		Hack.OnEditorTextChanged(HackEditBox, true);
+	end;
+end;
+
 function Hack.OnEditorShow()
     Hack.MakeESCable('HackListFrame',false)
     PlaySound(SOUNDKIT.IG_QUEST_LIST_OPEN);
+	Hack.ShowingEditor = Timing.Periodic("400ms", Hack.RefreshText);
 end
 
 function Hack.OnEditorHide()
     Hack.MakeESCable('HackListFrame',true)
     PlaySound(SOUNDKIT.IG_QUEST_LIST_CLOSE);
+	if(Hack.ShowingEditor) then
+		Hack.RefreshText();
+		Hack.ShowingEditor();
+		Hack.ShowingEditor = nil;
+	end;
 end
 
 function Hack.OnEditorLoad(self)
     table.insert(UISpecialFrames,'HackEditFrame')
     self:SetMinResize(Hack.MinWidth,Hack.MinHeight)
 	ScrollingEdit_OnLoad(HackEditBox);
+	Hack.DisableStartStop();
     HackEditBox:SetScript("OnTextChanged", function(self, isUserInput)
         ScrollingEdit_OnTextChanged(self, self:GetParent())
         Hack.OnEditorTextChanged(self, isUserInput)
@@ -744,6 +802,11 @@ function Hack.OnEditorLoad(self)
         ScrollingEdit_OnCursorChanged(self, x, y, w, h);
 	end);
 end
+
+function Hack.OnEditorResized()
+	print("Resizing editor frame");
+	HackEditBox:SetWidth(HackEditFrame:GetWidth());
+end;
 
 function Hack.Snap()
     HackDB.snap = HackSnap:GetChecked()
@@ -797,6 +860,60 @@ function Hack.SendPage(page, channel, name)
             Serializers.WriteData(page), "HackPages")
     );
 end
+
+function Hack.StopPage(page)
+	if not page then
+		page = Hack.EditedPage();
+	end;
+	if not page.undoer then
+		return false;
+	end;
+	page.undoer();
+	page.undoer = nil;
+	printf("Stopped " .. page.name);
+	Hack.DisableStartStop();
+	return true;
+end;
+
+function Hack.ShowCodePage()
+	local codeFrames = {
+		HackFontCycle,
+		HackLineNumScrollFrame,
+		HackEditScrollFrame,
+		HackFontBigger,
+		HackFontSmaller,
+		HackColorize
+	};
+	printf("Showing code");
+	for i=1,#codeFrames do
+		codeFrames[i]:Show();
+	end;
+end;
+
+function Hack.ShowDataPage()
+	local codeFrames = {
+		HackFontCycle,
+		HackLineNumScrollFrame,
+		HackEditScrollFrame,
+		HackFontBigger,
+		HackFontSmaller,
+		HackColorize
+	};
+	printf("Showing data");
+	for i=1,#codeFrames do
+		codeFrames[i]:Hide();
+	end;
+end;
+
+function Hack.StartStop()
+	if UnitAffectingCombat("player") then
+		printf("Page cannot be stopped while player is in combat.");
+		return;
+	end;
+	if not Hack.StopPage() then
+		Hack.Run();
+	end;
+end;
 
 function Hack.CHAT_MSG_ADDON(msg, sender, medium)
     if sender == PLAYERNAME then return end
