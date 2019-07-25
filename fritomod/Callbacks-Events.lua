@@ -110,6 +110,19 @@ do
 	Callbacks.InCombat=Callbacks.Combat;
 end;
 
+function Callbacks.LeaveCombat(func, ...)
+	func=Curry(func, ...);
+	if UnitAffectingCombat("player") then
+		local r;
+		r=Events.PLAYER_REGEN_ENABLED(function()
+			r();
+			func();
+		end);
+		return r;
+	end;
+	return Callbacks.Later(func);
+end;
+
 -- Callbacks.Experience fires the specified callback whenever the player gains experience.
 --
 -- The callback is called like so:
