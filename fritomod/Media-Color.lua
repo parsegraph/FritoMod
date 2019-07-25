@@ -192,6 +192,8 @@ function Frames.Color(f,...)
 		f:SetTextColor(r,g,b,a);
 	elseif f.SetColorTexture then
 		f:SetColorTexture(r,g,b,a);
+	elseif f.SetStatusBarColor then
+		f:SetStatusBarColor(r,g,b,a);
 	elseif f.SetTexture then
 		f:SetTexture(r,g,b,a);
 	elseif f.SetColor then
