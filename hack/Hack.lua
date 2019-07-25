@@ -74,6 +74,8 @@ BINDING_HEADER_HACK = 'Hack'  -- used by binding system
 local SYNC_ACCEPTING = 1;
 local SYNC_ACCEPTED = 2;
 
+local PROTECT_SCRIPTS = false;
+
 local PLAYERNAME = UnitName('player')
 
 function Hack.Upgrade(HackDB)
@@ -222,6 +224,8 @@ local selected = nil -- index of selected list item
 local autoapproved = nil
 local sharing = nil
 
+local dataPanel = nil;
+
 local function printf(...) DEFAULT_CHAT_FRAME:AddMessage('|cffff6600<Hack>: '..format(...)) end
 local function getobj(...) return getglobal(format(...)) end
 local function enableButton(b,e) if e then HackNew.Enable(b) else HackNew.Disable(b) end end
@@ -245,7 +249,21 @@ function Hack.Compile(page)
 	local text = page.data:gsub('||','|');
     local func, err = loadstring(text, page.name)
     if not func then Hack.ScriptError('syntax', err) return end
-    return func
+	local env = {};
+	setmetatable(env, {__index=_G});
+	if page.elements then
+		for i=1, #page.elements do
+			local elem = page.elements[i];
+			if elem.type == "text" then
+				env[elem.name] = elem.value;
+			elseif elem.type == "percent" then
+				env[elem.name] = elem.value;
+			elseif elem.type == "frame" then
+			end;
+		end;
+	end;
+	setfenv(func, env);
+    return func;
 end
 
 -- find page by index or name and return it as a compiled function
@@ -286,7 +304,7 @@ end;
 function Hack.Run(index, ...)
     local func = Hack.Get(index or selected);
 	if func then
-		if UnitAffectingCombat("player") then
+		if PROTECT_SCRIPTS and UnitAffectingCombat("player") then
 			printf("Page cannot be run while player is in combat.");
 			return;
 		end;
@@ -295,7 +313,7 @@ function Hack.Run(index, ...)
 		if not name then
 			name = Hack.EditedPage().name;
 		end;
-		printf("Ran page " .. name);
+		--printf("Ran page " .. name);
 		if Hack.EditedPage() then
 			if Hack.EditedPage().undoer then
 				Hack.EnableStartStop();
@@ -717,6 +735,8 @@ function Hack.EditedPage()
      return Hack.editedPage;
 end;
 
+local shownElems = false;
+
 function Hack.EditPage()
     local page = pages[order[selected]]
     Hack.editedPage = page;
@@ -734,6 +754,9 @@ function Hack.EditPage()
         HackColorize:SetChecked(page.colorize)
         Hack.ApplyColor(page.colorize)
     end
+	if shownElems then
+		Hack.ShowElementsPage();
+	end;
 end
 
 function Hack.SendPageToWatchers(page)
@@ -779,6 +802,13 @@ function Hack.OnEditorShow()
 	Hack.ShowingEditor = Timing.Periodic("400ms", Hack.RefreshText);
 end
 
+function Hack.DestroyElementsPanel()
+	if not dataPanel then return end;
+	refreshElementsPage = nil;
+	shownElems = false;
+	Frames.Destroy(dataPanel);
+end;
+
 function Hack.OnEditorHide()
     Hack.MakeESCable('HackListFrame',true)
     PlaySound(SOUNDKIT.IG_QUEST_LIST_CLOSE);
@@ -787,6 +817,7 @@ function Hack.OnEditorHide()
 		Hack.ShowingEditor();
 		Hack.ShowingEditor = nil;
 	end;
+	Hack.DestroyElementsPanel();
 end
 
 function Hack.OnEditorLoad(self)
@@ -804,8 +835,10 @@ function Hack.OnEditorLoad(self)
 end
 
 function Hack.OnEditorResized()
-	print("Resizing editor frame");
 	HackEditBox:SetWidth(HackEditFrame:GetWidth());
+	if refreshElementsPage then
+		refreshElementsPage();
+	end;
 end;
 
 function Hack.Snap()
@@ -870,7 +903,7 @@ function Hack.StopPage(page)
 	end;
 	page.undoer();
 	page.undoer = nil;
-	printf("Stopped " .. page.name);
+	--printf("Stopped " .. page.name);
 	Hack.DisableStartStop();
 	return true;
 end;
@@ -884,13 +917,223 @@ function Hack.ShowCodePage()
 		HackFontSmaller,
 		HackColorize
 	};
-	printf("Showing code");
+	--printf("Showing code");
+	Hack.DestroyElementsPanel();
 	for i=1,#codeFrames do
 		codeFrames[i]:Show();
 	end;
 end;
 
-function Hack.ShowDataPage()
+local TextWidget = OOP.Class();
+function TextWidget:Constructor(parent, elem)
+	local f = Frames.Text(parent, "fritzqt", 14);
+	f:SetText("Name:");
+	self.nameLabel = f;
+
+	local tbg = Frames.New(parent);
+	self.nameField = tbg;
+	tbg:SetBackdrop({
+		bgFile = nil,
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+		tile = true, tileSize = 16, edgeSize = 8, 
+		insets = { left = 4, right = 4, top = 4, bottom = 4 },
+		backdropColor = { r=0, g=0, b=0, a=1 }
+	});
+	tbg:SetHeight(20);
+	Anchors.HFlip(tbg, f, "topright", 3, 3);
+	Anchors.Share(tbg, parent, "right", 3);
+
+	local eb = Frames.New("EditBox", tbg);
+	Anchors.ShareAll(eb);
+	eb:SetText(elem.name or "");
+	eb:SetAutoFocus(false);
+	eb:SetFontObject(GameFontNormal);
+	eb:SetScript("OnEscapePressed", Seal(eb, "ClearFocus"));
+	eb:SetScript("OnTextChanged", function()
+		elem.name = eb:GetText();
+		if Hack.StopPage() then
+			Hack.Run();
+		end;
+	end);
+
+	local vf = Frames.Text(parent, "fritzqt", 14);
+	vf:SetText("Value:");
+	self.valueLabel = vf;
+
+	Anchors.VFlip(vf, f, "bottom", 6);
+
+	local vbg = Frames.New(parent);
+	self.valueField = vbg;
+	vbg:SetBackdrop({
+		bgFile = nil,
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+		tile = true, tileSize = 16, edgeSize = 8, 
+		insets = { left = 4, right = 4, top = 4, bottom = 4 },
+		backdropColor = { r=0, g=0, b=0, a=1 }
+	});
+	vbg:SetHeight(20);
+	Anchors.HFlip(vbg, vf, "topright", 3, 3);
+	Anchors.Share(vbg, parent, "right", 3);
+	self.valueField = vbg;
+
+	local vb = Frames.New("EditBox", vbg);
+	Anchors.ShareAll(vb);
+	vb:SetAutoFocus(false);
+	vb:SetFontObject(GameFontNormal);
+	vb:SetScript("OnEscapePressed", Seal(vb, "ClearFocus"));
+	vb:SetText(elem.value or "");
+	vb:SetScript("OnTextChanged", function()
+		elem.value = vb:GetText();
+		if Hack.StopPage() then
+			Hack.Run();
+		end;
+	end);
+
+	local wrapper = Frames.New(tbg);
+	Anchors.Share(wrapper, f, "topleft");
+	Anchors.Share(wrapper, vbg, "bottomright");
+	self.wrapper = wrapper;
+end;
+
+function TextWidget:Bounds()
+   return self.wrapper;
+end;
+
+function TextWidget:Anchor(anchor)
+   if anchor:lower() == "top" then
+      return self.nameLabel;
+   end;
+end;
+
+function TextWidget:Show()
+   self.nameLabel:Show();
+   self.nameField:Show();
+   self.valueLabel:Show();
+   self.valueField:Show();
+end;
+
+function TextWidget:Hide()
+   self.nameField:Hide();
+   self.nameLabel:Hide();
+   self.valueLabel:Hide();
+   self.valueField:Hide();
+end;
+
+local PercentWidget = OOP.Class();
+function PercentWidget:Constructor(parent, elem)
+	local f = Frames.Text(parent, "fritzqt", 14);
+	f:SetText("Name:");
+	self.nameLabel = f;
+
+	local tbg = Frames.New(parent);
+	self.nameField = tbg;
+	tbg:SetBackdrop({
+		bgFile = nil,
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+		tile = true, tileSize = 16, edgeSize = 8, 
+		insets = { left = 4, right = 4, top = 4, bottom = 4 },
+		backdropColor = { r=0, g=0, b=0, a=1 }
+	});
+	tbg:SetHeight(20);
+	Anchors.HFlip(tbg, f, "topright", 3, 3);
+	Anchors.Share(tbg, parent, "right", 3);
+
+	local eb = Frames.New("EditBox", tbg);
+	Anchors.ShareAll(eb);
+	eb:SetText(elem.name or "");
+	eb:SetAutoFocus(false);
+	eb:SetFontObject(GameFontNormal);
+	eb:SetScript("OnEscapePressed", Seal(eb, "ClearFocus"));
+	eb:SetScript("OnTextChanged", function()
+		elem.name = eb:GetText();
+		if Hack.StopPage() then
+			Hack.Run();
+		end;
+	end);
+
+	local vf = Frames.Text(parent, "fritzqt", 14);
+	vf:SetText("Value:");
+	self.valueLabel = vf;
+
+	Anchors.VFlip(vf, f, "bottom", 6);
+
+	local scroller = CreateFrame("Slider", nil, dataPanel, "OptionsSliderTemplate");
+	scroller:SetOrientation("HORIZONTAL");
+	Anchors.HFlip(scroller, vf, "right", 4);
+	Anchors.Share(scroller, parent, "right", 3);
+	scroller:SetHeight(16);
+	scroller:SetMinMaxValues(0, 1);
+	if elem.value == nil then
+		elem.value = 0.5;
+	end;
+	scroller:SetValue(elem.value);
+	scroller:SetScript("OnValueChanged", function()
+		elem.value = scroller:GetValue();
+		if Hack.StopPage() then
+			Hack.Run();
+		end;
+	end);
+	self.scroller = scroller;
+
+	local wrapper = Frames.New(tbg);
+	Anchors.Share(wrapper, f, "topleft");
+	Anchors.Share(wrapper, scroller, "bottomright", 0, -12);
+	self.wrapper = wrapper;
+end;
+
+function PercentWidget:Bounds()
+   return self.wrapper;
+end;
+
+function PercentWidget:Anchor(anchor)
+   if anchor:lower() == "top" then
+      return self.nameLabel;
+   end;
+end;
+
+function PercentWidget:Show()
+   self.nameLabel:Show();
+   self.nameField:Show();
+   self.valueLabel:Show();
+   self.scroller:Show();
+end;
+
+function PercentWidget:Hide()
+   self.nameLabel:Hide();
+   self.nameField:Hide();
+   self.valueLabel:Hide();
+   self.scroller:Hide();
+end;
+
+local FrameWidget = OOP.Class();
+function FrameWidget:Constructor(parent, index)
+   self.frame = Frames.New(parent);
+   Frames.WH(self.frame, math.random(20, 80), math.random(20, 80));
+   Frames.Color(self.frame, math.random(), math.random(), math.random());
+   
+   self.text = Frames.Text(self.frame, "Inconsolata", 18);
+   self.text:SetText(index);
+   Anchors.Center(self.text);
+   Frames.Color(self.text, math.random(), math.random(), math.random());
+end;
+
+function FrameWidget:Anchor()
+   return self.frame;
+end;
+
+function FrameWidget:Bounds()
+   return self.frame;
+end;
+
+function FrameWidget:Show()
+   self.frame:Show();
+end;
+
+function FrameWidget:Hide()
+   self.frame:Hide();
+end;
+
+function Hack.ShowElementsPage()
 	local codeFrames = {
 		HackFontCycle,
 		HackLineNumScrollFrame,
@@ -899,14 +1142,175 @@ function Hack.ShowDataPage()
 		HackFontSmaller,
 		HackColorize
 	};
-	printf("Showing data");
+	--printf("Showing data");
 	for i=1,#codeFrames do
 		codeFrames[i]:Hide();
+	end;
+	shownElems = true;
+
+	if dataPanel then
+		Frames.Destroy(dataPanel);
+	end;
+	dataPanel = Frames.New(HackEditFrame);
+	Anchors.Share(dataPanel, "topleft", 5, 24);
+
+	local widgets = {};
+
+	local page = Hack.EditedPage();
+	if not page.elements then
+		page.elements = {};
+	end;
+
+	local topSpacing = 8;
+	local spacing = 16;
+
+	local function Update(start)
+		for i=1, #widgets do
+			local widget = widgets[i];
+			widget:Hide();
+			Anchors.Clear(widget:Anchor("top"));
+		end;
+		local topForm = nil;
+		local totalHeight = topSpacing;
+		for i=start, #widgets do
+			local widget = widgets[i];
+			if topForm then
+				Anchors.VFlip(widget:Anchor("top"), topForm, "bottomleft", 0, spacing);
+				totalHeight = totalHeight + spacing;
+			else
+				Anchors.Share(widget:Anchor("top"), dataPanel, "topleft", 3, topSpacing);
+			end;
+			if widget:Bounds():GetHeight() + spacing + totalHeight > dataPanel:GetHeight() then
+				return;
+			end;
+			widget:Show();
+			topForm = widget:Bounds();
+			totalHeight = totalHeight + topForm:GetHeight();
+		end;
+	end;
+
+	local button = CreateFrame("Button", nil, dataPanel, "UIPanelButtonTemplate");
+	Frames.WH(button, 150, 32);
+	Anchors.Share(button, HackEditFrame, "bottom", 9);
+	button:SetText("Add New Element");
+	Anchors.Share(dataPanel, "right", 24);
+	Anchors.Share(dataPanel, "bottom", 36);
+
+	dataPanel.SetVerticalScroll = function(self, start)
+		Update(start);
+	end;
+
+	local scroller = CreateFrame("Slider", nil, dataPanel, "UIPanelScrollBarTemplate");
+
+	local function CalculateBottom()
+		for i=1, #widgets do
+			local widget = widgets[i];
+			widget:Hide();
+			Anchors.Clear(widget:Anchor("top"));
+		end;
+		local topForm = nil;
+		local totalHeight = topSpacing;
+		for i=1, #widgets do
+			local widget = widgets[1 + #widgets - i];
+			if topForm then
+				Anchors.VFlip(widget:Anchor("top"), topForm, "bottomleft", 0, spacing);
+				totalHeight = totalHeight + spacing;
+			else
+				Anchors.Share(widget:Anchor("top"), dataPanel, "topleft", 3, topSpacing);
+			end;
+			if widget:Bounds():GetHeight() + spacing + totalHeight > dataPanel:GetHeight() then
+				scroller:Show();			
+				Anchors.Share(dataPanel, "right", 24);
+				return 2 + #widgets - i;
+			end;
+			topForm = widget:Bounds();
+			totalHeight = totalHeight + topForm:GetHeight();
+		end;
+		scroller:Hide();			
+		Anchors.Share(dataPanel, "right", 4);
+		return 1;
+	end;
+
+	local bottom = CalculateBottom();
+
+	local function InsertWidget(widget)
+	   table.insert(widgets, widget);
+	   local atBottom = bottom == scroller:GetValue();
+	   local oldBottom = bottom;
+	   bottom = CalculateBottom();
+	   scroller:SetMinMaxValues(1, bottom);
+	   if atBottom then
+		  scroller:SetValue(bottom);
+		  if oldBottom == bottom then
+			 Update(bottom);
+		  end;
+	   else
+		  Update(scroller:GetValue());   
+	   end;
+	end;
+
+	button:SetScript("OnClick", function()
+		EasyMenu({
+			{text="Text", func=function()
+				local elem = {type="text"};
+				table.insert(page.elements, elem);
+				InsertWidget(TextWidget:New(dataPanel, elem));
+			end},
+			{text="Percent", func=function()
+				local elem = {type="percent"};
+				table.insert(page.elements, elem);
+				InsertWidget(PercentWidget:New(dataPanel, elem));
+			end},
+			{text="Frame", func=function()
+				local elem = {type="frame"};
+				table.insert(page.elements, elem);
+				InsertWidget(FrameWidget:New(dataPanel, elem));
+			end},
+			{text="Cancel", func=function()
+			end},
+		}, button);
+	end);
+
+	Anchors.HFlip(scroller, dataPanel, "topright", 1, -17);
+	Anchors.HFlip(scroller, dataPanel, "bottomright", 1, -16);
+	scroller:SetMinMaxValues(1, bottom);
+	scroller:SetValue(1);
+	scroller:SetValueStep(1);
+	scroller:SetStepsPerPage(1);
+	scroller:SetObeyStepOnDrag(true);
+
+	dataPanel:SetScript("OnMouseWheel", function(self, d)
+		  d = -d;
+		  if scroller:GetValue() + d < 1 then
+			 scroller:SetValue(1);
+		  elseif scroller:GetValue() + d > bottom then
+			 scroller:SetValue(bottom)
+		  else
+			 scroller:SetValue(scroller:GetValue() + d);         
+		  end;
+	end);
+
+	refreshElementsPage = function()
+		if not dataPanel then return end;
+		bottom = CalculateBottom();
+		scroller:SetMinMaxValues(1, bottom);
+		Update(scroller:GetValue());
+	end;
+
+	for i=1, #page.elements do
+		local elem = page.elements[i];
+		if elem.type == "text" then
+			InsertWidget(TextWidget:New(dataPanel, elem));
+		elseif elem.type == "frame" then
+			InsertWidget(FrameWidget:New(dataPanel, elem));
+		elseif elem.type == "percent" then
+			InsertWidget(PercentWidget:New(dataPanel, elem));
+		end;
 	end;
 end;
 
 function Hack.StartStop()
-	if UnitAffectingCombat("player") then
+	if PROTECT_SCRIPTS and UnitAffectingCombat("player") then
 		printf("Page cannot be stopped while player is in combat.");
 		return;
 	end;

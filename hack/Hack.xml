@@ -355,7 +355,7 @@
                    </OnClick>
                </Scripts>
            </Button>
-           <Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" id="2" text="Data">
+           <Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" id="2" text="Elements">
                <Anchors>
                    <Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
                        <Offset>
@@ -365,7 +365,7 @@
                </Anchors>
                <Scripts>
                    <OnClick>
-						Hack.ShowDataPage();
+						Hack.ShowElementsPage();
 						PanelTemplates_SetTab(HackEditFrame, 2);
                    </OnClick>
                </Scripts>
