@@ -66,7 +66,7 @@ function Frames.Text(parent, font, size, ...)
 	font=font or "default";
 
     local fontstring;
-    if Frames.AsRegion(parent) and Frames.AsRegion(parent).CreateFontString then
+    if parent and Frames.AsRegion(parent) and Frames.AsRegion(parent).CreateFontString then
         fontstring =  Frames.AsRegion(parent):CreateFontString();
     else
         fontstring = Frames.New("FontString", parent);
