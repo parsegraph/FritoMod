@@ -245,11 +245,18 @@ function Hack.ScriptError(type, err)
              err )
 end
 
-function Hack.Compile(page)
+function Hack.Compile(page, undoers)
 	local text = page.data:gsub('||','|');
     local func, err = loadstring(text, page.name)
     if not func then Hack.ScriptError('syntax', err) return end
-	local env = {};
+	local env = {UNDOABLE=function(func, ...)
+		if Frames.IsRegion(func) then
+			func = Curry(Frames.Destroy, func);
+		else
+			func = Curry(func, ...);
+		end;
+		table.insert(undoers, func);
+	end};
 	setmetatable(env, {__index=_G});
 	if page.elements then
 		for i=1, #page.elements do
@@ -270,13 +277,35 @@ end
 function Hack.Get(name)
     local page = type(name)=='number' and Hack.Find(name) or pages[name]
     if not page then printf('attempt to get an invalid page') return end
-    local runner = Hack.Compile(page)
+	local undoers = {};
+    local runner = Hack.Compile(page, undoers)
 	return function()
 		Hack.StopPage(page);
-		local rv = runner();
-		if type(rv) == "function" then
+		local runnerSucc, rv = pcall(runner);
+		if not runnerSucc then
+			printf("Script error: " .. rv);
+			rv = nil;
+		end;
+		if #undoers > 0 then
+			page.undoer = function()
+				local succ, err;
+				succ = true;
+				if type(rv) == "function" then
+					succ, err = pcall(rv);
+				end;
+				local i = #undoers;
+				while i > 0 do
+					local undoerSucc, err = pcall(undoers[i]);
+					succ = succ and undoerSucc;
+					i = i - 1;
+				end;
+				if not succ then
+					printf("Script error while stopping: " .. err);
+				end;
+			end;
+		elseif type(rv) == "function" then
 			page.undoer = rv;
-		else
+		elseif runnerSucc then
 			return rv;
 		end;
 	end;
