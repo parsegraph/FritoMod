@@ -458,6 +458,69 @@ function Strings.FormatShortTime(num)
 	end;
 end;
 
+function Strings.FormatShortTimeCeil(num)
+	num = Strings.GetTime(num);
+	num = math.ceil(num);
+	if num > 60 * 60 * 24 then
+		-- At least one day.
+		num = math.ceil(num / (60 * 60 * 24));
+		return ("%dd"):format(num);
+	elseif num > 60 * 60 then
+		-- At least one hour.
+		num = math.ceil(num / (60 * 60));
+		return ("%dh"):format(num);
+	elseif num >= 60 then
+		-- At least one minute.
+		num = math.ceil(num / 60);
+		return ("%dm"):format(num);
+	else
+		num = math.ceil(num);
+		return ("%d"):format(num);
+	end;
+end;
+
+function Strings.FormatShortTimeFloor(num)
+	num = Strings.GetTime(num);
+	num = math.floor(num);
+	if num > 60 * 60 * 24 then
+		-- At least one day.
+		num = math.floor(num / (60 * 60 * 24));
+		return ("%dd"):format(num);
+	elseif num > 60 * 60 then
+		-- At least one hour.
+		num = math.floor(num / (60 * 60));
+		return ("%dh"):format(num);
+	elseif num >= 60 then
+		-- At least one minute.
+		num = math.floor(num / 60);
+		return ("%dm"):format(num);
+	else
+		num = math.floor(num);
+		return ("%d"):format(num);
+	end;
+end;
+
+function Strings.FormatShortTimeRound(num)
+	num = Strings.GetTime(num);
+	num = Math.Round(num);
+	if num > 60 * 60 * 24 then
+		-- At least one day.
+		num = Math.Round(num / (60 * 60 * 24));
+		return ("%dd"):format(num);
+	elseif num > 60 * 60 then
+		-- At least one hour.
+		num = Math.Round(num / (60 * 60));
+		return ("%dh"):format(num);
+	elseif num >= 60 then
+		-- At least one minute.
+		num = Math.Round(num / 60);
+		return ("%dm"):format(num);
+	else
+		num = Math.Round(num);
+		return ("%d"):format(num);
+	end;
+end;
+
 function Strings.FormatColonTime(num)
 	num = Strings.GetTime(num);
 	if num >= 60 * 60 * 24 then
