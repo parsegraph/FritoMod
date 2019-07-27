@@ -36,6 +36,7 @@ Tables.Update(Hack, {
         HackAutorun     = 'Run this page automatically when Hack loads',
         HackRun         = 'Run this page',
         HackSend        = 'Send this page to another Hack user',
+        HackCopy        = 'Copy the selected page',
         HackSync        = 'Sync this page with another Hack user\n',
         HackStopSync    = 'Stop syncing this page with the chosen Hack user\n',
         HackSnap        = 'Attach editor to list window',
@@ -64,6 +65,7 @@ Tables.Update(Hack, {
     ListVOffset    =  37, -- vertical space not available for list items
     MinHeight      = 141, -- scroll bar gets wonky if we let the window get too short
     MinWidth       = 296, -- keep buttons from crowding/overlapping
+    MinEditWidth   = 486, -- keep buttons from crowding/overlapping
     MaxWidth       = 572, -- tune to match size of 200 character page name
     MaxVisible     =  50, -- num visible without scrolling; limits num HackListItems we must create
     NumVisible     =   0, -- calculated during list resize
@@ -167,6 +169,162 @@ if HackDB.version and maxVersion == HackDB.version then return end -- don't need
     end
 end
 
+function CreateColorSwatchPanel()
+	local background = Frames.New();
+	background:SetFrameStrata("DIALOG");
+	frameSize = 0.52;
+	local selectedColor = {1,1,1};
+
+	local classes = {
+	   "Druid",
+	   "Hunter",
+	   "Mage",
+	   "Paladin",
+	   "Priest",
+	   "Rogue",
+	   "Shaman",
+	   "Warlock",
+	   "Warrior",
+	   "DeathKnight",
+	   "Monk",
+	   "DemonHunter"
+	};
+
+	Frames.WH(background, frameSize*800, frameSize*800);
+	Anchors.Flip(background, Anchors.Saved("Fritomod.Swatches"), "bottomright");
+
+	local bgTexture = CreateFrame("Frame", nil, background, "DialogBorderTemplate");
+
+	local title = background:CreateTexture();
+	title:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header");
+	Anchors.Share(title, "top", 0, -12);
+	Frames.WH(title, 256, 64);
+	local titleText = background:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+	Anchors.Share(titleText, "top", 0, 1);
+	titleText:SetText("Color Swatches");
+
+	local titleHitBox = Frames.New(background);
+	Anchors.ShareAll(titleHitBox, title);
+	Frames.ProxyDraggable(background, titleHitBox);
+	Frames.Draggable(background);
+
+	local swatchSize = 16;
+	local startX = swatchSize*1.5;
+	local cx = startX;
+	local cy = swatchSize*2;
+	local rowSize = #classes*2*swatchSize;
+	local rowRef = nil;
+	local ref = nil;
+	function AddColor(c)
+	   local swatch = Frames.New("Button", background);
+	   Frames.WH(swatch, swatchSize);
+	   if cx == startX then
+		  if cy == swatchSize*2 then
+			 Anchors.Share(swatch, "topleft", cx, cy);         
+		  else
+			 Anchors.VFlip(swatch, rowRef, "bottomleft");
+		  end;
+		  rowRef = swatch;
+	   else
+		  Anchors.HFlip(swatch, ref, "topright");
+	   end;
+	   ref = swatch;
+	   
+	   Frames.Color(swatch, c);
+	   swatch:SetScript("OnClick", function()
+		  background:SetColorRGB(c[1], c[2], c[3]);
+          selectedColor = c;
+	      background.func();
+	   end);
+	   cx = cx + swatchSize;
+	   if cx + swatchSize > startX + rowSize + swatchSize then
+		  SkipRow();
+	   end;
+	end;
+	local maxX = 0;
+	function SkipRow()
+	   maxX = math.max(maxX, cx);
+	   cx = startX;
+	   cy = cy + swatchSize;
+	end;
+
+	local function AddPresets()
+	   local vres = 25;
+	   for i=1, vres-1 do
+		  local v = (i-1)/(vres-1);
+		  AddColor({v,v,v});
+	   end;
+	   SkipRow();
+	   for i=1, #classes do 
+		  local cc = Media.color[classes[i]];
+		  AddColor(cc);
+		  AddColor(Colors.Mix(cc, Media.color.black, .5));
+	   end;
+	   SkipRow();
+	end;
+
+	local function AddComputed()
+	   local res = 6;
+	   local h = 0;
+	   for i = 1, res-1 do
+		  for j = 1, res-1 do
+			 h = 0;
+			 while h < 360 do
+				AddColor(Colors.HSVtoRGB({h, 1-(i-1)/(res-1), 1-(j-1)/(res-1)}));
+				h = h + 15;
+			 end;
+			 if cx ~= 0 then
+				SkipRow();
+			 end;
+		  end;
+	   end;
+	end;
+	AddPresets();
+	AddComputed();
+	for i=0, #ITEM_QUALITY_COLORS-1 do
+	   local c = ITEM_QUALITY_COLORS[i];
+	   AddColor({c.r, c.g, c.b});
+	end;
+	SkipRow();
+
+	local buttonHeight = 22;
+	local ok = CreateFrame("Button", nil, background, "GameMenuButtonTemplate");
+	ok:SetText("Okay");
+	ok:SetHeight(buttonHeight);
+	local cancel = CreateFrame("Button", nil, background, "GameMenuButtonTemplate");
+	cancel:SetText("Cancel");
+	local buttonOffset = 12;
+	Anchors.Share(ok, "bottomleft", buttonOffset);
+	Anchors.Share(cancel, "bottomright", buttonOffset);
+	local buttonSpacing = 1;
+	ok:SetPoint("right", background, "bottom", -buttonSpacing, 0);
+	cancel:SetPoint("left", background, "bottom", buttonSpacing, 0);
+
+	ok:SetScript("OnClick", function()
+		background.func();
+		background:Hide();
+	end);
+
+	cancel:SetScript("OnClick", function()
+		background.func(background.previousValues);
+		background:Hide();
+	end);
+
+	background.GetColorRGB = function()
+		return unpack(selectedColor);
+	end;
+
+	background.SetColorRGB = function(self, r,g,b)
+		selectedColor = {r,g,b};
+	end;
+
+	Frames.WH(background, maxX+swatchSize*1.5, cy+swatchSize+buttonHeight+4);
+	background:Hide();
+	return background;
+end;
+
+local ColorSwatchPanel = CreateColorSwatchPanel();
+
 StaticPopupDialogs.HackAccept = {
     text = 'Accept new Hack page from %s?', button1 = 'Yes', button2 = 'No',
     timeout = 0, whileDead = 1, hideOnEscape = 1,
@@ -176,6 +334,49 @@ StaticPopupDialogs.HackAccept = {
     end,
     OnCancel = function(self)
         Remote:Send("Hack", self.sender, "Nack" .. PLAYERNAME);
+    end,
+}
+
+local shownElems = false;
+
+local function CloneElements(elements)
+	local copied = {};
+	for i=1, #elements do
+		local elem = elements[i];
+		local copy = {type=elem.type, name=elem.name};
+		if elem.type == "text" or elem.type == "percent" then
+			copy.value = elem.value;
+		elseif elem.type == "color" then
+			local c1 = elem.value[1];
+			local c2 = elem.value[2];
+			copy.value = {
+				{c1[1], c1[2], c1[3]},
+				{c2[1], c2[2], c2[3]},
+				elem.value[3]
+			};
+		end;
+		table.insert(copied, copy);
+	end;
+	return copied;
+end;
+
+StaticPopupDialogs.HackRevert = {
+    text = 'Revert the selected Hack page?', button1 = 'Yes', button2 = 'No',
+    timeout = 0, whileDead = 1, hideOnEscape = 1,
+    OnAccept = function(self)
+		local page = Hack.EditedPage();
+		if not page then
+			return;
+		end;
+		HackEditBox:SetText(Hack.revert)
+		page.elements = CloneElements(Hack.revertElements);
+		HackEditBox:SetCursorPosition(0)
+		HackRevert:Disable()
+		if shownElems then
+			Hack.ShowElementsPage();
+		end;
+    end,
+    OnCancel = function(self)
     end,
 }
 
@@ -265,7 +466,8 @@ function Hack.Compile(page, undoers)
 				env[elem.name] = elem.value;
 			elseif elem.type == "percent" then
 				env[elem.name] = elem.value;
-			elseif elem.type == "frame" then
+			elseif elem.type == "color" then
+				env[elem.name] = Colors.Mix(elem.value[1], elem.value[2], elem.value[3]);
 			end;
 		end;
 	end;
@@ -398,6 +600,28 @@ function Hack.GetUniqueName(name)
         count = count + 1;
     end;
 end
+
+function Hack.Copy()
+	if not selected then
+		return;
+	end;
+	local src = pages[order[selected]];
+	local clone = {
+		name = src.name,
+		data = src.data,
+		colorize = src.colorize,
+		elements = {}
+	};
+	for i=1, #src.elements do
+		local se = src.elements[i];
+		table.insert(clone.elements, {
+			type=se.type,
+			name=se.name,
+			value=se.value
+		});
+	end;
+	Hack.New(clone, true);
+end;
 
 function Hack.OnLoad(self)
     -- instantiate list items
@@ -693,9 +917,7 @@ function Hack.DeleteSelected()
 end
 
 function Hack.Revert()
-    HackEditBox:SetText(Hack.revert)
-    HackEditBox:SetCursorPosition(0)
-    HackRevert:Disable()
+	StaticPopup_Show('HackRevert');
 end
 
 function Hack.MoveItem(direction)
@@ -764,12 +986,15 @@ function Hack.EditedPage()
      return Hack.editedPage;
 end;
 
-local shownElems = false;
-
 function Hack.EditPage()
     local page = pages[order[selected]]
     Hack.editedPage = page;
     Hack.revert = page.data
+	if page.elements then
+		Hack.revertElements = CloneElements(page.elements);
+	else
+		Hack.revertElements = {};
+	end;
     HackEditBox:SetText(page.data)
     HackRevert:Disable()
     HackEditFrame:Show()
@@ -785,6 +1010,8 @@ function Hack.EditPage()
     end
 	if shownElems then
 		Hack.ShowElementsPage();
+	else
+		Hack.ShowCodePage();
 	end;
 end
 
@@ -851,7 +1078,7 @@ end
 
 function Hack.OnEditorLoad(self)
     table.insert(UISpecialFrames,'HackEditFrame')
-    self:SetMinResize(Hack.MinWidth,Hack.MinHeight)
+    self:SetMinResize(Hack.MinEditWidth,Hack.MinHeight)
 	ScrollingEdit_OnLoad(HackEditBox);
 	Hack.DisableStartStop();
     HackEditBox:SetScript("OnTextChanged", function(self, isUserInput)
@@ -953,9 +1180,14 @@ function Hack.ShowCodePage()
 	end;
 end;
 
+local widgetFont = "arial";
+
+local unselectedColor = .1;
+
 local TextWidget = OOP.Class();
 function TextWidget:Constructor(parent, elem)
-	local f = Frames.Text(parent, "fritzqt", 14);
+	local wrapper = Frames.New(parent);
+	local f = Frames.Text(parent, widgetFont, 14);
 	f:SetText("Name:");
 	self.nameLabel = f;
 
@@ -980,16 +1212,14 @@ function TextWidget:Constructor(parent, elem)
 	eb:SetScript("OnEscapePressed", Seal(eb, "ClearFocus"));
 	eb:SetScript("OnTextChanged", function()
 		elem.name = eb:GetText();
-		if Hack.StopPage() then
-			Hack.Run();
-		end;
+		Hack.RefreshElements();
 	end);
 
-	local vf = Frames.Text(parent, "fritzqt", 14);
-	vf:SetText("Value:");
+	local vf = Frames.Text(parent, widgetFont, 14);
+	vf:SetText("Text:");
 	self.valueLabel = vf;
 
-	Anchors.VFlip(vf, f, "bottom", 6);
+	Anchors.VFlip(vf, f, "bottomleft", 6);
 
 	local vbg = Frames.New(parent);
 	self.valueField = vbg;
@@ -1013,15 +1243,29 @@ function TextWidget:Constructor(parent, elem)
 	vb:SetText(elem.value or "");
 	vb:SetScript("OnTextChanged", function()
 		elem.value = vb:GetText();
-		if Hack.StopPage() then
-			Hack.Run();
-		end;
+		Hack.RefreshElements();
 	end);
 
-	local wrapper = Frames.New(tbg);
 	Anchors.Share(wrapper, f, "topleft");
 	Anchors.Share(wrapper, vbg, "bottomright");
 	self.wrapper = wrapper;
+
+	self.selector = CreateFrame("Button", nil, parent);
+	self.selector:SetBackdrop({
+		bgFile = nil,
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+		tile = true, tileSize = 16, edgeSize = 8, 
+		insets = { left = 2, right = 2, top = 2, bottom = 2 },
+		backdropColor = { r=0, g=0, b=0, a=1 }
+	});
+	self.selector:SetWidth(14);
+	Frames.Color(self.selector, unselectedColor);
+	Anchors.HFlip(self.selector, wrapper, "topleft", 2, 4);
+	Anchors.HFlip(self.selector, wrapper, "bottomleft", 2, 4);
+end;
+
+function TextWidget:Selector()
+   return self.selector;
 end;
 
 function TextWidget:Bounds()
@@ -1035,22 +1279,25 @@ function TextWidget:Anchor(anchor)
 end;
 
 function TextWidget:Show()
-   self.nameLabel:Show();
-   self.nameField:Show();
-   self.valueLabel:Show();
-   self.valueField:Show();
+	self.selector:Show();
+	self.nameLabel:Show();
+	self.nameField:Show();
+	self.valueLabel:Show();
+	self.valueField:Show();
 end;
 
 function TextWidget:Hide()
-   self.nameField:Hide();
-   self.nameLabel:Hide();
-   self.valueLabel:Hide();
-   self.valueField:Hide();
+	self.selector:Hide();
+	self.nameField:Hide();
+	self.nameLabel:Hide();
+	self.valueLabel:Hide();
+	self.valueField:Hide();
 end;
 
 local PercentWidget = OOP.Class();
 function PercentWidget:Constructor(parent, elem)
-	local f = Frames.Text(parent, "fritzqt", 14);
+	local wrapper = Frames.New(parent);
+	local f = Frames.Text(parent, widgetFont, 14);
 	f:SetText("Name:");
 	self.nameLabel = f;
 
@@ -1075,21 +1322,19 @@ function PercentWidget:Constructor(parent, elem)
 	eb:SetScript("OnEscapePressed", Seal(eb, "ClearFocus"));
 	eb:SetScript("OnTextChanged", function()
 		elem.name = eb:GetText();
-		if Hack.StopPage() then
-			Hack.Run();
-		end;
+		Hack.RefreshElements();
 	end);
 
-	local vf = Frames.Text(parent, "fritzqt", 14);
-	vf:SetText("Value:");
+	local vf = Frames.Text(parent, widgetFont, 14);
+	vf:SetText("Percent:");
 	self.valueLabel = vf;
 
-	Anchors.VFlip(vf, f, "bottom", 6);
+	Anchors.VFlip(vf, f, "bottomleft", 6);
 
-	local scroller = CreateFrame("Slider", nil, dataPanel, "OptionsSliderTemplate");
+	local scroller = CreateFrame("Slider", nil, parent, "OptionsSliderTemplate");
 	scroller:SetOrientation("HORIZONTAL");
 	Anchors.HFlip(scroller, vf, "right", 4);
-	Anchors.Share(scroller, parent, "right", 3);
+	Anchors.Share(scroller, parent, "right", 7);
 	scroller:SetHeight(16);
 	scroller:SetMinMaxValues(0, 1);
 	if elem.value == nil then
@@ -1098,20 +1343,34 @@ function PercentWidget:Constructor(parent, elem)
 	scroller:SetValue(elem.value);
 	scroller:SetScript("OnValueChanged", function()
 		elem.value = scroller:GetValue();
-		if Hack.StopPage() then
-			Hack.Run();
-		end;
+		Hack.RefreshElements();
 	end);
 	self.scroller = scroller;
 
-	local wrapper = Frames.New(tbg);
 	Anchors.Share(wrapper, f, "topleft");
-	Anchors.Share(wrapper, scroller, "bottomright", 0, -12);
+	Anchors.Share(wrapper, scroller, "bottomright", -2, -12);
 	self.wrapper = wrapper;
+
+	self.selector = CreateFrame("Button", nil, parent);
+	self.selector:SetBackdrop({
+		bgFile = nil,
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+		tile = true, tileSize = 16, edgeSize = 8, 
+		insets = { left = 2, right = 2, top = 2, bottom = 2 },
+		backdropColor = { r=0, g=0, b=0, a=1 }
+	});
+	self.selector:SetWidth(14);
+	Frames.Color(self.selector, unselectedColor);
+	Anchors.HFlip(self.selector, wrapper, "topleft", 2, 4);
+	Anchors.HFlip(self.selector, wrapper, "bottomleft", 2, 4);
 end;
 
 function PercentWidget:Bounds()
    return self.wrapper;
+end;
+
+function PercentWidget:Selector()
+   return self.selector;
 end;
 
 function PercentWidget:Anchor(anchor)
@@ -1121,45 +1380,252 @@ function PercentWidget:Anchor(anchor)
 end;
 
 function PercentWidget:Show()
-   self.nameLabel:Show();
-   self.nameField:Show();
-   self.valueLabel:Show();
-   self.scroller:Show();
+	self.selector:Show();
+	self.nameLabel:Show();
+	self.nameField:Show();
+	self.valueLabel:Show();
+	self.scroller:Show();
 end;
 
 function PercentWidget:Hide()
-   self.nameLabel:Hide();
-   self.nameField:Hide();
-   self.valueLabel:Hide();
-   self.scroller:Hide();
+	self.selector:Hide();
+	self.nameLabel:Hide();
+	self.nameField:Hide();
+	self.valueLabel:Hide();
+	self.scroller:Hide();
 end;
 
-local FrameWidget = OOP.Class();
-function FrameWidget:Constructor(parent, index)
-   self.frame = Frames.New(parent);
-   Frames.WH(self.frame, math.random(20, 80), math.random(20, 80));
-   Frames.Color(self.frame, math.random(), math.random(), math.random());
-   
-   self.text = Frames.Text(self.frame, "Inconsolata", 18);
-   self.text:SetText(index);
-   Anchors.Center(self.text);
-   Frames.Color(self.text, math.random(), math.random(), math.random());
+local ColorWidget = OOP.Class();
+function ColorWidget:Constructor(parent, elem)
+	local wrapper = Frames.New(parent);
+	local f = Frames.Text(parent, widgetFont, 14);
+	f:SetText("Name:");
+	self.nameLabel = f;
+
+	local tbg = Frames.New(parent);
+	self.nameField = tbg;
+	tbg:SetBackdrop({
+		bgFile = nil,
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+		tile = true, tileSize = 16, edgeSize = 8, 
+		insets = { left = 4, right = 4, top = 4, bottom = 4 },
+		backdropColor = { r=0, g=0, b=0, a=1 }
+	});
+	tbg:SetHeight(20);
+	Anchors.HFlip(tbg, f, "topright", 3, 3);
+	Anchors.Share(tbg, parent, "right", 3);
+
+	local eb = Frames.New("EditBox", tbg);
+	Anchors.ShareAll(eb);
+	eb:SetText(elem.name or "");
+	eb:SetAutoFocus(false);
+	eb:SetFontObject(GameFontNormal);
+	eb:SetScript("OnEscapePressed", Seal(eb, "ClearFocus"));
+	eb:SetScript("OnTextChanged", function()
+		elem.name = eb:GetText();
+		Hack.RefreshElements();
+	end);
+
+	local vf = Frames.Text(parent, widgetFont, 14);
+	vf:SetText("Color:");
+	self.valueLabel = vf;
+
+	Anchors.VFlip(vf, f, "bottomleft", 6);
+	local colorSize = 24;
+
+	local function ShowColorPicker(r, g, b, changedCallback)
+		ColorPickerFrame.func, ColorPickerFrame.cancelFunc = changedCallback, changedCallback;
+		ColorPickerFrame.hasOpacity = false;
+		ColorPickerFrame.previousValues = {r,g,b};
+		ColorPickerFrame:SetColorRGB(r,g,b);
+		ColorPickerFrame:Hide(); -- Need to run the OnShow handler.
+		ColorPickerFrame:Show();
+	end
+
+	local colorIndex = 1;
+	local function MakeColor(c)
+		local bg = CreateFrame("Button", "ColorSwatch" .. colorIndex, parent);
+		local bgc = 0.1;
+		local inset = 4;
+		bg:SetBackdrop({
+			bgFile = nil,
+			edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+			tile = true, tileSize = 16, edgeSize = 8, 
+			insets = { left = inset, right = inset, top = inset, bottom = inset },
+			backdropColor = { r=bgc, g=bgc, b=bgc, a=1 }
+		});
+		Frames.WH(bg, 32);
+
+		local f = Frames.New(bg);
+		bg:SetScript("OnClick", function()
+			EasyMenu({
+				{text="Color Picker", func=function()
+					ShowColorPicker(c[1], c[2], c[3], function(restore)
+						local newc;
+						if restore then
+							newc = restore;
+						else
+							local r, g, b = ColorPickerFrame:GetColorRGB();
+							newc = {r,g,b};
+						end;
+						c[1] = newc[1];
+						c[2] = newc[2];
+						c[3] = newc[3];
+						Frames.Color(f, c);
+						Hack.RefreshElements();
+					end);
+				end},
+				{text="Swatches", func=function()
+					local changedCallback = function(restore)
+						local newc;
+						if restore then
+							newc = restore;
+						else
+							newc = {ColorSwatchPanel:GetColorRGB()};
+						end;
+						c[1] = newc[1];
+						c[2] = newc[2];
+						c[3] = newc[3];
+						Frames.Color(f, c);
+						Hack.RefreshElements();
+					end;
+					ColorSwatchPanel.func, ColorSwatchPanel.cancelFunc = changedCallback, changedCallback;
+					ColorSwatchPanel.previousValues = {c[1], c[2], c[3]};
+					ColorSwatchPanel:Show();
+				end},
+				{text="Cancel", func=function()
+				end},
+			}, bg, "cursor");
+		end);
+
+		Anchors.ShareAll(f);
+		Frames.Color(f, c);
+		return bg;
+	end;
+	self.firstColor = MakeColor(elem.value[1]);
+	Anchors.HFlip(self.firstColor, vf, "topright", 4);
+	self.secondColor = MakeColor(elem.value[2]);
+	Anchors.Share(self.secondColor, vf, "top");
+	Anchors.Share(self.secondColor, parent, "right", 3);
+
+	local scroller = CreateFrame("Slider", nil, parent, "OptionsSliderTemplate");
+	scroller:SetOrientation("HORIZONTAL");
+	Anchors.HFlip(scroller, self.firstColor, "right", 4);
+	Anchors.HFlip(scroller, self.secondColor, "left", 4);
+	scroller:SetHeight(16);
+	scroller:SetMinMaxValues(0, 1);
+	if elem.value == nil then
+		elem.value = 0.5;
+	end;
+	scroller:SetValue(elem.value[3]);
+	scroller:SetScript("OnValueChanged", function()
+		elem.value[3] = scroller:GetValue();
+		Hack.RefreshElements();
+	end);
+	self.scroller = scroller;
+
+	Anchors.Share(wrapper, f, "topleft");
+	Anchors.Share(wrapper, self.secondColor, "bottomright", 0, -8);
+	self.wrapper = wrapper;
+
+	self.selector = CreateFrame("Button", nil, parent);
+	self.selector:SetBackdrop({
+		bgFile = nil,
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+		tile = true, tileSize = 16, edgeSize = 8, 
+		insets = { left = 2, right = 2, top = 2, bottom = 2 },
+		backdropColor = { r=0, g=0, b=0, a=1 }
+	});
+	self.selector:SetWidth(14);
+	Frames.Color(self.selector, unselectedColor);
+	Anchors.HFlip(self.selector, wrapper, "topleft", 2, 4);
+	Anchors.HFlip(self.selector, wrapper, "bottomleft", 2, 4);
 end;
 
-function FrameWidget:Anchor()
-   return self.frame;
+function ColorWidget:Bounds()
+   return self.wrapper;
 end;
 
-function FrameWidget:Bounds()
-   return self.frame;
+function ColorWidget:Selector()
+   return self.selector;
 end;
 
-function FrameWidget:Show()
-   self.frame:Show();
+function ColorWidget:Anchor(anchor)
+	if anchor:lower() == "top" then
+		return self.nameLabel;
+	end;
 end;
 
-function FrameWidget:Hide()
-   self.frame:Hide();
+function ColorWidget:Show()
+	self.selector:Show();
+	self.nameLabel:Show();
+	self.nameField:Show();
+	self.valueLabel:Show();
+	self.scroller:Show();
+	self.firstColor:Show();
+	self.secondColor:Show();
+end;
+
+function ColorWidget:Hide()
+	self.selector:Hide();
+	self.nameLabel:Hide();
+	self.nameField:Hide();
+	self.valueLabel:Hide();
+	self.scroller:Hide();
+	self.firstColor:Hide();
+	self.secondColor:Hide();
+end;
+
+function Hack.RefreshElements()
+	local page = Hack.EditedPage();
+	HackRevert:Disable()
+	if page.elements and Hack.revertElements and #page.elements == #Hack.revertElements then
+		for i=1, #page.elements do
+			local orig = Hack.revertElements[i];
+			local elem = page.elements[i];
+			if elem.type ~= orig.type then
+				--print("Type changed");
+				HackRevert:Enable()
+				break;
+			end;
+			if elem.name ~= orig.name then
+				--print("Name changed");
+				HackRevert:Enable()
+				break;
+			end;
+			if elem.type == "color" then
+				if elem.value[3] ~= orig.value[3] then
+					--print("Lerp changed");
+					HackRevert:Enable()
+					break;
+				end;
+				local c1 = elem.value[1];
+				local c2 = elem.value[2];
+				local o1 = orig.value[1];
+				local o2 = orig.value[2];
+				if c1[1] ~= o1[1] or c1[2] ~= o1[2] or c1[3] ~= o1[3] then
+					--print("First color changed");
+					HackRevert:Enable()
+					break;
+				end;
+				if c2[1] ~= o2[1] or c2[2] ~= o2[2] or c2[3] ~= o2[3] then
+					--print("Second color changed");
+					HackRevert:Enable()
+					break;
+				end;
+			elseif elem.value ~= orig.value then
+				--print("Primitive value changed");
+				HackRevert:Enable()
+				break;
+			end;
+		end;
+	else
+		--print("Number of elements changed " .. #Hack.revertElements .. " versus " .. #page.elements);
+		HackRevert:Enable()
+	end;
+	if Hack.StopPage() then
+		Hack.Run();
+	end;
 end;
 
 function Hack.ShowElementsPage()
@@ -1191,9 +1657,19 @@ function Hack.ShowElementsPage()
 	end;
 
 	local topSpacing = 8;
-	local spacing = 16;
+	local spacing = 12;
+
+	local widgetSelection = Frames.New(dataPanel);
+	--widgetSelection:SetFrameStrata("DIALOG");
+	Frames.Color(widgetSelection, "white", .3);
+	local selectedWidget = nil;
 
 	local function Update(start)
+		if selectedWidget then
+			Frames.Color(selectedWidget:Selector(), unselectedColor);
+			widgetSelection:Hide();
+		end;
+		selectedWidget = nil;
 		for i=1, #widgets do
 			local widget = widgets[i];
 			widget:Hide();
@@ -1201,15 +1677,16 @@ function Hack.ShowElementsPage()
 		end;
 		local topForm = nil;
 		local totalHeight = topSpacing;
+		local leftSpacing = 16;
 		for i=start, #widgets do
 			local widget = widgets[i];
 			if topForm then
 				Anchors.VFlip(widget:Anchor("top"), topForm, "bottomleft", 0, spacing);
 				totalHeight = totalHeight + spacing;
 			else
-				Anchors.Share(widget:Anchor("top"), dataPanel, "topleft", 3, topSpacing);
+				Anchors.Share(widget:Anchor("top"), dataPanel, "topleft", leftSpacing, topSpacing);
 			end;
-			if widget:Bounds():GetHeight() + spacing + totalHeight > dataPanel:GetHeight() then
+			if widget:Bounds():GetHeight() + totalHeight > dataPanel:GetHeight() then
 				return;
 			end;
 			widget:Show();
@@ -1220,18 +1697,104 @@ function Hack.ShowElementsPage()
 
 	local button = CreateFrame("Button", nil, dataPanel, "UIPanelButtonTemplate");
 	Frames.WH(button, 150, 32);
-	Anchors.Share(button, HackEditFrame, "bottom", 9);
+	Anchors.Share(button, HackEditFrame, "bottomleft", 5, 9);
 	button:SetText("Add New Element");
 	Anchors.Share(dataPanel, "right", 24);
-	Anchors.Share(dataPanel, "bottom", 36);
+	Anchors.Share(dataPanel, "bottom", 40);
+
+	local function FindSelectedElement()
+		if not selectedWidget then
+			return;
+		end;
+		for i=1, #widgets do
+			if widgets[i] == selectedWidget then
+				return i;
+			end;
+		end;
+	end;
+
+	local scroller;
+
+	local moveUpButton = CreateFrame("Button", nil, dataPanel, "UIPanelButtonTemplate");
+	Frames.WH(moveUpButton, 110, 32);
+	moveUpButton:SetText("Move Up");
+	moveUpButton:SetScript("OnClick", function()
+		local selectedIndex = FindSelectedElement();
+		if not selectedIndex then return end;
+		if selectedIndex == 1 then return end;
+		local elem = page.elements[selectedIndex];
+		table.remove(page.elements, selectedIndex);
+		table.remove(widgets, selectedIndex);
+		table.insert(page.elements, selectedIndex - 1, elem);
+		table.insert(widgets, selectedIndex - 1, selectedWidget);
+		local widget = selectedWidget;
+		Update(scroller:GetValue());   
+		selectedWidget = widget;
+		Frames.Color(widget:Selector(), "white");
+		Anchors.Share(widgetSelection, widget:Bounds(), "topleft", -2, -4);
+		Anchors.Share(widgetSelection, widget:Bounds(), "bottomright", -4, -4);
+		widgetSelection:Show();
+		Hack.RefreshElements();
+	end);
+	Anchors.HFlip(moveUpButton, button, "right", 2);
+
+	local moveDownButton = CreateFrame("Button", nil, dataPanel, "UIPanelButtonTemplate");
+	Frames.WH(moveDownButton, 110, 32);
+	moveDownButton:SetText("Move Down");
+	moveDownButton:SetScript("OnClick", function()
+		local selectedIndex = FindSelectedElement();
+		if not selectedIndex then return end;
+		if selectedIndex == #widgets then return end;
+		local elem = page.elements[selectedIndex];
+		table.remove(page.elements, selectedIndex);
+		table.remove(widgets, selectedIndex);
+		table.insert(page.elements, selectedIndex + 1, elem);
+		table.insert(widgets, selectedIndex + 1, selectedWidget);
+		local widget = selectedWidget;
+		Update(scroller:GetValue());   
+		selectedWidget = widget;
+		Frames.Color(widget:Selector(), "white");
+		Anchors.Share(widgetSelection, widget:Bounds(), "topleft", -2, -4);
+		Anchors.Share(widgetSelection, widget:Bounds(), "bottomright", -4, -4);
+		widgetSelection:Show();
+		Hack.RefreshElements();
+	end);
+	Anchors.HFlip(moveDownButton, moveUpButton, "right", 2);
+
+	local deleteButton = CreateFrame("Button", nil, dataPanel, "UIPanelButtonTemplate");
+	Frames.WH(deleteButton, 100, 32);
+	deleteButton:SetText("Delete");
+	deleteButton:SetScript("OnClick", function()
+		local selectedIndex = FindSelectedElement();
+		if not selectedIndex then return end;
+		table.remove(page.elements, selectedIndex);
+		table.remove(widgets, selectedIndex);
+		selectedWidget:Hide();
+		Update(scroller:GetValue());   
+		if selectedIndex > #widgets then selectedIndex = #widgets; end;
+		if selectedIndex == 0 then return end;
+		widget = widgets[selectedIndex];
+		Frames.Color(widget:Selector(), "white");
+		Anchors.Share(widgetSelection, widget:Bounds(), "topleft", -2, -4);
+		Anchors.Share(widgetSelection, widget:Bounds(), "bottomright", -4, -4);
+		widgetSelection:Show();
+		selectedWidget = widget;
+		Hack.RefreshElements();
+	end);
+	Anchors.Share(deleteButton, HackEditFrame, "bottomright", 5, 9);
 
 	dataPanel.SetVerticalScroll = function(self, start)
 		Update(start);
 	end;
 
-	local scroller = CreateFrame("Slider", nil, dataPanel, "UIPanelScrollBarTemplate");
+	scroller = CreateFrame("Slider", nil, dataPanel, "UIPanelScrollBarTemplate");
 
 	local function CalculateBottom()
+		if selectedWidget then
+			Frames.Color(selectedWidget:Selector(), unselectedColor);
+			widgetSelection:Hide();
+		end;
+		selectedWidget = nil;
 		for i=1, #widgets do
 			local widget = widgets[i];
 			widget:Hide();
@@ -1239,15 +1802,16 @@ function Hack.ShowElementsPage()
 		end;
 		local topForm = nil;
 		local totalHeight = topSpacing;
+		local leftSpacing = 16;
 		for i=1, #widgets do
 			local widget = widgets[1 + #widgets - i];
 			if topForm then
 				Anchors.VFlip(widget:Anchor("top"), topForm, "bottomleft", 0, spacing);
 				totalHeight = totalHeight + spacing;
 			else
-				Anchors.Share(widget:Anchor("top"), dataPanel, "topleft", 3, topSpacing);
+				Anchors.Share(widget:Anchor("top"), dataPanel, "topleft", leftSpacing, topSpacing);
 			end;
-			if widget:Bounds():GetHeight() + spacing + totalHeight > dataPanel:GetHeight() then
+			if widget:Bounds():GetHeight() + totalHeight > dataPanel:GetHeight() then
 				scroller:Show();			
 				Anchors.Share(dataPanel, "right", 24);
 				return 2 + #widgets - i;
@@ -1276,6 +1840,27 @@ function Hack.ShowElementsPage()
 	   else
 		  Update(scroller:GetValue());   
 	   end;
+		widgetSelection:Hide();
+		local selector = widget:Selector();
+		if selector then
+			selector:SetScript("OnClick", function()
+				Anchors.Clear(widgetSelection);
+				if widget == selectedWidget then
+					Frames.Color(selector, unselectedColor);
+					widgetSelection:Hide();
+					selectedWidget = nil;
+					return;
+				end;
+				if selectedWidget then
+					Frames.Color(selectedWidget:Selector(), unselectedColor);
+				end;
+				selectedWidget = widget;
+				Frames.Color(selector, "white");
+				Anchors.Share(widgetSelection, widget:Bounds(), "topleft", -2, -4);
+				Anchors.Share(widgetSelection, widget:Bounds(), "bottomright", -4, -4);
+				widgetSelection:Show();
+			end);
+		end;
 	end;
 
 	button:SetScript("OnClick", function()
@@ -1290,10 +1875,14 @@ function Hack.ShowElementsPage()
 				table.insert(page.elements, elem);
 				InsertWidget(PercentWidget:New(dataPanel, elem));
 			end},
-			{text="Frame", func=function()
-				local elem = {type="frame"};
+			{text="Color", func=function()
+				local elem = {type="color", value={
+					{0, 0, 0},
+					{1, 1, 1},
+					0.5
+				}};
 				table.insert(page.elements, elem);
-				InsertWidget(FrameWidget:New(dataPanel, elem));
+				InsertWidget(ColorWidget:New(dataPanel, elem));
 			end},
 			{text="Cancel", func=function()
 			end},
@@ -1330,10 +1919,13 @@ function Hack.ShowElementsPage()
 		local elem = page.elements[i];
 		if elem.type == "text" then
 			InsertWidget(TextWidget:New(dataPanel, elem));
-		elseif elem.type == "frame" then
-			InsertWidget(FrameWidget:New(dataPanel, elem));
 		elseif elem.type == "percent" then
 			InsertWidget(PercentWidget:New(dataPanel, elem));
+		elseif elem.type == "color" then
+			if type(elem.value) == "number" then
+				elem.value = {{0, 0, 0}, {1,1,1}, 0.5};
+			end;
+			InsertWidget(ColorWidget:New(dataPanel, elem));
 		end;
 	end;
 end;

@@ -176,6 +176,10 @@
             <PushedTexture file="Interface\Addons\FritoMod\media\HackButtons"> <TexCoords left=".5" right=".625" top=".5" bottom=".625"/> </PushedTexture>
             <DisabledTexture file="Interface\Addons\FritoMod\media\HackButtons"> <TexCoords left=".625" right=".75" top=".5" bottom=".625"/> </DisabledTexture>
          </Button>
+         <Button name='HackCopy' inherits='T_HackButton'> 
+            <Anchors> <Anchor point='LEFT' relativeTo='HackSend' relativePoint='RIGHT'/> </Anchors>
+            <NormalTexture file="Interface\Addons\FritoMod\media\HackButtons"> <TexCoords left=".75" right=".875" top=".875" bottom="1"/> </NormalTexture>
+         </Button>
          <CheckButton name='HackSearchBody' inherits='T_HackSearchCheck'>
             <Anchors> <Anchor point='RIGHT' relativePoint='LEFT' relativeTo='HackListFrameClose'/> </Anchors>
          </CheckButton>
