@@ -48,6 +48,103 @@ function Colors.ColorMessage(color, message)
 end;
 Colors.Colorize=Colors.ColorMessage;
 
+function Colors.RGBtoHSV(c)
+	local computedH = 0;
+	local computedS = 0;
+	local computedV = 0;
+
+	local r, g, b = unpack(c);
+	local minRGB = math.min(r,math.min(g,b));
+	local maxRGB = math.max(r,math.max(g,b));
+	local diff = maxRGB - minRGB;
+	computedV = diff;
+
+	-- Black-gray-white
+	if diff == 0 then
+		return {0,0,minRGB};
+	end;
+
+	if maxRGB == r then
+		computedH = math.fmod((g - b)/diff, 6.0);
+	elseif maxRGB == g then
+		computedH = (b - r)/diff + 2.0;
+	else
+		computedH = (r - g)/diff + 4.0;
+	end;
+	computedH = computedH * 60;
+	if computedH < 0 then
+		computedH = computedH + 360;
+	end;
+	computedS = diff / maxRGB;
+	return {computedH,computedS,computedV};
+end;
+
+function Colors.HSVtoRGB(orig)
+	local h, s, v = unpack(orig);
+	local c = v * s;
+	local x = c * (1 - math.abs(math.fmod(h / 60, 2) - 1.0));
+	local m = v - c;
+	if h >= 0 and h < 60 then
+		return {c+m, x+m, m};
+	elseif h >= 60 and h < 120 then
+		return {x+m, c+m, m};
+	elseif h >= 120 and h < 180 then
+		return {m, c+m, x+m};
+	elseif h >= 180 and h < 240 then
+		return {m, x+m, c+m};
+	elseif h >= 240 and h < 300 then
+		return {x+m, m, c+m};
+	elseif h >= 300 and h < 360 then
+		return {c+m, m, x+m};
+	else
+		return {m, m, m};
+	end;
+end;
+
+function Colors.Mix(bg, fg, lerp)
+	local hbg = Colors.RGBtoHSV(bg);
+	local hfg = Colors.RGBtoHSV(fg);
+
+	if hfg[3] == 0 then
+		return Colors.HSVtoRGB({
+			hbg[1], hbg[2], Math.mix(hbg[3], 0, lerp)
+		});
+	end;
+	if hbg[3] == 0 then
+		return Colors.HSVtoRGB({
+			hfg[1], hfg[2], Math.mix(hfg[3], 0, 1-lerp)
+		});
+	end;
+	if hfg[2] == 0 then
+		return Colors.HSVtoRGB({
+			hbg[1], Math.mix(hbg[2], 0, lerp), Math.mix(hbg[3], hfg[3], lerp)
+		});
+	end;
+	if hbg[2] == 0 then
+		return Colors.HSVtoRGB({
+			hfg[1], Math.mix(hfg[2], 0, 1-lerp), Math.mix(hbg[3], hfg[3], 1-lerp)
+		});
+	end;
+	local bgx = math.cos(math.pi * hbg[1] / 180);
+	local bgy = math.sin(math.pi * hbg[1] / 180);
+	local fgx = math.cos(math.pi * hfg[1] / 180);
+	local fgy = math.sin(math.pi * hfg[1] / 180);
+
+	local rx = Math.mix(bgx, fgx, lerp);
+	local ry = Math.mix(bgy, fgy, lerp);
+	local h = 180 * math.atan2(ry, rx) / math.pi;
+	if h < 0 then
+		h = 360 + h;
+	end;
+	--local h = Math.mix(hbg[1], hfg[1], lerp);
+	dump("Mixed h", h);
+	return Colors.HSVtoRGB({
+		h,
+		Math.mix(hbg[2], hfg[2], lerp),
+		Math.mix(hbg[3], hfg[3], lerp),
+	});
+end;
+
 function Colors.PackHex(colorParts, ...)
 	local hexstring = "";
 	if select("#", ...) > 0 then
