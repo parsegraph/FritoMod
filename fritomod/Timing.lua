@@ -89,14 +89,17 @@ do
 
     Timing.delegate = Seal(Delegate, "New");
 
+	Timing.LAST_ELAPSED = 0;
+
     -- Iterate our timers.
     --
     -- There's never a need to directly call this function unless you're developing or
     -- testing this addon.
-    function Timing.Tick(...)
+    function Timing.Tick(delta)
+		Timing.LAST_ELAPSED = delta;
         -- We don't use currying here to ensure we can override listeners
         -- during testing.
-        listeners:Fire(...);
+        listeners:Fire();
     end;
 
 	-- Adds a function that is fired every update. This is the highest-precision timing
@@ -138,6 +141,7 @@ local function Timer(tickFunc, ...)
         end;
 		local elapsed=0;
 		return Timing.OnUpdate(function(delta)
+			delta = Timing.LAST_ELAPSED;
 			elapsed=tickFunc(period, elapsed+delta, Receiver);
             if not success then
                 -- Reset success

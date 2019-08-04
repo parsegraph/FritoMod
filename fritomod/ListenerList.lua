@@ -60,6 +60,9 @@ ListenerList.AddListener = ListenerList.Add;
 ListenerList.OnFire = ListenerList.Add;
 
 function ListenerList:Each(...)
+	if select("#", ...) == 0 then
+		return self:InvokeListeners();
+	end;
 	return self:InvokeListeners(function(listener, ...)
 		listener(...);
 	end, ...);
@@ -99,7 +102,10 @@ function ListenerList:InvokeListeners(invoker, ...)
 
 	while self.firingIndex <= self.firingMax do
 		local listener = self.listeners[self.firingIndex];
-		local target = Curry(invoker, listener, ...);
+		local target = listener;
+		if invoker then
+			target = Curry(invoker, listener, ...);
+		end;
 		local succeeded, err = xpcall(target, traceback);
 		if not succeeded then
 			-- Clean up our firing variable, otherwise we'll be permanently
