@@ -579,11 +579,12 @@ do
 end
 
 function Hack.DoAutorun()
-    for _,page in pairs(pages) do
+	for _,pageName in ipairs(order) do
+		local page = pages[pageName];
         if page.autorun then
             Hack.Require(page.name);
         end
-    end
+	end;
 end
 
 function Hack.GetUniqueName(name)
