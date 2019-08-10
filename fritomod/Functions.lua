@@ -393,3 +393,10 @@ function Functions.Install(setUp, ...)
 		end);
 	end;
 end;
+
+function Functions.NoLockdown(func, ...)
+	func = Curry(func, ...);
+	return function()
+		return Callbacks.NoLockdown(func);
+	end;
+end;

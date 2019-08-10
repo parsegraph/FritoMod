@@ -42,3 +42,16 @@ function Callbacks.Later(func, ...)
 	Log.Leave();
 	return remover;
 end;
+
+function Callbacks.NoLockdown(func, ...)
+	func = Curry(func, ...);
+	local timer;
+	timer = Timing.OnUpdate(function()
+		if InCombatLockdown() then
+			return;
+		end;
+		timer();
+		func();
+	end);
+	return timer;
+end;
