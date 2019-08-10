@@ -16,7 +16,7 @@ end;
 
 local HackDB = { -- default settings saved variables
     font = 2,
-    fontsize = 11,
+    fontsize = 15,
     snap = 1,
     pages = { untitled = {name = "untitled", data='',index=1,} },
     order = {"untitled"}, --list that the index points to the page name
@@ -945,12 +945,12 @@ function Hack.MoveDown()
 end
 
 function Hack.FontBigger()
-    db.fontsize = db.fontsize + 1
+    db.fontsize = db.fontsize + 5
     Hack.UpdateFont()
 end
 
 function Hack.FontSmaller()
-    db.fontsize = db.fontsize - 1
+    db.fontsize = db.fontsize - 5
     Hack.UpdateFont()
 end
 
