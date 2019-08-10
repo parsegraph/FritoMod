@@ -80,21 +80,29 @@ function ListenerList:Map(...)
 	return results;
 end;
 
+function ListenerList:FinalizeFire()
+	self.firingIndex = nil;
+	self.firingMax = nil;
+	self.firing = false;
+end;
+
+ListenerList_DEBUG = false;
+
 -- This method is rarely used, unless you need special behavior when
 -- a listener is invoked.
 function ListenerList:InvokeListeners(invoker, ...)
-	assert(not self:IsFiring(), tostring(self).. " is refusing to fire while firing");
+	if ListenerList_DEBUG then
+		assert(not self:IsFiring(), tostring(self).. " is refusing to fire while firing");
+	elseif self:IsFiring() then
+		self:FinalizeFire();
+	end;
 	if #self.listeners == 0 then
 		return;
 	end;
 
-	local function FinalizeFire()
-		self.firingIndex = nil;
-		self.firingMax = nil;
-		self.firing = false;
+	if ListenerList_DEBUG then
+		self:logEntercf("Listener dispatches", "Firing all", self:GetListenerCount(), "listener(s)");
 	end;
-
-	self:logEntercf("Listener dispatches", "Firing all", self:GetListenerCount(), "listener(s)");
 
 	self.firing = true;
 	self.firingMax = #self.listeners;
@@ -104,26 +112,33 @@ function ListenerList:InvokeListeners(invoker, ...)
 		local listener = self.listeners[self.firingIndex];
 		local target = listener;
 		if invoker then
+			--print("Needing to create invoker");
 			target = Curry(invoker, listener, ...);
 		end;
-		local succeeded, err = xpcall(target, traceback);
-		if not succeeded then
-			-- Clean up our firing variable, otherwise we'll be permanently
-			-- stuck in "firing" mode.
-			FinalizeFire();
-			if self:GetRemoveOnFail() then
-				self:RemoveListener(listener);
+		if ListenerList_DEBUG then
+			local succeeded, err = xpcall(target, traceback);
+			if not succeeded then
+				-- Clean up our firing variable, otherwise we'll be permanently
+				-- stuck in "firing" mode.
+				self:FinalizeFire();
+				if self:GetRemoveOnFail() then
+					self:RemoveListener(listener);
+				end;
+				self:logLeave();
+				error(err);
 			end;
-			self:logLeave();
-			error(err);
+		else
+			target();
 		end;
 		if OOP.IsDestroyed(self) then
 			break;
 		end;
 		self.firingIndex = self.firingIndex + 1;
 	end;
-	FinalizeFire();
-	self:logLeave();
+	self:FinalizeFire();
+	if ListenerList_DEBUG then
+		self:logLeave();
+	end;
 end;
 
 -- This method is not often used, unless you're writing a dispatcher.
