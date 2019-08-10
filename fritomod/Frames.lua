@@ -667,6 +667,10 @@ do
 				if f then
 					f:Hide();
 					f:ClearAllPoints();
+					if f.SetScript then
+						f:SetScript("OnUpdate", nil);
+						f:SetScript("OnEvent", nil);
+					end;
 					local objectType = f:GetObjectType();
 					-- Some objects do not allow a nil parent, so we need
 					-- to exclude them here.
