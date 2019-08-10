@@ -438,26 +438,29 @@ function Hack.Find(index)
     end
 end
 
--- TODO Update to highlight line Num?
-function Hack.ScriptError(type, err)
-    local name, line, msg = err:match('%[string (".-")%]:(%d+): (.*)')
-    printf( '%s error%s:\n %s', type,
-             name and format(' in %s at line %d', name, line, msg) or '',
-             err )
-end
-
 function Hack.Compile(page, undoers)
 	local text = page.data:gsub('||','|');
     local func, err = loadstring(text, page.name)
-    if not func then Hack.ScriptError('syntax', err) return end
-	local env = {UNDOABLE=function(func, ...)
-		if Frames.IsRegion(func) then
-			func = Curry(Frames.Destroy, func);
-		else
-			func = Curry(func, ...);
+    if not func then Hack.ScriptError(err) return Noop end;
+	if not page.sessionData then
+		local sessionData = {};
+		page.sessionData = function()
+			return sessionData;
 		end;
-		table.insert(undoers, func);
-	end};
+	end;
+	local env = {
+		UNDOABLE=function(func, ...)
+			if Frames.IsRegion(func) then
+				func = Curry(Frames.Destroy, func);
+			elseif type(func) == "table" and select("#", ...) == 0 and func.Destroy then
+				func = Curry(func, "Destroy");
+			else
+				func = Curry(func, ...);
+			end;
+			table.insert(undoers, func);
+		end,
+		SESSION=page.sessionData()
+	};
 	setmetatable(env, {__index=_G});
 	if page.elements then
 		for i=1, #page.elements do
@@ -475,6 +478,15 @@ function Hack.Compile(page, undoers)
     return func;
 end
 
+function Hack.ScriptError(err)
+	printf("Script error: " .. err);
+	Lists.Each({("\n"):split(debugstack(2))}, function(l)
+		if #l > 0 then
+			printf(l);
+		end;
+	end);
+end;
+
 -- find page by index or name and return it as a compiled function
 function Hack.Get(name)
     local page = type(name)=='number' and Hack.Find(name) or pages[name]
@@ -483,9 +495,8 @@ function Hack.Get(name)
     local runner = Hack.Compile(page, undoers)
 	return function()
 		Hack.StopPage(page);
-		local runnerSucc, rv = pcall(runner);
+		local runnerSucc, rv = xpcall(runner, Hack.ScriptError);
 		if not runnerSucc then
-			printf("Script error: " .. rv);
 			rv = nil;
 		end;
 		if #undoers > 0 then
@@ -493,16 +504,16 @@ function Hack.Get(name)
 				local succ, err;
 				succ = true;
 				if type(rv) == "function" then
-					succ, err = pcall(rv);
+					succ, err = xpcall(rv, Hack.ScriptError);
 				end;
 				local i = #undoers;
 				while i > 0 do
-					local undoerSucc, err = pcall(undoers[i]);
+					local undoerSucc, err = xpcall(undoers[i], Hack.ScriptError);
 					succ = succ and undoerSucc;
 					i = i - 1;
 				end;
 				if not succ then
-					printf("Script error while stopping: " .. err);
+					printf("Script error while stopping");
 				end;
 			end;
 		elseif type(rv) == "function" then
@@ -516,7 +527,7 @@ end
 -- avoids need to create a table to capture return values in Hack.Execute
 local function CheckResult(...)
     if ... then return select(2,...) end
-    Hack.ScriptError('runtime', select(2,...))
+    Hack.ScriptError(select(2,...))
 end
 
 function Hack.Execute(func, ...)
