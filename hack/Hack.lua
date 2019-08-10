@@ -1024,11 +1024,13 @@ function Hack.EditPage()
         HackColorize:SetChecked(page.colorize)
         Hack.ApplyColor(page.colorize)
     end
-	if shownElems then
+	if shownElems and #page.elements > 0 then
+		PanelTemplates_SetTab(HackEditFrame, 2);
 		Hack.ShowElementsPage();
-	else
-		Hack.ShowCodePage();
+		return;
 	end;
+	PanelTemplates_SetTab(HackEditFrame, 1);
+	Hack.ShowCodePage();
 end
 
 function Hack.SendPageToWatchers(page)
