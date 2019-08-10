@@ -1887,7 +1887,7 @@ end;
 local MAGIC_FRAME;
 local USING_FRAME_HACK;
 function Anchors.ConditionalClear(strategy, ...)
-	if select("#", ...) == 1 and #(...) > 0 then
+	if select("#", ...) == 1 and (...) ~= nil and #(...) > 0 then
 		trace("Unpacking list for clearing")
 		return Anchors.ConditionalClear(strategy, unpack(...));
 	end;
