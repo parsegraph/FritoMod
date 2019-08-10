@@ -1,5 +1,6 @@
 if nil ~= require then
 	require "wow/Frame";
+	require "wow/Frame-Layer";
 	require "fritomod/OOP-Class";
 end;
 
@@ -16,6 +17,14 @@ end;
 
 function Texture:SetTexCoord(...)
 
+end;
+
+function Texture:SetColorTexture(...)
+    if select("#", ...) > 1 then
+        self.color = {...};
+        return;
+    end;
+    trace("STUB SetTexture");
 end;
 
 function Texture:SetTexture(...)

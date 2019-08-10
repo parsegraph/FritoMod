@@ -15,5 +15,8 @@ WoW.RegisterFrameType("Button", WoW.Button, "New");
 function WoW.Button:SetHighlightTexture()
 end;
 
+function WoW.Button:SetText()
+end;
+
 function WoW.Button:SetPushedTexture()
 end;

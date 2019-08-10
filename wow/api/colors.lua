@@ -49,3 +49,11 @@ RAID_CLASS_COLORS = {
 	["WARRIOR"] = { r = 0.78, g = 0.61, b = 0.43 },
 	["DEATHKNIGHT"] = { r = 0.77, g = 0.12 , b = 0.23 },
 };
+
+ITEM_QUALITY_COLORS = {
+	[0]={a=1, r=1, g=1, b=1},
+	[1]={a=1, r=1, g=1, b=1},
+	[2]={a=1, r=1, g=1, b=1},
+	[3]={a=1, r=1, g=1, b=1},
+	[4]={a=1, r=1, g=1, b=1}
+};
