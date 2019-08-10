@@ -692,6 +692,10 @@ function Hack.VARIABLES_LOADED(self, db)
 end
 
 function Hack.SelectListItem(index)
+	if selected == index then
+		HackEditFrame:Hide();
+		return;
+	end;
     selected = index
     Hack.UpdateButtons()
     Hack.EditPage()
