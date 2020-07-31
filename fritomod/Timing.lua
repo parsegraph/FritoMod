@@ -404,7 +404,8 @@ function Timing.After(wait, func, ...)
 	func = Curry(func,...);
 	local elapsed = 0;
 	local timer;
-	timer = Timing.OnUpdate(function(delta)
+	timer = Timing.OnUpdate(function()
+		delta = Timing.LAST_ELAPSED;
 		elapsed = elapsed + delta;
 		if elapsed >= wait then
 			timer();

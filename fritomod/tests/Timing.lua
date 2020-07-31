@@ -27,7 +27,10 @@ Suite:AddListener(Metatables.Noop({
 
 function Suite:TestTiming()
 	local v=Tests.Value();
-	local r=Timing.OnUpdate(v.Set);
+	local r=Timing.OnUpdate(function()
+		delta = Timing.LAST_ELAPSED;
+		v.Set(delta);
+	end);
 	self:Tick(1);
 	v.Assert(1);
 	r();
