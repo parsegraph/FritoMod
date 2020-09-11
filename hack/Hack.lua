@@ -1233,7 +1233,7 @@ function TextWidget:Constructor(parent, elem)
 	eb:SetScript("OnEscapePressed", Seal(eb, "ClearFocus"));
 	eb:SetScript("OnTextChanged", function()
 		elem.name = eb:GetText();
-		Hack.RefreshElements();
+		Hack.RefreshElements(true);
 	end);
 
 	local vf = Frames.Text(parent, widgetFont, 14);
@@ -1264,7 +1264,7 @@ function TextWidget:Constructor(parent, elem)
 	vb:SetText(elem.value or "");
 	vb:SetScript("OnTextChanged", function()
 		elem.value = vb:GetText();
-		Hack.RefreshElements();
+		Hack.RefreshElements(true);
 	end);
 
 	Anchors.Share(wrapper, f, "topleft");
@@ -1343,7 +1343,7 @@ function PercentWidget:Constructor(parent, elem)
 	eb:SetScript("OnEscapePressed", Seal(eb, "ClearFocus"));
 	eb:SetScript("OnTextChanged", function()
 		elem.name = eb:GetText();
-		Hack.RefreshElements();
+		Hack.RefreshElements(true);
 	end);
 
 	local vf = Frames.Text(parent, widgetFont, 14);
@@ -1364,7 +1364,7 @@ function PercentWidget:Constructor(parent, elem)
 	scroller:SetValue(elem.value);
 	scroller:SetScript("OnValueChanged", function()
 		elem.value = scroller:GetValue();
-		Hack.RefreshElements();
+		Hack.RefreshElements(true);
 	end);
 	self.scroller = scroller;
 
@@ -1444,7 +1444,7 @@ function ColorWidget:Constructor(parent, elem)
 	eb:SetScript("OnEscapePressed", Seal(eb, "ClearFocus"));
 	eb:SetScript("OnTextChanged", function()
 		elem.name = eb:GetText();
-		Hack.RefreshElements();
+		Hack.RefreshElements(true);
 	end);
 
 	local vf = Frames.Text(parent, widgetFont, 14);
@@ -1493,7 +1493,7 @@ function ColorWidget:Constructor(parent, elem)
 						c[2] = newc[2];
 						c[3] = newc[3];
 						Frames.Color(f, c);
-						Hack.RefreshElements();
+						Hack.RefreshElements(true);
 					end);
 				end},
 				{text="Swatches", func=function()
@@ -1508,7 +1508,7 @@ function ColorWidget:Constructor(parent, elem)
 						c[2] = newc[2];
 						c[3] = newc[3];
 						Frames.Color(f, c);
-						Hack.RefreshElements();
+						Hack.RefreshElements(true);
 					end;
 					ColorSwatchPanel.func, ColorSwatchPanel.cancelFunc = changedCallback, changedCallback;
 					ColorSwatchPanel.previousValues = {c[1], c[2], c[3]};
@@ -1541,7 +1541,7 @@ function ColorWidget:Constructor(parent, elem)
 	scroller:SetValue(elem.value[3]);
 	scroller:SetScript("OnValueChanged", function()
 		elem.value[3] = scroller:GetValue();
-		Hack.RefreshElements();
+		Hack.RefreshElements(true);
 	end);
 	self.scroller = scroller;
 
@@ -1597,7 +1597,7 @@ function ColorWidget:Hide()
 	self.secondColor:Hide();
 end;
 
-function Hack.RefreshElements()
+function Hack.RefreshElements(isUserInput)
 	local page = Hack.EditedPage();
 	HackRevert:Disable()
 	if page.elements and Hack.revertElements and #page.elements == #Hack.revertElements then
@@ -1644,6 +1644,9 @@ function Hack.RefreshElements()
 		--print("Number of elements changed " .. #Hack.revertElements .. " versus " .. #page.elements);
 		HackRevert:Enable()
 	end;
+    if isUserInput and sharing[page.name] then
+        shareMyPage();
+    end;
 	if Hack.StopPage() then
 		Hack.Run();
 	end;
@@ -1755,7 +1758,7 @@ function Hack.ShowElementsPage()
 		Anchors.Share(widgetSelection, widget:Bounds(), "topleft", -2, -4);
 		Anchors.Share(widgetSelection, widget:Bounds(), "bottomright", -4, -4);
 		widgetSelection:Show();
-		Hack.RefreshElements();
+		Hack.RefreshElements(true);
 	end);
 	Anchors.HFlip(moveUpButton, button, "right", 2);
 
@@ -1778,7 +1781,7 @@ function Hack.ShowElementsPage()
 		Anchors.Share(widgetSelection, widget:Bounds(), "topleft", -2, -4);
 		Anchors.Share(widgetSelection, widget:Bounds(), "bottomright", -4, -4);
 		widgetSelection:Show();
-		Hack.RefreshElements();
+		Hack.RefreshElements(true);
 	end);
 	Anchors.HFlip(moveDownButton, moveUpButton, "right", 2);
 
@@ -1800,7 +1803,7 @@ function Hack.ShowElementsPage()
 		Anchors.Share(widgetSelection, widget:Bounds(), "bottomright", -4, -4);
 		widgetSelection:Show();
 		selectedWidget = widget;
-		Hack.RefreshElements();
+		Hack.RefreshElements(true);
 	end);
 	Anchors.Share(deleteButton, HackEditFrame, "bottomright", 5, 9);
 
