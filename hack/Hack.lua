@@ -2014,12 +2014,19 @@ function Hack.INCOMING_PAGE(msg, sender, medium)
     trace("Received page %q", msg);
     local page = Serializers.ReadData(msg);
     assert(page, "Received page must not be falsy (type was "..type(page)..")");
-    assert(type(page) == "table", "Received page must be a table, but received ".. type(page));
-    if autoapproved[page.name] and autoapproved[page.name][sender] == true then
-        assert(pages[page.name], "Page could not be found with name: "..page.name);
-        pages[page.name].data=page.data;
-        if Hack.EditedPage() and Hack.EditedPage().name==page.name then
-            HackEditBox:SetText(page.data)
+	assert(type(page) == "table", "Received page must be a table, but received ".. type(page));
+	if autoapproved[page.name] and autoapproved[page.name][sender] == true then
+		if not pages[page.name] then
+			Hack.New(page, true);
+		end;
+		pages[page.name].data=page.data;
+		pages[page.name].elements = page.elements;
+		if Hack.EditedPage() and Hack.EditedPage().name==page.name then
+			if shownElems then
+				Hack.ShowElementsPage();
+			else
+				HackEditBox:SetText(page.data)
+			end;
         end;
     else
         page.name=Hack.GetUniqueName(page.name);
