@@ -1027,7 +1027,7 @@ function Hack.EditPage()
         HackColorize:SetChecked(page.colorize)
         Hack.ApplyColor(page.colorize)
     end
-	if shownElems and #page.elements > 0 then
+	if shownElems and page.elements and #page.elements > 0 then
 		PanelTemplates_SetTab(HackEditFrame, 2);
 		Hack.ShowElementsPage();
 		return;
