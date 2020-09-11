@@ -67,6 +67,7 @@ local writers=Metatables.Defensive({
 				Write(v)
 			);
 		end;
+		out = out .. "z";
 		return out;
 	end
 });
@@ -119,15 +120,23 @@ function readers.t(c)
 	trace("Reading table");
 	c:Next() -- Skip the 't'
 	local t={};
-	while c:Get()=="k" do
-		c:Next();
-		local k=Read(c);
-		trace("Reading key %q", tostring(k));
-		c:Next();
-		local v=Read(c);
-		trace("Reading value %q", tostring(v));
-		t[k]=v;
-		c:Next();
+	while true do
+		local peeked = c:Get();
+		if peeked == "k" then
+			c:Next();
+			local k=Read(c);
+			trace("Reading key %q", tostring(k));
+			c:Next();
+			local v=Read(c);
+			trace("Reading value %q", tostring(v));
+			t[k]=v;
+			c:Next();
+		elseif peeked == "z" then
+			-- Skip end table character.
+			break;
+		else
+			error("Unexpected character: " .. tostring(peeked))
+		end;
 	end;
 	return t;
 end;
