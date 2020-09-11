@@ -14,7 +14,7 @@ Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia
 Aenean eu risus vel massa ornare egestas. Integer nec scelerisque ante. Duis varius porta neque, suscipit pretium risus molestie ut. Sed eget neque eget eros laoreet rutrum in ut orci. Vestibulum sit amet velit ligula, non consectetur odio. Suspendisse laoreet fringilla est, non suscipit neque aliquet in. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam erat volutpat. Duis sed risus ante, sed accumsan tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed dui a lectus consequat adipiscing non id metus. Etiam euismod nibh a tortor ornare sed ullamcorper mauris laoreet. Duis in leo arcu, vitae porta risus. Phasellus nec condimentum risus. Aenean ut tellus elit, ut fringilla dui. Nunc placerat semper magna, in accumsan velit porttitor sit amet. Suspendisse et posuere elit. Curabitur neque orci, pellentesque quis dapibus eu, dapibus ut sapien. Maecenas velit enim, elementum eu sagittis vitae, semper ac nibh.]]
 
 function Suite:TestWritingStringChunks()
-	Assert.Equals(":Notime", Serializers.WriteStringChunks("Notime"));
+	Assert.Equals({":Notime"}, Serializers.WriteStringChunks("Notime"));
 	local chunks=Serializers.WriteStringChunks(RANDOM_MEANINGLESS_TEXT);
 	local message="";
 	for i=1, #chunks do

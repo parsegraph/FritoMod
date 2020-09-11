@@ -79,6 +79,12 @@ function Remote:Send(...)
         msg = select(2, ...);
     end;
     assert(msg~=nil, "Message must not be nil");
+    if type(msg) == "table" then
+        for i=1, #msg do
+            Remote:Send(prefix, medium, msg[i])
+        end;
+        return;
+    end;
 	--printf("medium=%s, prefix=%s", medium, prefix);
 	if mediums[medium] then
 		if ChatThrottleLib then

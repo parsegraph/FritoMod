@@ -101,7 +101,7 @@ function Serializers.WriteStringChunks(message, padding)
 
 	-- If our message with its padding is less than MAX_CHUNK_SIZE, we don't need a header whatsoever.
 	if #message + padding <= MAX_CHUNK_SIZE then
-		return ":"..message;
+		return {":"..message};
 	end;
 	chunkGroup=chunkGroup+1;
 	if chunkGroup > MAX_CHUNK_GROUP then
