@@ -2031,6 +2031,9 @@ function Hack.INCOMING_PAGE(msg, sender, medium)
 				HackEditBox:SetText(page.data)
 			end;
         end;
+		if Hack.StopPage() then
+			Hack.Run();
+		end;
     else
         page.name=Hack.GetUniqueName(page.name);
         local dialog = StaticPopup_Show('HackAccept', sender)
