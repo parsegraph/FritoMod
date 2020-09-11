@@ -52,7 +52,7 @@ local writers=Metatables.Defensive({
 	end,
 
 	["function"]=function(f)
-		return Write(f());
+		return "_";
 	end,
 
 	["nil"]=function()
