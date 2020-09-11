@@ -1063,6 +1063,9 @@ function Hack.OnEditorTextChanged(self, isUserInput)
     if isUserInput and sharing[page.name] then
         shareMyPage();
     end;
+	if Hack.StopPage() then
+		Hack.Run();
+	end;
 end
 
 function Hack.RefreshText()
