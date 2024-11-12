@@ -2,9 +2,13 @@
 
 -- Get and copy a clean environment.
 if bit32 then
-	bit = bit32;
+  bit = bit32;
 else
-    require "bit";
+  local succ;
+  succ, bit = pcall(require, "bit32");
+  if not succ then
+    bit = require "bit";
+  end;
 end;
 
 if not unpack then
