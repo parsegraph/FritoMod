@@ -93,8 +93,12 @@ function Math.Distance(...)
 	return Math.Hypotenuse(x2 - x1, y2 - y1);
 end;
 
-function Math.Hypotenuse(a, b)
-	return math.sqrt(math.pow(a, 2) + math.pow(b, 2));
+if pcall(load, "return 2^2") then
+    Math.Hypotenuse = load("return function(a, b) return math.sqrt(a ^ 2 + b ^ 2); end")();
+else
+    Math.Hypotenuse = function(a, b)
+        return math.sqrt(math.pow(a, 2) + math.pow(b, 2));
+    end;
 end;
 
 function Math.Mean(values, ...)
