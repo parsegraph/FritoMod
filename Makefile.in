@@ -31,6 +31,10 @@ toc: FritoMod.toc files.xml
 dot: fritomod.dot
 .PHONY: dot
 
+fritomod.svg: fritomod.dot
+	dot -Tsvg $^ >$@
+.PHONY: graph-png
+
 graph: graph-png graph-svg
 .PHONY: graph
 
