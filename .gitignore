@@ -4,3 +4,5 @@ files.xml
 .files.xml
 *.toc
 Makefile
+fritomod.dot
+fritomod.svg
