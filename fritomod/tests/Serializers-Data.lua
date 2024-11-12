@@ -17,13 +17,13 @@ function Suite:TestWriteABoolean()
 end;
 
 function Suite:TestWriteATable()
-	Assert.Equals("tks2nos4time", Serializers.WriteData({
+	Assert.Equals("tks2nos4timez", Serializers.WriteData({
 		no="time",
 	}));
 end;
 
 function Suite:TestWriteATableWithANestedTable()
-	Assert.Equals("tks6nestedtks4deeptks6answern42", Serializers.WriteData({
+	Assert.Equals("tks6nestedtks4deeptks6answern42zzz", Serializers.WriteData({
 		nested={
 			deep={
 				answer=42
@@ -46,7 +46,7 @@ function Suite:TestReadABoolean()
 end;
 
 function Suite:TestReadATable()
-	Assert.Equals({no="time"}, Serializers.ReadData("tks2nos4time"));
+	Assert.Equals({no="time"}, Serializers.ReadData("tks2nos4timez"));
 end;
 
 function Suite:TestReadANestedTable()
@@ -56,7 +56,7 @@ function Suite:TestReadANestedTable()
 				answer=42
 			}
 		}
-	}, Serializers.ReadData("tks6nestedtks4deeptks6answern42"));
+	}, Serializers.ReadData("tks6nestedtks4deeptks6answern42zzz"));
 end;
 
 function Suite:TestReadHandlesTablesWithMultipleKeys()
