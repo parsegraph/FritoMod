@@ -220,7 +220,8 @@ end;
 local versions = {
     ["Lua 5.1"] = 50100,
     ["Lua 5.2"] = 50200,
-    ["Lua 5.3"] = 50300
+    ["Lua 5.3"] = 50300,
+    ["Lua 5.4"] = 50400
 };
 
 function luaversion(version)
